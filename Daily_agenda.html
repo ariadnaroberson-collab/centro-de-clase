@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aquí se habla Español — Task Slides</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Nunito:wght@400;600;700;800&family=Patrick+Hand&display=swap');
+
+  :root {
+    --bg: #2c4a3e;
+    --bg-dark: #1e3329;
+    --card: #f7f4ef;
+    --card-warm: #fdf6e3;
+    --accent-gold: #f5c842;
+    --accent-red: #e84545;
+    --accent-green: #5cb85c;
+    --accent-blue: #4a90d9;
+    --accent-purple: #9b59b6;
+    --accent-orange: #e8834a;
+    --chalk: #e8e4d9;
+    --text-dark: #2c2c2c;
+    --text-mid: #555;
+    --text-light: #888;
+    --tag-speaking: #e84545;
+    --tag-nivel: #f5c842;
+    --tag-time: #4a90d9;
+    --border-dashed: rgba(255,255,255,0.25);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: #1a2e25;
+    min-height: 100vh;
+    padding: 20px;
+    color: var(--text-dark);
+  }
+
+  /* NAV */
+  .nav-bar {
+    background: var(--bg-dark);
+    border-radius: 16px;
+    padding: 14px 20px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    border: 1px solid var(--border-dashed);
+  }
+  .nav-bar h2 {
+    font-family: 'Caveat', cursive;
+    color: var(--chalk);
+    font-size: 1.4rem;
+    margin-right: 10px;
+  }
+  .nav-btn {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 20px;
+    color: var(--chalk);
+    padding: 5px 14px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .nav-btn:hover { background: rgba(255,255,255,0.2); }
+  .nav-btn.active {
+    background: var(--accent-gold);
+    color: var(--bg-dark);
+    font-weight: 700;
+    border-color: var(--accent-gold);
+  }
+
+  /* SLIDE WRAPPER */
+  .slide-wrapper {
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+  .slide-wrapper.visible { display: block; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* SLIDE SHELL */
+  .slide {
+    background: var(--bg);
+    border-radius: 20px;
+    padding: 28px 32px 32px;
+    min-height: 520px;
+    border: 2px dashed var(--border-dashed);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* SLIDE HEADER */
+  .slide-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .slide-title-group { display: flex; align-items: center; gap: 10px; }
+  .slide-emoji { font-size: 1.8rem; }
+  .slide-title {
+    font-family: 'Caveat', cursive;
+    font-size: 2rem;
+    color: var(--chalk);
+    outline: none;
+    border-bottom: 2px dashed transparent;
+    transition: border-color 0.2s;
+    padding: 2px 6px;
+    border-radius: 4px;
+    min-width: 120px;
+  }
+  .slide-title:focus {
+    border-bottom: 2px dashed var(--accent-gold);
+    background: rgba(255,255,255,0.05);
+  }
+
+  .date-badge {
+    background: var(--accent-gold);
+    color: var(--bg-dark);
+    font-weight: 800;
+    font-size: 0.82rem;
+    padding: 6px 14px;
+    border-radius: 20px;
+    white-space: nowrap;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    font-family: 'Nunito', sans-serif;
+  }
+  .date-badge:focus { outline: 2px solid white; }
+
+  /* TAGS ROW */
+  .tags-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .tag {
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    font-family: 'Nunito', sans-serif;
+    white-space: nowrap;
+  }
+  .tag.time { background: var(--tag-time); color: white; }
+  .tag.speaking { background: var(--tag-speaking); color: white; }
+  .tag.nivel { background: var(--tag-nivel); color: var(--bg-dark); }
+  .tag.reading { background: var(--accent-purple); color: white; }
+  .tag.fun { background: var(--accent-green); color: white; }
+
+  /* CARD AREA */
+  .card-area {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 22px 24px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .card-label {
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-light);
+  }
+
+  /* EDITABLE CONTENT */
+  [contenteditable="true"] {
+    outline: none;
+    border-radius: 6px;
+    padding: 4px 6px;
+    transition: background 0.15s, box-shadow 0.15s;
+    min-height: 1.4em;
+    white-space: pre-wrap;
+  }
+  [contenteditable="true"]:focus {
+    background: rgba(74, 144, 217, 0.08);
+    box-shadow: 0 0 0 2px rgba(74, 144, 217, 0.3);
+  }
+  [contenteditable="true"]:empty:before {
+    content: attr(data-placeholder);
+    color: #bbb;
+    pointer-events: none;
+  }
+
+  .main-text {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.15rem;
+    color: var(--text-dark);
+    line-height: 1.6;
+    font-weight: 600;
+  }
+  .sub-text {
+    font-size: 0.92rem;
+    color: var(--text-mid);
+    line-height: 1.6;
+  }
+
+  /* PILL CHIPS */
+  .chip-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+  .chip {
+    background: var(--bg);
+    color: var(--chalk);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    font-family: 'Nunito', sans-serif;
+    transition: background 0.2s;
+  }
+  .chip:focus { outline: 2px solid var(--accent-gold); }
+  .chip.green { background: var(--accent-green); }
+  .chip.red { background: var(--accent-red); }
+  .chip.blue { background: var(--accent-blue); }
+  .chip.purple { background: var(--accent-purple); }
+  .chip.dashed {
+    background: transparent;
+    border: 2px dashed rgba(255,255,255,0.3);
+    color: rgba(255,255,255,0.5);
+    font-size: 0.75rem;
+  }
+
+  /* CHECKLIST */
+  .checklist { display: flex; flex-direction: column; gap: 10px; }
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .check-item input[type="checkbox"] {
+    width: 18px; height: 18px;
+    accent-color: var(--bg);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .check-item span {
+    font-size: 0.97rem;
+    color: var(--text-dark);
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+    border-radius: 4px;
+    padding: 2px 4px;
+    flex: 1;
+  }
+  .check-item span:focus { background: rgba(74,144,217,0.1); box-shadow: 0 0 0 2px rgba(74,144,217,0.3); }
+  .check-item input:checked + span { text-decoration: line-through; color: #aaa; }
+  .add-item-btn {
+    background: none;
+    border: 1.5px dashed #bbb;
+    border-radius: 8px;
+    padding: 6px 12px;
+    color: #aaa;
+    font-size: 0.82rem;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    margin-top: 4px;
+    align-self: flex-start;
+    transition: all 0.2s;
+  }
+  .add-item-btn:hover { border-color: var(--bg); color: var(--bg); }
+
+  /* LINKS */
+  .link-list { display: flex; flex-direction: column; gap: 10px; }
+  .link-item { display: flex; align-items: center; gap: 8px; }
+  .link-icon { font-size: 1rem; }
+  .link-text {
+    color: var(--accent-blue);
+    text-decoration: underline;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+    border-radius: 4px;
+    padding: 2px 4px;
+  }
+  .link-text:focus { background: rgba(74,144,217,0.1); box-shadow: 0 0 0 2px rgba(74,144,217,0.3); }
+
+  /* SPOTLIGHT BADGE */
+  .spotlight-section { display: flex; flex-direction: column; gap: 16px; }
+  .student-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(245,200,66,0.08);
+    border-radius: 10px;
+    padding: 12px 14px;
+    border: 1.5px solid rgba(245,200,66,0.2);
+  }
+  .student-avatar { font-size: 1.8rem; }
+  .student-info { flex: 1; }
+  .student-name {
+    font-weight: 800;
+    font-size: 1rem;
+    color: var(--text-dark);
+    cursor: pointer;
+    outline: none;
+    border-radius: 4px;
+  }
+  .student-name:focus { background: rgba(74,144,217,0.1); box-shadow: 0 0 0 2px rgba(74,144,217,0.3); }
+  .student-praise {
+    font-size: 0.88rem;
+    color: var(--text-mid);
+    margin-top: 3px;
+    cursor: pointer;
+    outline: none;
+    border-radius: 4px;
+    padding: 2px 4px;
+  }
+  .student-praise:focus { background: rgba(74,144,217,0.1); box-shadow: 0 0 0 2px rgba(74,144,217,0.3); }
+
+  /* TWO COLUMN */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* FVR SPECIAL */
+  .fvr-hero {
+    background: linear-gradient(135deg, #2d1b69 0%, #11998e 100%);
+    border-radius: 14px;
+    padding: 24px;
+    text-align: center;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+  .fvr-hero::before {
+    content: '📚✨🌟📖💫';
+    position: absolute;
+    font-size: 3rem;
+    opacity: 0.08;
+    top: 10px; left: 10px;
+    letter-spacing: 8px;
+  }
+  .fvr-hook {
+    font-family: 'Caveat', cursive;
+    font-size: 1.6rem;
+    margin-bottom: 12px;
+    line-height: 1.3;
+    cursor: pointer;
+    outline: none;
+    border-radius: 6px;
+    padding: 4px 8px;
+  }
+  .fvr-hook:focus { background: rgba(255,255,255,0.1); }
+  .fvr-sub {
+    font-size: 0.95rem;
+    opacity: 0.9;
+    margin-bottom: 16px;
+    cursor: pointer;
+    outline: none;
+    border-radius: 6px;
+    padding: 4px 8px;
+  }
+  .fvr-sub:focus { background: rgba(255,255,255,0.1); }
+
+  .symbaloo-box {
+    background: rgba(255,255,255,0.12);
+    border: 2px dashed rgba(255,255,255,0.4);
+    border-radius: 10px;
+    padding: 14px 20px;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .symbaloo-icon { font-size: 1.5rem; }
+  .symbaloo-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    opacity: 0.7;
+    text-transform: uppercase;
+  }
+  .symbaloo-link {
+    font-size: 0.9rem;
+    word-break: break-all;
+    text-decoration: underline;
+    cursor: pointer;
+    outline: none;
+    border-radius: 4px;
+    padding: 2px 4px;
+    flex: 1;
+    font-family: monospace;
+  }
+  .symbaloo-link:focus { background: rgba(255,255,255,0.15); }
+  .symbaloo-go {
+    background: var(--accent-gold);
+    color: var(--bg-dark);
+    border: none;
+    border-radius: 20px;
+    padding: 7px 16px;
+    font-size: 0.82rem;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    text-decoration: none;
+    display: inline-block;
+    transition: transform 0.15s;
+  }
+  .symbaloo-go:hover { transform: scale(1.05); }
+
+  /* TEACHER NOTE CARD */
+  .note-paper {
+    background: #fdf6c3;
+    border-radius: 10px;
+    padding: 16px 18px;
+    border-left: 5px solid var(--accent-red);
+    font-family: 'Patrick Hand', cursive;
+    font-size: 0.98rem;
+    color: #333;
+    line-height: 1.6;
+    position: relative;
+  }
+  .note-paper::after {
+    content: '📌';
+    position: absolute;
+    top: -8px; right: 14px;
+    font-size: 1.2rem;
+  }
+
+  /* SEPARATOR */
+  .chalk-divider {
+    border: none;
+    border-top: 2px dashed var(--border-dashed);
+    margin: 6px 0;
+  }
+
+  /* PRINT / SLIDE controls */
+  .toolbar {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    margin-bottom: 14px;
+  }
+  .tool-btn {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 10px;
+    color: var(--chalk);
+    padding: 7px 16px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    transition: background 0.2s;
+  }
+  .tool-btn:hover { background: rgba(255,255,255,0.2); }
+  .tool-btn.primary {
+    background: var(--accent-gold);
+    color: var(--bg-dark);
+    font-weight: 700;
+    border-color: var(--accent-gold);
+  }
+
+  @media print {
+    body { background: white; padding: 0; }
+    .nav-bar, .toolbar { display: none; }
+    .slide-wrapper { display: block !important; page-break-after: always; }
+    .slide { min-height: 90vh; border: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<div class="nav-bar">
+  <h2>🇪🇸 Slides</h2>
+  <button class="nav-btn active" onclick="showSlide(0, this)">👋 Greeting</button>
+  <button class="nav-btn" onclick="showSlide(1, this)">☕ Warm-Up</button>
+  <button class="nav-btn" onclick="showSlide(2, this)">🎯 Today's Topic</button>
+  <button class="nav-btn" onclick="showSlide(3, this)">✅ To-Do List</button>
+  <button class="nav-btn" onclick="showSlide(4, this)">🔗 Quick Links</button>
+  <button class="nav-btn" onclick="showSlide(5, this)">⭐ Spotlight</button>
+  <button class="nav-btn" onclick="showSlide(6, this)">🍎 Teacher Notes</button>
+  <button class="nav-btn" onclick="showSlide(7, this)">📚 FVR</button>
+</div>
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <button class="tool-btn" onclick="prevSlide()">← Prev</button>
+  <button class="tool-btn" onclick="nextSlide()">Next →</button>
+  <button class="tool-btn primary" onclick="window.print()">🖨️ Print All Slides</button>
+</div>
+
+
+<!-- ===== SLIDE 1: GREETING ===== -->
+<div class="slide-wrapper visible" id="slide-0">
+<div class="slide">
+  <div class="slide-header">
+    <div class="slide-title-group">
+      <span class="slide-emoji">👋</span>
+      <div class="slide-title" contenteditable="true" data-placeholder="Título">Greeting</div>
+    </div>
+    <button class="date-badge" contenteditable="true">Sunday, June 28</button>
+  </div>
+
+  <div class="tags-row">
+    <span class="tag time" contenteditable="true">⏱ 5 min</span>
+    <span class="tag speaking" contenteditable="true">💬 Speaking</span>
+    <span class="tag nivel" contenteditable="true">Nivel A1–A2</span>
+  </div>
+
+  <div class="card-area">
+    <div class="card-label">Saludo del día</div>
+    <div class="main-text" contenteditable="true" data-placeholder="Instrucción principal...">
+      ¿Cómo están hoy? Comparte tu estado de ánimo en una palabra.
+    </div>
+    <hr class="chalk-divider">
+    <div class="card-label">Opciones de saludo</div>
+    <div class="chip-row">
+      <button class="chip green" contenteditable="true">¡Hola!</button>
+      <button class="chip blue" contenteditable="true">¡Buenos días!</button>
+      <button class="chip red" contenteditable="true">¡Buenas tardes!</button>
+      <button class="chip dashed" onclick="addChip(this)">+ frase</button>
+    </div>
+    <hr class="chalk-divider">
+    <div class="card-label">Pregunta para la clase</div>
+    <div class="sub-text" contenteditable="true" data-placeholder="Pregunta extra...">
+      ¿Qué hicieron este fin de semana? Cuéntame en una oración.
+    </div>
+  </div>
+</div>
+</div>
+
+
+<!-- ===== SLIDE 2: QUICK WARM-UP ===== -->
+<div class="slide-wrapper" id="slide-1">
+<div class="slide">
+  <div class="slide-header">
+    <div class="slide-title-group">
+      <span class="slide-emoji">☕</span>
+      <div class="slide-title" contenteditable="true">Quick Warm-Up</div>
+    </div>
+    <button class="date-badge" contenteditable="true">Sunday, June 28</button>
+  </div>
+
+  <div class="tags-row">
+    <span class="tag time" contenteditable="true">⏱ 5 min</span>
+    <span class="tag speaking" contenteditable="true">✍️ Writing</span>
+  </div>
+
+  <div class="card-area">
+    <div class="card-label">Completa la frase</div>
+    <div class="main-text" contenteditable="true" data-placeholder="Escribe el ejercicio de warm-up...">
+      "Hoy me siento ___ porque ___."
+    </div>
+    <hr class="chalk-divider">
+    <div class="card-label">Mini lección de gramática</div>
+    <div class="sub-text" contenteditable="true" data-placeholder="Punto gramatical del día...">
+      Repaso: verbos reflexivos en presente. Yo me llamo... / Tú te llamas...
+    </div>
+    <hr class="chalk-divider">
+    <div class="card-label">Actividad rápida</div>
+    <div class="sub-text" contenteditable="true" data-placeholder="Actividad de calentamiento adicional...">
+      Escribe 3 cosas que hiciste ayer usando verbos en pretérito.
+    </div>
+  </div>
+</div>
+</div>
+
+
+<!-- ===== SLIDE 3: TODAY'S TOPIC ===== -->
+<div class="slide-wrapper" id="slide-2">
+<div class="slide">
+  <div class="slide-header">
+    <div class="slide-title-group">
+      <span class="slide-emoji">🎯</span>
+      <div class="slide-title" contenteditable="true">Today's Topic</div>
+    </div>
+    <button class="date-badge" contenteditable="true">Sunday, June 28</button>
+  </div>
+
+  <div class="tags-row">
+    <span class="tag time" contenteditable="true">⏱ 20 min</span>
+    <span class="tag speaking" contenteditable="true">💬 Speaking</span>
+    <span class="tag nivel" contenteditable="true">Nivel A2</span>
+  </div>
+
+  <div class="card-area">
+    <div class="card-label">Tema de hoy</div>
+    <div class="main-text" contenteditable="true" data-placeholder="Tema principal de la lección...">
+      Pedir comida en un restaurante — vocabulario de comida y frases de cortesía en contexto.
+    </div>
+    <hr class="chalk-divider">
+    <div class="two-col">
+      <div>
+        <div class="card-label">Vocabulario clave</div>
+        <div class="sub-text" contenteditable="true" data-placeholder="Palabras clave...">
+          La cuenta • el mesero • ordenar • la especialidad • quisiera • me trae
+        </div>
+      </div>
+      <div>
+        <div class="card-label">Objetivo de la clase</div>
+        <div class="sub-text" contenteditable="true" data-placeholder="Objetivo de aprendizaje...">
+          Poder ordenar comida y pedir la cuenta con cortesía en español.
+        </div>
+      </div>
+    </div>
+    <hr class="chalk-divider">
+    <div class="card-label">Práctica en parejas</div>
+    <div class="sub-text" contenteditable="true" data-placeholder="Instrucciones para práctica...">
+      Roleplay: uno es el mesero, otro el cliente. Cambien de rol después de 3 minutos.
+    </div>
+  </div>
+</div>
+</div>
+
+
+<!-- ===== SLIDE 4: TO-DO LIST ===== -->
+<div class="slide-wrapper" id="slide-3">
+<div class="slide">
+  <div class="slide-header">
+    <div class="slide-title-group">
+      <span class="slide-emoji">✅</span>
+      <div class="slide-title" contenteditable="true">To-Do List</div>
+    </div>
+    <button class="date-badge" contenteditable="true">Sunday, June 28</button>
+  </div>
+
+  <div class="card-area">
+    <div class="card-label">Agenda del día</div>
+    <div class="checklist" id="checklist-main">
+      <div class="check-item">
+        <input type="checkbox" id="c1">
+        <span contenteditable="true" data-placeholder="Tarea..." id="c1-label">Calentamiento / repaso</span>
+      </div>
+      <div class="check-item">
+        <input type="checkbox" id="c2">
+        <span contenteditable="true" id="c2-label">Mini lección de gramática</span>
+      </div>
+      <div class="check-item">
+        <input type="checkbox" id="c3">
+        <span contenteditable="true" id="c3-label">Práctica en parejas</span>
+      </div>
+      <div class="check-item">
+        <input type="checkbox" id="c4">
+        <span contenteditable="true" id="c4-label">FVR — Lectura libre</span>
+      </div>
+      <div class="check-item">
+        <input type="checkbox" id="c5">
+        <span contenteditable="true" id="c5-label">Boleto de salida</span>
+      </div>
+    </div>
+    <button class="add-item-btn" onclick="addCheckItem()">+ agregar tarea</button>
+    <hr class="chalk-divider" style="margin-top:10px">
+    <div class="card-label">Recordatorio</div>
+    <div class="sub-text" contenteditable="true" data-placeholder="Recordatorio del día...">
+      Entregar tarea de vocabulario antes del viernes.
+    </div>
+  </div>
+</div>
+</div>
+
+
+<!-- ===== SLIDE 5: QUICK LINKS ===== -->
+<div class="slide-wrapper" id="slide-4">
+<div class="slide">
+  <div class="slide-header">
+    <div class="slide-title-group">
+      <span class="slide-emoji">🔗</span>
+      <div class="slide-title" contenteditable="true">Quick Links</div>
+    </div>
+    <button class="date-badge" contenteditable="true">Sunday, June 28</button>
+  </div>
+
+  <div class="card-area">
+    <div class="card-label">Recursos de hoy</div>
+    <div class="link-list" id="link-list">
+      <div class="link-item">
+        <span class="link-icon">📋</span>
+        <span class="link-text" contenteditable="true">Vocabulario de hoy (slides)</span>
+      </div>
+      <div class="link-item">
+        <span class="link-icon">🔊</span>
+        <span class="link-text" contenteditable="true">Audio de práctica</span>
+      </div>
+      <div class="link-item">
+        <span class="link-icon">📝</span>
+        <span class="link-text" contenteditable="true">Hoja de ejercicios</span>
+      </div>
+      <div class="link-item">
+        <span class="link-icon">📚</span>
+        <span class="link-text" contenteditable="true">Symbaloo — Lectura FVR</span>
+      </div>
+    </div>
+    <button class="add-item-btn" onclick="addLink()">+ add link</button>
+    <hr class="chalk-divider" style="margin-top:10px">
+    <div class="card-label">Nota</div>
+    <div class="sub-text" contenteditable="true" data-placeholder="Nota adicional...">
+      Todos los recursos están disponibles en Google Classroom.
+    </div>
+  </div>
+</div>
+</div>
+
+
+<!-- ===== SLIDE 6: STUDENT SPOTLIGHT ===== -->
+<div class="slide-wrapper" id="slide-5">
+<div class="slide">
+  <div class="slide-header">
+    <div class="slide-title-group">
+      <span class="slide-emoji">⭐</span>
+      <div class="slide-title" contenteditable="true">Student Spotlight</div>
+    </div>
+    <button class="date-badge" contenteditable="true">Sunday, June 28</button>
+  </div>
+
+  <div class="card-area">
+    <div class="card-label">¡Brillando esta semana!</div>
+
+    <div class="spotlight-section" id="spotlight-list">
+      <div class="student-card">
+        <span class="student-avatar">😊</span>
+        <div class="student-info">
+          <div class="student-name" contenteditable="true">María G.</div>
+          <div class="student-praise" contenteditable="true">¡Por su gran progreso en pronunciación esta semana!</div>
+        </div>
+      </div>
+      <div class="student-card">
+        <span class="student-avatar">🌟</span>
+        <div class="student-info">
+          <div class="student-name" contenteditable="true">Estudiante del día</div>
+          <div class="student-praise" contenteditable="true">Escribe el nombre y el logro aquí...</div>
+        </div>
+      </div>
+    </div>
+    <button class="add-item-btn" onclick="addSpotlight()">+ add student</button>
+  </div>
+</div>
+</div>
+
+
+<!-- ===== SLIDE 7: TEACHER NOTES ===== -->
+<div class="slide-wrapper" id="slide-6">
+<div class="slide">
+  <div class="slide-header">
+    <div class="slide-title-group">
+      <span class="slide-emoji">🍎</span>
+      <div class="slide-title" contenteditable="true">Teacher Notes</div>
+    </div>
+    <button class="date-badge" contenteditable="true">Sunday, June 28</button>
+  </div>
+
+  <div class="card-area" style="background:#fafaf5;">
+    <div class="card-label">Notas privadas del maestro</div>
+    <div class="note-paper" contenteditable="true" data-placeholder="Escribe tus notas aquí...">
+      Recordar repartir las tarjetas de vocabulario antes de la práctica en parejas.
+    </div>
+    <div class="note-paper" style="border-color: var(--accent-blue); margin-top: 8px;" contenteditable="true" data-placeholder="Nota adicional...">
+      Diferenciación: para estudiantes avanzados, agregar tarea de escritura creativa.
+    </div>
+    <div class="note-paper" style="border-color: var(--accent-green); margin-top: 8px;" contenteditable="true" data-placeholder="Nota adicional...">
+      Recordatorio: reunión de padres el jueves a las 4 PM.
+    </div>
+    <button class="add-item-btn" onclick="addNote()" style="margin-top:8px">+ add note</button>
+  </div>
+</div>
+</div>
+
+
+<!-- ===== SLIDE 8: FVR FREE VOLUNTARY READING ===== -->
+<div class="slide-wrapper" id="slide-7">
+<div class="slide">
+  <div class="slide-header">
+    <div class="slide-title-group">
+      <span class="slide-emoji">📚</span>
+      <div class="slide-title" contenteditable="true">FVR — Free Voluntary Reading</div>
+    </div>
+    <button class="date-badge" contenteditable="true">Sunday, June 28</button>
+  </div>
+
+  <div class="tags-row">
+    <span class="tag time" contenteditable="true">⏱ 15 min</span>
+    <span class="tag reading" contenteditable="true">📖 Reading</span>
+    <span class="tag fun" contenteditable="true">🌟 Fun!</span>
+  </div>
+
+  <div class="fvr-hero">
+    <div class="fvr-hook" contenteditable="true">
+      🌎 Your passport to new worlds is one click away — ¡a leer se ha dicho! 🚀
+    </div>
+    <div class="fvr-sub" contenteditable="true">
+      Pick a book, comic, article, or story that sparks your curiosity. No summaries, no quizzes — just you and the joy of reading in Spanish. ¡Tú decides!
+    </div>
+
+    <div class="symbaloo-box">
+      <span class="symbaloo-icon">🗂️</span>
+      <div style="flex:1; min-width:200px;">
+        <div class="symbaloo-label">Symbaloo Reading Dashboard</div>
+        <div class="symbaloo-link" contenteditable="true">
+          https://claude.ai/public/artifacts/cbdccbb3-db0f-4d82-b329-8e88fa7e933e
+        </div>
+      </div>
+      <a class="symbaloo-go" href="https://claude.ai/public/artifacts/cbdccbb3-db0f-4d82-b329-8e88fa7e933e" target="_blank">🚀 ¡Ir ahora!</a>
+    </div>
+  </div>
+
+  <div class="card-area" style="background:#f0faf4; flex: 0;">
+    <div class="card-label">Instrucciones para el estudiante</div>
+    <div class="sub-text" contenteditable="true" data-placeholder="Instrucciones...">
+      1. Haz clic en el enlace de Symbaloo 🔗  2. Elige un libro o artículo que te llame la atención  3. Lee en silencio por 15 minutos  4. Anota: ¿qué leíste? ¿qué aprendiste?
+    </div>
+  </div>
+</div>
+</div>
+
+
+<script>
+  let currentSlide = 0;
+  const totalSlides = 8;
+
+  function showSlide(index, btn) {
+    document.querySelectorAll('.slide-wrapper').forEach(s => s.classList.remove('visible'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('slide-' + index).classList.add('visible');
+    if (btn) btn.classList.add('active');
+    currentSlide = index;
+  }
+
+  function nextSlide() {
+    const next = (currentSlide + 1) % totalSlides;
+    const btn = document.querySelectorAll('.nav-btn')[next];
+    showSlide(next, btn);
+  }
+
+  function prevSlide() {
+    const prev = (currentSlide - 1 + totalSlides) % totalSlides;
+    const btn = document.querySelectorAll('.nav-btn')[prev];
+    showSlide(prev, btn);
+  }
+
+  // Keyboard nav
+  document.addEventListener('keydown', e => {
+    if (e.target.isContentEditable) return;
+    if (e.key === 'ArrowRight') nextSlide();
+    if (e.key === 'ArrowLeft') prevSlide();
+  });
+
+  function addChip(btn) {
+    const chip = document.createElement('button');
+    chip.className = 'chip purple';
+    chip.contentEditable = 'true';
+    chip.textContent = 'nueva frase';
+    btn.parentNode.insertBefore(chip, btn);
+    chip.focus();
+  }
+
+  let checkCount = 6;
+  function addCheckItem() {
+    checkCount++;
+    const list = document.getElementById('checklist-main');
+    const item = document.createElement('div');
+    item.className = 'check-item';
+    item.innerHTML = `<input type="checkbox" id="c${checkCount}">
+      <span contenteditable="true" data-placeholder="Nueva tarea...">Nueva tarea</span>`;
+    list.appendChild(item);
+    item.querySelector('span').focus();
+  }
+
+  function addLink() {
+    const list = document.getElementById('link-list');
+    const item = document.createElement('div');
+    item.className = 'link-item';
+    item.innerHTML = `<span class="link-icon">🔗</span>
+      <span class="link-text" contenteditable="true">Nuevo enlace</span>`;
+    list.appendChild(item);
+    item.querySelector('span.link-text').focus();
+  }
+
+  let spotlightCount = 0;
+  function addSpotlight() {
+    spotlightCount++;
+    const emojis = ['🏆','💪','🎉','🌈','🦋','🔥'];
+    const list = document.getElementById('spotlight-list');
+    const card = document.createElement('div');
+    card.className = 'student-card';
+    card.innerHTML = `<span class="student-avatar">${emojis[spotlightCount % emojis.length]}</span>
+      <div class="student-info">
+        <div class="student-name" contenteditable="true">Nombre del estudiante</div>
+        <div class="student-praise" contenteditable="true">Escribe el logro aquí...</div>
+      </div>`;
+    list.appendChild(card);
+    card.querySelector('.student-name').focus();
+  }
+
+  function addNote() {
+    const colors = ['var(--accent-red)', 'var(--accent-blue)', 'var(--accent-green)', 'var(--accent-orange)', 'var(--accent-purple)'];
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const container = document.querySelector('#slide-6 .card-area');
+    const btn = container.querySelector('.add-item-btn');
+    const note = document.createElement('div');
+    note.className = 'note-paper';
+    note.style.borderColor = color;
+    note.style.marginTop = '8px';
+    note.contentEditable = 'true';
+    note.setAttribute('data-placeholder', 'Nueva nota...');
+    note.textContent = '';
+    container.insertBefore(note, btn);
+    note.focus();
+  }
+</script>
+</body>
+</html>

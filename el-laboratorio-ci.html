@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El Laboratorio CI</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bitter:wght@400;600;700&family=Karla:wght@400;500;700&display=swap');
+
+  :root {
+    --cream: #efece5;
+    --paper: #FBF4E8;
+    --card: #FFFDF8;
+    --tan: #F3E4CB;
+    --tan-border: #E3D3B4;
+    --rust: #A9491F;
+    --sage: #7C9473;
+    --ink: #3B2E26;
+    --ink-mid: #6B5A46;
+    --ink-soft: #8A7860;
+    --brown: #5B3A24;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Karla', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 32px 20px 60px;
+  }
+  .wrap { max-width: 1000px; margin: 0 auto; }
+
+  header { text-align: center; margin-bottom: 30px; }
+  .eyebrow {
+    font-family: 'Bitter', serif;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 6px;
+  }
+  h1 {
+    font-family: 'Bitter', serif;
+    font-weight: 700;
+    font-size: 2.4rem;
+    color: var(--rust);
+  }
+  .subtitle { color: var(--ink-soft); font-size: 0.95rem; margin-top: 6px; }
+
+  .strand {
+    background: var(--tan);
+    border: 1px solid var(--tan-border);
+    border-radius: 14px;
+    padding: 16px 20px;
+    margin-bottom: 26px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+  }
+  .strand-label {
+    font-family: 'Bitter', serif;
+    font-weight: 700;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--sage);
+    width: 100%;
+    text-align: center;
+    margin-bottom: 6px;
+  }
+  .word-tag {
+    background: var(--rust);
+    color: var(--paper);
+    font-family: 'Bitter', serif;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 5px 13px;
+    border-radius: 999px;
+    border: 2px solid var(--sage);
+  }
+
+  .nav {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+  }
+  .nav-btn {
+    font-family: 'Bitter', serif;
+    font-weight: 700;
+    font-size: 14px;
+    background: var(--card);
+    border: 2px solid var(--tan-border);
+    color: var(--brown);
+    padding: 9px 18px;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  .nav-btn.active { background: var(--rust); color: var(--paper); border-color: var(--rust); }
+
+  .subnav {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .subnav-btn {
+    font-family: 'Bitter', serif;
+    font-weight: 700;
+    font-size: 12px;
+    background: transparent;
+    border: 2px solid var(--sage);
+    color: var(--sage);
+    padding: 6px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  .subnav-btn.active { background: var(--sage); color: var(--paper); }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .subpanel { display: none; }
+  .subpanel.active { display: block; }
+
+  .mode-intro {
+    text-align: center;
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    max-width: 620px;
+    margin: 0 auto 18px;
+    line-height: 1.5;
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  @media (max-width: 720px) { .card-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 480px) { .card-grid { grid-template-columns: 1fr; } }
+
+  details.activity {
+    background: var(--tan);
+    border-radius: 10px;
+    padding: 11px 13px;
+    border: 1px solid var(--tan-border);
+  }
+  details.activity[open] { background: var(--card); border-color: var(--sage); }
+  details.activity summary {
+    font-family: 'Bitter', serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--brown);
+    cursor: pointer;
+    list-style: none;
+  }
+  details.activity summary::-webkit-details-marker { display: none; }
+  details.activity summary::before { content: '✎ '; color: var(--rust); }
+  details.activity[open] summary::before { content: '▾ '; }
+  details.activity .desc {
+    font-size: 11.5px;
+    color: var(--ink-mid);
+    line-height: 1.45;
+    margin-top: 7px;
+  }
+  details.activity .src {
+    font-size: 9.5px;
+    color: var(--sage);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-top: 5px;
+    font-family: 'Bitter', serif;
+    font-weight: 700;
+  }
+
+  .ref-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 640px) { .ref-grid { grid-template-columns: 1fr; } }
+  .ref-card { background: var(--card); border: 1px solid var(--tan-border); border-radius: 12px; padding: 18px 20px; }
+  .ref-card.full { grid-column: 1 / -1; }
+  .ref-card h3 { font-family: 'Bitter', serif; font-weight: 700; font-size: 15px; color: var(--rust); margin-bottom: 10px; }
+  .ref-item { margin-bottom: 8px; font-size: 12.5px; line-height: 1.45; }
+  .ref-item b { color: var(--brown); }
+  .ref-item span { color: var(--ink-mid); }
+  .ref-prose { font-size: 12.5px; color: var(--ink-mid); line-height: 1.6; }
+  .flow-list { padding-left: 18px; }
+  .flow-list li, .plain-list li { font-size: 12.5px; color: var(--ink); margin-bottom: 6px; line-height: 1.4; }
+
+  .footer-note { text-align:center; margin-top: 36px; font-size: 12px; color: var(--ink-soft); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">Cuentópolis · Teacher Genome</p>
+    <h1>El Laboratorio CI</h1>
+    <p class="subtitle">Organizado por modo de comunicación ACTFL — toca cualquier tarjeta para ver cómo se hace</p>
+  </header>
+
+  <div class="strand">
+    <p class="strand-label">Estructuras meta en rotación</p>
+    <span class="word-tag">hay</span><span class="word-tag">está</span><span class="word-tag">duerme</span>
+    <span class="word-tag">ayuda</span><span class="word-tag">corre</span><span class="word-tag">dice</span>
+    <span class="word-tag">tiene</span><span class="word-tag">puede</span><span class="word-tag">es</span>
+  </div>
+
+  <div class="nav">
+    <button class="nav-btn active" data-p="interpersonal">🗣 Interpersonal</button>
+    <button class="nav-btn" data-p="interpretativo">📖 Interpretativo</button>
+    <button class="nav-btn" data-p="presentacion">🎤 Presentación</button>
+    <button class="nav-btn" data-p="referencia">🗂 Referencia Rápida</button>
+  </div>
+
+  <!-- INTERPERSONAL -->
+  <div class="panel active" id="panel-interpersonal">
+    <p class="mode-intro">Comunicación espontánea y bidireccional — los estudiantes negocian significado en tiempo real, hablando o leyendo juntos.</p>
+    <div class="card-grid" id="grid-interpersonal"></div>
+  </div>
+
+  <!-- INTERPRETATIVO -->
+  <div class="panel" id="panel-interpretativo">
+    <p class="mode-intro">Comunicación de una sola vía, sin negociación — recibir un texto o audio. Dividido por momento: antes, durante y después de interpretar.</p>
+    <div class="subnav">
+      <button class="subnav-btn active" data-sub="antes">Antes de interpretar</button>
+      <button class="subnav-btn" data-sub="durante">Durante</button>
+      <button class="subnav-btn" data-sub="despues">Después</button>
+    </div>
+    <div class="subpanel active" id="sub-antes">
+      <div class="card-grid" id="grid-antes"></div>
+    </div>
+    <div class="subpanel" id="sub-durante">
+      <div class="card-grid" id="grid-durante"></div>
+    </div>
+    <div class="subpanel" id="sub-despues">
+      <div class="card-grid" id="grid-despues"></div>
+    </div>
+  </div>
+
+  <!-- PRESENTACION -->
+  <div class="panel" id="panel-presentacion">
+    <p class="mode-intro">Producción preparada, de una vía, para una audiencia — un producto escrito, dibujado o actuado.</p>
+    <div class="card-grid" id="grid-presentacion"></div>
+  </div>
+
+  <!-- REFERENCIA RAPIDA -->
+  <div class="panel" id="panel-referencia">
+    <div class="ref-grid">
+      <div class="ref-card"><h3>Rutinas diarias</h3><div id="refRoutines"></div></div>
+      <div class="ref-card"><h3>Menú semanal</h3><div id="refMenu"></div></div>
+      <div class="ref-card full"><h3>Flujo de lección preferido</h3><ol class="flow-list" id="refFlow"></ol></div>
+      <div class="ref-card"><h3>Diferenciación</h3><ul class="plain-list" id="refDiff"></ul></div>
+      <div class="ref-card"><h3>Manejo del aula</h3><ul class="plain-list" id="refMgmt"></ul></div>
+      <div class="ref-card"><h3>Ecosistema tecnológico</h3><div id="refTech"></div></div>
+      <div class="ref-card"><h3>ACTFL ↔ CEFR</h3><div id="refActfl"></div></div>
+      <div class="ref-card full"><h3>Filosofía de evaluación</h3><p class="ref-prose" id="refAssess"></p></div>
+      <div class="ref-card"><h3>Estilo visual</h3><p class="ref-prose" id="refVisual"></p></div>
+      <div class="ref-card"><h3>Estilo de retroalimentación</h3><p class="ref-prose" id="refFeedback"></p></div>
+    </div>
+  </div>
+
+  <p class="footer-note">El Laboratorio CI · construido a partir del Teacher Genome</p>
+</div>
+
+<script>
+  function card(name, desc, src) {
+    return {name: name, desc: desc, src: src};
+  }
+
+  var interpersonal = [
+    card('Picture Talk', 'Proyecta una imagen evocadora; haz preguntas circulares con las estructuras meta para construir una descripción en conjunto con la clase.', 'CI'),
+    card('Clip Chat', 'Igual que Picture Talk pero con un clip corto sin palabras — pausa seguido para narrar y preguntar.', 'CI'),
+    card('PQA', 'Personalized Questions & Answers: haz preguntas genuinas sobre la vida real de los estudiantes, repitiendo las respuestas clave a toda la clase.', 'CI'),
+    card('Special Person Interviews', 'Un estudiante es entrevistado frente a la clase; los compañeros ayudan a preguntar y responder, repitiendo estructuras de alta frecuencia.', 'CI'),
+    card('One Word at a Time', 'Los estudiantes construyen una historia colaborativa, una palabra o frase a la vez, guiada hacia las estructuras meta.', 'CI'),
+    card('Volleyball Reading', 'Parejas alternan leyendo oraciones en voz alta como un rally, manteniendo ritmo y responsabilidad ligera.', 'CI'),
+    card('Running Dictation', 'Un compañero corre a leer un texto pegado en la pared, regresa y lo dicta — movimiento más repetición.', 'CI'),
+    card('Partner Reading', 'Dos estudiantes leen juntos, alternando o haciendo eco de las líneas.', 'Lectura'),
+    card('Book Discussions', 'Conversación abierta sobre temas, personajes u opiniones en el idioma meta.', 'Lectura'),
+    card('Running Dictation', 'Un compañero corre a un texto pegado, lo lee, regresa y lo dicta — movimiento más escritura.', 'Lectura')
+  ];
+
+  var antes = [
+    card('Before-Reading Questions', 'Preguntas rápidas de predicción antes de abrir el texto — ¿de qué crees que trata?', 'Lectura'),
+    card('Chapter Summaries', 'Recuento breve de lo que pasó en el capítulo anterior antes de empezar el siguiente.', 'Lectura')
+  ];
+
+  var durante = [
+    card('Story Listening', 'El maestro cuenta una historia oralmente con gestos y chequeos de comprensión — solo escuchar, sin leer.', 'CI'),
+    card('Embedded Reading', 'La misma historia recontada en tres niveles de complejidad, para releer con comprensión casi total.', 'CI'),
+    card('First Reading', 'Primera pasada, lenta y bien apoyada, por un texto nuevo.', 'Lectura'),
+    card('Choral Reading', 'Toda la clase lee en voz alta al unísono, para ritmo y confianza.', 'Lectura'),
+    card('Timed Reading', 'Releer un pasaje conocido contra el reloj para construir fluidez y velocidad.', 'Lectura'),
+    card('Embedded Reading v1', 'La versión más simple de un texto nivelado — máximo apoyo, mínima complejidad.', 'Lectura'),
+    card('Embedded Reading v2', 'Una versión más rica y compleja de la misma historia, construida sobre la v1.', 'Lectura'),
+    card('Reader\u2019s Theater', 'Los estudiantes actúan un guion en voz alta con expresión, cada uno con un papel.', 'Lectura'),
+    card('Cloze Reading', 'Una versión de espacios en blanco de un texto conocido.', 'Lectura'),
+    card('Free Voluntary Reading', 'Lectura independiente, autoseleccionada, puramente por placer — sin producción requerida.', 'Lectura')
+  ];
+
+  var despues = [
+    card('Comprehension Questions', 'Preguntas ligadas al texto que comprueban la comprensión de lo que se acaba de leer.', 'Lectura'),
+    card('Reading Accuracy Check', 'Sondeo rápido que confirma que los estudiantes entendieron, no solo decodificaron las palabras.', 'Lectura'),
+    card('Find the Detail', 'Escanear un texto para localizar un dato o frase específica.', 'Lectura'),
+    card('True/False Reading', 'Afirmaciones sobre el texto se marcan como verdaderas o falsas.', 'Lectura'),
+    card('Multiple Choice Reading', 'Chequeo de comprensión tradicional de opción múltiple.', 'Lectura'),
+    card('Vocabulary Matching', 'Emparejar palabras o estructuras meta con imágenes o definiciones.', 'Lectura'),
+    card('Short Answer', 'Una respuesta breve escrita que demuestra comprensión con las propias palabras del estudiante.', 'Lectura'),
+    card('Interpretive Reading', 'Tarea estilo ACTFL: leer y responder a preguntas de comprensión sin producir lenguaje nuevo todavía.', 'Lectura'),
+    card('Read and Sequence', 'Poner en orden correcto los eventos desordenados de una historia.', 'Lectura'),
+    card('Read and Match', 'Emparejar oraciones o pies de foto con la imagen o personaje correcto.', 'Lectura')
+  ];
+
+  var presentacion = [
+    card('Write and Discuss', 'La clase co-escribe un resumen breve de lo que acaba de pasar; el maestro escribe, los estudiantes negocian las palabras.', 'CI'),
+    card('Draw the Sentence', 'Los estudiantes dibujan rápido una oración dictada o leída, comprobando comprensión sin traducción.', 'CI'),
+    card('Dictation with a Twist', 'Dictado estándar más una tarea extra al final — corregir errores, desordenar, traducir o ilustrar.', 'CI'),
+    card('Read and Draw', 'Ilustrar lo que describe un pasaje, comprobando la comprensión de forma visual.', 'Lectura')
+  ];
+
+  function makeActivityCard(item) {
+    var d = document.createElement('details');
+    d.className = 'activity';
+    var s = document.createElement('summary');
+    s.textContent = item.name;
+    var p = document.createElement('div');
+    p.className = 'desc';
+    p.textContent = item.desc;
+    var src = document.createElement('div');
+    src.className = 'src';
+    src.textContent = item.src;
+    d.appendChild(s);
+    d.appendChild(p);
+    d.appendChild(src);
+    return d;
+  }
+
+  function fillGrid(id, list) {
+    var grid = document.getElementById(id);
+    list.forEach(function(item) { grid.appendChild(makeActivityCard(item)); });
+  }
+
+  fillGrid('grid-interpersonal', interpersonal);
+  fillGrid('grid-antes', antes);
+  fillGrid('grid-durante', durante);
+  fillGrid('grid-despues', despues);
+  fillGrid('grid-presentacion', presentacion);
+
+  // ---------- Quick reference data ----------
+  var dailyRoutines = [
+    {name:'Weekend Chat', desc:'Rutina PQA de los lunes — parejas y clase comparten sobre el fin de semana usando estructuras meta.'},
+    {name:'Calendar Talk', desc:'Rutina diaria de 3–5 min: fecha, día, clima, estación, reciclando estructuras de alta frecuencia.'},
+    {name:'StoryBuilders', desc:'Historias generadas por la clase, construidas de forma acumulativa durante la semana.'}
+  ];
+  var refRoutines = document.getElementById('refRoutines');
+  dailyRoutines.forEach(function(r) {
+    var el = document.createElement('div');
+    el.className = 'ref-item';
+    el.innerHTML = '<b>' + r.name + '</b><br><span>' + r.desc + '</span>';
+    refRoutines.appendChild(el);
+  });
+
+  var weeklyMenu = [
+    {category:'Calendar Talk', note:'diario, 3–5 min'},
+    {category:'CI Activity', note:'una del banco de estrategias CI'},
+    {category:'Speaking Activity', note:'ej. entrevista, info gap'},
+    {category:'Vocabulary Game', note:'Quizlet Live o Wayground'},
+    {category:'FVR Extension', note:'lectura independiente + registro rápido'},
+    {category:'Exit Ticket', note:'una pregunta de bajo riesgo'}
+  ];
+  var refMenu = document.getElementById('refMenu');
+  weeklyMenu.forEach(function(m) {
+    var el = document.createElement('div');
+    el.className = 'ref-item';
+    el.innerHTML = '<b>1× ' + m.category + '</b> <span>— ' + m.note + '</span>';
+    refMenu.appendChild(el);
+  });
+
+  var lessonFlowSteps = [
+    'Warm-Up — Calendar Talk o Weekend Chat',
+    'Input — una actividad CI (Picture Talk, Story Listening…)',
+    'Negociar y hablar — PQA, entrevista, discusión',
+    'Practicar — juego de vocabulario (Quizlet o Wayground)',
+    'Extender — FVR o lectura escalonada',
+    'Cerrar — un boleto de salida'
+  ];
+  var refFlow = document.getElementById('refFlow');
+  lessonFlowSteps.forEach(function(s) {
+    var li = document.createElement('li');
+    li.textContent = s;
+    refFlow.appendChild(li);
+  });
+
+  var differentiation = [
+    'Lecturas escalonadas en tres niveles de complejidad, misma historia',
+    'Tableros de opciones para producción — dibujar, hablar, escribir, actuar',
+    'Apoyo visual y de gestos durante todo el input CI',
+    'Parejas estratégicas por nivel para lectura y habla',
+    'Marcos de oraciones ofrecidos, nunca obligatorios'
+  ];
+  var refDiff = document.getElementById('refDiff');
+  differentiation.forEach(function(d) {
+    var li = document.createElement('li');
+    li.textContent = d;
+    refDiff.appendChild(li);
+  });
+
+  var classroomMgmt = [
+    'Rutinas predecibles abren cada semana de la misma forma',
+    'Normas del idioma meta enseñadas con señales y gestos, no traducción',
+    'Narración positiva en el idioma meta por encima de la corrección',
+    'CI con movimiento (Running Dictation) sirve también de válvula de escape',
+    'Descansos cerebrales entre segmentos densos de input'
+  ];
+  var refMgmt = document.getElementById('refMgmt');
+  classroomMgmt.forEach(function(c) {
+    var li = document.createElement('li');
+    li.textContent = c;
+    refMgmt.appendChild(li);
+  });
+
+  var techTools = [
+    {name:'OneNote', role:'cuaderno de clase — biblioteca de contenido, lecturas incrustadas, registros FVR'},
+    {name:'Teams', role:'comunicación asíncrona, entrega de tareas, video para estudiantes ausentes/híbridos'},
+    {name:'Canva', role:'slides de Picture Talk, visuales de historias, tableros de opciones, decoración'},
+    {name:'Quizlet', role:'práctica de vocabulario, repetición espaciada, juegos Quizlet Live'},
+    {name:'Wayground', role:'chequeos formativos de bajo riesgo, boletos de salida, juegos de repaso'}
+  ];
+  var refTech = document.getElementById('refTech');
+  techTools.forEach(function(t) {
+    var el = document.createElement('div');
+    el.className = 'ref-item';
+    el.innerHTML = '<b>' + t.name + '</b> <span>— ' + t.role + '</span>';
+    refTech.appendChild(el);
+  });
+
+  var actflRows = [
+    {actfl:'Novice Low–Mid', cefr:'A1', can:'Reconoce y produce palabras aisladas y frases memorizadas con estructuras meta.'},
+    {actfl:'Novice High', cefr:'A1–A2', can:'Crea oraciones simples usando hay, está, tiene, es en contextos familiares.'},
+    {actfl:'Intermediate Low', cefr:'A2', can:'Pregunta y responde, encadenando oraciones en párrafos cortos.'},
+    {actfl:'Intermediate Mid', cefr:'B1', can:'Maneja tareas interpretativas en lecturas escalonadas de forma independiente.'}
+  ];
+  var refActfl = document.getElementById('refActfl');
+  actflRows.forEach(function(a) {
+    var el = document.createElement('div');
+    el.className = 'ref-item';
+    el.innerHTML = '<b>' + a.actfl + ' · CEFR ' + a.cefr + '</b><br><span>' + a.can + '</span>';
+    refActfl.appendChild(el);
+  });
+
+  document.getElementById('refAssess').textContent = 'La evaluación mide lo que los estudiantes pueden hacer con el idioma, no lo que pueden recitar. Las tareas interpretativas se alinean con can-do statements reales; los chequeos frecuentes de bajo riesgo reemplazan los exámenes de alto riesgo; comprensión y producción se califican por separado para que las exigencias de precisión nunca superen el desarrollo.';
+  document.getElementById('refVisual').textContent = 'Cálido, ordenado y guiado por imágenes — las fotos cargan el significado para que el texto se mantenga mínimo. Las estructuras meta se exhiben codificadas por color, y cada slide favorece una imagen fuerte sobre un párrafo de texto.';
+  document.getElementById('refFeedback').textContent = 'La retroalimentación apunta al significado antes que a la forma. Recasts sobre corrección, lenguaje can-do sobre calificaciones, y ciclos de retroalimentación pequeños y frecuentes sobre pocos y grandes — los estudiantes siempre saben lo que ya pueden hacer.';
+
+  // ---------- Nav ----------
+  document.querySelectorAll('.nav-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
+      document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('active'); });
+      btn.classList.add('active');
+      document.getElementById('panel-' + btn.dataset.p).classList.add('active');
+    });
+  });
+
+  document.querySelectorAll('.subnav-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.subnav-btn').forEach(function(b){ b.classList.remove('active'); });
+      document.querySelectorAll('.subpanel').forEach(function(p){ p.classList.remove('active'); });
+      btn.classList.add('active');
+      document.getElementById('sub-' + btn.dataset.sub).classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

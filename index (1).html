@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centro de Clase</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Nunito:wght@400;600;700;800&family=Schoolbell&display=swap');
+
+  :root {
+    --bg: #2c4a3e;
+    --bg-dark: #1a2e25;
+    --board: #2c4a3e;
+    --card: #f7f4ef;
+    --chalk: #e8e4d9;
+    --accent-gold: #f5c842;
+    --accent-red: #e84545;
+    --accent-blue: #4a90d9;
+    --accent-green: #7fae6f;
+    --text-dark: #2c2c2c;
+    --text-mid: #5a5a5a;
+    --border-dashed: rgba(255,255,255,0.25);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg-dark);
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(255,255,255,0.025), transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(255,255,255,0.02), transparent 45%);
+    min-height: 100vh;
+    padding: 36px 20px 60px;
+    color: var(--chalk);
+  }
+
+  .wrap { max-width: 1000px; margin: 0 auto; }
+
+  /* HEADER */
+  header {
+    text-align: center;
+    margin-bottom: 40px;
+    position: relative;
+  }
+  .eyebrow {
+    font-family: 'Schoolbell', cursive;
+    font-size: 14px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent-gold);
+    margin-bottom: 6px;
+  }
+  h1 {
+    font-family: 'Caveat', cursive;
+    font-weight: 700;
+    font-size: 3.4rem;
+    color: var(--chalk);
+    line-height: 1;
+  }
+  .subtitle {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    color: rgba(232,228,217,0.6);
+    margin-top: 10px;
+  }
+  #todayChip {
+    display: inline-block;
+    margin-top: 16px;
+    background: var(--accent-gold);
+    color: #1a2e25;
+    font-family: 'Schoolbell', cursive;
+    font-size: 1rem;
+    padding: 7px 20px;
+    border-radius: 20px;
+    transform: rotate(-1.5deg);
+    box-shadow: 3px 4px 0 rgba(0,0,0,0.25);
+  }
+
+  /* GRID */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+  }
+  @media (max-width: 640px) {
+    .grid { grid-template-columns: 1fr; }
+    h1 { font-size: 2.6rem; }
+  }
+
+  /* TILE */
+  .tile {
+    display: block;
+    background: var(--card);
+    border-radius: 18px;
+    padding: 26px 28px;
+    text-decoration: none;
+    color: var(--text-dark);
+    box-shadow: 0 6px 0 rgba(0,0,0,0.22), 0 12px 22px rgba(0,0,0,0.22);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    position: relative;
+    transform: rotate(var(--tilt, 0deg));
+    border: 2px solid transparent;
+  }
+  .tile:nth-child(1) { --tilt: -0.6deg; }
+  .tile:nth-child(2) { --tilt: 0.5deg; }
+  .tile:nth-child(3) { --tilt: -0.4deg; }
+  .tile:nth-child(4) { --tilt: 0.6deg; }
+
+  .tile.active:hover {
+    transform: rotate(0deg) translateY(-3px);
+    box-shadow: 0 9px 0 rgba(0,0,0,0.22), 0 16px 26px rgba(0,0,0,0.26);
+  }
+  .tile.active:focus-visible {
+    outline: 3px solid var(--accent-gold);
+    outline-offset: 3px;
+  }
+
+  .tile-icon {
+    font-size: 2.2rem;
+    display: block;
+    margin-bottom: 10px;
+  }
+  .tile-title {
+    font-family: 'Caveat', cursive;
+    font-weight: 700;
+    font-size: 1.9rem;
+    color: var(--bg);
+    margin-bottom: 4px;
+  }
+  .tile-desc {
+    font-size: 0.92rem;
+    color: var(--text-mid);
+    line-height: 1.45;
+  }
+  .tile-go {
+    display: inline-block;
+    margin-top: 14px;
+    font-family: 'Schoolbell', cursive;
+    font-size: 0.85rem;
+    color: var(--bg-dark);
+    background: var(--accent-gold);
+    padding: 5px 14px;
+    border-radius: 14px;
+  }
+
+  /* COMING SOON */
+  .tile.soon {
+    background: transparent;
+    border: 2px dashed var(--border-dashed);
+    color: var(--chalk);
+    box-shadow: none;
+    cursor: default;
+  }
+  .tile.soon .tile-title { color: var(--chalk); opacity: 0.85; }
+  .tile.soon .tile-desc { color: rgba(232,228,217,0.55); }
+  .tile.soon .tile-go {
+    background: transparent;
+    border: 1.5px dashed rgba(232,228,217,0.4);
+    color: rgba(232,228,217,0.6);
+  }
+
+  .footer-note {
+    text-align: center;
+    margin-top: 40px;
+    font-family: 'Schoolbell', cursive;
+    color: rgba(232,228,217,0.4);
+    font-size: 13px;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Salón de Clases · Language Class</p>
+    <h1>Centro de Clase</h1>
+    <p class="subtitle">Tu punto de partida cada mañana</p>
+    <div id="todayChip"></div>
+  </header>
+
+  <div class="grid">
+
+    <a class="tile active" href="charlas_de_calendario_v2.html">
+      <span class="tile-icon">📅</span>
+      <div class="tile-title">Charlas de Calendario</div>
+      <p class="tile-desc">Rutina de apertura diaria: fecha, clima, día mundial, ánimo, cumpleaños y el dato del día.</p>
+      <span class="tile-go">Abrir →</span>
+    </a>
+
+    <a class="tile active" href="Daily_agenda.html">
+      <span class="tile-icon">📋</span>
+      <div class="tile-title">Daily Agenda</div>
+      <p class="tile-desc">Slides de la lección: saludo, warm-up, tema del día, to-do list, enlaces, spotlight y notas.</p>
+      <span class="tile-go">Abrir →</span>
+    </a>
+
+    <a class="tile active" href="el-laboratorio-ci.html">
+      <span class="tile-icon">🧪</span>
+      <div class="tile-title">El Laboratorio CI</div>
+      <p class="tile-desc">Banco de estrategias CI y actividades de lectura, por modo ACTFL — toca una tarjeta y aparece la descripción.</p>
+      <span class="tile-go">Abrir →</span>
+    </a>
+
+    <a class="tile active" href="passport-game.html">
+      <span class="tile-icon">🌎</span>
+      <div class="tile-title">The Passport Game</div>
+      <p class="tile-desc">Rueda de países + rueda de preguntas + Rank It — un viaje cultural en cada giro.</p>
+      <span class="tile-go">Abrir →</span>
+    </a>
+
+  </div>
+
+  <p class="footer-note">made with chalk dust & good vibes</p>
+</div>
+
+<script>
+  var months = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  var days = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+  var d = new Date();
+  document.getElementById('todayChip').textContent =
+    days[d.getDay()] + ', ' + d.getDate() + ' de ' + months[d.getMonth()];
+</script>
+
+</body>
+</html>

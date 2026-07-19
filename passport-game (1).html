@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Passport Game</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Nunito:wght@400;600;700;800&family=Schoolbell&display=swap');
+
+  :root {
+    --bg-dark: #1a2e25;
+    --bg: #2c4a3e;
+    --card: #f7f4ef;
+    --chalk: #e8e4d9;
+    --gold: #f5c842;
+    --coral: #e84545;
+    --blue: #4a90d9;
+    --green: #7fae6f;
+    --purple: #b98ee8;
+    --teal: #4ecdc4;
+    --orange: #ff8c42;
+    --text-dark: #2c2c2c;
+    --text-mid: #5a5a5a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg-dark);
+    background-image: radial-gradient(circle at 15% 20%, rgba(255,255,255,0.025), transparent 40%),
+                       radial-gradient(circle at 85% 80%, rgba(255,255,255,0.02), transparent 45%);
+    color: var(--chalk);
+    min-height: 100vh;
+    padding: 32px 16px 60px;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; }
+
+  header { text-align: center; margin-bottom: 18px; }
+  .eyebrow { font-family: 'Schoolbell', cursive; font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 4px; }
+  h1 { font-family: 'Caveat', cursive; font-weight: 700; font-size: 3rem; }
+  .subtitle { color: rgba(232,228,217,0.6); font-size: 0.95rem; margin-top: 6px; }
+
+  .top-controls { text-align: center; margin-bottom: 26px; }
+  .toggle-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Schoolbell', cursive;
+    font-size: 0.95rem;
+    color: var(--chalk);
+    background: rgba(255,255,255,0.06);
+    padding: 7px 16px;
+    border-radius: 999px;
+    cursor: pointer;
+    border: 1px dashed rgba(232,228,217,0.3);
+  }
+  .toggle-label input { accent-color: var(--gold); width: 16px; height: 16px; }
+
+  .stage {
+    background: var(--card);
+    border-radius: 18px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 6px 0 rgba(0,0,0,0.22), 0 12px 22px rgba(0,0,0,0.22);
+    color: var(--text-dark);
+    opacity: 0.4;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  .stage.unlocked { opacity: 1; pointer-events: auto; }
+
+  .stage-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px; height: 26px;
+    background: var(--bg);
+    color: var(--gold);
+    font-family: 'Schoolbell', cursive;
+    font-size: 14px;
+    border-radius: 50%;
+    margin-right: 8px;
+  }
+  .stage-title {
+    font-family: 'Caveat', cursive;
+    font-weight: 700;
+    font-size: 1.7rem;
+    color: var(--bg);
+    display: flex;
+    align-items: center;
+    margin-bottom: 4px;
+  }
+  .stage-desc { font-size: 0.85rem; color: var(--text-mid); margin-bottom: 16px; margin-left: 34px; }
+
+  .wheel-row { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+  .wheel-holder { position: relative; width: 300px; height: 300px; }
+  .pointer {
+    position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+    width: 0; height: 0;
+    border-left: 14px solid transparent;
+    border-right: 14px solid transparent;
+    border-top: 22px solid var(--coral);
+    z-index: 5;
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
+  }
+  canvas { border-radius: 50%; box-shadow: 0 0 0 6px var(--card), 0 0 0 8px var(--bg), 0 8px 18px rgba(0,0,0,0.3); transition: transform 4.2s cubic-bezier(0.15,0.65,0.15,1); }
+
+  .spin-btn {
+    font-family: 'Schoolbell', cursive;
+    font-size: 1rem;
+    background: var(--bg);
+    color: var(--chalk);
+    border: none;
+    padding: 10px 26px;
+    border-radius: 999px;
+    cursor: pointer;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.25);
+  }
+  .spin-btn:hover { background: #345c4c; }
+  .spin-btn:disabled { opacity: 0.5; cursor: default; }
+
+  .result-card {
+    margin-top: 4px;
+    text-align: center;
+    font-family: 'Caveat', cursive;
+    font-weight: 700;
+    font-size: 1.8rem;
+    color: var(--coral);
+    min-height: 1.4em;
+  }
+
+  .copy-btn {
+    display: inline-block;
+    margin-top: 6px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.78rem;
+    background: rgba(44,74,62,0.08);
+    color: var(--bg);
+    border: 1px solid rgba(44,74,62,0.25);
+    padding: 5px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .copy-btn.copied { background: var(--green); color: #fff; border-color: var(--green); }
+
+  .link-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
+  .link-btn {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-decoration: none;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 10px;
+  }
+  .link-btn.article { background: var(--blue); }
+  .link-btn.video { background: var(--coral); }
+
+  .prompt-card {
+    background: #fdf6e3;
+    border: 2px dashed var(--gold);
+    border-radius: 12px;
+    padding: 16px 18px;
+    text-align: center;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+  .prompt-card b { color: var(--bg); }
+
+  .rank-row { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+  .rank-row input {
+    flex: 1;
+    min-width: 160px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    padding: 10px 14px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+  }
+  .rank-row button {
+    font-family: 'Schoolbell', cursive;
+    font-size: 0.95rem;
+    background: var(--green);
+    color: #fff;
+    border: none;
+    padding: 0 20px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  .rank-list { list-style: none; margin-bottom: 14px; }
+  .rank-list li {
+    background: var(--card);
+    border: 1px solid #e5e0d5;
+    border-left: 5px solid var(--orange);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+  }
+  .rank-list li b { color: var(--bg); }
+  .rank-empty { color: var(--text-mid); font-size: 0.85rem; font-style: italic; }
+
+  .print-row { text-align: center; }
+  .print-btn {
+    font-family: 'Schoolbell', cursive;
+    font-size: 0.9rem;
+    background: var(--bg);
+    color: var(--chalk);
+    border: none;
+    padding: 8px 18px;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+
+  /* PASSPORT STAMP STRIP */
+  .stamps-wrap {
+    max-width: 860px;
+    margin: 0 auto 20px;
+    background: rgba(255,255,255,0.05);
+    border: 2px dashed rgba(232,228,217,0.25);
+    border-radius: 16px;
+    padding: 14px 18px;
+  }
+  .stamps-label {
+    font-family: 'Schoolbell', cursive;
+    font-size: 0.85rem;
+    color: var(--gold);
+    text-align: center;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+  }
+  .stamps-strip { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  .stamp {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 6px 10px;
+    font-size: 0.85rem;
+    color: var(--text-dark);
+    box-shadow: 0 2px 0 rgba(0,0,0,0.2);
+    transform: rotate(-3deg);
+  }
+  .stamp:nth-child(3n) { transform: rotate(2deg); }
+  .stamp:nth-child(3n+1) { transform: rotate(-2deg); }
+  .stamps-empty { color: rgba(232,228,217,0.4); font-size: 0.82rem; text-align: center; font-style: italic; }
+
+  .reset-row { text-align: center; margin-top: 26px; }
+  .reset-btn {
+    font-family: 'Schoolbell', cursive;
+    font-size: 0.9rem;
+    background: transparent;
+    border: 2px dashed rgba(232,228,217,0.4);
+    color: rgba(232,228,217,0.7);
+    padding: 8px 18px;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+
+  .footer-note { text-align: center; margin-top: 30px; font-family: 'Schoolbell', cursive; color: rgba(232,228,217,0.4); font-size: 13px; }
+
+  /* PRINT-ONLY WALL OF RANKINGS */
+  #printWall { display: none; }
+  @media print {
+    body * { visibility: hidden; }
+    #printWall, #printWall * { visibility: visible; }
+    #printWall { display: block; position: absolute; top: 0; left: 0; width: 100%; padding: 30px; color: #2c2c2c; font-family: 'Nunito', sans-serif; }
+    #printWall h1 { font-family: 'Bitter', serif; color: #A9491F; margin-bottom: 4px; }
+    #printWall .pw-date { color: #8A7860; font-size: 12px; margin-bottom: 20px; }
+    #printWall ul { list-style: none; padding: 0; }
+    #printWall li { padding: 8px 0; border-bottom: 1px solid #e5e0d5; font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Salón de Clases · Language Class</p>
+    <h1>The Passport Game 🌎</h1>
+    <p class="subtitle">Gira, investiga y decide — un viaje cultural en cada ronda</p>
+  </header>
+
+  <div class="top-controls">
+    <label class="toggle-label">
+      <input type="checkbox" id="speedMode"> ⚡ Modo rápido (giro corto)
+    </label>
+  </div>
+
+  <!-- STAGE 1: COUNTRY WHEEL -->
+  <div class="stage unlocked" id="stage1">
+    <p class="stage-title"><span class="stage-num">1</span> Rueda de Países</p>
+    <p class="stage-desc">Gira la rueda para elegir el país de esta ronda.</p>
+    <div class="wheel-row">
+      <div class="wheel-holder">
+        <div class="pointer"></div>
+        <canvas id="countryWheel" width="300" height="300"></canvas>
+      </div>
+      <button class="spin-btn" id="spinCountry">🌎 Girar</button>
+      <div class="result-card" id="countryResult"></div>
+      <button class="copy-btn" id="copyForCharlas" style="display:none;">📋 Copiar para Charlas</button>
+    </div>
+  </div>
+
+  <!-- STAGE 2: INVESTIGATE -->
+  <div class="stage" id="stage2">
+    <p class="stage-title"><span class="stage-num">2</span> Investiga</p>
+    <p class="stage-desc">Lee un artículo o mira un video sobre el país.</p>
+    <div class="link-row" id="researchLinks"></div>
+  </div>
+
+  <!-- STAGE 3: QUESTION WHEEL -->
+  <div class="stage" id="stage3">
+    <p class="stage-title"><span class="stage-num">3</span> Rueda de Preguntas</p>
+    <p class="stage-desc">Gira para saber con qué palabra van a preguntar.</p>
+    <div class="wheel-row">
+      <div class="wheel-holder">
+        <div class="pointer"></div>
+        <canvas id="questionWheel" width="300" height="300"></canvas>
+      </div>
+      <button class="spin-btn" id="spinQuestion">❓ Girar</button>
+      <div class="result-card" id="questionResult"></div>
+    </div>
+    <div class="prompt-card" id="promptCard" style="display:none;margin-top:14px;"></div>
+  </div>
+
+  <!-- STAGE 4: RANK IT -->
+  <div class="stage" id="stage4">
+    <p class="stage-title"><span class="stage-num">4</span> Rank It</p>
+    <p class="stage-desc">Terminen la frase: <i>El país más ___ es...</i></p>
+    <div class="rank-row">
+      <input type="text" id="rankAdjective" placeholder="ej. colorido, grande, delicioso...">
+      <button id="rankAdd">Agregar</button>
+    </div>
+    <ul class="rank-list" id="rankList">
+      <li class="rank-empty">Todavía no hay países en la lista — ¡agrega el primero!</li>
+    </ul>
+    <div class="print-row">
+      <button class="print-btn" id="printWallBtn">🖨 Imprimir Muro de Rankings</button>
+    </div>
+  </div>
+
+  <div class="reset-row">
+    <button class="reset-btn" id="newRound">↻ Nueva Ronda (misma lista de Rank It y sellos)</button>
+  </div>
+
+  <p class="footer-note">made with chalk dust & good vibes</p>
+</div>
+
+<!-- STAMP STRIP -->
+<div class="stamps-wrap">
+  <p class="stamps-label">✦ Sellos de Pasaporte de la Clase ✦</p>
+  <div class="stamps-strip" id="stampsStrip">
+    <span class="stamps-empty">Los sellos aparecen aquí cada vez que la rueda aterriza en un país nuevo.</span>
+  </div>
+</div>
+
+<!-- PRINT-ONLY WALL -->
+<div id="printWall">
+  <h1>Muro de Rankings — The Passport Game</h1>
+  <p class="pw-date" id="printDate"></p>
+  <ul id="printRankList"></ul>
+</div>
+
+<script>
+  var countries = [
+    {name:'Argentina', flag:'🇦🇷'}, {name:'Bolivia', flag:'🇧🇴'}, {name:'Chile', flag:'🇨🇱'},
+    {name:'Colombia', flag:'🇨🇴'}, {name:'Costa Rica', flag:'🇨🇷'}, {name:'Cuba', flag:'🇨🇺'},
+    {name:'Ecuador', flag:'🇪🇨'}, {name:'El Salvador', flag:'🇸🇻'}, {name:'España', flag:'🇪🇸'},
+    {name:'Guatemala', flag:'🇬🇹'}, {name:'Guinea Ecuatorial', flag:'🇬🇶'}, {name:'Honduras', flag:'🇭🇳'},
+    {name:'México', flag:'🇲🇽'}, {name:'Nicaragua', flag:'🇳🇮'}, {name:'Panamá', flag:'🇵🇦'},
+    {name:'Paraguay', flag:'🇵🇾'}, {name:'Perú', flag:'🇵🇪'}, {name:'Puerto Rico', flag:'🇵🇷'},
+    {name:'República Dominicana', flag:'🇩🇴'}, {name:'Uruguay', flag:'🇺🇾'}, {name:'Venezuela', flag:'🇻🇪'}
+  ];
+  var questions = ['Dónde', 'Cómo', 'Cuándo', 'Quién', 'Por qué', 'Qué'];
+  var palette = ['#e84545','#4a90d9','#f5c842','#7fae6f','#b98ee8','#ff8c42','#4ecdc4'];
+
+  // --- Sound ---
+  var audioCtx = null;
+  function playDing() {
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      var o = audioCtx.createOscillator();
+      var g = audioCtx.createGain();
+      o.type = 'sine';
+      o.frequency.setValueAtTime(880, audioCtx.currentTime);
+      o.frequency.exponentialRampToValueAtTime(1320, audioCtx.currentTime + 0.12);
+      g.gain.setValueAtTime(0.15, audioCtx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start();
+      o.stop(audioCtx.currentTime + 0.35);
+    } catch (e) {}
+  }
+
+  function drawWheel(canvas, labels, colors) {
+    var ctx = canvas.getContext('2d');
+    var n = labels.length;
+    var cx = canvas.width/2, cy = canvas.height/2, r = canvas.width/2 - 6;
+    var seg = (2*Math.PI)/n;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    for (var i=0;i<n;i++) {
+      ctx.beginPath();
+      ctx.moveTo(cx,cy);
+      ctx.arc(cx,cy,r, i*seg - Math.PI/2, (i+1)*seg - Math.PI/2);
+      ctx.closePath();
+      ctx.fillStyle = colors[i % colors.length];
+      ctx.fill();
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.save();
+      ctx.translate(cx,cy);
+      ctx.rotate(i*seg + seg/2 - Math.PI/2);
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 11px Nunito, sans-serif';
+      ctx.fillText(labels[i], r - 8, 4);
+      ctx.restore();
+    }
+  }
+
+  function makeSpinner(canvas, labels, onLand) {
+    var totalRotation = 0;
+    var n = labels.length;
+    var segDeg = 360/n;
+    var spinning = false;
+    return function spin() {
+      if (spinning) return;
+      spinning = true;
+      var speedMode = document.getElementById('speedMode').checked;
+      var duration = speedMode ? 1.1 : 4.2;
+      canvas.style.transition = 'transform ' + duration + 's cubic-bezier(0.15,0.65,0.15,1)';
+      var i = Math.floor(Math.random()*n);
+      var targetMod = (360 - (((i+0.5)*segDeg) % 360)) % 360;
+      var extraSpins = speedMode ? (2 + Math.floor(Math.random()*2)) : (4 + Math.floor(Math.random()*3));
+      var current = totalRotation % 360;
+      var delta = (targetMod - current + 360) % 360;
+      totalRotation = totalRotation + extraSpins*360 + delta;
+      canvas.style.transform = 'rotate(' + totalRotation + 'deg)';
+      var handled = false;
+      canvas.addEventListener('transitionend', function handler() {
+        if (handled) return;
+        handled = true;
+        canvas.removeEventListener('transitionend', handler);
+        spinning = false;
+        playDing();
+        onLand(i);
+      });
+    };
+  }
+
+  // --- Stamps ---
+  var stampedCountries = [];
+  function addStamp(country) {
+    if (stampedCountries.indexOf(country.name) !== -1) return;
+    stampedCountries.push(country.name);
+    var strip = document.getElementById('stampsStrip');
+    var empty = strip.querySelector('.stamps-empty');
+    if (empty) empty.remove();
+    var el = document.createElement('span');
+    el.className = 'stamp';
+    el.textContent = country.flag + ' ' + country.name;
+    strip.appendChild(el);
+  }
+
+  // --- Country wheel ---
+  var countryCanvas = document.getElementById('countryWheel');
+  drawWheel(countryCanvas, countries.map(function(c){return c.flag + ' ' + c.name;}), palette);
+  var currentCountry = null;
+  var spinCountryFn = makeSpinner(countryCanvas, countries, function(i) {
+    currentCountry = countries[i];
+    document.getElementById('countryResult').textContent = currentCountry.flag + ' ' + currentCountry.name;
+    var copyBtn = document.getElementById('copyForCharlas');
+    copyBtn.style.display = 'inline-block';
+    copyBtn.classList.remove('copied');
+    copyBtn.textContent = '📋 Copiar para Charlas';
+    var q = encodeURIComponent('artículo sobre ' + currentCountry.name + ' en español');
+    var qv = encodeURIComponent(currentCountry.name + ' cultura video en español');
+    var links = document.getElementById('researchLinks');
+    links.innerHTML =
+      '<a class="link-btn article" target="_blank" rel="noopener" href="https://www.google.com/search?q=' + q + '">🔎 Buscar un artículo</a>' +
+      '<a class="link-btn video" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=' + qv + '">▶️ Buscar un video</a>';
+    document.getElementById('stage2').classList.add('unlocked');
+    document.getElementById('stage3').classList.add('unlocked');
+    document.getElementById('stage4').classList.add('unlocked');
+    document.getElementById('promptCard').style.display = 'none';
+    document.getElementById('questionResult').textContent = '';
+    addStamp(currentCountry);
+  });
+  document.getElementById('spinCountry').addEventListener('click', spinCountryFn);
+
+  document.getElementById('copyForCharlas').addEventListener('click', function() {
+    if (!currentCountry) return;
+    var text = 'País de hoy: ' + currentCountry.flag + ' ' + currentCountry.name;
+    var btn = document.getElementById('copyForCharlas');
+    function marked() { btn.classList.add('copied'); btn.textContent = '✓ Copiado'; }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(marked).catch(function(){
+        window.prompt('Copia este texto:', text);
+      });
+    } else {
+      window.prompt('Copia este texto:', text);
+    }
+  });
+
+  // --- Question wheel ---
+  var questionCanvas = document.getElementById('questionWheel');
+  drawWheel(questionCanvas, questions, ['#4a90d9','#f5c842','#e84545','#7fae6f','#b98ee8','#ff8c42']);
+  var spinQuestionFn = makeSpinner(questionCanvas, questions, function(i) {
+    var word = questions[i];
+    document.getElementById('questionResult').textContent = '¿' + word + '...?';
+    var promptCard = document.getElementById('promptCard');
+    promptCard.style.display = 'block';
+    promptCard.innerHTML = 'Con la palabra <b>' + word + '</b>, escriban una pregunta sobre <b>' +
+      (currentCountry ? currentCountry.flag + ' ' + currentCountry.name : 'el país') + '</b>.';
+  });
+  document.getElementById('spinQuestion').addEventListener('click', spinQuestionFn);
+
+  // --- Rank It ---
+  var rankListEl = document.getElementById('rankList');
+  var rankEntries = [];
+  function renderRank() {
+    if (rankEntries.length === 0) {
+      rankListEl.innerHTML = '<li class="rank-empty">Todavía no hay países en la lista — ¡agrega el primero!</li>';
+      return;
+    }
+    rankListEl.innerHTML = '';
+    rankEntries.forEach(function(entry) {
+      var li = document.createElement('li');
+      li.innerHTML = 'El país más <b>' + entry.adj + '</b> es <b>' + entry.country + '</b>';
+      rankListEl.appendChild(li);
+    });
+  }
+  document.getElementById('rankAdd').addEventListener('click', function() {
+    var adj = document.getElementById('rankAdjective').value.trim();
+    if (!adj || !currentCountry) return;
+    rankEntries.push({adj: adj, country: currentCountry.flag + ' ' + currentCountry.name});
+    document.getElementById('rankAdjective').value = '';
+    renderRank();
+  });
+  document.getElementById('rankAdjective').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') document.getElementById('rankAdd').click();
+  });
+
+  // --- Print Wall of Rankings ---
+  document.getElementById('printWallBtn').addEventListener('click', function() {
+    var list = document.getElementById('printRankList');
+    list.innerHTML = '';
+    if (rankEntries.length === 0) {
+      var li = document.createElement('li');
+      li.textContent = 'Todavía no hay entradas en Rank It.';
+      list.appendChild(li);
+    } else {
+      rankEntries.forEach(function(entry) {
+        var li = document.createElement('li');
+        li.textContent = 'El país más ' + entry.adj + ' es ' + entry.country;
+        list.appendChild(li);
+      });
+    }
+    var d = new Date();
+    document.getElementById('printDate').textContent = d.toLocaleDateString('es-ES', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+    window.print();
+  });
+
+  // --- New round ---
+  document.getElementById('newRound').addEventListener('click', function() {
+    document.getElementById('stage2').classList.remove('unlocked');
+    document.getElementById('stage3').classList.remove('unlocked');
+    document.getElementById('countryResult').textContent = '';
+    document.getElementById('questionResult').textContent = '';
+    document.getElementById('promptCard').style.display = 'none';
+    document.getElementById('researchLinks').innerHTML = '';
+    document.getElementById('copyForCharlas').style.display = 'none';
+    currentCountry = null;
+  });
+</script>
+</body>
+</html>
