@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Charlas de Calendario</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Comic Sans MS', 'Baloo 2', 'Trebuchet MS', sans-serif;
+    background: #2f3b30;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(255,255,255,0.03) 0%, transparent 6%),
+      radial-gradient(circle at 70% 60%, rgba(255,255,255,0.02) 0%, transparent 8%);
+    color: #fff;
+    padding: 24px;
+    min-height: 100vh;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; }
+  .title-card {
+    background: #fff6d6;
+    border-radius: 20px;
+    padding: 20px 28px;
+    text-align: center;
+    box-shadow: 0 6px 0 rgba(0,0,0,0.25);
+    margin-bottom: 20px;
+  }
+  .title-card h1 { color: #7a3d00; font-size: 30px; margin: 0 0 6px; }
+  .title-card p { color: #a15d00; margin: 0; font-size: 15px; }
+  .save-indicator { font-size: 12px; color: #4d7a4d; margin-top: 8px; opacity: 0; transition: opacity 0.3s; }
+  .save-indicator.show { opacity: 1; }
+  .nav { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 20px; }
+  .nav button {
+    border: none; border-radius: 999px; padding: 10px 18px; font-size: 14px; font-weight: bold;
+    cursor: pointer; box-shadow: 0 4px 0 rgba(0,0,0,0.25); transition: transform 0.1s;
+    font-family: inherit;
+  }
+  .nav button:active { transform: translateY(3px); box-shadow: none; }
+  .nav button.active { outline: 3px solid #fff; }
+  .station { display: none; }
+  .station.active { display: block; }
+  .card { border-radius: 18px; padding: 22px; box-shadow: 0 6px 0 rgba(0,0,0,0.25); margin-bottom: 16px; }
+  .card h2 { margin: 0 0 14px; font-size: 22px; }
+  .row { display: flex; gap: 14px; flex-wrap: wrap; }
+  .col { flex: 1; min-width: 220px; }
+  .green { background:#a8e0c9; color:#0e4d34; }
+  .pink { background:#f6b8b4; color:#6d1b12; }
+  .yellow { background:#fbe27a; color:#5c4400; }
+  .blue { background:#a9d3f0; color:#0b3d5c; }
+  .purple { background:#cdb9ec; color:#3c1e63; }
+  .orange { background:#f8c99a; color:#6d3a06; }
+  label { display:block; font-size:13px; font-weight:bold; margin-bottom:4px; opacity:0.8; }
+  input[type=text] {
+    width: 100%; border: none; border-radius: 10px; padding: 8px 10px; font-size: 15px;
+    margin-bottom: 10px; font-family: inherit;
+  }
+  select {
+    width: 100%; border: none; border-radius: 10px; padding: 8px 10px; font-size: 15px;
+    margin-bottom: 10px; font-family: inherit; background: #fff;
+  }
+  textarea {
+    width: 100%; border: none; border-radius: 10px; padding: 8px 10px; font-size: 14px;
+    margin-bottom: 10px; font-family: inherit; resize: vertical; min-height: 50px;
+  }
+  .challenge { font-size: 16px; line-height: 1.5; }
+  .weather-tabs, .mood-tabs { display:flex; gap:10px; flex-wrap: wrap; }
+  .mode-btn {
+    flex: 1; min-width: 150px; border: none; border-radius: 14px; padding: 16px; cursor: pointer;
+    font-family: inherit; text-align: left; font-size: 15px; box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+  }
+  .mode-btn strong { display:block; font-size: 17px; margin-bottom: 6px; }
+  .mode-btn.selected { outline: 3px solid #fff; }
+  .reveal {
+    margin-top: 14px; background: rgba(255,255,255,0.5); border-radius: 12px; padding: 14px;
+    font-size: 15px; display: none;
+  }
+  .reveal.show { display: block; }
+  .spin-btn, .action-btn {
+    margin-top: 10px; margin-right: 8px; border: none; border-radius: 999px; padding: 10px 18px;
+    background: #fff; color: #333; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+    font-family: inherit; font-size: 14px;
+  }
+  .fact-display {
+    background: rgba(255,255,255,0.55); border-radius: 14px; padding: 20px; margin-top: 14px;
+  }
+  .fact-display .fact-title { font-size: 19px; font-weight: bold; margin-bottom: 8px; }
+  .fact-display .fact-text { font-size: 16px; line-height: 1.6; }
+  .fact-counter { font-size: 13px; opacity: 0.75; margin-top: 10px; }
+  .add-fact-box { margin-top: 18px; padding-top: 14px; border-top: 2px dashed rgba(0,0,0,0.15); }
+  .add-fact-box summary { cursor: pointer; font-weight: bold; font-size: 14px; }
+  .footer-note { text-align: center; font-size: 12px; opacity: 0.6; margin-top: 20px; }
+  .edit-link { font-size: 13px; color: inherit; opacity: 0.75; text-decoration: underline; cursor: pointer; }
+  .edit-link:hover { opacity: 1; }
+  .loading-note { text-align: center; font-size: 13px; opacity: 0.7; padding: 10px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="title-card">
+    <h1>&iexcl;Charlas de Calendario!</h1>
+    <p>Nuestra rutina diaria y divertida para empezar la clase de espa&ntilde;ol</p>
+    <div class="save-indicator" id="saveIndicator">&#10003; Guardado</div>
+  </div>
+
+  <div class="nav">
+    <button class="nav-btn active" data-t="1" style="background:#a8e0c9;color:#0e4d34;">1. Fecha</button>
+    <button class="nav-btn" data-t="2" style="background:#a9d3f0;color:#0b3d5c;">2. Clima</button>
+    <button class="nav-btn" data-t="3" style="background:#f6b8b4;color:#6d1b12;">3. D&iacute;a mundial</button>
+    <button class="nav-btn" data-t="4" style="background:#fbe27a;color:#5c4400;">4. &iquest;C&oacute;mo te sientes?</button>
+    <button class="nav-btn" data-t="5" style="background:#cdb9ec;color:#3c1e63;">5. Cumplea&ntilde;os</button>
+    <button class="nav-btn" data-t="6" style="background:#f8c99a;color:#6d3a06;">6. Dato del d&iacute;a</button>
+  </div>
+
+  <div class="station active" id="station-1">
+    <div class="card green">
+      <h2>1. &iquest;Qu&eacute; d&iacute;a es hoy?</h2>
+      <label>Hoy es</label>
+      <input type="text" id="hoy" placeholder="lunes, 9 de julio">
+      <label>Ayer fue</label>
+      <input type="text" id="ayer" placeholder="domingo">
+      <label>Ma&ntilde;ana ser&aacute;</label>
+      <input type="text" id="manana" placeholder="martes">
+    </div>
+  </div>
+
+  <div class="station" id="station-2">
+    <div class="card blue">
+      <h2>2. &iquest;C&oacute;mo est&aacute; el clima afuera?</h2>
+      <div class="weather-tabs">
+        <button class="mode-btn yellow" data-weather="sol" onclick="showWeather('sol', this)"><strong>&#9728; Sol y calor</strong>Modo iguana</button>
+        <button class="mode-btn blue" data-weather="lluvia" onclick="showWeather('lluvia', this)"><strong>&#9729; Lluvia o viento</strong>Modo pato</button>
+        <button class="mode-btn purple" data-weather="frio" onclick="showWeather('frio', this)"><strong>&#10052; Mucho fr&iacute;o</strong>Modo pingu&iacute;no</button>
+      </div>
+      <div class="reveal" id="weather-reveal"></div>
+      <div style="margin-top:8px;">
+        <a href="#" class="edit-link" onclick="toggleWeatherEdit(event)">&#9998; Editar la adivinanza de hoy</a>
+      </div>
+      <div id="weather-edit-box" style="display:none; margin-top:10px;">
+        <label>Nueva adivinanza/pista para <span id="weather-edit-label"></span></label>
+        <textarea id="weather-edit-text" placeholder="Escribe una adivinanza o pista de recreo..."></textarea>
+        <button class="action-btn" onclick="saveWeatherRiddle()">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="station" id="station-3">
+    <div class="card pink">
+      <h2>3. &iexcl;Hoy es el d&iacute;a mundial de...!</h2>
+      <div class="row">
+        <div class="col">
+          <label>&iquest;Qu&eacute; celebramos hoy?</label>
+          <input type="text" id="mundial" placeholder="el d&iacute;a de la pizza">
+        </div>
+        <div class="col">
+          <div class="card yellow" style="margin-bottom:0;">
+            <strong>&iexcl;El gancho creativo de hoy!</strong>
+            <label style="margin-top:8px;">Escribe la misi&oacute;n especial de hoy</label>
+            <textarea id="ganchoCreativo" placeholder="Ej: dibuja una porci&oacute;n gigante en el aire..."></textarea>
+          </div>
+        </div>
+      </div>
+      <div id="calFactBox" class="fact-display" style="display:none; margin-top:14px;">
+        <div class="fact-title" id="calFactTitle"></div>
+        <div class="fact-text" id="calFactText"></div>
+      </div>
+      <div style="margin-top:10px;">
+        <a href="#" class="edit-link" id="calRefreshLink" onclick="applyTodayFromCalendar(true); return false;" style="display:none;">&#8635; Volver a usar el d&iacute;a de hoy del calendario</a>
+      </div>
+      <div class="add-fact-box" style="margin-top:16px;">
+        <a href="#" class="edit-link" onclick="toggleCalImport(event)">&#128229; Importar calendario de 365 d&iacute;as (una sola vez)</a>
+        <div id="calImportBox" style="display:none; margin-top:10px;">
+          <label>Selecciona el archivo calendario_365_dias.json</label>
+          <input type="file" id="calImportFile" accept="application/json,.json" onchange="handleCalendarImport(event)">
+          <div id="calImportStatus" style="font-size:13px; margin-top:6px; opacity:0.8;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="station" id="station-4">
+    <div class="card yellow">
+      <h2>4. &iquest;C&oacute;mo te sientes hoy?</h2>
+      <div class="weather-tabs">
+        <button class="mode-btn pink" data-mood="cool" onclick="showMood('cool', this)"><strong>&#128526; Super-cool</strong>Energ&iacute;a al 100%</button>
+        <button class="mode-btn purple" data-mood="bateria" onclick="showMood('bateria', this)"><strong>&#128564; Bater&iacute;a baja</strong>Sue&ntilde;o todav&iacute;a</button>
+        <button class="mode-btn green" data-mood="fiesta" onclick="showMood('fiesta', this)"><strong>&#127881; Modo fiesta</strong>&iexcl;No puedo parar!</button>
+      </div>
+      <div class="reveal" id="mood-reveal"></div>
+    </div>
+  </div>
+
+  <div class="station" id="station-5">
+    <div class="card purple">
+      <h2>5. &iexcl;Cumplea&ntilde;os de una estrella!</h2>
+      <div class="row">
+        <div class="col">
+          <label>Hoy celebramos a</label>
+          <input type="text" id="nombre" placeholder="[ nombre ]">
+        </div>
+        <div class="col">
+          <div class="card green" style="margin-bottom:0;">
+            <strong>&iexcl;Doble deseo y gran misi&oacute;n!</strong>
+            <p class="challenge">Toda la clase canta "Cumplea&ntilde;os feliz" al estilo &oacute;pera dram&aacute;tica o mariachi veloz.</p>
+          </div>
+        </div>
+      </div>
+      <div class="card orange" style="margin-top:14px;">
+        <strong>&#128290; Bono de matem&aacute;ticas: &iquest;cu&aacute;ntos d&iacute;as ha vivido?</strong>
+        <label style="margin-top:8px;">Fecha de nacimiento</label>
+        <input type="date" id="fechaNacimiento" onchange="calcDaysAlive()">
+        <div class="fact-display" id="daysAliveResult" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="station" id="station-6">
+    <div class="card orange">
+      <h2>6. &iexcl;Dato del d&iacute;a!</h2>
+      <label>Tema actual</label>
+      <select id="bankSelect" onchange="onBankChange()"></select>
+      <div style="margin:6px 0 4px;">
+        <a href="#" class="edit-link" onclick="toggleRenameBank(event)">&#9998; Cambiar el nombre de este tema</a>
+        <span style="margin:0 6px;">&middot;</span>
+        <a href="#" class="edit-link" onclick="deleteBank(event)">&#128465; Borrar este tema</a>
+      </div>
+      <div id="rename-bank-box" style="display:none; margin-bottom:10px;">
+        <input type="text" id="renameBankInput" placeholder="Nuevo nombre del tema">
+        <button class="action-btn" onclick="saveBankRename()">Guardar nombre</button>
+      </div>
+
+      <div class="fact-display" id="factDisplay">
+        <div class="fact-title" id="factTitle">Cargando...</div>
+        <div class="fact-text" id="factText"></div>
+      </div>
+      <div class="fact-counter" id="factCounter"></div>
+
+      <div style="margin-top:12px;">
+        <button class="action-btn" onclick="prevFact()">&#9664; Anterior</button>
+        <button class="action-btn" onclick="nextFact()">Siguiente &#9654;</button>
+      </div>
+
+      <details class="add-fact-box">
+        <summary>&#10133; A&ntilde;adir un nuevo dato a este tema</summary>
+        <div style="margin-top:10px;">
+          <label>T&iacute;tulo corto (ej: "La pi&ntilde;ata")</label>
+          <input type="text" id="newFactTitle" placeholder="T&iacute;tulo">
+          <label>Dato / &iquest;Sab&iacute;as que...?</label>
+          <textarea id="newFactText" placeholder="Escribe el dato aqu&iacute;..."></textarea>
+          <button class="action-btn" onclick="addFact()">Guardar dato</button>
+        </div>
+      </details>
+
+      <details class="add-fact-box">
+        <summary>&#127991;&#65039; Crear un tema nuevo</summary>
+        <div style="margin-top:10px;">
+          <label>Nombre del tema nuevo (ej: "D&iacute;a de los Muertos")</label>
+          <input type="text" id="newBankName" placeholder="Nombre del tema">
+          <button class="action-btn" onclick="createBank()">Crear tema</button>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <p class="footer-note">Charlas de Calendario &middot; rutina diaria de espa&ntilde;ol</p>
+</div>
+
+<script>
+  // ---------- Default fact banks (starter content, teacher can expand) ----------
+  var DEFAULT_BANKS = {
+    herencia_hispana: {
+      name: "Mes de la Herencia Hispana",
+      items: [
+        { title: "La maraca", text: "Este instrumento tiene miles de a\u00f1os. Los pueblos ind\u00edgenas, como los ta\u00ednos, lo hac\u00edan con el fruto seco del \u00e1rbol hig\u00fcero. No era solo m\u00fasica: los sanadores lo usaban en ceremonias para curar a los enfermos." },
+        { title: "La arepa", text: "Este pan de ma\u00edz existe desde hace m\u00e1s de tres mil a\u00f1os en Colombia y Venezuela \u2014 mucho antes de que llegaran los primeros barcos europeos." },
+        { title: "El huipil", text: "Es la blusa tradicional tejida a mano por mujeres mayas de Guatemala. Cada dise\u00f1o cuenta una historia: un zigzag puede representar una monta\u00f1a, y una mariposa representa la libertad." },
+        { title: "Jos\u00e9 Mart\u00ed", text: "Este escritor cubano dedic\u00f3 una revista entera \u2014 \"La Edad de Oro\" \u2014 solo para que los ni\u00f1os de Am\u00e9rica Latina tuvieran historias hermosas escritas especialmente para ellos." },
+        { title: "La quincea\u00f1era", text: "Esta celebraci\u00f3n de los 15 a\u00f1os mezcla tradiciones ind\u00edgenas antiguas (aztecas y mayas) con la misa cat\u00f3lica que trajeron los espa\u00f1oles \u2014 una combinaci\u00f3n de dos mundos." },
+        { title: "La pi\u00f1ata", text: "\u00a1La pi\u00f1ata no naci\u00f3 en M\u00e9xico! Viene de China, viaj\u00f3 a Italia con Marco Polo, luego a Espa\u00f1a, y finalmente lleg\u00f3 a Am\u00e9rica con los misioneros espa\u00f1oles." }
+      ]
+    },
+    mis_datos: { name: "Mis datos (personalizado)", items: [] }
+  };
+
+  var banks = {};
+  var activeBank = "herencia_hispana";
+  var factIndex = {};
+  var todayKey = "day:" + new Date().toISOString().slice(0,10);
+  var todayMMDD = new Date().toISOString().slice(5,10);
+  var diasEspeciales = null; // loaded from imported calendario_365_dias.json
+
+  // ---------- Storage abstraction: uses Claude's window.storage when available,
+  // falls back to browser localStorage when hosted standalone (e.g. Netlify) ----------
+  var hasClaudeStorage = (typeof window.storage !== 'undefined' && window.storage !== null);
+  var store = {
+    get: async function(key) {
+      if (hasClaudeStorage) {
+        try { return await window.storage.get(key); }
+        catch (e) { return null; }
+      } else {
+        var v = localStorage.getItem('charlas_' + key);
+        return v !== null ? { key: key, value: v } : null;
+      }
+    },
+    set: async function(key, value) {
+      if (hasClaudeStorage) {
+        try { return await window.storage.set(key, value); }
+        catch (e) { console.error('Storage error', e); return null; }
+      } else {
+        try { localStorage.setItem('charlas_' + key, value); return { key: key, value: value }; }
+        catch (e) { console.error('Storage error', e); return null; }
+      }
+    }
+  };
+
+  // ---------- Storage helpers ----------
+  async function loadAll() {
+    try {
+      var res = await store.get("banks");
+      banks = res && res.value ? JSON.parse(res.value) : JSON.parse(JSON.stringify(DEFAULT_BANKS));
+    } catch (e) {
+      banks = JSON.parse(JSON.stringify(DEFAULT_BANKS));
+    }
+    try {
+      var ab = await store.get("activeBank");
+      if (ab && ab.value) activeBank = ab.value;
+    } catch (e) {}
+    try {
+      var fi = await store.get("factIndex");
+      factIndex = fi && fi.value ? JSON.parse(fi.value) : {};
+    } catch (e) { factIndex = {}; }
+
+    populateBankSelect();
+    renderFact();
+
+    // load imported 365-day calendar, if any
+    try {
+      var cal = await store.get("diasEspeciales");
+      if (cal && cal.value) diasEspeciales = JSON.parse(cal.value);
+    } catch (e) { diasEspeciales = null; }
+
+    // restore today's entries
+    var restoredMundial = false;
+    try {
+      var day = await store.get(todayKey);
+      if (day && day.value) {
+        var d = JSON.parse(day.value);
+        if (d.hoy) document.getElementById('hoy').value = d.hoy;
+        if (d.ayer) document.getElementById('ayer').value = d.ayer;
+        if (d.manana) document.getElementById('manana').value = d.manana;
+        if (d.mundial) { document.getElementById('mundial').value = d.mundial; restoredMundial = true; }
+        if (d.ganchoCreativo) document.getElementById('ganchoCreativo').value = d.ganchoCreativo;
+        if (d.nombre) document.getElementById('nombre').value = d.nombre;
+        if (d.fechaNacimiento) { document.getElementById('fechaNacimiento').value = d.fechaNacimiento; calcDaysAlive(); }
+        if (d.weather) { showWeather(d.weather, document.querySelector('[data-weather="'+d.weather+'"]')); }
+        if (d.mood) { showMood(d.mood, document.querySelector('[data-mood="'+d.mood+'"]')); }
+      }
+    } catch (e) { /* no entry yet for today, that's fine */ }
+
+    // auto-fill Station 3 from the imported calendar if the teacher hasn't typed anything for today yet
+    if (diasEspeciales && !restoredMundial) {
+      applyTodayFromCalendar(false);
+    } else if (diasEspeciales && diasEspeciales[todayMMDD]) {
+      document.getElementById('calRefreshLink').style.display = 'inline';
+      showCalFactBox(diasEspeciales[todayMMDD]);
+    }
+
+    // load saved weather riddles (evergreen, not tied to a specific day)
+    try {
+      var rw = await store.get("weatherRiddles");
+      if (rw && rw.value) weatherRiddles = JSON.parse(rw.value);
+    } catch (e) {}
+
+    attachAutoSave();
+  }
+
+  async function saveBanks() {
+    await store.set("banks", JSON.stringify(banks));
+  }
+  async function saveActiveBank() {
+    await store.set("activeBank", activeBank);
+  }
+  async function saveFactIndex() {
+    await store.set("factIndex", JSON.stringify(factIndex));
+  }
+  async function saveDay() {
+    var d = {
+      hoy: document.getElementById('hoy').value,
+      ayer: document.getElementById('ayer').value,
+      manana: document.getElementById('manana').value,
+      mundial: document.getElementById('mundial').value,
+      ganchoCreativo: document.getElementById('ganchoCreativo').value,
+      nombre: document.getElementById('nombre').value,
+      fechaNacimiento: document.getElementById('fechaNacimiento').value,
+      weather: currentWeather,
+      mood: currentMood
+    };
+    await store.set(todayKey, JSON.stringify(d));
+    flashSaved();
+  }
+
+  function flashSaved() {
+    var el = document.getElementById('saveIndicator');
+    el.classList.add('show');
+    setTimeout(function(){ el.classList.remove('show'); }, 1200);
+  }
+
+  function attachAutoSave() {
+    ['hoy','ayer','manana','mundial','ganchoCreativo','nombre'].forEach(function(id){
+      document.getElementById(id).addEventListener('input', debounce(saveDay, 500));
+    });
+  }
+  function debounce(fn, ms) {
+    var t;
+    return function() { clearTimeout(t); t = setTimeout(fn, ms); };
+  }
+
+  // ---------- Station 2 & 4 ----------
+  var currentWeather = null, currentMood = null;
+  var weatherRiddles = {
+    sol: "\u00a1Usa tus lentes de sol invisibles y busca un pedacito de sombra en el sal\u00f3n!",
+    lluvia: "\u00a1Imagina que tienes botas impermeables y salta en los charcos con mucho estilo!",
+    frio: "\u00a1Abr\u00e1zate fuerte y tiembla un poco mientras sue\u00f1as con chocolate caliente!"
+  };
+  var weatherLabels = { sol: "Sol y calor", lluvia: "Lluvia o viento", frio: "Mucho fr\u00edo" };
+
+  function showWeather(key, btn) {
+    currentWeather = key;
+    var el = document.getElementById('weather-reveal');
+    el.innerHTML = weatherRiddles[key];
+    el.classList.add('show');
+    document.querySelectorAll('#station-2 .mode-btn').forEach(function(b){ b.classList.remove('selected'); });
+    if (btn) btn.classList.add('selected');
+    document.getElementById('weather-edit-box').style.display = 'none';
+    saveDay();
+  }
+
+  function toggleWeatherEdit(e) {
+    e.preventDefault();
+    if (!currentWeather) { alert('Primero elige un tipo de clima arriba.'); return; }
+    var box = document.getElementById('weather-edit-box');
+    var isOpen = box.style.display !== 'none';
+    box.style.display = isOpen ? 'none' : 'block';
+    if (!isOpen) {
+      document.getElementById('weather-edit-label').textContent = weatherLabels[currentWeather];
+      document.getElementById('weather-edit-text').value = weatherRiddles[currentWeather];
+    }
+  }
+
+  async function saveWeatherRiddle() {
+    if (!currentWeather) return;
+    weatherRiddles[currentWeather] = document.getElementById('weather-edit-text').value;
+    await store.set("weatherRiddles", JSON.stringify(weatherRiddles));
+    document.getElementById('weather-reveal').innerHTML = weatherRiddles[currentWeather];
+    document.getElementById('weather-edit-box').style.display = 'none';
+    flashSaved();
+  }
+
+  var moodText = {
+    cool: "\u00a1Listo para ganar puntos de participaci\u00f3n!",
+    bateria: "Tengo sue\u00f1o todav\u00eda, pero toda la actitud positiva de viernes.",
+    fiesta: "\u00a1No puedo parar de sonre\u00edr! Pregunta por qu\u00e9 estoy tan contento."
+  };
+  function showMood(key, btn) {
+    currentMood = key;
+    var el = document.getElementById('mood-reveal');
+    el.innerHTML = moodText[key];
+    el.classList.add('show');
+    document.querySelectorAll('#station-4 .mode-btn').forEach(function(b){ b.classList.remove('selected'); });
+    if (btn) btn.classList.add('selected');
+    saveDay();
+  }
+
+  // ---------- Station 5: d\u00edas vividos ----------
+  function calcDaysAlive() {
+    var val = document.getElementById('fechaNacimiento').value;
+    var resultBox = document.getElementById('daysAliveResult');
+    if (!val) { resultBox.style.display = 'none'; saveDay(); return; }
+    var birth = new Date(val + 'T00:00:00');
+    var today = new Date();
+    today.setHours(0,0,0,0);
+    var msPerDay = 1000 * 60 * 60 * 24;
+    var totalDays = Math.floor((today - birth) / msPerDay);
+    if (totalDays < 0) {
+      resultBox.style.display = 'block';
+      resultBox.innerHTML = '<div class="fact-title">Hmm...</div><div class="fact-text">Esa fecha es en el futuro. Revisa la fecha de nacimiento.</div>';
+      saveDay();
+      return;
+    }
+    var years = Math.floor(totalDays / 365.25);
+    var weeks = Math.floor(totalDays / 7);
+    resultBox.style.display = 'block';
+    resultBox.innerHTML =
+      '<div class="fact-title">\ud83e\uddee La ecuaci\u00f3n de hoy</div>' +
+      '<div class="fact-text">Hoy \u2212 fecha de nacimiento = <strong>' + totalDays + ' d\u00edas</strong><br>' +
+      'Eso es aproximadamente ' + years + ' a\u00f1os, o ' + weeks + ' semanas completas. \u00a1Haz la cuenta con la clase!</div>';
+    saveDay();
+  }
+
+  // ---------- Station 6: Dato del d\u00eda ----------
+  function populateBankSelect() {
+    var sel = document.getElementById('bankSelect');
+    sel.innerHTML = '';
+    Object.keys(banks).forEach(function(key) {
+      var opt = document.createElement('option');
+      opt.value = key;
+      opt.textContent = banks[key].name;
+      if (key === activeBank) opt.selected = true;
+      sel.appendChild(opt);
+    });
+  }
+
+  function onBankChange() {
+    activeBank = document.getElementById('bankSelect').value;
+    saveActiveBank();
+    document.getElementById('rename-bank-box').style.display = 'none';
+    renderFact();
+  }
+
+  function toggleRenameBank(e) {
+    e.preventDefault();
+    var box = document.getElementById('rename-bank-box');
+    var isOpen = box.style.display !== 'none';
+    box.style.display = isOpen ? 'none' : 'block';
+    if (!isOpen) document.getElementById('renameBankInput').value = banks[activeBank].name;
+  }
+
+  async function saveBankRename() {
+    var newName = document.getElementById('renameBankInput').value.trim();
+    if (!newName) { alert('Escribe un nombre.'); return; }
+    banks[activeBank].name = newName;
+    await saveBanks();
+    populateBankSelect();
+    document.getElementById('rename-bank-box').style.display = 'none';
+    flashSaved();
+  }
+
+  async function deleteBank(e) {
+    e.preventDefault();
+    var keys = Object.keys(banks);
+    if (keys.length <= 1) { alert('No puedes borrar el \u00faltimo tema \u2014 crea uno nuevo primero.'); return; }
+    if (!confirm('\u00bfBorrar el tema "' + banks[activeBank].name + '" y todos sus datos? Esta acci\u00f3n no se puede deshacer.')) return;
+    delete banks[activeBank];
+    delete factIndex[activeBank];
+    activeBank = Object.keys(banks)[0];
+    await saveBanks();
+    await saveActiveBank();
+    await saveFactIndex();
+    populateBankSelect();
+    renderFact();
+    flashSaved();
+  }
+
+  function renderFact() {
+    var bank = banks[activeBank];
+    if (!bank || bank.items.length === 0) {
+      document.getElementById('factTitle').textContent = "(Este tema todav\u00eda no tiene datos)";
+      document.getElementById('factText').textContent = "A\u00f1ade el primer dato abajo.";
+      document.getElementById('factCounter').textContent = '';
+      return;
+    }
+    var idx = factIndex[activeBank] || 0;
+    idx = ((idx % bank.items.length) + bank.items.length) % bank.items.length;
+    factIndex[activeBank] = idx;
+    var item = bank.items[idx];
+    document.getElementById('factTitle').textContent = item.title;
+    document.getElementById('factText').textContent = item.text;
+    document.getElementById('factCounter').textContent = (idx + 1) + ' de ' + bank.items.length;
+  }
+
+  function nextFact() {
+    var bank = banks[activeBank];
+    if (!bank || bank.items.length === 0) return;
+    factIndex[activeBank] = ((factIndex[activeBank] || 0) + 1) % bank.items.length;
+    saveFactIndex();
+    renderFact();
+  }
+  function prevFact() {
+    var bank = banks[activeBank];
+    if (!bank || bank.items.length === 0) return;
+    factIndex[activeBank] = ((factIndex[activeBank] || 0) - 1 + bank.items.length) % bank.items.length;
+    saveFactIndex();
+    renderFact();
+  }
+
+  function addFact() {
+    var title = document.getElementById('newFactTitle').value.trim();
+    var text = document.getElementById('newFactText').value.trim();
+    if (!title || !text) { alert('Escribe un t\u00edtulo y un dato antes de guardar.'); return; }
+    banks[activeBank].items.push({ title: title, text: text });
+    saveBanks();
+    document.getElementById('newFactTitle').value = '';
+    document.getElementById('newFactText').value = '';
+    factIndex[activeBank] = banks[activeBank].items.length - 1;
+    saveFactIndex();
+    renderFact();
+    flashSaved();
+  }
+
+  function createBank() {
+    var name = document.getElementById('newBankName').value.trim();
+    if (!name) { alert('Escribe un nombre para el tema nuevo.'); return; }
+    var key = 'tema_' + Date.now();
+    banks[key] = { name: name, items: [] };
+    saveBanks();
+    activeBank = key;
+    saveActiveBank();
+    document.getElementById('newBankName').value = '';
+    populateBankSelect();
+    factIndex[activeBank] = 0;
+    renderFact();
+    flashSaved();
+  }
+
+  // ---------- Station 3: calendario de 365 d\u00edas ----------
+  function toggleCalImport(e) {
+    e.preventDefault();
+    var box = document.getElementById('calImportBox');
+    box.style.display = (box.style.display === 'none') ? 'block' : 'none';
+  }
+
+  async function handleCalendarImport(event) {
+    var file = event.target.files[0];
+    var status = document.getElementById('calImportStatus');
+    if (!file) return;
+    try {
+      var text = await file.text();
+      var parsed = JSON.parse(text);
+      var count = Object.keys(parsed).length;
+      if (!confirm('Se encontraron ' + count + ' d\u00edas en este archivo. \u00bfImportar y guardar? Esto reemplazar\u00e1 cualquier calendario importado antes.')) {
+        status.textContent = '';
+        return;
+      }
+      diasEspeciales = parsed;
+      await store.set("diasEspeciales", JSON.stringify(diasEspeciales));
+      status.textContent = '\u2713 \u00a1' + count + ' d\u00edas importados y guardados!';
+      applyTodayFromCalendar(true);
+      flashSaved();
+    } catch (e) {
+      status.textContent = 'No se pudo leer el archivo. Verifica que sea el JSON correcto.';
+    }
+  }
+
+  function showCalFactBox(entry) {
+    var box = document.getElementById('calFactBox');
+    if (!entry) { box.style.display = 'none'; return; }
+    document.getElementById('calFactTitle').textContent = entry.categoria + (entry.pais ? ' \u00b7 ' + entry.pais : '');
+    document.getElementById('calFactText').innerHTML =
+      '<strong>' + entry.descripcion + '</strong><br>' +
+      '<em>Cognados:</em> ' + entry.cognados + '<br>' +
+      '<em>Vocabulario:</em> ' + entry.vocab + '<br>' +
+      '<em>Actividad sugerida:</em> ' + entry.actividad;
+    box.style.display = 'block';
+  }
+
+  function applyTodayFromCalendar(force) {
+    if (!diasEspeciales) return;
+    var entry = diasEspeciales[todayMMDD];
+    if (!entry) return;
+    if (force || !document.getElementById('mundial').value) {
+      document.getElementById('mundial').value = entry.nombre;
+      document.getElementById('ganchoCreativo').value = entry.gancho;
+      showCalFactBox(entry);
+      document.getElementById('calRefreshLink').style.display = 'inline';
+      saveDay();
+    }
+  }
+
+  // ---------- Nav ----------
+  document.querySelectorAll('.nav-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
+      document.querySelectorAll('.station').forEach(function(s){ s.classList.remove('active'); });
+      btn.classList.add('active');
+      document.getElementById('station-' + btn.dataset.t).classList.add('active');
+    });
+  });
+
+  loadAll();
+</script>
+</body>
+</html>
