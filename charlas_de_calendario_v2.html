@@ -160,6 +160,21 @@
           </div>
         </div>
       </div>
+      <div id="calFactBox" class="fact-display" style="display:none; margin-top:14px;">
+        <div class="fact-title" id="calFactTitle"></div>
+        <div class="fact-text" id="calFactText"></div>
+      </div>
+      <div style="margin-top:10px;">
+        <a href="#" class="edit-link" id="calRefreshLink" onclick="applyTodayFromCalendar(true); return false;" style="display:none;">&#8635; Volver a usar el d&iacute;a de hoy del calendario</a>
+      </div>
+      <div class="add-fact-box" style="margin-top:16px;">
+        <a href="#" class="edit-link" onclick="toggleCalImport(event)">&#128229; Importar calendario de 365 d&iacute;as (una sola vez)</a>
+        <div id="calImportBox" style="display:none; margin-top:10px;">
+          <label>Selecciona el archivo calendario_365_dias.json</label>
+          <input type="file" id="calImportFile" accept="application/json,.json" onchange="handleCalendarImport(event)">
+          <div id="calImportStatus" style="font-size:13px; margin-top:6px; opacity:0.8;"></div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -271,6 +286,8 @@
   var activeBank = "herencia_hispana";
   var factIndex = {};
   var todayKey = "day:" + new Date().toISOString().slice(0,10);
+  var todayMMDD = new Date().toISOString().slice(5,10);
+  var diasEspeciales = null; // loaded from imported calendario_365_dias.json
 
   // ---------- Storage abstraction: uses Claude's window.storage when available,
   // falls back to browser localStorage when hosted standalone (e.g. Netlify) ----------
@@ -316,7 +333,14 @@
     populateBankSelect();
     renderFact();
 
+    // load imported 365-day calendar, if any
+    try {
+      var cal = await store.get("diasEspeciales");
+      if (cal && cal.value) diasEspeciales = JSON.parse(cal.value);
+    } catch (e) { diasEspeciales = null; }
+
     // restore today's entries
+    var restoredMundial = false;
     try {
       var day = await store.get(todayKey);
       if (day && day.value) {
@@ -324,7 +348,7 @@
         if (d.hoy) document.getElementById('hoy').value = d.hoy;
         if (d.ayer) document.getElementById('ayer').value = d.ayer;
         if (d.manana) document.getElementById('manana').value = d.manana;
-        if (d.mundial) document.getElementById('mundial').value = d.mundial;
+        if (d.mundial) { document.getElementById('mundial').value = d.mundial; restoredMundial = true; }
         if (d.ganchoCreativo) document.getElementById('ganchoCreativo').value = d.ganchoCreativo;
         if (d.nombre) document.getElementById('nombre').value = d.nombre;
         if (d.fechaNacimiento) { document.getElementById('fechaNacimiento').value = d.fechaNacimiento; calcDaysAlive(); }
@@ -332,6 +356,14 @@
         if (d.mood) { showMood(d.mood, document.querySelector('[data-mood="'+d.mood+'"]')); }
       }
     } catch (e) { /* no entry yet for today, that's fine */ }
+
+    // auto-fill Station 3 from the imported calendar if the teacher hasn't typed anything for today yet
+    if (diasEspeciales && !restoredMundial) {
+      applyTodayFromCalendar(false);
+    } else if (diasEspeciales && diasEspeciales[todayMMDD]) {
+      document.getElementById('calRefreshLink').style.display = 'inline';
+      showCalFactBox(diasEspeciales[todayMMDD]);
+    }
 
     // load saved weather riddles (evergreen, not tied to a specific day)
     try {
@@ -578,6 +610,60 @@
     factIndex[activeBank] = 0;
     renderFact();
     flashSaved();
+  }
+
+  // ---------- Station 3: calendario de 365 d\u00edas ----------
+  function toggleCalImport(e) {
+    e.preventDefault();
+    var box = document.getElementById('calImportBox');
+    box.style.display = (box.style.display === 'none') ? 'block' : 'none';
+  }
+
+  async function handleCalendarImport(event) {
+    var file = event.target.files[0];
+    var status = document.getElementById('calImportStatus');
+    if (!file) return;
+    try {
+      var text = await file.text();
+      var parsed = JSON.parse(text);
+      var count = Object.keys(parsed).length;
+      if (!confirm('Se encontraron ' + count + ' d\u00edas en este archivo. \u00bfImportar y guardar? Esto reemplazar\u00e1 cualquier calendario importado antes.')) {
+        status.textContent = '';
+        return;
+      }
+      diasEspeciales = parsed;
+      await store.set("diasEspeciales", JSON.stringify(diasEspeciales));
+      status.textContent = '\u2713 \u00a1' + count + ' d\u00edas importados y guardados!';
+      applyTodayFromCalendar(true);
+      flashSaved();
+    } catch (e) {
+      status.textContent = 'No se pudo leer el archivo. Verifica que sea el JSON correcto.';
+    }
+  }
+
+  function showCalFactBox(entry) {
+    var box = document.getElementById('calFactBox');
+    if (!entry) { box.style.display = 'none'; return; }
+    document.getElementById('calFactTitle').textContent = entry.categoria + (entry.pais ? ' \u00b7 ' + entry.pais : '');
+    document.getElementById('calFactText').innerHTML =
+      '<strong>' + entry.descripcion + '</strong><br>' +
+      '<em>Cognados:</em> ' + entry.cognados + '<br>' +
+      '<em>Vocabulario:</em> ' + entry.vocab + '<br>' +
+      '<em>Actividad sugerida:</em> ' + entry.actividad;
+    box.style.display = 'block';
+  }
+
+  function applyTodayFromCalendar(force) {
+    if (!diasEspeciales) return;
+    var entry = diasEspeciales[todayMMDD];
+    if (!entry) return;
+    if (force || !document.getElementById('mundial').value) {
+      document.getElementById('mundial').value = entry.nombre;
+      document.getElementById('ganchoCreativo').value = entry.gancho;
+      showCalFactBox(entry);
+      document.getElementById('calRefreshLink').style.display = 'inline';
+      saveDay();
+    }
   }
 
   // ---------- Nav ----------
