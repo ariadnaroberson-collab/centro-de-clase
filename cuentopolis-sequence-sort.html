@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>En Orden — Cuentopolis</title>
+<style>
+  :root{
+    --navy:#0B2545; --gold:#C9A961; --parchment:#F6EFE0; --parchment-dark:#EDE2C8;
+    --forest:#2F6B4F; --purple:#5B3A82; --coral:#C4544A; --mint:#3F8F63;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; min-height:100vh; background:var(--navy);
+    background-image: radial-gradient(circle at 20% 20%, rgba(201,169,97,.08), transparent 40%),
+                       radial-gradient(circle at 80% 80%, rgba(201,169,97,.06), transparent 40%);
+    font-family:Georgia, 'Times New Roman', serif; color:var(--parchment);
+    display:flex; flex-direction:column; align-items:center; padding:24px;
+  }
+  .badge{position:fixed; bottom:16px; right:18px; width:64px; height:64px; border-radius:50%;
+    border:2px solid var(--gold); display:flex; align-items:center; justify-content:center;
+    font-size:.62rem; text-align:center; color:var(--gold); letter-spacing:.5px;
+    background:var(--navy); line-height:1.1; padding:4px;}
+  h1{font-size:2.1rem; margin:6px 0 2px; text-align:center;}
+  .sub{font-style:italic; color:var(--gold); font-size:.95rem; margin-bottom:14px; text-align:center;}
+  .scorebar{font-size:1rem; margin-bottom:14px;}
+  .card{background:var(--parchment); color:var(--navy); border:3px double var(--gold); border-radius:6px;
+    padding:26px; max-width:640px; width:100%; box-shadow:0 10px 30px rgba(0,0,0,.4);}
+  .prompt{font-size:1.25rem; margin-bottom:18px; text-align:center;}
+  .step{background:var(--navy); color:var(--parchment); border:1px solid var(--gold); border-radius:6px; padding:14px 16px;
+    margin-bottom:10px; display:flex; align-items:center; gap:12px; font-size:1.02rem; font-weight:bold;}
+  .step.correct{background:var(--mint); border-color:var(--mint);}
+  .step.wrong{background:var(--coral); border-color:var(--coral);}
+  .num{background:var(--gold); color:var(--navy); border-radius:50%; width:28px; height:28px;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .txt{flex:1;}
+  .arrows{display:flex; flex-direction:column; gap:2px;}
+  .arrows button{background:var(--parchment); color:var(--navy); border:1px solid var(--gold);
+    border-radius:5px; width:28px; height:24px; cursor:pointer; font-size:.8rem;}
+  .actions{text-align:center; margin-top:18px;}
+  .btn{background:var(--gold); color:var(--navy); border:none; border-radius:6px;
+    padding:12px 26px; font-size:1.05rem; font-weight:bold; cursor:pointer; margin:0 6px; font-family:Georgia,serif;}
+  .btn.outline{background:var(--navy); color:var(--parchment); border:1px solid var(--gold);}
+  .end{display:none; text-align:center;}
+  .end h2{font-size:2rem;}
+  .unitBtn{display:block; width:100%; text-align:left; background:var(--navy); color:var(--parchment);
+    border:1px solid var(--gold); border-radius:6px; padding:16px 18px; margin-bottom:12px; font-size:1.1rem;
+    font-weight:bold; cursor:pointer; font-family:Georgia,serif;}
+  .unitBtn small{display:block; font-weight:normal; font-style:italic; font-size:.8rem; margin-top:4px; opacity:.8;}
+</style>
+</head>
+<body>
+  <h1>🔢 En Orden</h1>
+  <div class="sub">Repaso de Dominio — Ordena los pasos correctamente</div>
+
+  <div class="card" id="pickerCard">
+    <p style="font-size:1.2rem; margin-bottom:16px;">Elige una unidad para practicar:</p>
+    <div id="unitList"></div>
+  </div>
+
+  <div class="scorebar" id="scorebar" style="display:none;">Serie <span id="setNum">1</span> / <span id="setTotal"></span> &nbsp;|&nbsp; Puntos: <span id="score">0</span></div>
+
+  <div class="card" id="gameCard" style="display:none;">
+    <div class="prompt" id="prompt"></div>
+    <div id="steps"></div>
+    <div class="actions">
+      <button class="btn" id="checkBtn">Verificar Orden</button>
+      <button class="btn" id="nextBtn" style="display:none;">Siguiente Serie →</button>
+    </div>
+  </div>
+
+  <div class="card end" id="endCard">
+    <h2>🎉 ¡Completado!</h2>
+    <p id="finalScore"></p>
+    <button class="btn" id="restartBtn">Jugar de Nuevo</button>
+    <button class="btn outline" id="switchBtn">Elegir Otra Unidad</button>
+  </div>
+
+  <div class="badge">CUENTO<br>POLIS</div>
+
+<script>
+/* =========================================================
+   AÑADIR UNA NUEVA UNIDAD: copia un bloque dentro de `units`.
+   El enlace de este juego NUNCA cambia.
+   DEMO content below — replace with a real sequence (story events,
+   a process from a CI lesson, etc.) from an actual unit.
+   ========================================================= */
+const CONFIG = {
+  units: {
+    "demo-unit": {
+      label: "DEMO — reemplazar con contenido real de una unidad",
+      sets: [
+        { prompt: "Ordena estos eventos de una historia típica en el orden correcto:",
+          steps: [
+            "El personaje principal se presenta y describe su mundo.",
+            "Ocurre un problema o desafío inesperado.",
+            "El personaje decide actuar y busca ayuda o un plan.",
+            "El personaje enfrenta el momento más difícil de la historia.",
+            "El problema se resuelve, para bien o para mal.",
+            "El personaje reflexiona sobre lo que aprendió."
+          ]},
+        { prompt: "Ordena estos pasos para responder una pregunta interpersonal en clase:",
+          steps: [
+            "Escucha la pregunta completa con atención.",
+            "Piensa en tu respuesta antes de hablar.",
+            "Responde usando oraciones completas.",
+            "Da un ejemplo o detalle para apoyar tu respuesta.",
+            "Pregunta algo relacionado para continuar la conversación."
+          ]}
+      ]
+    }
+  }
+};
+/* ========================================================= */
+
+let currentUnit=null, idx=0, score=0, order=[];
+
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+
+function showPicker(){
+  document.getElementById('pickerCard').style.display='block';
+  document.getElementById('scorebar').style.display='none';
+  document.getElementById('gameCard').style.display='none';
+  document.getElementById('endCard').style.display='none';
+  const list = document.getElementById('unitList');
+  list.innerHTML='';
+  Object.entries(CONFIG.units).forEach(([key, unit])=>{
+    const btn = document.createElement('button');
+    btn.className='unitBtn';
+    btn.innerHTML = `${unit.label}<small>${unit.sets.length} series</small>`;
+    btn.onclick = ()=>startUnit(key);
+    list.appendChild(btn);
+  });
+}
+
+function startUnit(key){
+  currentUnit = CONFIG.units[key];
+  idx=0; score=0;
+  document.getElementById('pickerCard').style.display='none';
+  document.getElementById('scorebar').style.display='block';
+  document.getElementById('gameCard').style.display='block';
+  document.getElementById('endCard').style.display='none';
+  document.getElementById('setTotal').textContent = currentUnit.sets.length;
+  document.getElementById('score').textContent = 0;
+  loadSet();
+}
+
+function loadSet(){
+  const s = currentUnit.sets[idx];
+  document.getElementById('setNum').textContent = idx+1;
+  document.getElementById('prompt').textContent = s.prompt;
+  document.getElementById('nextBtn').style.display='none';
+  document.getElementById('checkBtn').style.display='inline-block';
+  order = shuffle(s.steps);
+  render();
+}
+
+function render(){
+  const box = document.getElementById('steps');
+  box.innerHTML='';
+  order.forEach((txt, i)=>{
+    const div = document.createElement('div');
+    div.className='step';
+    div.innerHTML = `<div class="num">${i+1}</div><div class="txt">${txt}</div>
+      <div class="arrows">
+        <button data-dir="up" data-i="${i}">▲</button>
+        <button data-dir="down" data-i="${i}">▼</button>
+      </div>`;
+    box.appendChild(div);
+  });
+  box.querySelectorAll('button').forEach(b=>{
+    b.onclick = ()=>{
+      const i = +b.dataset.i;
+      const dir = b.dataset.dir;
+      const j = dir==='up' ? i-1 : i+1;
+      if(j<0 || j>=order.length) return;
+      [order[i], order[j]] = [order[j], order[i]];
+      render();
+    };
+  });
+}
+
+document.getElementById('checkBtn').onclick = ()=>{
+  const correct = currentUnit.sets[idx].steps;
+  let allRight = true;
+  document.querySelectorAll('.step').forEach((div, i)=>{
+    if(order[i]===correct[i]){ div.classList.add('correct'); }
+    else { div.classList.add('wrong'); allRight=false; }
+  });
+  if(allRight) score++;
+  document.getElementById('score').textContent = score;
+  document.getElementById('checkBtn').style.display='none';
+  document.getElementById('nextBtn').style.display='inline-block';
+};
+
+document.getElementById('nextBtn').onclick = ()=>{
+  idx++;
+  if(idx < currentUnit.sets.length){ loadSet(); }
+  else {
+    document.getElementById('gameCard').style.display='none';
+    document.getElementById('scorebar').style.display='none';
+    document.getElementById('endCard').style.display='block';
+    document.getElementById('finalScore').textContent = `Puntaje Final: ${score} / ${currentUnit.sets.length}`;
+  }
+};
+document.getElementById('restartBtn').onclick = ()=>{
+  idx=0; score=0;
+  document.getElementById('score').textContent=0;
+  document.getElementById('gameCard').style.display='block';
+  document.getElementById('scorebar').style.display='block';
+  document.getElementById('endCard').style.display='none';
+  loadSet();
+};
+document.getElementById('switchBtn').onclick = showPicker;
+
+showPicker();
+</script>
+</body>
+</html>

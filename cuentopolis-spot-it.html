@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Descúbrelo — Cuentopolis</title>
+<style>
+  :root{
+    --navy:#0B2545; --gold:#C9A961; --parchment:#F6EFE0; --parchment-dark:#EDE2C8;
+    --forest:#2F6B4F; --purple:#5B3A82; --coral:#C4544A; --mint:#3F8F63;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; min-height:100vh; background:var(--navy);
+    background-image: radial-gradient(circle at 20% 20%, rgba(201,169,97,.08), transparent 40%),
+                       radial-gradient(circle at 80% 80%, rgba(201,169,97,.06), transparent 40%);
+    font-family:Georgia, 'Times New Roman', serif; color:var(--parchment);
+    display:flex; flex-direction:column; align-items:center; padding:24px;
+  }
+  .badge{position:fixed; bottom:16px; right:18px; width:64px; height:64px; border-radius:50%;
+    border:2px solid var(--gold); display:flex; align-items:center; justify-content:center;
+    font-size:.62rem; text-align:center; color:var(--gold); font-family:Georgia,serif; letter-spacing:.5px;
+    background:var(--navy); line-height:1.1; padding:4px;}
+  h1{font-size:2.1rem; margin:6px 0 2px; text-align:center;}
+  .sub{font-style:italic; color:var(--gold); font-size:.95rem; margin-bottom:18px; text-align:center;}
+  .scorebar{font-size:1rem; margin-bottom:14px;}
+  .card{
+    background:var(--parchment); color:var(--navy); border:3px double var(--gold); border-radius:6px;
+    padding:28px; max-width:720px; width:100%; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,.4);
+  }
+  .prompt{font-size:1.5rem; margin-bottom:22px; line-height:1.3;}
+  .choices{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  @media(max-width:560px){.choices{grid-template-columns:1fr;}}
+  .choice{
+    background:var(--navy); color:var(--parchment); border:2px solid var(--gold); border-radius:6px;
+    padding:20px 12px; font-size:1.1rem; cursor:pointer; font-weight:bold;
+    transition:transform .12s ease; font-family:Georgia,serif;
+  }
+  .choice:hover{transform:translateY(-3px);}
+  .choice.correct{background:var(--mint); color:#fff; border-color:var(--mint);}
+  .choice.wrong{background:var(--coral); color:#fff; border-color:var(--coral);}
+  .choice[disabled]{cursor:default;}
+  .explain{margin-top:18px; font-size:1rem; min-height:1.4em; color:var(--purple); font-style:italic;}
+  .next-btn{margin-top:18px; background:var(--gold); color:var(--navy); border:none; border-radius:6px;
+    padding:12px 28px; font-size:1.05rem; font-weight:bold; cursor:pointer; display:none; font-family:Georgia,serif;}
+  .end{display:none; text-align:center;}
+  .end h2{font-size:2rem;}
+  .btn{background:var(--gold); color:var(--navy); border:none; border-radius:6px;
+    padding:12px 26px; font-size:1.05rem; font-weight:bold; cursor:pointer; margin-top:12px; margin-right:8px; font-family:Georgia,serif;}
+  .btn.outline{background:var(--navy); color:var(--parchment); border:1px solid var(--gold);}
+  .unitBtn{display:block; width:100%; text-align:left; background:var(--navy); color:var(--parchment);
+    border:1px solid var(--gold); border-radius:6px; padding:16px 18px; margin-bottom:12px; font-size:1.1rem;
+    font-weight:bold; cursor:pointer; font-family:Georgia,serif;}
+  .unitBtn small{display:block; font-weight:normal; font-style:italic; font-size:.8rem; margin-top:4px; opacity:.8;}
+</style>
+</head>
+<body>
+  <h1>🔎 Descúbrelo</h1>
+  <div class="sub">Repaso de Dominio — Elige la respuesta correcta</div>
+
+  <div class="card" id="pickerCard">
+    <p style="font-size:1.2rem; margin-bottom:16px;">Elige una unidad para practicar:</p>
+    <div id="unitList"></div>
+  </div>
+
+  <div class="scorebar" id="scorebar" style="display:none;">Ronda <span id="roundNum">1</span> / <span id="roundTotal"></span> &nbsp;|&nbsp; Puntos: <span id="score">0</span></div>
+
+  <div class="card" id="gameCard" style="display:none;">
+    <div class="prompt" id="prompt"></div>
+    <div class="choices" id="choices"></div>
+    <div class="explain" id="explain"></div>
+    <button class="next-btn" id="nextBtn">Siguiente Ronda →</button>
+  </div>
+
+  <div class="card end" id="endCard">
+    <h2>🎉 ¡Ronda Completa!</h2>
+    <p id="finalScore"></p>
+    <button class="btn" id="restartBtn">Jugar de Nuevo</button>
+    <button class="btn outline" id="switchBtn">Elegir Otra Unidad</button>
+  </div>
+
+  <div class="badge">CUENTO<br>POLIS</div>
+
+<script>
+/* =========================================================
+   AÑADIR UNA NUEVA UNIDAD: copia un bloque dentro de `units`.
+   El enlace de este juego NUNCA cambia.
+   DEMO content below — replace with real vocabulary/comprehension
+   items from an actual Cuentopolis title/CI lesson.
+   ========================================================= */
+const CONFIG = {
+  units: {
+    "demo-unit": {
+      label: "DEMO — reemplazar con contenido real de una unidad",
+      rounds: [
+        { prompt: "¿Qué palabra significa 'lugar con muchos árboles'?",
+          choices: [
+            {label:"el bosque", correct:true},
+            {label:"la ciudad", correct:false},
+            {label:"el río", correct:false},
+            {label:"la montaña", correct:false}
+          ], explain:"'El bosque' es el lugar lleno de árboles donde ocurre la aventura."},
+        { prompt: "¿Cuál es el sinónimo de 'valentía'?",
+          choices: [
+            {label:"miedo", correct:false},
+            {label:"coraje", correct:true},
+            {label:"tristeza", correct:false},
+            {label:"duda", correct:false}
+          ], explain:"'Coraje' y 'valentía' significan tener el valor de actuar a pesar del miedo."},
+        { prompt: "Para pedir información a otra persona, tú debes...",
+          choices: [
+            {label:"narrar", correct:false},
+            {label:"describir", correct:false},
+            {label:"preguntar", correct:true},
+            {label:"responder", correct:false}
+          ], explain:"'Preguntar' es pedir información — la base de la comunicación interpersonal."},
+        { prompt: "Contar una historia en orden se llama...",
+          choices: [
+            {label:"narrar", correct:true},
+            {label:"preguntar", correct:false},
+            {label:"responder", correct:false},
+            {label:"escuchar", correct:false}
+          ], explain:"'Narrar' es contar una historia en orden — una habilidad presentacional clave."}
+      ]
+    }
+  }
+};
+/* ========================================================= */
+
+let currentUnit=null, idx=0, score=0;
+
+function showPicker(){
+  document.getElementById('pickerCard').style.display='block';
+  document.getElementById('scorebar').style.display='none';
+  document.getElementById('gameCard').style.display='none';
+  document.getElementById('endCard').style.display='none';
+  const list = document.getElementById('unitList');
+  list.innerHTML='';
+  Object.entries(CONFIG.units).forEach(([key, unit])=>{
+    const btn = document.createElement('button');
+    btn.className='unitBtn';
+    btn.innerHTML = `${unit.label}<small>${unit.rounds.length} rondas</small>`;
+    btn.onclick = ()=>startUnit(key);
+    list.appendChild(btn);
+  });
+}
+
+function startUnit(key){
+  currentUnit = CONFIG.units[key];
+  idx=0; score=0;
+  document.getElementById('pickerCard').style.display='none';
+  document.getElementById('scorebar').style.display='block';
+  document.getElementById('gameCard').style.display='block';
+  document.getElementById('endCard').style.display='none';
+  document.getElementById('roundTotal').textContent = currentUnit.rounds.length;
+  document.getElementById('score').textContent = 0;
+  loadRound();
+}
+
+function loadRound(){
+  const r = currentUnit.rounds[idx];
+  document.getElementById('roundNum').textContent = idx+1;
+  document.getElementById('prompt').textContent = r.prompt;
+  document.getElementById('explain').textContent = '';
+  document.getElementById('nextBtn').style.display = 'none';
+  const box = document.getElementById('choices');
+  box.innerHTML = '';
+  r.choices.forEach(c=>{
+    const btn = document.createElement('button');
+    btn.className = 'choice';
+    btn.textContent = c.label;
+    btn.onclick = ()=>pick(btn, c, r);
+    box.appendChild(btn);
+  });
+}
+
+function pick(btn, c, r){
+  document.querySelectorAll('.choice').forEach(b=>b.disabled=true);
+  if(c.correct){ btn.classList.add('correct'); score++; }
+  else { btn.classList.add('wrong'); document.querySelectorAll('.choice').forEach(b=>{
+      if(r.choices.find(x=>x.label===b.textContent.trim())?.correct) b.classList.add('correct');
+    });
+  }
+  document.getElementById('score').textContent = score;
+  document.getElementById('explain').textContent = r.explain;
+  document.getElementById('nextBtn').style.display = 'inline-block';
+}
+
+document.getElementById('nextBtn').onclick = ()=>{
+  idx++;
+  if(idx < currentUnit.rounds.length){ loadRound(); }
+  else {
+    document.getElementById('gameCard').style.display='none';
+    document.getElementById('scorebar').style.display='none';
+    document.getElementById('endCard').style.display='block';
+    document.getElementById('finalScore').textContent = `Puntaje Final: ${score} / ${currentUnit.rounds.length}`;
+  }
+};
+document.getElementById('restartBtn').onclick = ()=>{
+  idx=0; score=0;
+  document.getElementById('score').textContent = 0;
+  document.getElementById('gameCard').style.display='block';
+  document.getElementById('scorebar').style.display='block';
+  document.getElementById('endCard').style.display='none';
+  loadRound();
+};
+document.getElementById('switchBtn').onclick = showPicker;
+
+showPicker();
+</script>
+</body>
+</html>
