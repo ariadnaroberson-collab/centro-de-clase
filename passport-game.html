@@ -5,572 +5,678 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Passport Game</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Nunito:wght@400;600;700;800&family=Schoolbell&display=swap');
-
-  :root {
-    --bg-dark: #1a2e25;
-    --bg: #2c4a3e;
-    --card: #f7f4ef;
-    --chalk: #e8e4d9;
-    --gold: #f5c842;
-    --coral: #e84545;
-    --blue: #4a90d9;
-    --green: #7fae6f;
-    --purple: #b98ee8;
-    --teal: #4ecdc4;
-    --orange: #ff8c42;
-    --text-dark: #2c2c2c;
-    --text-mid: #5a5a5a;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Nunito', sans-serif;
-    background: var(--bg-dark);
-    background-image: radial-gradient(circle at 15% 20%, rgba(255,255,255,0.025), transparent 40%),
-                       radial-gradient(circle at 85% 80%, rgba(255,255,255,0.02), transparent 45%);
-    color: var(--chalk);
-    min-height: 100vh;
-    padding: 32px 16px 60px;
-  }
-  .wrap { max-width: 860px; margin: 0 auto; }
-
-  header { text-align: center; margin-bottom: 18px; }
-  .eyebrow { font-family: 'Schoolbell', cursive; font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 4px; }
-  h1 { font-family: 'Caveat', cursive; font-weight: 700; font-size: 3rem; }
-  .subtitle { color: rgba(232,228,217,0.6); font-size: 0.95rem; margin-top: 6px; }
-
-  .top-controls { text-align: center; margin-bottom: 26px; }
-  .toggle-label {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-family: 'Schoolbell', cursive;
-    font-size: 0.95rem;
-    color: var(--chalk);
-    background: rgba(255,255,255,0.06);
-    padding: 7px 16px;
-    border-radius: 999px;
-    cursor: pointer;
-    border: 1px dashed rgba(232,228,217,0.3);
-  }
-  .toggle-label input { accent-color: var(--gold); width: 16px; height: 16px; }
-
-  .stage {
-    background: var(--card);
-    border-radius: 18px;
-    padding: 24px;
-    margin-bottom: 20px;
-    box-shadow: 0 6px 0 rgba(0,0,0,0.22), 0 12px 22px rgba(0,0,0,0.22);
-    color: var(--text-dark);
-    opacity: 0.4;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-  }
-  .stage.unlocked { opacity: 1; pointer-events: auto; }
-
-  .stage-num {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 26px; height: 26px;
-    background: var(--bg);
-    color: var(--gold);
-    font-family: 'Schoolbell', cursive;
-    font-size: 14px;
-    border-radius: 50%;
-    margin-right: 8px;
-  }
-  .stage-title {
-    font-family: 'Caveat', cursive;
-    font-weight: 700;
-    font-size: 1.7rem;
-    color: var(--bg);
-    display: flex;
-    align-items: center;
-    margin-bottom: 4px;
-  }
-  .stage-desc { font-size: 0.85rem; color: var(--text-mid); margin-bottom: 16px; margin-left: 34px; }
-
-  .wheel-row { display: flex; flex-direction: column; align-items: center; gap: 16px; }
-  .wheel-holder { position: relative; width: 300px; height: 300px; }
-  .pointer {
-    position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
-    width: 0; height: 0;
-    border-left: 14px solid transparent;
-    border-right: 14px solid transparent;
-    border-top: 22px solid var(--coral);
-    z-index: 5;
-    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
-  }
-  canvas { border-radius: 50%; box-shadow: 0 0 0 6px var(--card), 0 0 0 8px var(--bg), 0 8px 18px rgba(0,0,0,0.3); transition: transform 4.2s cubic-bezier(0.15,0.65,0.15,1); }
-
-  .spin-btn {
-    font-family: 'Schoolbell', cursive;
-    font-size: 1rem;
-    background: var(--bg);
-    color: var(--chalk);
-    border: none;
-    padding: 10px 26px;
-    border-radius: 999px;
-    cursor: pointer;
-    box-shadow: 0 4px 0 rgba(0,0,0,0.25);
-  }
-  .spin-btn:hover { background: #345c4c; }
-  .spin-btn:disabled { opacity: 0.5; cursor: default; }
-
-  .result-card {
-    margin-top: 4px;
-    text-align: center;
-    font-family: 'Caveat', cursive;
-    font-weight: 700;
-    font-size: 1.8rem;
-    color: var(--coral);
-    min-height: 1.4em;
-  }
-
-  .copy-btn {
-    display: inline-block;
-    margin-top: 6px;
-    font-family: 'Nunito', sans-serif;
-    font-weight: 700;
-    font-size: 0.78rem;
-    background: rgba(44,74,62,0.08);
-    color: var(--bg);
-    border: 1px solid rgba(44,74,62,0.25);
-    padding: 5px 12px;
-    border-radius: 8px;
-    cursor: pointer;
-  }
-  .copy-btn.copied { background: var(--green); color: #fff; border-color: var(--green); }
-
-  .link-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
-  .link-btn {
-    font-family: 'Nunito', sans-serif;
-    font-weight: 700;
-    font-size: 0.85rem;
-    text-decoration: none;
-    color: #fff;
-    padding: 8px 16px;
-    border-radius: 10px;
-  }
-  .link-btn.article { background: var(--blue); }
-  .link-btn.video { background: var(--coral); }
-
-  .prompt-card {
-    background: #fdf6e3;
-    border: 2px dashed var(--gold);
-    border-radius: 12px;
-    padding: 16px 18px;
-    text-align: center;
-    font-size: 0.95rem;
-    line-height: 1.5;
-  }
-  .prompt-card b { color: var(--bg); }
-
-  .rank-row { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
-  .rank-row input {
-    flex: 1;
-    min-width: 160px;
-    font-family: 'Nunito', sans-serif;
-    font-size: 0.95rem;
-    padding: 10px 14px;
-    border: 2px solid #ddd;
-    border-radius: 10px;
-  }
-  .rank-row button {
-    font-family: 'Schoolbell', cursive;
-    font-size: 0.95rem;
-    background: var(--green);
-    color: #fff;
-    border: none;
-    padding: 0 20px;
-    border-radius: 10px;
-    cursor: pointer;
-  }
-  .rank-list { list-style: none; margin-bottom: 14px; }
-  .rank-list li {
-    background: var(--card);
-    border: 1px solid #e5e0d5;
-    border-left: 5px solid var(--orange);
-    border-radius: 8px;
-    padding: 10px 14px;
-    margin-bottom: 8px;
-    font-size: 0.9rem;
-  }
-  .rank-list li b { color: var(--bg); }
-  .rank-empty { color: var(--text-mid); font-size: 0.85rem; font-style: italic; }
-
-  .print-row { text-align: center; }
-  .print-btn {
-    font-family: 'Schoolbell', cursive;
-    font-size: 0.9rem;
-    background: var(--bg);
-    color: var(--chalk);
-    border: none;
-    padding: 8px 18px;
-    border-radius: 999px;
-    cursor: pointer;
-  }
-
-  /* PASSPORT STAMP STRIP */
-  .stamps-wrap {
-    max-width: 860px;
-    margin: 0 auto 20px;
-    background: rgba(255,255,255,0.05);
-    border: 2px dashed rgba(232,228,217,0.25);
-    border-radius: 16px;
-    padding: 14px 18px;
-  }
-  .stamps-label {
-    font-family: 'Schoolbell', cursive;
-    font-size: 0.85rem;
-    color: var(--gold);
-    text-align: center;
-    margin-bottom: 10px;
-    letter-spacing: 1px;
-  }
-  .stamps-strip { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
-  .stamp {
-    background: var(--card);
-    border-radius: 10px;
-    padding: 6px 10px;
-    font-size: 0.85rem;
-    color: var(--text-dark);
-    box-shadow: 0 2px 0 rgba(0,0,0,0.2);
-    transform: rotate(-3deg);
-  }
-  .stamp:nth-child(3n) { transform: rotate(2deg); }
-  .stamp:nth-child(3n+1) { transform: rotate(-2deg); }
-  .stamps-empty { color: rgba(232,228,217,0.4); font-size: 0.82rem; text-align: center; font-style: italic; }
-
-  .reset-row { text-align: center; margin-top: 26px; }
-  .reset-btn {
-    font-family: 'Schoolbell', cursive;
-    font-size: 0.9rem;
-    background: transparent;
-    border: 2px dashed rgba(232,228,217,0.4);
-    color: rgba(232,228,217,0.7);
-    padding: 8px 18px;
-    border-radius: 999px;
-    cursor: pointer;
-  }
-
-  .footer-note { text-align: center; margin-top: 30px; font-family: 'Schoolbell', cursive; color: rgba(232,228,217,0.4); font-size: 13px; }
-
-  /* PRINT-ONLY WALL OF RANKINGS */
-  #printWall { display: none; }
-  @media print {
-    body * { visibility: hidden; }
-    #printWall, #printWall * { visibility: visible; }
-    #printWall { display: block; position: absolute; top: 0; left: 0; width: 100%; padding: 30px; color: #2c2c2c; font-family: 'Nunito', sans-serif; }
-    #printWall h1 { font-family: 'Bitter', serif; color: #A9491F; margin-bottom: 4px; }
-    #printWall .pw-date { color: #8A7860; font-size: 12px; margin-bottom: 20px; }
-    #printWall ul { list-style: none; padding: 0; }
-    #printWall li { padding: 8px 0; border-bottom: 1px solid #e5e0d5; font-size: 14px; }
-  }
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Nunito:wght@400;600;700;800&family=Schoolbell&display=swap');
+:root {
+--bg-dark: #1a2e25;
+--bg: #2c4a3e;
+--card: #f7f4ef;
+--chalk: #e8e4d9;
+--gold: #f5c842;
+--coral: #e84545;
+--blue: #4a90d9;
+--green: #7fae6f;
+--purple: #b98ee8;
+--teal: #4ecdc4;
+--orange: #ff8c42;
+--text-dark: #2c2c2c;
+--text-mid: #5a5a5a;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+font-family: 'Nunito', sans-serif;
+background: var(--bg-dark);
+background-image: radial-gradient(circle at 15% 20%, rgba(255,255,255,0.025), transparent 40%),
+radial-gradient(circle at 85% 80%, rgba(255,255,255,0.02), transparent 45%);
+color: var(--chalk);
+min-height: 100vh;
+padding: 32px 16px 60px;
+}
+.wrap { max-width: 860px; margin: 0 auto; }
+header { text-align: center; margin-bottom: 18px; }
+.eyebrow { font-family: 'Schoolbell', cursive; font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 4px; }
+h1 { font-family: 'Caveat', cursive; font-weight: 700; font-size: 3rem; }
+.subtitle { color: rgba(232,228,217,0.6); font-size: 0.95rem; margin-top: 6px; }
+.top-controls { text-align: center; margin-bottom: 26px; }
+.toggle-label {
+display: inline-flex;
+align-items: center;
+gap: 8px;
+font-family: 'Schoolbell', cursive;
+font-size: 0.95rem;
+color: var(--chalk);
+background: rgba(255,255,255,0.06);
+padding: 7px 16px;
+border-radius: 999px;
+cursor: pointer;
+border: 1px dashed rgba(232,228,217,0.3);
+}
+.toggle-label input { accent-color: var(--gold); width: 16px; height: 16px; }
+.stage {
+background: var(--card);
+border-radius: 18px;
+padding: 24px;
+margin-bottom: 20px;
+box-shadow: 0 6px 0 rgba(0,0,0,0.22), 0 12px 22px rgba(0,0,0,0.22);
+color: var(--text-dark);
+opacity: 0.4;
+pointer-events: none;
+transition: opacity 0.3s ease;
+}
+.stage.unlocked { opacity: 1; pointer-events: auto; }
+.stage-num {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+width: 26px; height: 26px;
+background: var(--bg);
+color: var(--gold);
+font-family: 'Schoolbell', cursive;
+font-size: 14px;
+border-radius: 50%;
+margin-right: 8px;
+}
+.stage-title {
+font-family: 'Caveat', cursive;
+font-weight: 700;
+font-size: 1.7rem;
+color: var(--bg);
+display: flex;
+align-items: center;
+margin-bottom: 4px;
+}
+.stage-desc { font-size: 0.85rem; color: var(--text-mid); margin-bottom: 16px; margin-left: 34px; }
+.wheel-row { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.wheel-row-double { display: flex; gap: 28px; justify-content: center; flex-wrap: wrap; margin-top: 4px; }
+.wheel-group { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.wheel-group-title { font-family: 'Schoolbell', cursive; font-size: 0.95rem; color: var(--bg); text-align: center; }
+.wheel-holder { position: relative; width: 300px; height: 300px; }
+.pointer {
+position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+width: 0; height: 0;
+border-left: 14px solid transparent;
+border-right: 14px solid transparent;
+border-top: 22px solid var(--coral);
+z-index: 5;
+filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
+}
+canvas { border-radius: 50%; box-shadow: 0 0 0 6px var(--card), 0 0 0 8px var(--bg), 0 8px 18px rgba(0,0,0,0.3); transition: transform 4.2s cubic-bezier(0.15,0.65,0.15,1); }
+.spin-btn {
+font-family: 'Schoolbell', cursive;
+font-size: 1rem;
+background: var(--bg);
+color: var(--chalk);
+border: none;
+padding: 10px 26px;
+border-radius: 999px;
+cursor: pointer;
+box-shadow: 0 4px 0 rgba(0,0,0,0.25);
+}
+.spin-btn:hover { background: #345c4c; }
+.spin-btn:disabled { opacity: 0.5; cursor: default; }
+.result-card {
+margin-top: 4px;
+text-align: center;
+font-family: 'Caveat', cursive;
+font-weight: 700;
+font-size: 1.8rem;
+color: var(--coral);
+min-height: 1.4em;
+}
+.flag-big { font-size: 3.2rem; line-height: 1; display: block; }
+.flag-big-svg { width: 200px; max-width: 85%; height: auto; border-radius: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); display: block; margin: 0 auto; overflow: hidden; }
+.flag-guess-note { font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 0.8rem; color: var(--text-mid); margin-top: 2px; }
+.copy-btn {
+display: inline-block;
+margin-top: 6px;
+font-family: 'Nunito', sans-serif;
+font-weight: 700;
+font-size: 0.78rem;
+background: rgba(44,74,62,0.08);
+color: var(--bg);
+border: 1px solid rgba(44,74,62,0.25);
+padding: 5px 12px;
+border-radius: 8px;
+cursor: pointer;
+}
+.copy-btn.copied { background: var(--green); color: #fff; border-color: var(--green); }
+.link-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
+.link-btn {
+font-family: 'Nunito', sans-serif;
+font-weight: 700;
+font-size: 0.85rem;
+text-decoration: none;
+color: #fff;
+padding: 8px 16px;
+border-radius: 10px;
+}
+.link-btn.article { background: var(--blue); }
+.link-btn.video { background: var(--coral); }
+.prompt-card {
+background: #fdf6e3;
+border: 2px dashed var(--gold);
+border-radius: 12px;
+padding: 16px 18px;
+text-align: center;
+font-size: 0.95rem;
+line-height: 1.5;
+}
+.prompt-card b { color: var(--bg); }
+.rank-row { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+.rank-row input {
+flex: 1;
+min-width: 160px;
+font-family: 'Nunito', sans-serif;
+font-size: 0.95rem;
+padding: 10px 14px;
+border: 2px solid #ddd;
+border-radius: 10px;
+}
+.rank-row button {
+font-family: 'Schoolbell', cursive;
+font-size: 0.95rem;
+background: var(--green);
+color: #fff;
+border: none;
+padding: 0 20px;
+border-radius: 10px;
+cursor: pointer;
+}
+.rank-list { list-style: none; margin-bottom: 14px; }
+.rank-list li {
+background: var(--card);
+border: 1px solid #e5e0d5;
+border-left: 5px solid var(--orange);
+border-radius: 8px;
+padding: 10px 14px;
+margin-bottom: 8px;
+font-size: 0.9rem;
+}
+.rank-list li b { color: var(--bg); }
+.rank-empty { color: var(--text-mid); font-size: 0.85rem; font-style: italic; }
+.print-row { text-align: center; }
+.print-btn {
+font-family: 'Schoolbell', cursive;
+font-size: 0.9rem;
+background: var(--bg);
+color: var(--chalk);
+border: none;
+padding: 8px 18px;
+border-radius: 999px;
+cursor: pointer;
+}
+/* PASSPORT STAMP STRIP */
+.stamps-wrap {
+max-width: 860px;
+margin: 0 auto 20px;
+background: rgba(255,255,255,0.05);
+border: 2px dashed rgba(232,228,217,0.25);
+border-radius: 16px;
+padding: 14px 18px;
+}
+.stamps-label {
+font-family: 'Schoolbell', cursive;
+font-size: 0.85rem;
+color: var(--gold);
+text-align: center;
+margin-bottom: 10px;
+letter-spacing: 1px;
+}
+.stamps-strip { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.stamp {
+background: var(--card);
+border-radius: 10px;
+padding: 6px 10px;
+font-size: 0.85rem;
+color: var(--text-dark);
+box-shadow: 0 2px 0 rgba(0,0,0,0.2);
+transform: rotate(-3deg);
+}
+.stamp:nth-child(3n) { transform: rotate(2deg); }
+.stamp:nth-child(3n+1) { transform: rotate(-2deg); }
+.stamps-empty { color: rgba(232,228,217,0.4); font-size: 0.82rem; text-align: center; font-style: italic; }
+.reset-row { text-align: center; margin-top: 26px; }
+.reset-btn {
+font-family: 'Schoolbell', cursive;
+font-size: 0.9rem;
+background: transparent;
+border: 2px dashed rgba(232,228,217,0.4);
+color: rgba(232,228,217,0.7);
+padding: 8px 18px;
+border-radius: 999px;
+cursor: pointer;
+}
+.footer-note { text-align: center; margin-top: 30px; font-family: 'Schoolbell', cursive; color: rgba(232,228,217,0.4); font-size: 13px; }
+/* PRINT-ONLY WALL OF RANKINGS */
+#printWall { display: none; }
+@media print {
+body * { visibility: hidden; }
+#printWall, #printWall * { visibility: visible; }
+#printWall { display: block; position: absolute; top: 0; left: 0; width: 100%; padding: 30px; color: #2c2c2c; font-family: 'Nunito', sans-serif; }
+#printWall h1 { font-family: 'Bitter', serif; color: #A9491F; margin-bottom: 4px; }
+#printWall .pw-date { color: #8A7860; font-size: 12px; margin-bottom: 20px; }
+#printWall ul { list-style: none; padding: 0; }
+#printWall li { padding: 8px 0; border-bottom: 1px solid #e5e0d5; font-size: 14px; }
+}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <header>
-    <p class="eyebrow">Salón de Clases · Language Class</p>
-    <h1>The Passport Game 🌎</h1>
-    <p class="subtitle">Gira, investiga y decide — un viaje cultural en cada ronda</p>
-  </header>
+<header>
+<p class="eyebrow">Salón de Clases · Language Class</p>
+<h1>The Passport Game 🌎</h1>
+<p class="subtitle">Gira, investiga y decide — un viaje cultural en cada ronda</p>
+</header>
 
-  <div class="top-controls">
-    <label class="toggle-label">
-      <input type="checkbox" id="speedMode"> ⚡ Modo rápido (giro corto)
-    </label>
-  </div>
+<div class="top-controls">
+<label class="toggle-label">
+<input type="checkbox" id="speedMode"> ⚡ Modo rápido (giro corto)
+</label>
+</div>
 
-  <!-- STAGE 1: COUNTRY WHEEL -->
-  <div class="stage unlocked" id="stage1">
-    <p class="stage-title"><span class="stage-num">1</span> Rueda de Países</p>
-    <p class="stage-desc">Gira la rueda para elegir el país de esta ronda.</p>
-    <div class="wheel-row">
-      <div class="wheel-holder">
-        <div class="pointer"></div>
-        <canvas id="countryWheel" width="300" height="300"></canvas>
-      </div>
-      <button class="spin-btn" id="spinCountry">🌎 Girar</button>
-      <div class="result-card" id="countryResult"></div>
-      <button class="copy-btn" id="copyForCharlas" style="display:none;">📋 Copiar para Charlas</button>
-    </div>
-  </div>
+<!-- STAGE 1: COUNTRY WHEEL + FLAG CHALLENGE -->
+<div class="stage unlocked" id="stage1">
+<p class="stage-title"><span class="stage-num">1</span> Rueda de Países</p>
+<p class="stage-desc">Gira la rueda para elegir el país de esta ronda.</p>
+<div class="wheel-row-double">
+<div class="wheel-group">
+<p class="wheel-group-title">🌎 Rueda de Países</p>
+<div class="wheel-holder">
+<div class="pointer"></div>
+<canvas id="countryWheel" width="300" height="300"></canvas>
+</div>
+<button class="spin-btn" id="spinCountry">🌎 Girar</button>
+<div class="result-card" id="countryResult"></div>
+<button class="copy-btn" id="copyForCharlas" style="display:none;">📋 Copiar para Charlas</button>
+</div>
+<div class="wheel-group">
+<p class="wheel-group-title">🚩 Retos de las Banderas</p>
+<div class="wheel-holder">
+<div class="pointer"></div>
+<canvas id="flagWheel" width="300" height="300"></canvas>
+</div>
+<button class="spin-btn" id="spinFlag">🚩 Girar</button>
+<div class="result-card" id="flagResult"></div>
+<div class="flag-guess-note" id="flagGuessNote" style="display:none;">&iquest;Qu&eacute; pa&iacute;s es? &iexcl;Adivina en voz alta!</div>
+<button class="copy-btn" id="revealFlagBtn" style="display:none;">&#128065; Revelar pa&iacute;s</button>
+</div>
+</div>
+</div>
 
-  <!-- STAGE 2: INVESTIGATE -->
-  <div class="stage" id="stage2">
-    <p class="stage-title"><span class="stage-num">2</span> Investiga</p>
-    <p class="stage-desc">Lee un artículo o mira un video sobre el país.</p>
-    <div class="link-row" id="researchLinks"></div>
-  </div>
+<!-- STAGE 2: INVESTIGATE -->
+<div class="stage" id="stage2">
+<p class="stage-title"><span class="stage-num">2</span> Investiga</p>
+<p class="stage-desc">Lee un artículo o mira un video sobre el país.</p>
+<div class="link-row" id="researchLinks"></div>
+</div>
 
-  <!-- STAGE 3: QUESTION WHEEL -->
-  <div class="stage" id="stage3">
-    <p class="stage-title"><span class="stage-num">3</span> Rueda de Preguntas</p>
-    <p class="stage-desc">Gira para saber con qué palabra van a preguntar.</p>
-    <div class="wheel-row">
-      <div class="wheel-holder">
-        <div class="pointer"></div>
-        <canvas id="questionWheel" width="300" height="300"></canvas>
-      </div>
-      <button class="spin-btn" id="spinQuestion">❓ Girar</button>
-      <div class="result-card" id="questionResult"></div>
-    </div>
-    <div class="prompt-card" id="promptCard" style="display:none;margin-top:14px;"></div>
-  </div>
+<!-- STAGE 3: QUESTION WHEEL -->
+<div class="stage" id="stage3">
+<p class="stage-title"><span class="stage-num">3</span> Rueda de Preguntas</p>
+<p class="stage-desc">Gira para saber con qué palabra van a preguntar.</p>
+<div class="wheel-row">
+<div class="wheel-holder">
+<div class="pointer"></div>
+<canvas id="questionWheel" width="300" height="300"></canvas>
+</div>
+<button class="spin-btn" id="spinQuestion">❓ Girar</button>
+<div class="result-card" id="questionResult"></div>
+</div>
+<div class="prompt-card" id="promptCard" style="display:none;margin-top:14px;"></div>
+</div>
 
-  <!-- STAGE 4: RANK IT -->
-  <div class="stage" id="stage4">
-    <p class="stage-title"><span class="stage-num">4</span> Rank It</p>
-    <p class="stage-desc">Terminen la frase: <i>El país más ___ es...</i></p>
-    <div class="rank-row">
-      <input type="text" id="rankAdjective" placeholder="ej. colorido, grande, delicioso...">
-      <button id="rankAdd">Agregar</button>
-    </div>
-    <ul class="rank-list" id="rankList">
-      <li class="rank-empty">Todavía no hay países en la lista — ¡agrega el primero!</li>
-    </ul>
-    <div class="print-row">
-      <button class="print-btn" id="printWallBtn">🖨 Imprimir Muro de Rankings</button>
-    </div>
-  </div>
+<!-- STAGE 4: RANK IT -->
+<div class="stage" id="stage4">
+<p class="stage-title"><span class="stage-num">4</span> Rank It</p>
+<p class="stage-desc">Terminen la frase: <i>El país más ___ es...</i></p>
+<div class="rank-row">
+<input type="text" id="rankAdjective" placeholder="ej. colorido, grande, delicioso...">
+<button id="rankAdd">Agregar</button>
+</div>
+<ul class="rank-list" id="rankList">
+<li class="rank-empty">Todavía no hay países en la lista — ¡agrega el primero!</li>
+</ul>
+<div class="print-row">
+<button class="print-btn" id="printWallBtn">🖨 Imprimir Muro de Rankings</button>
+</div>
+</div>
 
-  <div class="reset-row">
-    <button class="reset-btn" id="newRound">↻ Nueva Ronda (misma lista de Rank It y sellos)</button>
-  </div>
+<div class="reset-row">
+<button class="reset-btn" id="newRound">↻ Nueva Ronda (misma lista de Rank It y sellos)</button>
+</div>
 
-  <p class="footer-note">made with chalk dust & good vibes</p>
+<p class="footer-note">made with chalk dust & good vibes</p>
 </div>
 
 <!-- STAMP STRIP -->
 <div class="stamps-wrap">
-  <p class="stamps-label">✦ Sellos de Pasaporte de la Clase ✦</p>
-  <div class="stamps-strip" id="stampsStrip">
-    <span class="stamps-empty">Los sellos aparecen aquí cada vez que la rueda aterriza en un país nuevo.</span>
-  </div>
+<p class="stamps-label">✦ Sellos de Pasaporte de la Clase ✦</p>
+<div class="stamps-strip" id="stampsStrip">
+<span class="stamps-empty">Los sellos aparecen aquí cada vez que la rueda aterriza en un país nuevo.</span>
+</div>
 </div>
 
 <!-- PRINT-ONLY WALL -->
 <div id="printWall">
-  <h1>Muro de Rankings — The Passport Game</h1>
-  <p class="pw-date" id="printDate"></p>
-  <ul id="printRankList"></ul>
+<h1>Muro de Rankings — The Passport Game</h1>
+<p class="pw-date" id="printDate"></p>
+<ul id="printRankList"></ul>
 </div>
 
 <script>
-  var countries = [
-    {name:'Argentina', flag:'🇦🇷'}, {name:'Bolivia', flag:'🇧🇴'}, {name:'Chile', flag:'🇨🇱'},
-    {name:'Colombia', flag:'🇨🇴'}, {name:'Costa Rica', flag:'🇨🇷'}, {name:'Cuba', flag:'🇨🇺'},
-    {name:'Ecuador', flag:'🇪🇨'}, {name:'El Salvador', flag:'🇸🇻'}, {name:'España', flag:'🇪🇸'},
-    {name:'Guatemala', flag:'🇬🇹'}, {name:'Guinea Ecuatorial', flag:'🇬🇶'}, {name:'Honduras', flag:'🇭🇳'},
-    {name:'México', flag:'🇲🇽'}, {name:'Nicaragua', flag:'🇳🇮'}, {name:'Panamá', flag:'🇵🇦'},
-    {name:'Paraguay', flag:'🇵🇾'}, {name:'Perú', flag:'🇵🇪'}, {name:'Puerto Rico', flag:'🇵🇷'},
-    {name:'República Dominicana', flag:'🇩🇴'}, {name:'Uruguay', flag:'🇺🇾'}, {name:'Venezuela', flag:'🇻🇪'}
-  ];
-  var questions = ['Dónde', 'Cómo', 'Cuándo', 'Quién', 'Por qué', 'Qué'];
-  var palette = ['#e84545','#4a90d9','#f5c842','#7fae6f','#b98ee8','#ff8c42','#4ecdc4'];
+var countries = [
+{name:'Argentina', flag:'🇦🇷', code:'ar'}, {name:'Bolivia', flag:'🇧🇴', code:'bo'}, {name:'Chile', flag:'🇨🇱', code:'cl'},
+{name:'Colombia', flag:'🇨🇴', code:'co'}, {name:'Costa Rica', flag:'🇨🇷', code:'cr'}, {name:'Cuba', flag:'🇨🇺', code:'cu'},
+{name:'Ecuador', flag:'🇪🇨', code:'ec'}, {name:'El Salvador', flag:'🇸🇻', code:'sv'}, {name:'España', flag:'🇪🇸', code:'es'},
+{name:'Guatemala', flag:'🇬🇹', code:'gt'}, {name:'Guinea Ecuatorial', flag:'🇬🇶', code:'gq'}, {name:'Honduras', flag:'🇭🇳', code:'hn'},
+{name:'México', flag:'🇲🇽', code:'mx'}, {name:'Nicaragua', flag:'🇳🇮', code:'ni'}, {name:'Panamá', flag:'🇵🇦', code:'pa'},
+{name:'Paraguay', flag:'🇵🇾', code:'py'}, {name:'Perú', flag:'🇵🇪', code:'pe'}, {name:'Puerto Rico', flag:'🇵🇷', code:'pr'},
+{name:'República Dominicana', flag:'🇩🇴', code:'do'}, {name:'Uruguay', flag:'🇺🇾', code:'uy'}, {name:'Venezuela', flag:'🇻🇪', code:'ve'}
+];
+var questions = ['Dónde', 'Cómo', 'Cuándo', 'Quién', 'Por qué', 'Qué'];
+var palette = ['#e84545','#4a90d9','#f5c842','#7fae6f','#b98ee8','#ff8c42','#4ecdc4'];
 
-  // --- Sound ---
-  var audioCtx = null;
-  function playDing() {
-    try {
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      var o = audioCtx.createOscillator();
-      var g = audioCtx.createGain();
-      o.type = 'sine';
-      o.frequency.setValueAtTime(880, audioCtx.currentTime);
-      o.frequency.exponentialRampToValueAtTime(1320, audioCtx.currentTime + 0.12);
-      g.gain.setValueAtTime(0.15, audioCtx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
-      o.connect(g); g.connect(audioCtx.destination);
-      o.start();
-      o.stop(audioCtx.currentTime + 0.35);
-    } catch (e) {}
-  }
+// --- Sound ---
+var audioCtx = null;
+function playDing() {
+try {
+if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+var o = audioCtx.createOscillator();
+var g = audioCtx.createGain();
+o.type = 'sine';
+o.frequency.setValueAtTime(880, audioCtx.currentTime);
+o.frequency.exponentialRampToValueAtTime(1320, audioCtx.currentTime + 0.12);
+g.gain.setValueAtTime(0.15, audioCtx.currentTime);
+g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+o.connect(g); g.connect(audioCtx.destination);
+o.start();
+o.stop(audioCtx.currentTime + 0.35);
+} catch (e) {}
+}
 
-  function drawWheel(canvas, labels, colors) {
-    var ctx = canvas.getContext('2d');
-    var n = labels.length;
-    var cx = canvas.width/2, cy = canvas.height/2, r = canvas.width/2 - 6;
-    var seg = (2*Math.PI)/n;
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    for (var i=0;i<n;i++) {
-      ctx.beginPath();
-      ctx.moveTo(cx,cy);
-      ctx.arc(cx,cy,r, i*seg - Math.PI/2, (i+1)*seg - Math.PI/2);
-      ctx.closePath();
-      ctx.fillStyle = colors[i % colors.length];
-      ctx.fill();
-      ctx.strokeStyle = '#fff';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-      ctx.save();
-      ctx.translate(cx,cy);
-      ctx.rotate(i*seg + seg/2 - Math.PI/2);
-      ctx.textAlign = 'right';
-      ctx.fillStyle = '#fff';
-      ctx.font = 'bold 11px Nunito, sans-serif';
-      ctx.fillText(labels[i], r - 8, 4);
-      ctx.restore();
-    }
-  }
+function drawWheel(canvas, labels, colors, fontSize) {
+var ctx = canvas.getContext('2d');
+var n = labels.length;
+var cx = canvas.width/2, cy = canvas.height/2, r = canvas.width/2 - 6;
+var seg = (2*Math.PI)/n;
+var fs = fontSize || 11;
+ctx.clearRect(0,0,canvas.width,canvas.height);
+for (var i=0;i<n;i++) {
+ctx.beginPath();
+ctx.moveTo(cx,cy);
+ctx.arc(cx,cy,r, i*seg - Math.PI/2, (i+1)*seg - Math.PI/2);
+ctx.closePath();
+ctx.fillStyle = colors[i % colors.length];
+ctx.fill();
+ctx.strokeStyle = '#fff';
+ctx.lineWidth = 2;
+ctx.stroke();
+ctx.save();
+ctx.translate(cx,cy);
+ctx.rotate(i*seg + seg/2 - Math.PI/2);
+ctx.textAlign = 'right';
+ctx.fillStyle = '#fff';
+ctx.font = 'bold ' + fs + 'px Nunito, sans-serif';
+ctx.fillText(labels[i], r - 8, 4);
+ctx.restore();
+}
+}
 
-  function makeSpinner(canvas, labels, onLand) {
-    var totalRotation = 0;
-    var n = labels.length;
-    var segDeg = 360/n;
-    var spinning = false;
-    return function spin() {
-      if (spinning) return;
-      spinning = true;
-      var speedMode = document.getElementById('speedMode').checked;
-      var duration = speedMode ? 1.1 : 4.2;
-      canvas.style.transition = 'transform ' + duration + 's cubic-bezier(0.15,0.65,0.15,1)';
-      var i = Math.floor(Math.random()*n);
-      var targetMod = (360 - (((i+0.5)*segDeg) % 360)) % 360;
-      var extraSpins = speedMode ? (2 + Math.floor(Math.random()*2)) : (4 + Math.floor(Math.random()*3));
-      var current = totalRotation % 360;
-      var delta = (targetMod - current + 360) % 360;
-      totalRotation = totalRotation + extraSpins*360 + delta;
-      canvas.style.transform = 'rotate(' + totalRotation + 'deg)';
-      var handled = false;
-      canvas.addEventListener('transitionend', function handler() {
-        if (handled) return;
-        handled = true;
-        canvas.removeEventListener('transitionend', handler);
-        spinning = false;
-        playDing();
-        onLand(i);
-      });
-    };
-  }
+function makeSpinner(canvas, labels, onLand) {
+var totalRotation = 0;
+var n = labels.length;
+var segDeg = 360/n;
+var spinning = false;
+return function spin() {
+if (spinning) return;
+spinning = true;
+var speedMode = document.getElementById('speedMode').checked;
+var duration = speedMode ? 1.1 : 4.2;
+canvas.style.transition = 'transform ' + duration + 's cubic-bezier(0.15,0.65,0.15,1)';
+var i = Math.floor(Math.random()*n);
+var targetMod = (360 - (((i+0.5)*segDeg) % 360)) % 360;
+var extraSpins = speedMode ? (2 + Math.floor(Math.random()*2)) : (4 + Math.floor(Math.random()*3));
+var current = totalRotation % 360;
+var delta = (targetMod - current + 360) % 360;
+totalRotation = totalRotation + extraSpins*360 + delta;
+canvas.style.transform = 'rotate(' + totalRotation + 'deg)';
+var handled = false;
+canvas.addEventListener('transitionend', function handler() {
+if (handled) return;
+handled = true;
+canvas.removeEventListener('transitionend', handler);
+spinning = false;
+playDing();
+onLand(i);
+});
+};
+}
 
-  // --- Stamps ---
-  var stampedCountries = [];
-  function addStamp(country) {
-    if (stampedCountries.indexOf(country.name) !== -1) return;
-    stampedCountries.push(country.name);
-    var strip = document.getElementById('stampsStrip');
-    var empty = strip.querySelector('.stamps-empty');
-    if (empty) empty.remove();
-    var el = document.createElement('span');
-    el.className = 'stamp';
-    el.textContent = country.flag + ' ' + country.name;
-    strip.appendChild(el);
-  }
+// --- Stamps ---
+var stampedCountries = [];
+function addStamp(country) {
+if (stampedCountries.indexOf(country.name) !== -1) return;
+stampedCountries.push(country.name);
+var strip = document.getElementById('stampsStrip');
+var empty = strip.querySelector('.stamps-empty');
+if (empty) empty.remove();
+var el = document.createElement('span');
+el.className = 'stamp';
+el.textContent = country.flag + ' ' + country.name;
+strip.appendChild(el);
+}
 
-  // --- Country wheel ---
-  var countryCanvas = document.getElementById('countryWheel');
-  drawWheel(countryCanvas, countries.map(function(c){return c.flag + ' ' + c.name;}), palette);
-  var currentCountry = null;
-  var spinCountryFn = makeSpinner(countryCanvas, countries, function(i) {
-    currentCountry = countries[i];
-    document.getElementById('countryResult').textContent = currentCountry.flag + ' ' + currentCountry.name;
-    var copyBtn = document.getElementById('copyForCharlas');
-    copyBtn.style.display = 'inline-block';
-    copyBtn.classList.remove('copied');
-    copyBtn.textContent = '📋 Copiar para Charlas';
-    var q = encodeURIComponent('artículo sobre ' + currentCountry.name + ' en español');
-    var qv = encodeURIComponent(currentCountry.name + ' cultura video en español');
-    var links = document.getElementById('researchLinks');
-    links.innerHTML =
-      '<a class="link-btn article" target="_blank" rel="noopener" href="https://www.google.com/search?q=' + q + '">🔎 Buscar un artículo</a>' +
-      '<a class="link-btn video" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=' + qv + '">▶️ Buscar un video</a>';
-    document.getElementById('stage2').classList.add('unlocked');
-    document.getElementById('stage3').classList.add('unlocked');
-    document.getElementById('stage4').classList.add('unlocked');
-    document.getElementById('promptCard').style.display = 'none';
-    document.getElementById('questionResult').textContent = '';
-    addStamp(currentCountry);
-  });
-  document.getElementById('spinCountry').addEventListener('click', spinCountryFn);
+// --- Country wheel ---
+var countryCanvas = document.getElementById('countryWheel');
+drawWheel(countryCanvas, countries.map(function(c){return c.flag + ' ' + c.name;}), palette);
+var currentCountry = null;
+var spinCountryFn = makeSpinner(countryCanvas, countries, function(i) {
+currentCountry = countries[i];
+document.getElementById('countryResult').textContent = currentCountry.flag + ' ' + currentCountry.name;
+var copyBtn = document.getElementById('copyForCharlas');
+copyBtn.style.display = 'inline-block';
+copyBtn.classList.remove('copied');
+copyBtn.textContent = '📋 Copiar para Charlas';
+var q = encodeURIComponent('artículo sobre ' + currentCountry.name + ' en español');
+var qv = encodeURIComponent(currentCountry.name + ' cultura video en español');
+var links = document.getElementById('researchLinks');
+links.innerHTML =
+'<a class="link-btn article" target="_blank" rel="noopener" href="https://www.google.com/search?q=' + q + '">🔎 Buscar un artículo</a>' +
+'<a class="link-btn video" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=' + qv + '">▶️ Buscar un video</a>';
+document.getElementById('stage2').classList.add('unlocked');
+document.getElementById('stage3').classList.add('unlocked');
+document.getElementById('stage4').classList.add('unlocked');
+document.getElementById('promptCard').style.display = 'none';
+document.getElementById('questionResult').textContent = '';
+addStamp(currentCountry);
+});
+document.getElementById('spinCountry').addEventListener('click', spinCountryFn);
 
-  document.getElementById('copyForCharlas').addEventListener('click', function() {
-    if (!currentCountry) return;
-    var text = 'País de hoy: ' + currentCountry.flag + ' ' + currentCountry.name;
-    var btn = document.getElementById('copyForCharlas');
-    function marked() { btn.classList.add('copied'); btn.textContent = '✓ Copiado'; }
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(marked).catch(function(){
-        window.prompt('Copia este texto:', text);
-      });
-    } else {
-      window.prompt('Copia este texto:', text);
-    }
-  });
+document.getElementById('copyForCharlas').addEventListener('click', function() {
+if (!currentCountry) return;
+var text = 'País de hoy: ' + currentCountry.flag + ' ' + currentCountry.name;
+var btn = document.getElementById('copyForCharlas');
+function marked() { btn.classList.add('copied'); btn.textContent = '✓ Copiado'; }
+if (navigator.clipboard && navigator.clipboard.writeText) {
+navigator.clipboard.writeText(text).then(marked).catch(function(){
+window.prompt('Copia este texto:', text);
+});
+} else {
+window.prompt('Copia este texto:', text);
+}
+});
 
-  // --- Question wheel ---
-  var questionCanvas = document.getElementById('questionWheel');
-  drawWheel(questionCanvas, questions, ['#4a90d9','#f5c842','#e84545','#7fae6f','#b98ee8','#ff8c42']);
-  var spinQuestionFn = makeSpinner(questionCanvas, questions, function(i) {
-    var word = questions[i];
-    document.getElementById('questionResult').textContent = '¿' + word + '...?';
-    var promptCard = document.getElementById('promptCard');
-    promptCard.style.display = 'block';
-    promptCard.innerHTML = 'Con la palabra <b>' + word + '</b>, escriban una pregunta sobre <b>' +
-      (currentCountry ? currentCountry.flag + ' ' + currentCountry.name : 'el país') + '</b>.';
-  });
-  document.getElementById('spinQuestion').addEventListener('click', spinQuestionFn);
+// --- Inline SVG flags (no external network dependency) ---
+function stripeH(y0, y1, color) { return '<rect x="0" y="' + y0 + '" width="300" height="' + (y1 - y0) + '" fill="' + color + '"/>'; }
+function stripeV(x0, x1, color) { return '<rect x="' + x0 + '" y="0" width="' + (x1 - x0) + '" height="200" fill="' + color + '"/>'; }
+function starPoints(cx, cy, rOuter, rInner, rotDeg) {
+var pts = [];
+var rot = ((rotDeg === undefined ? -90 : rotDeg)) * Math.PI / 180;
+for (var i = 0; i < 10; i++) {
+var r = (i % 2 === 0) ? rOuter : rInner;
+var a = rot + i * Math.PI / 5;
+pts.push((cx + r * Math.cos(a)).toFixed(1) + ',' + (cy + r * Math.sin(a)).toFixed(1));
+}
+return pts.join(' ');
+}
+function starPoly(cx, cy, rOuter, color, rotDeg) {
+var rInner = rOuter * 0.382;
+return '<polygon points="' + starPoints(cx, cy, rOuter, rInner, rotDeg) + '" fill="' + color + '"/>';
+}
+function sunSVG(cx, cy, rCore, rRayInner, rRayOuter, num, color, strokeW) {
+var s = '';
+for (var i = 0; i < num; i++) {
+var a = (i / num) * 2 * Math.PI;
+var x1 = cx + rRayInner * Math.cos(a), y1 = cy + rRayInner * Math.sin(a);
+var x2 = cx + rRayOuter * Math.cos(a), y2 = cy + rRayOuter * Math.sin(a);
+s += '<line x1="' + x1.toFixed(1) + '" y1="' + y1.toFixed(1) + '" x2="' + x2.toFixed(1) + '" y2="' + y2.toFixed(1) + '" stroke="' + color + '" stroke-width="' + strokeW + '" stroke-linecap="round"/>';
+}
+s += '<circle cx="' + cx + '" cy="' + cy + '" r="' + rCore + '" fill="' + color + '" stroke="#8a5a00" stroke-width="1.5"/>';
+return s;
+}
+function hoistTriangle(color, widthFrac) {
+var w = 300 * widthFrac;
+return '<polygon points="0,0 ' + w.toFixed(1) + ',100 0,200" fill="' + color + '"/>';
+}
+function svgWrap(inner) {
+return '<svg class="flag-big-svg" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">' + inner +
+'<rect x="1" y="1" width="298" height="198" fill="none" stroke="rgba(0,0,0,0.15)" stroke-width="2"/></svg>';
+}
 
-  // --- Rank It ---
-  var rankListEl = document.getElementById('rankList');
-  var rankEntries = [];
-  function renderRank() {
-    if (rankEntries.length === 0) {
-      rankListEl.innerHTML = '<li class="rank-empty">Todavía no hay países en la lista — ¡agrega el primero!</li>';
-      return;
-    }
-    rankListEl.innerHTML = '';
-    rankEntries.forEach(function(entry) {
-      var li = document.createElement('li');
-      li.innerHTML = 'El país más <b>' + entry.adj + '</b> es <b>' + entry.country + '</b>';
-      rankListEl.appendChild(li);
-    });
-  }
-  document.getElementById('rankAdd').addEventListener('click', function() {
-    var adj = document.getElementById('rankAdjective').value.trim();
-    if (!adj || !currentCountry) return;
-    rankEntries.push({adj: adj, country: currentCountry.flag + ' ' + currentCountry.name});
-    document.getElementById('rankAdjective').value = '';
-    renderRank();
-  });
-  document.getElementById('rankAdjective').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') document.getElementById('rankAdd').click();
-  });
+var flagBuilders = {
+ar: function() { return svgWrap(stripeH(0,66.7,'#74ACDF') + stripeH(66.7,133.3,'#FFFFFF') + stripeH(133.3,200,'#74ACDF') + sunSVG(150,100,16,20,34,16,'#F6B40E',5)); },
+bo: function() { return svgWrap(stripeH(0,66.7,'#D52B1E') + stripeH(66.7,133.3,'#F9E300') + stripeH(133.3,200,'#007934')); },
+cl: function() { return svgWrap(stripeH(0,100,'#FFFFFF') + stripeH(100,200,'#D52B1E') + '<rect x="0" y="0" width="100" height="100" fill="#0039A6"/>' + starPoly(50,50,26,'#FFFFFF',-90)); },
+co: function() { return svgWrap(stripeH(0,100,'#FCD116') + stripeH(100,150,'#003893') + stripeH(150,200,'#CE1126')); },
+cr: function() { return svgWrap(stripeH(0,33.3,'#002B7F') + stripeH(33.3,66.7,'#FFFFFF') + stripeH(66.7,133.3,'#CE1126') + stripeH(133.3,166.7,'#FFFFFF') + stripeH(166.7,200,'#002B7F')); },
+cu: function() { return svgWrap(stripeH(0,40,'#002A8F') + stripeH(40,80,'#FFFFFF') + stripeH(80,120,'#002A8F') + stripeH(120,160,'#FFFFFF') + stripeH(160,200,'#002A8F') + hoistTriangle('#CE1126',0.4) + starPoly(50,100,20,'#FFFFFF',-90)); },
+ec: function() { return svgWrap(stripeH(0,100,'#FFDD00') + stripeH(100,150,'#034EA2') + stripeH(150,200,'#ED1C24') + '<circle cx="150" cy="100" r="22" fill="#FFDD00" stroke="#6b4a1a" stroke-width="2"/>'); },
+sv: function() { return svgWrap(stripeH(0,66.7,'#0047AB') + stripeH(66.7,133.3,'#FFFFFF') + stripeH(133.3,200,'#0047AB') + '<circle cx="150" cy="100" r="20" fill="none" stroke="#0047AB" stroke-width="3"/><circle cx="150" cy="100" r="10" fill="#FCD116"/>'); },
+es: function() { return svgWrap(stripeH(0,50,'#AA151B') + stripeH(50,150,'#F1BF00') + stripeH(150,200,'#AA151B') + '<rect x="70" y="80" width="30" height="40" rx="3" fill="#AA151B" stroke="#F1BF00" stroke-width="2"/>'); },
+gt: function() { return svgWrap(stripeV(0,100,'#4997D0') + stripeV(100,200,'#FFFFFF') + stripeV(200,300,'#4997D0') + '<circle cx="150" cy="100" r="18" fill="#3AA65D"/>'); },
+gq: function() { return svgWrap(stripeH(0,66.7,'#3E9A00') + stripeH(66.7,133.3,'#FFFFFF') + stripeH(133.3,200,'#E32118') + hoistTriangle('#0073CE',0.35) + '<circle cx="170" cy="100" r="16" fill="#FFFFFF" stroke="#3E9A00" stroke-width="2"/>'); },
+hn: function() { return svgWrap(stripeH(0,66.7,'#0073CF') + stripeH(66.7,133.3,'#FFFFFF') + stripeH(133.3,200,'#0073CF') + starPoly(120,80,10,'#0073CF',-90) + starPoly(150,100,10,'#0073CF',-90) + starPoly(180,80,10,'#0073CF',-90) + starPoly(120,120,10,'#0073CF',-90) + starPoly(180,120,10,'#0073CF',-90)); },
+mx: function() { return svgWrap(stripeV(0,100,'#006341') + stripeV(100,200,'#FFFFFF') + stripeV(200,300,'#CE1126') + '<ellipse cx="150" cy="100" rx="18" ry="22" fill="#8B5E3C"/>'); },
+ni: function() { return svgWrap(stripeH(0,66.7,'#0067C6') + stripeH(66.7,133.3,'#FFFFFF') + stripeH(133.3,200,'#0067C6') + '<polygon points="150,84 136,112 164,112" fill="none" stroke="#0067C6" stroke-width="3"/>'); },
+pa: function() { return svgWrap('<rect x="0" y="0" width="150" height="100" fill="#FFFFFF"/><rect x="150" y="0" width="150" height="100" fill="#DA121A"/><rect x="0" y="100" width="150" height="100" fill="#072357"/><rect x="150" y="100" width="150" height="100" fill="#FFFFFF"/>' + starPoly(75,50,18,'#072357',-90) + starPoly(225,150,18,'#DA121A',-90)); },
+py: function() { return svgWrap(stripeH(0,66.7,'#D52B1E') + stripeH(66.7,133.3,'#FFFFFF') + stripeH(133.3,200,'#0038A8') + '<circle cx="150" cy="100" r="18" fill="none" stroke="#F9E300" stroke-width="2"/>' + starPoly(150,100,9,'#F9E300',-90)); },
+pe: function() { return svgWrap(stripeV(0,100,'#D91023') + stripeV(100,200,'#FFFFFF') + stripeV(200,300,'#D91023')); },
+pr: function() { return svgWrap(stripeH(0,40,'#ED1C24') + stripeH(40,80,'#FFFFFF') + stripeH(80,120,'#ED1C24') + stripeH(120,160,'#FFFFFF') + stripeH(160,200,'#ED1C24') + hoistTriangle('#0050A0',0.4) + starPoly(50,100,20,'#FFFFFF',-90)); },
+do_: function() { return svgWrap(stripeH(0,200,'#002D62') /* base, overwritten by quadrants below */ + '<rect x="0" y="0" width="140" height="90" fill="#002D62"/><rect x="160" y="0" width="140" height="90" fill="#CE1126"/><rect x="0" y="110" width="140" height="90" fill="#CE1126"/><rect x="160" y="110" width="140" height="90" fill="#002D62"/><rect x="140" y="0" width="20" height="200" fill="#FFFFFF"/><rect x="0" y="90" width="300" height="20" fill="#FFFFFF"/><circle cx="150" cy="100" r="14" fill="#FFFFFF" stroke="#002D62" stroke-width="2"/>'); },
+uy: function() {
+var s = '';
+var stripeColors = ['#FFFFFF','#0038A8','#FFFFFF','#0038A8','#FFFFFF','#0038A8','#FFFFFF','#0038A8','#FFFFFF'];
+var h = 200/9;
+for (var i=0;i<9;i++){ s += stripeH(i*h,(i+1)*h,stripeColors[i]); }
+s += '<rect x="0" y="0" width="111" height="111" fill="#FFFFFF"/>' + sunSVG(55,55,10,13,22,16,'#FCBF49',3.5);
+return svgWrap(s);
+},
+ve: function() { return svgWrap(stripeH(0,66.7,'#FCD116') + stripeH(66.7,133.3,'#0033A0') + stripeH(133.3,200,'#CE1126') +
+starPoly(90,100,9,'#FFFFFF',-90) + starPoly(115,92,9,'#FFFFFF',-90) + starPoly(140,88,9,'#FFFFFF',-90) +
+starPoly(165,88,9,'#FFFFFF',-90) + starPoly(190,92,9,'#FFFFFF',-90) + starPoly(210,100,9,'#FFFFFF',-90)); }
+};
+function renderFlagSVG(code) {
+var key = (code === 'do') ? 'do_' : code;
+var fn = flagBuilders[key];
+return fn ? fn() : '';
+}
 
-  // --- Print Wall of Rankings ---
-  document.getElementById('printWallBtn').addEventListener('click', function() {
-    var list = document.getElementById('printRankList');
-    list.innerHTML = '';
-    if (rankEntries.length === 0) {
-      var li = document.createElement('li');
-      li.textContent = 'Todavía no hay entradas en Rank It.';
-      list.appendChild(li);
-    } else {
-      rankEntries.forEach(function(entry) {
-        var li = document.createElement('li');
-        li.textContent = 'El país más ' + entry.adj + ' es ' + entry.country;
-        list.appendChild(li);
-      });
-    }
-    var d = new Date();
-    document.getElementById('printDate').textContent = d.toLocaleDateString('es-ES', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
-    window.print();
-  });
+// --- Flag wheel (Retos de las Banderas) — shows only flags, students guess the country ---
+var flagCanvas = document.getElementById('flagWheel');
+drawWheel(flagCanvas, countries.map(function(c){return c.flag;}), palette, 20);
+var currentFlagCountry = null;
+var spinFlagFn = makeSpinner(flagCanvas, countries, function(i) {
+currentFlagCountry = countries[i];
+var resultEl = document.getElementById('flagResult');
+resultEl.innerHTML = renderFlagSVG(currentFlagCountry.code);
+document.getElementById('flagGuessNote').style.display = 'block';
+var revealBtn = document.getElementById('revealFlagBtn');
+revealBtn.style.display = 'inline-block';
+revealBtn.classList.remove('copied');
+revealBtn.textContent = '👁 Revelar país';
+});
+document.getElementById('spinFlag').addEventListener('click', spinFlagFn);
 
-  // --- New round ---
-  document.getElementById('newRound').addEventListener('click', function() {
-    document.getElementById('stage2').classList.remove('unlocked');
-    document.getElementById('stage3').classList.remove('unlocked');
-    document.getElementById('countryResult').textContent = '';
-    document.getElementById('questionResult').textContent = '';
-    document.getElementById('promptCard').style.display = 'none';
-    document.getElementById('researchLinks').innerHTML = '';
-    document.getElementById('copyForCharlas').style.display = 'none';
-    currentCountry = null;
-  });
+document.getElementById('revealFlagBtn').addEventListener('click', function() {
+if (!currentFlagCountry) return;
+var resultEl = document.getElementById('flagResult');
+resultEl.innerHTML = renderFlagSVG(currentFlagCountry.code) + '<div style="margin-top:6px;">' + currentFlagCountry.flag + ' ' + currentFlagCountry.name + '</div>';
+document.getElementById('flagGuessNote').style.display = 'none';
+});
+
+// --- Question wheel ---
+var questionCanvas = document.getElementById('questionWheel');
+drawWheel(questionCanvas, questions, ['#4a90d9','#f5c842','#e84545','#7fae6f','#b98ee8','#ff8c42']);
+var spinQuestionFn = makeSpinner(questionCanvas, questions, function(i) {
+var word = questions[i];
+document.getElementById('questionResult').textContent = '¿' + word + '...?';
+var promptCard = document.getElementById('promptCard');
+promptCard.style.display = 'block';
+promptCard.innerHTML = 'Con la palabra <b>' + word + '</b>, escriban una pregunta sobre <b>' +
+(currentCountry ? currentCountry.flag + ' ' + currentCountry.name : 'el país') + '</b>.';
+});
+document.getElementById('spinQuestion').addEventListener('click', spinQuestionFn);
+
+// --- Rank It ---
+var rankListEl = document.getElementById('rankList');
+var rankEntries = [];
+function renderRank() {
+if (rankEntries.length === 0) {
+rankListEl.innerHTML = '<li class="rank-empty">Todavía no hay países en la lista — ¡agrega el primero!</li>';
+return;
+}
+rankListEl.innerHTML = '';
+rankEntries.forEach(function(entry) {
+var li = document.createElement('li');
+li.innerHTML = 'El país más <b>' + entry.adj + '</b> es <b>' + entry.country + '</b>';
+rankListEl.appendChild(li);
+});
+}
+document.getElementById('rankAdd').addEventListener('click', function() {
+var adj = document.getElementById('rankAdjective').value.trim();
+if (!adj || !currentCountry) return;
+rankEntries.push({adj: adj, country: currentCountry.flag + ' ' + currentCountry.name});
+document.getElementById('rankAdjective').value = '';
+renderRank();
+});
+document.getElementById('rankAdjective').addEventListener('keydown', function(e) {
+if (e.key === 'Enter') document.getElementById('rankAdd').click();
+});
+
+// --- Print Wall of Rankings ---
+document.getElementById('printWallBtn').addEventListener('click', function() {
+var list = document.getElementById('printRankList');
+list.innerHTML = '';
+if (rankEntries.length === 0) {
+var li = document.createElement('li');
+li.textContent = 'Todavía no hay entradas en Rank It.';
+list.appendChild(li);
+} else {
+rankEntries.forEach(function(entry) {
+var li = document.createElement('li');
+li.textContent = 'El país más ' + entry.adj + ' es ' + entry.country;
+list.appendChild(li);
+});
+}
+var d = new Date();
+document.getElementById('printDate').textContent = d.toLocaleDateString('es-ES', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+window.print();
+});
+
+// --- New round ---
+document.getElementById('newRound').addEventListener('click', function() {
+document.getElementById('stage2').classList.remove('unlocked');
+document.getElementById('stage3').classList.remove('unlocked');
+document.getElementById('countryResult').textContent = '';
+document.getElementById('questionResult').textContent = '';
+document.getElementById('promptCard').style.display = 'none';
+document.getElementById('researchLinks').innerHTML = '';
+document.getElementById('copyForCharlas').style.display = 'none';
+document.getElementById('flagResult').textContent = '';
+document.getElementById('flagGuessNote').style.display = 'none';
+document.getElementById('revealFlagBtn').style.display = 'none';
+currentCountry = null;
+currentFlagCountry = null;
+});
 </script>
 </body>
 </html>
