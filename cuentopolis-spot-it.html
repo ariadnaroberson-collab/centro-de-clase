@@ -89,1196 +89,2059 @@
    ========================================================= */
 const CONFIG = {
   units: {
-    "demo-unit": {
-      label: "DEMO — reemplazar con contenido real de una unidad",
-      rounds: [
-        { prompt: "¿Qué palabra significa 'lugar con muchos árboles'?",
-          choices: [
-            {label:"el bosque", correct:true},
-            {label:"la ciudad", correct:false},
-            {label:"el río", correct:false},
-            {label:"la montaña", correct:false}
-          ], explain:"'El bosque' es el lugar lleno de árboles donde ocurre la aventura."},
-        { prompt: "¿Cuál es el sinónimo de 'valentía'?",
-          choices: [
-            {label:"miedo", correct:false},
-            {label:"coraje", correct:true},
-            {label:"tristeza", correct:false},
-            {label:"duda", correct:false}
-          ], explain:"'Coraje' y 'valentía' significan tener el valor de actuar a pesar del miedo."},
-        { prompt: "Para pedir información a otra persona, tú debes...",
-          choices: [
-            {label:"narrar", correct:false},
-            {label:"describir", correct:false},
-            {label:"preguntar", correct:true},
-            {label:"responder", correct:false}
-          ], explain:"'Preguntar' es pedir información — la base de la comunicación interpersonal."},
-        { prompt: "Contar una historia en orden se llama...",
-          choices: [
-            {label:"narrar", correct:true},
-            {label:"preguntar", correct:false},
-            {label:"responder", correct:false},
-            {label:"escuchar", correct:false}
-          ], explain:"'Narrar' es contar una historia en orden — una habilidad presentacional clave."}
-      ]
-    },
     "guardianes-ep1": {
       label: "Guardianes de Chiquibul — Ep. 1: ¡Hola, Chica!",
       rounds: [
-        { prompt: "En el cuento, Don Pico dice: '—Tengo una misión para ti, Chica.' ¿Qué es una misión?",
+        {
+          prompt: "En el cuento, Don Pico dice: '—Tengo una misión para ti, Chica.' ¿Qué es una misión?",
           choices: [
-            {label:"un trabajo importante", correct:true},
-            {label:"un animal nuevo", correct:false},
-            {label:"una fruta rica", correct:false},
-            {label:"una campana", correct:false}
-          ], explain:"Misión significa un trabajo importante — así lo usa Don Pico en el cuento."},
-        { prompt: "El coatí nuevo tiene una mochila y está un poco nervioso. ¿Qué significa 'nervioso' aquí?",
+            {
+              label: "un trabajo importante",
+              correct: true
+            },
+            {
+              label: "un animal nuevo",
+              correct: false
+            },
+            {
+              label: "una fruta rica",
+              correct: false
+            },
+            {
+              label: "una campana",
+              correct: false
+            }
+          ],
+          explain: "Misión significa un trabajo importante — así lo usa Don Pico en el cuento."
+        },
+        {
+          prompt: "El coatí nuevo tiene una mochila y está un poco nervioso. ¿Qué significa 'nervioso' aquí?",
           choices: [
-            {label:"tiene un poco de miedo o preocupación", correct:true},
-            {label:"está muy feliz", correct:false},
-            {label:"tiene mucha hambre", correct:false},
-            {label:"está muy cansado", correct:false}
-          ], explain:"Nico está nervioso porque todo es nuevo para él — siente un poco de miedo."},
-        { prompt: "¿Por qué Don Pico elige a Chica para dar la bienvenida a Nico?",
+            {
+              label: "tiene un poco de miedo o preocupación",
+              correct: true
+            },
+            {
+              label: "está muy feliz",
+              correct: false
+            },
+            {
+              label: "tiene mucha hambre",
+              correct: false
+            },
+            {
+              label: "está muy cansado",
+              correct: false
+            }
+          ],
+          explain: "Nico está nervioso porque todo es nuevo para él — siente un poco de miedo."
+        },
+        {
+          prompt: "¿Por qué Don Pico elige a Chica para dar la bienvenida a Nico?",
           choices: [
-            {label:"Porque es la más rápida de la selva.", correct:false},
-            {label:"Porque tiene el don de hacer sentir bienvenidos a los demás.", correct:true},
-            {label:"Porque es la más fuerte de la escuela.", correct:false},
-            {label:"Porque ella lo pidió primero.", correct:false}
-          ], explain:"Don Pico dice: 'Tú haces sentir bienvenidos a los demás' — ese es el don especial de Chica."},
-        { prompt: "Al final del episodio, ¿cómo se siente Bruno?",
+            {
+              label: "Porque es la más rápida de la selva.",
+              correct: false
+            },
+            {
+              label: "Porque tiene el don de hacer sentir bienvenidos a los demás.",
+              correct: true
+            },
+            {
+              label: "Porque es la más fuerte de la escuela.",
+              correct: false
+            },
+            {
+              label: "Porque ella lo pidió primero.",
+              correct: false
+            }
+          ],
+          explain: "Don Pico dice: 'Tú haces sentir bienvenidos a los demás' — ese es el don especial de Chica."
+        },
+        {
+          prompt: "Al final del episodio, ¿cómo se siente Bruno?",
           choices: [
-            {label:"Muy contento por Nico.", correct:false},
-            {label:"Un poco triste porque nadie lo recibió así a él.", correct:true},
-            {label:"Enojado con Chica.", correct:false},
-            {label:"No siente nada en particular.", correct:false}
-          ], explain:"Bruno mira de lejos y siente celos y tristeza — su historia apenas empieza."},
-        { prompt: "Cada mañana, Chica grita '¡Buenos días, selva!' y saluda a todos. ¿Qué tipo de personaje es ella?",
+            {
+              label: "Muy contento por Nico.",
+              correct: false
+            },
+            {
+              label: "Un poco triste porque nadie lo recibió así a él.",
+              correct: true
+            },
+            {
+              label: "Enojado con Chica.",
+              correct: false
+            },
+            {
+              label: "No siente nada en particular.",
+              correct: false
+            }
+          ],
+          explain: "Bruno mira de lejos y siente celos y tristeza — su historia apenas empieza."
+        },
+        {
+          prompt: "Cada mañana, Chica grita '¡Buenos días, selva!' y saluda a todos. ¿Qué tipo de personaje es ella?",
           choices: [
-            {label:"Tímida y callada", correct:false},
-            {label:"Amistosa y cariñosa con todos", correct:true},
-            {label:"Enojona por la mañana", correct:false},
-            {label:"Perezosa, no le gusta saludar", correct:false}
-          ], explain:"El cuento dice que para Chica todos son importantes, grandes o pequeños."},
-        { prompt: "¿De dónde viene Nico, el animal nuevo?",
+            {
+              label: "Tímida y callada",
+              correct: false
+            },
+            {
+              label: "Amistosa y cariñosa con todos",
+              correct: true
+            },
+            {
+              label: "Enojona por la mañana",
+              correct: false
+            },
+            {
+              label: "Perezosa, no le gusta saludar",
+              correct: false
+            }
+          ],
+          explain: "El cuento dice que para Chica todos son importantes, grandes o pequeños."
+        },
+        {
+          prompt: "¿De dónde viene Nico, el animal nuevo?",
           choices: [
-            {label:"De otro país", correct:false},
-            {label:"De otra parte de Belice — el distrito de Toledo", correct:true},
-            {label:"De la ciudad", correct:false},
-            {label:"El cuento no lo dice", correct:false}
-          ], explain:"Nico se mudó dentro de Belice, desde Toledo — no desde otro país."}
+            {
+              label: "De otro país",
+              correct: false
+            },
+            {
+              label: "De otra parte de Belice — el distrito de Toledo",
+              correct: true
+            },
+            {
+              label: "De la ciudad",
+              correct: false
+            },
+            {
+              label: "El cuento no lo dice",
+              correct: false
+            }
+          ],
+          explain: "Nico se mudó dentro de Belice, desde Toledo — no desde otro país."
+        }
       ]
     },
     "guardianes-ep2": {
       label: "Guardianes de Chiquibul — Ep. 2: El Gran Árbol",
       rounds: [
-        { prompt: "Bruno cubre las flores, piedras y hojas con barro porque...",
+        {
+          prompt: "Bruno cubre las flores, piedras y hojas con barro porque...",
           choices: [
-            {label:"quiere jugar con barro", correct:false},
-            {label:"cree que el bosque sería más bonito si todo fuera de un solo color", correct:true},
-            {label:"Don Pico se lo pide", correct:false},
-            {label:"quiere esconderlas de sus amigos", correct:false}
-          ], explain:"Bruno piensa: 'Sería mejor si todo fuera verde' — cree que la uniformidad sería más bonita."},
-        { prompt: "Al final del episodio, ¿qué comprende Bruno sobre la selva?",
+            {
+              label: "quiere jugar con barro",
+              correct: false
+            },
+            {
+              label: "cree que el bosque sería más bonito si todo fuera de un solo color",
+              correct: true
+            },
+            {
+              label: "Don Pico se lo pide",
+              correct: false
+            },
+            {
+              label: "quiere esconderlas de sus amigos",
+              correct: false
+            }
+          ],
+          explain: "Bruno piensa: 'Sería mejor si todo fuera verde' — cree que la uniformidad sería más bonita."
+        },
+        {
+          prompt: "Al final del episodio, ¿qué comprende Bruno sobre la selva?",
           choices: [
-            {label:"Que el verde es el mejor color de todos.", correct:false},
-            {label:"Que la selva es hermosa porque cada color tiene su propio lugar.", correct:true},
-            {label:"Que debe esconder mejor el barro la próxima vez.", correct:false},
-            {label:"Que debe pedirle perdón a Don Pico.", correct:false}
-          ], explain:"Chica le explica: 'La selva no es bonita porque todo es igual. Es bonita porque cada color tiene un lugar.'"},
-        { prompt: "¿Qué es la Gran Ceiba?",
+            {
+              label: "Que el verde es el mejor color de todos.",
+              correct: false
+            },
+            {
+              label: "Que la selva es hermosa porque cada color tiene su propio lugar.",
+              correct: true
+            },
+            {
+              label: "Que debe esconder mejor el barro la próxima vez.",
+              correct: false
+            },
+            {
+              label: "Que debe pedirle perdón a Don Pico.",
+              correct: false
+            }
+          ],
+          explain: "Chica le explica: 'La selva no es bonita porque todo es igual. Es bonita porque cada color tiene un lugar.'"
+        },
+        {
+          prompt: "¿Qué es la Gran Ceiba?",
           choices: [
-            {label:"El árbol más antiguo de la selva.", correct:true},
-            {label:"Una flor rara y morada.", correct:false},
-            {label:"Un río de la selva.", correct:false},
-            {label:"Un animal nuevo.", correct:false}
-          ], explain:"El cuento dice que la Gran Ceiba es el árbol más antiguo de la selva — vio nacer a muchos animales."},
-        { prompt: "¿Cuál es la misión que da Don Pico durante la excursión?",
+            {
+              label: "El árbol más antiguo de la selva.",
+              correct: true
+            },
+            {
+              label: "Una flor rara y morada.",
+              correct: false
+            },
+            {
+              label: "Un río de la selva.",
+              correct: false
+            },
+            {
+              label: "Un animal nuevo.",
+              correct: false
+            }
+          ],
+          explain: "El cuento dice que la Gran Ceiba es el árbol más antiguo de la selva — vio nacer a muchos animales."
+        },
+        {
+          prompt: "¿Cuál es la misión que da Don Pico durante la excursión?",
           choices: [
-            {label:"Buscar un color en la naturaleza, sin arrancar ni romper nada.", correct:true},
-            {label:"Correr una carrera hasta la Gran Ceiba.", correct:false},
-            {label:"Recoger frutas para comer.", correct:false},
-            {label:"Dormir una siesta bajo el árbol.", correct:false}
-          ], explain:"Don Pico dice: '—Busquen un color en la naturaleza. No arranquen flores. No rompan ramas. Solo miren.'"},
-        { prompt: "Cerca de la Gran Ceiba, Chica ve un símbolo — una espiral con cuatro hojas. ¿Qué pasa con ese símbolo?",
+            {
+              label: "Buscar un color en la naturaleza, sin arrancar ni romper nada.",
+              correct: true
+            },
+            {
+              label: "Correr una carrera hasta la Gran Ceiba.",
+              correct: false
+            },
+            {
+              label: "Recoger frutas para comer.",
+              correct: false
+            },
+            {
+              label: "Dormir una siesta bajo el árbol.",
+              correct: false
+            }
+          ],
+          explain: "Don Pico dice: '—Busquen un color en la naturaleza. No arranquen flores. No rompan ramas. Solo miren.'"
+        },
+        {
+          prompt: "Cerca de la Gran Ceiba, Chica ve un símbolo — una espiral con cuatro hojas. ¿Qué pasa con ese símbolo?",
           choices: [
-            {label:"Desaparece poco a poco cuando el viento mueve las hojas.", correct:true},
-            {label:"Don Pico lo explica completamente.", correct:false},
-            {label:"Bruno lo borra con barro.", correct:false},
-            {label:"Se queda igual todo el episodio.", correct:false}
-          ], explain:"'Cuando Chica mira otra vez, la marca ya está desvanecida' — el misterio de la Gran Ceiba sigue sin explicarse."},
-        { prompt: "Bruno sonríe 'orgulloso' después de cubrir todo con barro. ¿Qué significa que está orgulloso aquí?",
+            {
+              label: "Desaparece poco a poco cuando el viento mueve las hojas.",
+              correct: true
+            },
+            {
+              label: "Don Pico lo explica completamente.",
+              correct: false
+            },
+            {
+              label: "Bruno lo borra con barro.",
+              correct: false
+            },
+            {
+              label: "Se queda igual todo el episodio.",
+              correct: false
+            }
+          ],
+          explain: "'Cuando Chica mira otra vez, la marca ya está desvanecida' — el misterio de la Gran Ceiba sigue sin explicarse."
+        },
+        {
+          prompt: "Bruno sonríe 'orgulloso' después de cubrir todo con barro. ¿Qué significa que está orgulloso aquí?",
           choices: [
-            {label:"Está contento consigo mismo, cree que mejoró el bosque.", correct:true},
-            {label:"Encontró un tesoro escondido.", correct:false},
-            {label:"Ayudó a un amigo con un problema.", correct:false},
-            {label:"Ganó un juego contra Nico.", correct:false}
-          ], explain:"Bruno se siente satisfecho de su idea — antes de darse cuenta de que estaba equivocado."}
+            {
+              label: "Está contento consigo mismo, cree que mejoró el bosque.",
+              correct: true
+            },
+            {
+              label: "Encontró un tesoro escondido.",
+              correct: false
+            },
+            {
+              label: "Ayudó a un amigo con un problema.",
+              correct: false
+            },
+            {
+              label: "Ganó un juego contra Nico.",
+              correct: false
+            }
+          ],
+          explain: "Bruno se siente satisfecho de su idea — antes de darse cuenta de que estaba equivocado."
+        }
       ]
     },
     "guardianes-ep3": {
       label: "Guardianes de Chiquibul — Ep. 3: Un amigo nuevo",
       rounds: [
-        { prompt: "¿Por qué Toño participa tan poco cuando llega a la selva?",
+        {
+          prompt: "¿Por qué Toño participa tan poco cuando llega a la selva?",
           choices: [
-            {label:"Porque piensa que es mejor que los demás.", correct:false},
-            {label:"Porque tiene miedo de que se burlen de él, como en su antigua escuela.", correct:true},
-            {label:"Porque no entiende lo que dicen los demás.", correct:false},
-            {label:"Porque está muy cansado.", correct:false}
-          ], explain:"Toño explica: 'En mi escuela antigua, decían que yo era raro... Aprendí a no hablar mucho. Es más fácil.'"},
-        { prompt: "¿Qué aprende Bruno al final del episodio?",
+            {
+              label: "Porque piensa que es mejor que los demás.",
+              correct: false
+            },
+            {
+              label: "Porque tiene miedo de que se burlen de él, como en su antigua escuela.",
+              correct: true
+            },
+            {
+              label: "Porque no entiende lo que dicen los demás.",
+              correct: false
+            },
+            {
+              label: "Porque está muy cansado.",
+              correct: false
+            }
+          ],
+          explain: "Toño explica: 'En mi escuela antigua, decían que yo era raro... Aprendí a no hablar mucho. Es más fácil.'"
+        },
+        {
+          prompt: "¿Qué aprende Bruno al final del episodio?",
           choices: [
-            {label:"Que debe evitar a los animales nuevos.", correct:false},
-            {label:"Que él también ha tenido miedo de no tener amigos, y que ser sincero ayuda a conectar con otros.", correct:true},
-            {label:"Que Toño es el animal más fuerte de la selva.", correct:false},
-            {label:"Que no debe hablar en clase.", correct:false}
-          ], explain:"Bruno dice muy bajito: '—Yo tenía miedo... de que nadie quisiera ser mi amigo.' Es la primera vez que se sincera."},
-        { prompt: "Cuando Bruno le dice a Toño '¿Para qué viniste?', ¿cómo reacciona Toño?",
+            {
+              label: "Que debe evitar a los animales nuevos.",
+              correct: false
+            },
+            {
+              label: "Que él también ha tenido miedo de no tener amigos, y que ser sincero ayuda a conectar con otros.",
+              correct: true
+            },
+            {
+              label: "Que Toño es el animal más fuerte de la selva.",
+              correct: false
+            },
+            {
+              label: "Que no debe hablar en clase.",
+              correct: false
+            }
+          ],
+          explain: "Bruno dice muy bajito: '—Yo tenía miedo... de que nadie quisiera ser mi amigo.' Es la primera vez que se sincera."
+        },
+        {
+          prompt: "Cuando Bruno le dice a Toño '¿Para qué viniste?', ¿cómo reacciona Toño?",
           choices: [
-            {label:"Se va hacia el bosque, triste y sin decir nada.", correct:true},
-            {label:"Se ríe y sigue jugando.", correct:false},
-            {label:"Se enoja y le grita a Bruno.", correct:false},
-            {label:"No le importa nada.", correct:false}
-          ], explain:"'Todos guardan silencio. Toño abre mucho los ojos... Camina hacia el bosque, sin decir nada.'"},
-        { prompt: "Nico piensa que tal vez Toño tiene 'vergüenza'. ¿Qué significa esa palabra en el cuento?",
+            {
+              label: "Se va hacia el bosque, triste y sin decir nada.",
+              correct: true
+            },
+            {
+              label: "Se ríe y sigue jugando.",
+              correct: false
+            },
+            {
+              label: "Se enoja y le grita a Bruno.",
+              correct: false
+            },
+            {
+              label: "No le importa nada.",
+              correct: false
+            }
+          ],
+          explain: "'Todos guardan silencio. Toño abre mucho los ojos... Camina hacia el bosque, sin decir nada.'"
+        },
+        {
+          prompt: "Nico piensa que tal vez Toño tiene 'vergüenza'. ¿Qué significa esa palabra en el cuento?",
           choices: [
-            {label:"Un sentimiento de timidez o pena.", correct:true},
-            {label:"Mucha hambre.", correct:false},
-            {label:"Mucho sueño.", correct:false},
-            {label:"Mucha alegría.", correct:false}
-          ], explain:"'Vergüenza' describe ese sentimiento de timidez — aunque al final descubren que era en realidad miedo."},
-        { prompt: "Cuando todos comparten un miedo en círculo, ¿qué dice Bruno?",
+            {
+              label: "Un sentimiento de timidez o pena.",
+              correct: true
+            },
+            {
+              label: "Mucha hambre.",
+              correct: false
+            },
+            {
+              label: "Mucho sueño.",
+              correct: false
+            },
+            {
+              label: "Mucha alegría.",
+              correct: false
+            }
+          ],
+          explain: "'Vergüenza' describe ese sentimiento de timidez — aunque al final descubren que era en realidad miedo."
+        },
+        {
+          prompt: "Cuando todos comparten un miedo en círculo, ¿qué dice Bruno?",
           choices: [
-            {label:"Que tenía miedo de que nadie quisiera ser su amigo.", correct:true},
-            {label:"Que tiene miedo de la oscuridad.", correct:false},
-            {label:"Que tenía miedo de volar.", correct:false},
-            {label:"Que no tiene miedo de nada.", correct:false}
-          ], explain:"Ese miedo al rechazo es lo que Bruno comparte, sorprendiendo a todo el grupo con su sinceridad."},
-        { prompt: "¿Qué palabra escribe Chica en una hoja grande para empezar el círculo de amigos?",
+            {
+              label: "Que tenía miedo de que nadie quisiera ser su amigo.",
+              correct: true
+            },
+            {
+              label: "Que tiene miedo de la oscuridad.",
+              correct: false
+            },
+            {
+              label: "Que tenía miedo de volar.",
+              correct: false
+            },
+            {
+              label: "Que no tiene miedo de nada.",
+              correct: false
+            }
+          ],
+          explain: "Ese miedo al rechazo es lo que Bruno comparte, sorprendiendo a todo el grupo con su sinceridad."
+        },
+        {
+          prompt: "¿Qué palabra escribe Chica en una hoja grande para empezar el círculo de amigos?",
           choices: [
-            {label:"AMIGOS", correct:true},
-            {label:"MIEDO", correct:false},
-            {label:"COLORES", correct:false},
-            {label:"SELVA", correct:false}
-          ], explain:"Chica escribe AMIGOS y dice: '—Hoy no vamos a jugar. Hoy vamos a escuchar.'"}
+            {
+              label: "AMIGOS",
+              correct: true
+            },
+            {
+              label: "MIEDO",
+              correct: false
+            },
+            {
+              label: "COLORES",
+              correct: false
+            },
+            {
+              label: "SELVA",
+              correct: false
+            }
+          ],
+          explain: "Chica escribe AMIGOS y dice: '—Hoy no vamos a jugar. Hoy vamos a escuchar.'"
+        }
       ]
     },
     "guardianes-ep4": {
       label: "Guardianes de Chiquibul — Ep. 4: ¿Dónde está Mora?",
       rounds: [
-        { prompt: "Cuando por fin encuentran a Mora, ¿por qué se había quedado en el jardín escondido?",
+        {
+          prompt: "Cuando por fin encuentran a Mora, ¿por qué se había quedado en el jardín escondido?",
           choices: [
-            {label:"Porque se perdió y no sabía cómo volver.", correct:false},
-            {label:"Porque encontró una orquídea débil y quiso ayudarla a florecer antes del festival.", correct:true},
-            {label:"Porque quería explorar sola, sin avisar a nadie.", correct:false},
-            {label:"Porque tenía miedo de volver al festival.", correct:false}
-          ], explain:"Mora dice: 'Esta orquídea está muy débil. Quiero ayudarla antes de volver.'"},
-        { prompt: "¿Quién es Luna, y qué comparte con el grupo?",
+            {
+              label: "Porque se perdió y no sabía cómo volver.",
+              correct: false
+            },
+            {
+              label: "Porque encontró una orquídea débil y quiso ayudarla a florecer antes del festival.",
+              correct: true
+            },
+            {
+              label: "Porque quería explorar sola, sin avisar a nadie.",
+              correct: false
+            },
+            {
+              label: "Porque tenía miedo de volver al festival.",
+              correct: false
+            }
+          ],
+          explain: "Mora dice: 'Esta orquídea está muy débil. Quiero ayudarla antes de volver.'"
+        },
+        {
+          prompt: "¿Quién es Luna, y qué comparte con el grupo?",
           choices: [
-            {label:"Una guacamaya que siempre ha vivido en Chiquibul y no conoce otros lugares.", correct:false},
-            {label:"Una guacamaya que visita a sus abuelos desde Yucatán, México, y comparte historias de cenotes y flamencos.", correct:true},
-            {label:"Una mariposa que ayuda a Mora a cuidar flores.", correct:false},
-            {label:"Una amiga antigua de Bruno.", correct:false}
-          ], explain:"Luna dice: 'Llego de Yucatán para visitar a mis abuelos... Hay playas, cenotes y flamencos rosados.'"},
-        { prompt: "¿Qué instrucciones sigue el grupo, guiado por Luna, para encontrar el jardín escondido?",
+            {
+              label: "Una guacamaya que siempre ha vivido en Chiquibul y no conoce otros lugares.",
+              correct: false
+            },
+            {
+              label: "Una guacamaya que visita a sus abuelos desde Yucatán, México, y comparte historias de cenotes y flamencos.",
+              correct: true
+            },
+            {
+              label: "Una mariposa que ayuda a Mora a cuidar flores.",
+              correct: false
+            },
+            {
+              label: "Una amiga antigua de Bruno.",
+              correct: false
+            }
+          ],
+          explain: "Luna dice: 'Llego de Yucatán para visitar a mis abuelos... Hay playas, cenotes y flamencos rosados.'"
+        },
+        {
+          prompt: "¿Qué instrucciones sigue el grupo, guiado por Luna, para encontrar el jardín escondido?",
           choices: [
-            {label:"Caminan derecho, cruzan el río, y giran a la izquierda.", correct:true},
-            {label:"Suben una montaña muy alta.", correct:false},
-            {label:"Nadan por el Río Cristal.", correct:false},
-            {label:"Vuelan sobre los árboles.", correct:false}
-          ], explain:"'—Seguimos por aquí —dice Nico. Caminan derecho, cruzan el río, y giran a la izquierda.'"},
-        { prompt: "Cerca del jardín escondido, ¿qué encuentran Bruno y Chica sobre una roca con musgo?",
+            {
+              label: "Caminan derecho, cruzan el río, y giran a la izquierda.",
+              correct: true
+            },
+            {
+              label: "Suben una montaña muy alta.",
+              correct: false
+            },
+            {
+              label: "Nadan por el Río Cristal.",
+              correct: false
+            },
+            {
+              label: "Vuelan sobre los árboles.",
+              correct: false
+            }
+          ],
+          explain: "'—Seguimos por aquí —dice Nico. Caminan derecho, cruzan el río, y giran a la izquierda.'"
+        },
+        {
+          prompt: "Cerca del jardín escondido, ¿qué encuentran Bruno y Chica sobre una roca con musgo?",
           choices: [
-            {label:"El mismo símbolo de la Gran Ceiba — una espiral con cuatro hojas.", correct:true},
-            {label:"Una flor nueva que nadie conoce.", correct:false},
-            {label:"Un mapa antiguo.", correct:false},
-            {label:"Un nido de pájaro vacío.", correct:false}
-          ], explain:"El misterio de la Gran Ceiba reaparece — el mismo símbolo visto en el Episodio 2."},
-        { prompt: "¿De qué color es la orquídea especial que cuida Mora?",
+            {
+              label: "El mismo símbolo de la Gran Ceiba — una espiral con cuatro hojas.",
+              correct: true
+            },
+            {
+              label: "Una flor nueva que nadie conoce.",
+              correct: false
+            },
+            {
+              label: "Un mapa antiguo.",
+              correct: false
+            },
+            {
+              label: "Un nido de pájaro vacío.",
+              correct: false
+            }
+          ],
+          explain: "El misterio de la Gran Ceiba reaparece — el mismo símbolo visto en el Episodio 2."
+        },
+        {
+          prompt: "¿De qué color es la orquídea especial que cuida Mora?",
           choices: [
-            {label:"Violeta.", correct:true},
-            {label:"Roja.", correct:false},
-            {label:"Amarilla.", correct:false},
-            {label:"Azul.", correct:false}
-          ], explain:"'La flor abre sus pétalos. Es de color violeta. Nadie ve un color así antes.'"},
-        { prompt: "Al final, Don Pico dice: 'Pedir ayuda también es importante cuando...' ¿cómo termina la frase?",
+            {
+              label: "Violeta.",
+              correct: true
+            },
+            {
+              label: "Roja.",
+              correct: false
+            },
+            {
+              label: "Amarilla.",
+              correct: false
+            },
+            {
+              label: "Azul.",
+              correct: false
+            }
+          ],
+          explain: "'La flor abre sus pétalos. Es de color violeta. Nadie ve un color así antes.'"
+        },
+        {
+          prompt: "Al final, Don Pico dice: 'Pedir ayuda también es importante cuando...' ¿cómo termina la frase?",
           choices: [
-            {label:"estamos perdidos.", correct:true},
-            {label:"tenemos hambre.", correct:false},
-            {label:"hace mucho calor.", correct:false},
-            {label:"es de noche.", correct:false}
-          ], explain:"La lección del episodio conecta con seguir un camino y aceptar ayuda para encontrar a una amiga."}
+            {
+              label: "estamos perdidos.",
+              correct: true
+            },
+            {
+              label: "tenemos hambre.",
+              correct: false
+            },
+            {
+              label: "hace mucho calor.",
+              correct: false
+            },
+            {
+              label: "es de noche.",
+              correct: false
+            }
+          ],
+          explain: "La lección del episodio conecta con seguir un camino y aceptar ayuda para encontrar a una amiga."
+        }
       ]
     },
     "guardianes-ep5": {
       label: "Guardianes de Chiquibul — Ep. 5: El cumpleaños sorpresa",
       rounds: [
-        { prompt: "Nico dice que mañana cumple años pero nunca tiene una fiesta grande. ¿Por qué?",
+        {
+          prompt: "¿Por qué Bruno se va triste sin hablar con nadie?",
           choices: [
-            {label:"Su familia celebra en casa.", correct:true},
-            {label:"No le gustan las fiestas.", correct:false},
-            {label:"Está muy ocupado.", correct:false},
-            {label:"No tiene amigos.", correct:false}
-          ], explain:"Nico explica: 'Mi familia celebra en casa. Mi mamá prepara mi comida favorita...'"},
-        { prompt: "¿Qué deciden organizar los amigos para Nico?",
+            {
+              label: "Porque no le gustan las fiestas.",
+              correct: false
+            },
+            {
+              label: "Porque escucha solo parte de la conversación y cree que nadie lo invitó.",
+              correct: true
+            },
+            {
+              label: "Porque Don Pico le pide que se vaya.",
+              correct: false
+            },
+            {
+              label: "Porque está muy cansado.",
+              correct: false
+            }
+          ],
+          explain: "Bruno escucha '—No le digan nada a Nico... Solo los invitados lo saben' y se va sin preguntar."
+        },
+        {
+          prompt: "¿Qué le dice Chica a Bruno junto al río?",
           choices: [
-            {label:"Una fiesta sorpresa.", correct:true},
-            {label:"Un viaje.", correct:false},
-            {label:"Una comida sencilla.", correct:false},
-            {label:"Un juego nuevo.", correct:false}
-          ], explain:"Todos trabajan en secreto para preparar una sorpresa para Nico."},
-        { prompt: "Cuando Bruno escucha que hay una fiesta secreta, ¿cómo se siente?",
+            {
+              label: "Que la próxima fiesta será solo para él.",
+              correct: false
+            },
+            {
+              label: "Que la sorpresa era para Nico, pero que todos quieren que él esté allí también.",
+              correct: true
+            },
+            {
+              label: "Que debió preguntar antes de escuchar a escondidas.",
+              correct: false
+            },
+            {
+              label: "Que no puede volver a la fiesta.",
+              correct: false
+            }
+          ],
+          explain: "'Bruno, la sorpresa era para Nico. No para esconderte a ti. Todos queremos que vengas.'"
+        },
+        {
+          prompt: "Don Pico dice: '—Recuerden: una sorpresa solo funciona si todos guardan el secreto.' ¿Qué significa 'secreto' aquí?",
           choices: [
-            {label:"Triste porque cree que no está invitado.", correct:true},
-            {label:"Feliz por Nico.", correct:false},
-            {label:"Enojado con Nico.", correct:false},
-            {label:"Solo curioso.", correct:false}
-          ], explain:"'—¿Una fiesta? ¿Y yo no estoy invitado? No pregunta. Se va muy triste.'"},
-        { prompt: "¿Quién es Lucía y qué comparte con el grupo?",
+            {
+              label: "Algo que no dices a otros.",
+              correct: true
+            },
+            {
+              label: "Un regalo caro.",
+              correct: false
+            },
+            {
+              label: "Una canción especial.",
+              correct: false
+            },
+            {
+              label: "Un juego nuevo.",
+              correct: false
+            }
+          ],
+          explain: "Guardar el secreto es no contarle a Nico sobre la fiesta antes de tiempo."
+        },
+        {
+          prompt: "¿Quién enseña una canción especial de cumpleaños al grupo?",
           choices: [
-            {label:"Una colibrí de Guatemala que enseña una canción especial de cumpleaños.", correct:true},
-            {label:"Una amiga de Nico desde niña.", correct:false},
-            {label:"La mamá de Nico.", correct:false},
-            {label:"Una vendedora del mercado.", correct:false}
-          ], explain:"Lucía llega de Guatemala y enseña a todos la canción que cantan en su pueblo."},
-        { prompt: "Cuando Chica encuentra a Bruno, ¿qué le explica?",
+            {
+              label: "Lucía, la colibrí de Guatemala.",
+              correct: true
+            },
+            {
+              label: "Nico.",
+              correct: false
+            },
+            {
+              label: "Don Pico.",
+              correct: false
+            },
+            {
+              label: "Mora.",
+              correct: false
+            }
+          ],
+          explain: "Lucía comparte una tradición de su pueblo: cantar desde muy temprano cuando alguien cumple años."
+        },
+        {
+          prompt: "¿Qué le da Nico a Bruno cuando este regresa a la fiesta?",
           choices: [
-            {label:"Que la sorpresa era para Nico, no para excluirlo, y que todos quieren que venga.", correct:true},
-            {label:"Que la fiesta ya terminó.", correct:false},
-            {label:"Que debe pedir perdón primero.", correct:false},
-            {label:"Que no puede entrar.", correct:false}
-          ], explain:"'—Bruno, la sorpresa era para Nico. No para esconderte a ti. Todos queremos que vengas.'"},
-        { prompt: "Al final, ¿qué aparece cerca de la Gran Ceiba?",
+            {
+              label: "El primer pedazo de pastel.",
+              correct: true
+            },
+            {
+              label: "Un regalo envuelto.",
+              correct: false
+            },
+            {
+              label: "Una canción nueva.",
+              correct: false
+            },
+            {
+              label: "Un abrazo únicamente.",
+              correct: false
+            }
+          ],
+          explain: "Nico dice: 'Los cumpleaños son mejores cuando nadie se queda afuera' y comparte el primer pedazo con Bruno."
+        },
+        {
+          prompt: "Al terminar la fiesta, ¿qué cae de la Gran Ceiba?",
           choices: [
-            {label:"Una hoja enorme con la misma espiral de cuatro hojas.", correct:true},
-            {label:"Un regalo para Bruno.", correct:false},
-            {label:"Una nueva amiga.", correct:false},
-            {label:"Una carta de Don Pico.", correct:false}
-          ], explain:"El misterio de la Gran Ceiba continúa — Don Pico guarda la hoja en un libro antiguo."}
+            {
+              label: "Una hoja enorme con la misma espiral de cuatro hojas.",
+              correct: true
+            },
+            {
+              label: "Una fruta madura.",
+              correct: false
+            },
+            {
+              label: "Una flor morada.",
+              correct: false
+            },
+            {
+              label: "Nada — el árbol se queda igual.",
+              correct: false
+            }
+          ],
+          explain: "El misterio de la Gran Ceiba continúa — Don Pico guarda la hoja con cuidado en un libro antiguo."
+        }
       ]
     },
     "guardianes-ep6": {
       label: "Guardianes de Chiquibul — Ep. 6: Vamos a la Escuela",
       rounds: [
-        { prompt: "¿Qué trae Teo en su canasta en vez de libros?",
+        {
+          prompt: "¿Por qué Bruno decide aprender solo, sin el grupo?",
           choices: [
-            {label:"Su almuerzo.", correct:true},
-            {label:"Piedras.", correct:false},
-            {label:"Ropa.", correct:false},
-            {label:"Flores.", correct:false}
-          ], explain:"'—No... Traigo mi almuerzo.' Todos ríen."},
-        { prompt: "Bruno dice 'no necesito una escuela, ya sé todo' y se va solo al bosque. ¿Qué le pasa después?",
+            {
+              label: "Porque Don Pico lo castiga.",
+              correct: false
+            },
+            {
+              label: "Porque cree que ya sabe todo lo que necesita y no necesita una escuela.",
+              correct: true
+            },
+            {
+              label: "Porque los demás no lo dejan participar.",
+              correct: false
+            },
+            {
+              label: "Porque quiere explorar solo por diversión.",
+              correct: false
+            }
+          ],
+          explain: "Bruno dice: '—No necesito una escuela. Ya sé todo.' y camina hacia el bosque, solo."
+        },
+        {
+          prompt: "Al final del día, ¿qué escribe Bruno en el Diario de los Guardianes?",
           choices: [
-            {label:"Se pierde y no sabe cómo regresar.", correct:true},
-            {label:"Encuentra un tesoro.", correct:false},
-            {label:"Aprende todo solo, sin problema.", correct:false},
-            {label:"Se hace amigo de un animal nuevo.", correct:false}
-          ], explain:"'Encuentra un sendero nuevo... No sabe cómo regresar. —Creo... que necesito ayuda.'"},
-        { prompt: "¿Quién ayuda a Bruno a encontrar el camino de regreso?",
+            {
+              label: "Que la escuela es una pérdida de tiempo.",
+              correct: false
+            },
+            {
+              label: "Que pedir ayuda también es una forma de aprender.",
+              correct: true
+            },
+            {
+              label: "Que prefiere explorar solo, sin amigos.",
+              correct: false
+            },
+            {
+              label: "Que Nico es el mejor guía de la selva.",
+              correct: false
+            }
+          ],
+          explain: "Después de perderse y de que Nico lo ayude, Bruno entiende que aprender con otros no es debilidad."
+        },
+        {
+          prompt: "Don Pico pregunta '¿qué significa aprender?' ¿Qué añade después de escuchar las respuestas de los estudiantes?",
           choices: [
-            {label:"Nico.", correct:true},
-            {label:"Sofía.", correct:false},
-            {label:"Don Pico.", correct:false},
-            {label:"Teo.", correct:false}
-          ], explain:"'Llega Nico. No dice nada malo. Solo sonríe. —Ven. Conozco el camino.'"},
-        { prompt: "¿Qué aprende Bruno sobre pedir ayuda?",
+            {
+              label: "Que hoy la selva también será una maestra.",
+              correct: true
+            },
+            {
+              label: "Que aprender solo significa leer libros.",
+              correct: false
+            },
+            {
+              label: "Que no van a tener clase hoy.",
+              correct: false
+            },
+            {
+              label: "Que solo Bruno puede responder.",
+              correct: false
+            }
+          ],
+          explain: "Don Pico amplía la idea de aprender más allá de leer, escribir y contar."
+        },
+        {
+          prompt: "¿De dónde viene Sofía, la nueva estudiante rana?",
           choices: [
-            {label:"Que pedir ayuda no es debilidad, es una forma de crecer.", correct:true},
-            {label:"Que nunca debe pedir ayuda.", correct:false},
-            {label:"Que solo los débiles piden ayuda.", correct:false},
-            {label:"Que es mejor estar siempre solo.", correct:false}
-          ], explain:"'Bruno entiende algo importante: aprender con otros no es debilidad. Es una forma de crecer.'"},
-        { prompt: "¿De dónde viene Sofía, la nueva estudiante?",
+            {
+              label: "Costa Rica.",
+              correct: true
+            },
+            {
+              label: "Guatemala.",
+              correct: false
+            },
+            {
+              label: "Perú.",
+              correct: false
+            },
+            {
+              label: "México.",
+              correct: false
+            }
+          ],
+          explain: "Sofía comparte que en su escuela salían temprano a observar aves y aprendían a escuchar."
+        },
+        {
+          prompt: "¿Cómo se pierde Bruno en el bosque?",
           choices: [
-            {label:"Costa Rica.", correct:true},
-            {label:"Guatemala.", correct:false},
-            {label:"México.", correct:false},
-            {label:"Perú.", correct:false}
-          ], explain:"'—Me llamo Sofía. Vengo de Costa Rica.'"},
-        { prompt: "En la misión de la clase, ¿qué deben hacer los grupos con lo que encuentran?",
+            {
+              label: "Camina solo por un sendero nuevo y todo empieza a parecer igual.",
+              correct: true
+            },
+            {
+              label: "Sigue a un animal desconocido.",
+              correct: false
+            },
+            {
+              label: "Se queda dormido.",
+              correct: false
+            },
+            {
+              label: "Lo deja Nico en un lugar extraño.",
+              correct: false
+            }
+          ],
+          explain: "'Mira a un lado. Mira a otro. Todo parece igual.' — Bruno admite que necesita ayuda."
+        },
+        {
+          prompt: "¿Quién ayuda a Bruno a regresar al grupo?",
           choices: [
-            {label:"Solo describirlo, sin tocarlo.", correct:true},
-            {label:"Llevarlo a casa.", correct:false},
-            {label:"Dibujarlo y romperlo.", correct:false},
-            {label:"Esconderlo.", correct:false}
-          ], explain:"'Cada grupo busca algo que nadie normalmente observa. No pueden tocarlo. Solo describirlo.'"}
+            {
+              label: "Nico.",
+              correct: true
+            },
+            {
+              label: "Teo.",
+              correct: false
+            },
+            {
+              label: "Mora.",
+              correct: false
+            },
+            {
+              label: "Sofía.",
+              correct: false
+            }
+          ],
+          explain: "Nico dice: '—Ven. Conozco el camino' y le enseña a orientarse."
+        }
       ]
     },
     "guardianes-ep7": {
       label: "Guardianes de Chiquibul — Ep. 7: El Mercado de San Ignacio",
       rounds: [
-        { prompt: "¿A dónde lleva Don Pico a la clase hoy?",
+        {
+          prompt: "¿Por qué Bruno regresa con cocos, chile y calabazas en vez de mangos?",
           choices: [
-            {label:"Al Mercado de San Ignacio.", correct:true},
-            {label:"A un río.", correct:false},
-            {label:"A una escuela nueva.", correct:false},
-            {label:"A la casa de Valentina.", correct:false}
-          ], explain:"'—Hoy aprendemos en otro lugar... El Mercado de San Ignacio.'"},
-        { prompt: "¿Qué vende Valentina en su puesto?",
+            {
+              label: "Porque el mercado ya no tenía mangos.",
+              correct: false
+            },
+            {
+              label: "Porque leyó '4 mangos' como '4 cosas grandes' y compró sin pedir ayuda.",
+              correct: true
+            },
+            {
+              label: "Porque Don Pico cambió la lista a propósito.",
+              correct: false
+            },
+            {
+              label: "Porque quería sorprender a sus amigos.",
+              correct: false
+            }
+          ],
+          explain: "Bruno quiso hacerlo todo solo, muy rápido, y leyó mal la lista de compras."
+        },
+        {
+          prompt: "¿Cómo ayuda Valentina a resolver el problema de las compras?",
           choices: [
-            {label:"Especias, como el cardamomo.", correct:true},
-            {label:"Frutas.", correct:false},
-            {label:"Ropa.", correct:false},
-            {label:"Juguetes.", correct:false}
-          ], explain:"Valentina organiza bolsas de especias — el cardamomo lo usa su abuela para pan dulce."},
-        { prompt: "Bruno dice 'esto es facilísimo' y hace las compras solo. ¿Qué error comete?",
+            {
+              label: "Les da todo lo que necesitan sin pedir nada a cambio.",
+              correct: false
+            },
+            {
+              label: "Les ayuda a intercambiar productos con otros vendedores, así nadie pierde nada.",
+              correct: true
+            },
+            {
+              label: "Le dice a Don Pico que castigue a Bruno.",
+              correct: false
+            },
+            {
+              label: "Compra ella misma los mangos para el grupo.",
+              correct: false
+            }
+          ],
+          explain: "Un buen mercado funciona porque las personas confían unas en otras, tal como dice el abuelo de Valentina."
+        },
+        {
+          prompt: "¿Qué vende Valentina en su puesto del mercado?",
           choices: [
-            {label:"Lee '4 mangos' como '4 cosas grandes' y compra las cosas equivocadas.", correct:true},
-            {label:"Pierde el dinero.", correct:false},
-            {label:"No compra nada.", correct:false},
-            {label:"Compra demasiados mangos.", correct:false}
-          ], explain:"Bruno regresa con cocos, chile, calabaza y sandía — pero ningún mango."},
-        { prompt: "Según Valentina, ¿por qué funciona bien un mercado?",
+            {
+              label: "Especias, como el cardamomo.",
+              correct: true
+            },
+            {
+              label: "Ropa tradicional.",
+              correct: false
+            },
+            {
+              label: "Juguetes de madera.",
+              correct: false
+            },
+            {
+              label: "Solo frutas.",
+              correct: false
+            }
+          ],
+          explain: "Nico prueba el cardamomo y Valentina explica que su abuela lo usa para pan dulce."
+        },
+        {
+          prompt: "Según el abuelo de Valentina, ¿por qué funciona un buen mercado?",
           choices: [
-            {label:"Porque las personas confían unas en otras.", correct:true},
-            {label:"Porque todo es barato.", correct:false},
-            {label:"Porque hay mucha comida.", correct:false},
-            {label:"Porque los vendedores son familia.", correct:false}
-          ], explain:"'Mi abuelo dice que un buen mercado funciona porque las personas confían unas en otras.'"},
-        { prompt: "¿Qué frase encuentra Chica en un mapa viejo en la pared?",
+            {
+              label: "Porque las personas confían unas en otras.",
+              correct: true
+            },
+            {
+              label: "Porque todo es muy barato.",
+              correct: false
+            },
+            {
+              label: "Porque hay mucha comida.",
+              correct: false
+            },
+            {
+              label: "Porque nadie discute nunca.",
+              correct: false
+            }
+          ],
+          explain: "Don Pico conecta esa idea con la amistad — la confianza también hace fuertes las relaciones."
+        },
+        {
+          prompt: "Al final, Chica ve un mapa viejo con una ceiba dibujada. ¿Qué dice la frase debajo del dibujo?",
           choices: [
-            {label:"'Todos los caminos regresan al árbol.'", correct:true},
-            {label:"'El mercado nunca cierra.'", correct:false},
-            {label:"'Compra local, compra Belice.'", correct:false},
-            {label:"'La ceiba protege a todos.'", correct:false}
-          ], explain:"Otra pista del misterio de la Gran Ceiba, dibujada en un mapa antiguo del mercado."},
-        { prompt: "¿Cómo reacciona el grupo cuando ve la canasta de compras de Bruno?",
+            {
+              label: "\"Todos los caminos regresan al árbol.\"",
+              correct: true
+            },
+            {
+              label: "\"El mercado nunca cierra.\"",
+              correct: false
+            },
+            {
+              label: "\"Compra con cuidado.\"",
+              correct: false
+            },
+            {
+              label: "\"La selva siempre da frutas.\"",
+              correct: false
+            }
+          ],
+          explain: "Otra pista del misterio de la Gran Ceiba aparece — un viento mueve el mapa y la esquina se dobla."
+        },
+        {
+          prompt: "¿Qué instrumento toca un señor en el mercado?",
           choices: [
-            {label:"Se ríen, incluso Bruno.", correct:true},
-            {label:"Se enojan con él.", correct:false},
-            {label:"No dicen nada.", correct:false},
-            {label:"Lo regañan.", correct:false}
-          ], explain:"'Todos ríen. Hasta Bruno. —Bueno... creo que necesito practicar.'"}
+            {
+              label: "La marimba.",
+              correct: true
+            },
+            {
+              label: "El tambor.",
+              correct: false
+            },
+            {
+              label: "La guitarra.",
+              correct: false
+            },
+            {
+              label: "El violín.",
+              correct: false
+            }
+          ],
+          explain: "El mercado está lleno de colores, aromas y música — la marimba forma parte de esa escena."
+        }
       ]
     },
     "guardianes-ep8": {
       label: "Guardianes de Chiquibul — Ep. 8: El Restaurante de Doña Tapir",
       rounds: [
-        { prompt: "¿A dónde lleva Don Pico al grupo para celebrar?",
+        {
+          prompt: "¿Cuál es la misión que Don Pico les da antes de entrar al restaurante?",
           choices: [
-            {label:"Al restaurante de Doña Tapir.", correct:true},
-            {label:"A la escuela.", correct:false},
-            {label:"Al mercado.", correct:false},
-            {label:"A un río.", correct:false}
-          ], explain:"'—Hoy no hay tareas. Hoy vamos a celebrar... Al restaurante de Doña Tapir.'"},
-        { prompt: "¿Quién es Mateo y de dónde es?",
+            {
+              label: "Pedir el plato más caro del menú.",
+              correct: false
+            },
+            {
+              label: "Pedir con cortesía, hacer una pregunta al mesero, y probar algo nuevo.",
+              correct: true
+            },
+            {
+              label: "Terminar toda la comida sin dejar nada en el plato.",
+              correct: false
+            },
+            {
+              label: "No hablar durante toda la comida.",
+              correct: false
+            }
+          ],
+          explain: "La misión combina buenos modales con curiosidad por probar algo diferente."
+        },
+        {
+          prompt: "Cuando cae la bandeja en la cocina, ¿cómo reaccionan los Guardianes?",
           choices: [
-            {label:"Un jaguar joven de Perú.", correct:true},
-            {label:"Un tapir de Belice.", correct:false},
-            {label:"Un coatí de Guatemala.", correct:false},
-            {label:"Una rana de Costa Rica.", correct:false}
-          ], explain:"'—Hola. Me llamo Mateo. Mi familia vive en Perú. Estoy visitando a mi tía.'"},
-        { prompt: "Según Mateo, ¿qué dice su abuelo sobre la comida?",
+            {
+              label: "Esperan sentados a que alguien más limpie.",
+              correct: false
+            },
+            {
+              label: "Sin que nadie se lo pida, todos ayudan — hasta Bruno toma una escoba.",
+              correct: true
+            },
+            {
+              label: "Se van del restaurante sin comer.",
+              correct: false
+            },
+            {
+              label: "Le piden a Doña Tapir que llame a alguien más.",
+              correct: false
+            }
+          ],
+          explain: "Como dice Mateo: 'En mi familia todos ayudamos cuando el restaurante está lleno.'"
+        },
+        {
+          prompt: "¿De dónde viene Mateo, el jaguar que conocen en el restaurante?",
           choices: [
-            {label:"Que en un plato hay muchas historias.", correct:true},
-            {label:"Que la comida siempre debe ser picante.", correct:false},
-            {label:"Que hay que comer rápido.", correct:false},
-            {label:"Que el lomo saltado es aburrido.", correct:false}
-          ], explain:"'Mi abuelo dice que en un plato hay muchas historias.' Don Pico está de acuerdo."},
-        { prompt: "Cuando cae una bandeja y la cocina queda desordenada, ¿qué hacen los Guardianes?",
+            {
+              label: "Perú.",
+              correct: true
+            },
+            {
+              label: "Guatemala.",
+              correct: false
+            },
+            {
+              label: "México.",
+              correct: false
+            },
+            {
+              label: "Costa Rica.",
+              correct: false
+            }
+          ],
+          explain: "Mateo está visitando a su tía y comparte que su plato favorito es el lomo saltado."
+        },
+        {
+          prompt: "¿Cuál es el plato favorito de Mateo, y qué dice su abuelo sobre la comida?",
           choices: [
-            {label:"Ayudan a limpiar y organizar sin que nadie se los pida.", correct:true},
-            {label:"Se van del restaurante.", correct:false},
-            {label:"Se ríen y no ayudan.", correct:false},
-            {label:"Llaman a Don Pico para quejarse.", correct:false}
-          ], explain:"'Sin esperar, los Guardianes ayudan. Chica organiza los platos. Nico lleva agua...'"},
-        { prompt: "¿Qué frase aparece en un menú antiguo en la pared?",
+            {
+              label: "El lomo saltado — 'en un plato hay muchas historias.'",
+              correct: true
+            },
+            {
+              label: "El arroz con coco — 'la comida es solo comida.'",
+              correct: false
+            },
+            {
+              label: "Los tamales — 'hay que comer rápido.'",
+              correct: false
+            },
+            {
+              label: "La sopa — no menciona a su abuelo.",
+              correct: false
+            }
+          ],
+          explain: "Don Pico añade: '¿Ven? La comida también cuenta historias.'"
+        },
+        {
+          prompt: "¿Qué encuentra Chica en la pared del restaurante?",
           choices: [
-            {label:"'Todo aquel que comparte la mesa comparte también una historia.'", correct:true},
-            {label:"'La comida es amor.'", correct:false},
-            {label:"'Bienvenidos siempre.'", correct:false},
-            {label:"'El río nunca se seca.'", correct:false}
-          ], explain:"Otra pista del misterio — cuando Chica mira otra vez, el menú ya no está."},
-        { prompt: "¿Qué hace Bruno cuando ve la cocina desordenada?",
+            {
+              label: "Un menú antiguo con una espiral de cuatro hojas.",
+              correct: true
+            },
+            {
+              label: "Una foto de Don Pico.",
+              correct: false
+            },
+            {
+              label: "Un mapa del mercado.",
+              correct: false
+            },
+            {
+              label: "Un dibujo de la Gran Ceiba completo.",
+              correct: false
+            }
+          ],
+          explain: "Cuando Chica mira otra vez, el menú ya no está — otra pista misteriosa que desaparece."
+        },
+        {
+          prompt: "Según la frase debajo del menú antiguo, ¿qué comparten las personas que comparten la mesa?",
           choices: [
-            {label:"Duda, pero después toma una escoba y ayuda a limpiar.", correct:true},
-            {label:"Se va sin ayudar.", correct:false},
-            {label:"Se enoja con Doña Tapir.", correct:false},
-            {label:"Pide más comida.", correct:false}
-          ], explain:"'Bruno duda. Luego toma una escoba. —Creo... que yo puedo limpiar.'"}
+            {
+              label: "También comparten una historia.",
+              correct: true
+            },
+            {
+              label: "También comparten el dinero.",
+              correct: false
+            },
+            {
+              label: "También comparten el trabajo de cocinar.",
+              correct: false
+            },
+            {
+              label: "No comparten nada más.",
+              correct: false
+            }
+          ],
+          explain: "'Todo aquel que comparte la mesa comparte también una historia' — otra pieza del misterio de la Gran Ceiba."
+        }
       ]
     },
     "guardianes-ep9": {
       label: "Guardianes de Chiquibul — Ep. 9: La Clínica del Colibrí",
       rounds: [
-        { prompt: "¿Qué come Teo sin preguntar primero?",
+        {
+          prompt: "¿Por qué Teo se enferma durante la caminata?",
           choices: [
-            {label:"Una fruta anaranjada que nunca había visto.", correct:true},
-            {label:"Un insecto.", correct:false},
-            {label:"Una hoja.", correct:false},
-            {label:"Miel.", correct:false}
-          ], explain:"'Hay frutos redondos y anaranjados en la rama... Deben ser deliciosos.' Teo come sin preguntar."},
-        { prompt: "¿Qué le pasa a Teo después de comer la fruta?",
+            {
+              label: "Porque camina demasiado rápido.",
+              correct: false
+            },
+            {
+              label: "Porque prueba un fruto desconocido sin preguntar primero.",
+              correct: true
+            },
+            {
+              label: "Porque no lleva suficiente agua.",
+              correct: false
+            },
+            {
+              label: "Porque no descansa lo suficiente.",
+              correct: false
+            }
+          ],
+          explain: "Teo aprende que hay que preguntar antes de comer algo que no conoce."
+        },
+        {
+          prompt: "¿Qué siente Bruno mientras Teo está en la clínica, aunque no quiere admitirlo?",
           choices: [
-            {label:"Le duele el estómago y se siente mareado.", correct:true},
-            {label:"Se pone muy feliz.", correct:false},
-            {label:"Se duerme.", correct:false},
-            {label:"No le pasa nada.", correct:false}
-          ], explain:"'—Me duele mucho. También estoy mareado.'"},
-        { prompt: "Según la doctora Alma, ¿por qué la fruta le hizo daño a Teo?",
+            {
+              label: "Está aburrido y quiere irse.",
+              correct: false
+            },
+            {
+              label: "Está preocupado por Teo, porque le importa como amigo.",
+              correct: true
+            },
+            {
+              label: "Está enojado con Teo por interrumpir la caminata.",
+              correct: false
+            },
+            {
+              label: "No siente nada en particular.",
+              correct: false
+            }
+          ],
+          explain: "Chica le hace notar que preocuparse por un amigo es, en sí, una muestra de buena amistad."
+        },
+        {
+          prompt: "¿Quién es la doctora Alma, y de dónde viene?",
           choices: [
-            {label:"Porque no estaba madura, aunque no es venenosa.", correct:true},
-            {label:"Porque es venenosa.", correct:false},
-            {label:"Porque Teo comió demasiado rápido.", correct:false},
-            {label:"Porque Teo es alérgico.", correct:false}
-          ], explain:"'—No es venenoso. Pero causa dolor de estómago si no está maduro.'"},
-        { prompt: "¿De dónde es la doctora Alma y quién le enseñó su oficio?",
+            {
+              label: "Una colibrí de la Clínica del Colibrí, originaria de Colombia.",
+              correct: true
+            },
+            {
+              label: "Una rana de Costa Rica que enseña en la escuela.",
+              correct: false
+            },
+            {
+              label: "Una tapir bombera de Belice.",
+              correct: false
+            },
+            {
+              label: "Una coatí que vende especias.",
+              correct: false
+            }
+          ],
+          explain: "Alma creció en Colombia, donde su abuelo, también médico, le enseñó a escuchar al paciente primero."
+        },
+        {
+          prompt: "Según la doctora Alma, ¿qué necesita la curiosidad además de valentía?",
           choices: [
-            {label:"De Colombia; le enseñó su abuelo, quien era médico.", correct:true},
-            {label:"De Belice; aprendió sola.", correct:false},
-            {label:"De Perú; le enseñó Don Pico.", correct:false},
-            {label:"De Guatemala; le enseñó su mamá.", correct:false}
-          ], explain:"'En Colombia. Allí crecí. Mi abuelo era médico. Me enseñó a escuchar al paciente primero.'"},
-        { prompt: "Bruno se sienta afuera, preocupado. ¿Qué le confiesa a Chica?",
+            {
+              label: "Prudencia.",
+              correct: true
+            },
+            {
+              label: "Dinero.",
+              correct: false
+            },
+            {
+              label: "Compañía.",
+              correct: false
+            },
+            {
+              label: "Nada más — la curiosidad es suficiente.",
+              correct: false
+            }
+          ],
+          explain: "Alma dice: 'La curiosidad es maravillosa. Pero necesita prudencia también.'"
+        },
+        {
+          prompt: "¿Qué encuentra Chica en la clínica, dentro de una caja de madera antigua?",
           choices: [
-            {label:"Que se asustó porque pensó que Teo iba a estar muy grave.", correct:true},
-            {label:"Que tiene hambre.", correct:false},
-            {label:"Que quiere irse a casa.", correct:false},
-            {label:"Que no le importa Teo.", correct:false}
-          ], explain:"'—Pensé que Teo iba a estar muy grave. Me asusté.'"},
-        { prompt: "Según la doctora Alma, ¿cuál es 'la mejor medicina'?",
+            {
+              label: "Una espiral con cuatro hojas — la misma marca de siempre.",
+              correct: true
+            },
+            {
+              label: "Una fotografía de la doctora Alma de joven.",
+              correct: false
+            },
+            {
+              label: "Un mapa del mercado.",
+              correct: false
+            },
+            {
+              label: "Una carta de Don Pico.",
+              correct: false
+            }
+          ],
+          explain: "La doctora cierra la caja con cuidado y dice: '—Eso era de mi abuelo.'"
+        },
+        {
+          prompt: "¿Quién le enseñó a la doctora Alma a escuchar al paciente primero?",
           choices: [
-            {label:"La curiosidad con prudencia, dormir bien, comer sano, y pedir ayuda.", correct:true},
-            {label:"Solo dormir mucho.", correct:false},
-            {label:"Comer frutas nuevas siempre.", correct:false},
-            {label:"Nunca preguntar nada.", correct:false}
-          ], explain:"'La curiosidad es maravillosa. Pero necesita prudencia también. Dormir bien. Comer sano. Y pedir ayuda cuando la necesites.'"}
+            {
+              label: "Su abuelo, que era médico.",
+              correct: true
+            },
+            {
+              label: "Don Pico.",
+              correct: false
+            },
+            {
+              label: "Su madre.",
+              correct: false
+            },
+            {
+              label: "Nadie — lo aprendió sola.",
+              correct: false
+            }
+          ],
+          explain: "'Mi abuelo era médico. Me enseñó a escuchar al paciente primero.'"
+        }
       ]
     },
     "guardianes-ep10": {
       label: "Guardianes de Chiquibul — Ep. 10: ¡Alerta en la Selva!",
       rounds: [
-        { prompt: "¿Cuál es la misión de los Guardianes al principio del episodio?",
+        {
+          prompt: "Cuando ven el humo, ¿qué instrucción da Don Pico primero?",
           choices: [
-            {label:"Limpiar un sendero para las familias.", correct:true},
-            {label:"Apagar un incendio.", correct:false},
-            {label:"Buscar agua.", correct:false},
-            {label:"Construir una casa.", correct:false}
-          ], explain:"'Su misión: limpiar un sendero para las familias.'"},
-        { prompt: "¿Qué nota Iggy que alerta a todos sobre un problema?",
+            {
+              label: "Que todos corran en direcciones diferentes.",
+              correct: false
+            },
+            {
+              label: "Que nadie corra, que se mantengan juntos, y que Chica cuente a todos los Guardianes.",
+              correct: true
+            },
+            {
+              label: "Que intenten apagar el fuego ellos mismos.",
+              correct: false
+            },
+            {
+              label: "Que busquen agua inmediatamente.",
+              correct: false
+            }
+          ],
+          explain: "Mantener la calma y contar a todos es el primer paso — no intentar apagarlo solos."
+        },
+        {
+          prompt: "Según Capitana Sofía, ¿por qué colaboran los bomberos forestales de varios países?",
           choices: [
-            {label:"Un olor extraño y una columna de humo.", correct:true},
-            {label:"Un ruido fuerte.", correct:false},
-            {label:"Un animal herido.", correct:false},
-            {label:"Una tormenta.", correct:false}
-          ], explain:"'—¿Huelen eso?... Aparece una columna de humo entre los árboles. —¡Fuego! —grita Nico.'"},
-        { prompt: "Cuando aparece el fuego, ¿qué hace Don Pico primero?",
+            {
+              label: "Porque Belice no tiene suficientes bomberos propios.",
+              correct: false
+            },
+            {
+              label: "Porque la Selva Maya es un solo ecosistema compartido, y el humo no conoce fronteras.",
+              correct: true
+            },
+            {
+              label: "Porque es una regla del gobierno.",
+              correct: false
+            },
+            {
+              label: "Porque siempre trabajan juntos, no solo en emergencias.",
+              correct: false
+            }
+          ],
+          explain: "Los animales, los árboles y el humo no saben dónde termina un país y empieza otro."
+        },
+        {
+          prompt: "¿Qué hace Bruno cuando ve un tucán pequeño atrapado en el humo?",
           choices: [
-            {label:"Mantiene la calma y cuenta a los Guardianes para asegurarse de que todos estén bien.", correct:true},
-            {label:"Corre a buscar ayuda solo.", correct:false},
-            {label:"Manda a todos a apagar el fuego.", correct:false},
-            {label:"Se esconde.", correct:false}
-          ], explain:"'—¡Nadie corra! ¡Manténganse juntos! ¡Chica, cuenta a los Guardianes!'"},
-        { prompt: "¿Quién es la capitana Sofía?",
+            {
+              label: "Sube con cuidado por un camino que conoce bien y lleva el nido a un lugar seguro.",
+              correct: true
+            },
+            {
+              label: "Le pide ayuda a la capitana Sofía primero.",
+              correct: false
+            },
+            {
+              label: "Se queda mirando desde lejos.",
+              correct: false
+            },
+            {
+              label: "Corre a avisarle a Don Pico y espera.",
+              correct: false
+            }
+          ],
+          explain: "'Solo... no quería que estuviera solo' — Bruno actúa con valentía sin pensarlo dos veces."
+        },
+        {
+          prompt: "Según Don Pico al final, ¿qué es el valor?",
           choices: [
-            {label:"Una tapir bombera que llega a controlar el incendio.", correct:true},
-            {label:"Una doctora.", correct:false},
-            {label:"Una vendedora del mercado.", correct:false},
-            {label:"Una maestra nueva.", correct:false}
-          ], explain:"'Al frente viene una tapir grande con casco amarillo. —Soy la capitana Sofía.'"},
-        { prompt: "¿Qué hace Bruno cuando ve un tucán pequeño atrapado entre el humo?",
+            {
+              label: "Hacer lo correcto incluso con miedo.",
+              correct: true
+            },
+            {
+              label: "No tener miedo nunca.",
+              correct: false
+            },
+            {
+              label: "Ser el más fuerte del grupo.",
+              correct: false
+            },
+            {
+              label: "Actuar solo, sin pedir ayuda.",
+              correct: false
+            }
+          ],
+          explain: "'El valor no es no tener miedo. Es hacer lo correcto incluso con miedo.'"
+        },
+        {
+          prompt: "¿Quién es la capitana Sofía?",
           choices: [
-            {label:"Sube con cuidado y lo lleva a un lugar seguro.", correct:true},
-            {label:"Se queda mirando sin actuar.", correct:false},
-            {label:"Le pide ayuda a Don Pico primero.", correct:false},
-            {label:"Se va corriendo.", correct:false}
-          ], explain:"'Sube con cuidado. Toma el nido y lo lleva a un lugar seguro.'"},
-        { prompt: "Según Don Pico, ¿qué significa el valor?",
+            {
+              label: "Una tapir bombera con casco amarillo.",
+              correct: true
+            },
+            {
+              label: "Una rana que enseña en la escuela.",
+              correct: false
+            },
+            {
+              label: "Una colibrí doctora.",
+              correct: false
+            },
+            {
+              label: "Una coatí del mercado.",
+              correct: false
+            }
+          ],
+          explain: "Llega al frente de un vehículo forestal para ayudar a controlar el incendio."
+        },
+        {
+          prompt: "¿Cuál es la misión de los Guardianes ese día, antes de ver el humo?",
           choices: [
-            {label:"Hacer lo correcto incluso con miedo.", correct:true},
-            {label:"No tener miedo nunca.", correct:false},
-            {label:"Ser el más fuerte.", correct:false},
-            {label:"No necesitar ayuda de nadie.", correct:false}
-          ], explain:"'El valor no es no tener miedo. Es hacer lo correcto incluso con miedo.'"}
+            {
+              label: "Limpiar un sendero para las familias.",
+              correct: true
+            },
+            {
+              label: "Buscar frutas para el mercado.",
+              correct: false
+            },
+            {
+              label: "Visitar la Clínica del Colibrí.",
+              correct: false
+            },
+            {
+              label: "Practicar para una fiesta.",
+              correct: false
+            }
+          ],
+          explain: "El episodio empieza con una misión sencilla que se interrumpe por la emergencia del incendio."
+        }
       ]
     },
     "guardianes-ep11": {
       label: "Guardianes de Chiquibul — Ep. 11: El Susurro de las Raíces",
       rounds: [
-        { prompt: "¿Qué problema tiene la selva de Chiquibul en este episodio?",
+        {
+          prompt: "¿Qué estación debería estar llegando a Chiquibul?",
           choices: [
-            {label:"Es la época seca, no llueve, y los animales están preocupados.", correct:true},
-            {label:"Hay un incendio.", correct:false},
-            {label:"Hace mucho frío.", correct:false},
-            {label:"No hay comida.", correct:false}
-          ], explain:"'Es la época seca. Hace mucho calor. No llueve. Los animales están preocupados.'"},
-        { prompt: "Durante el viento fuerte, ¿qué cae de la Gran Ceiba?",
+            {
+              label: "La época de lluvias.",
+              correct: true
+            },
+            {
+              label: "La época seca.",
+              correct: false
+            },
+            {
+              label: "El invierno.",
+              correct: false
+            },
+            {
+              label: "El verano.",
+              correct: false
+            }
+          ],
+          explain: "La época de lluvias debería llegar, pero se retrasa — todos están preocupados."
+        },
+        {
+          prompt: "¿Qué encuentra Chica entre las hojas que caen de la Gran Ceiba?",
           choices: [
-            {label:"Muchas hojas, incluyendo una hoja diferente.", correct:true},
-            {label:"Frutas.", correct:false},
-            {label:"Una rama grande.", correct:false},
-            {label:"Un nido.", correct:false}
-          ], explain:"'El viento mueve el árbol grande... Muchas hojas caen del árbol. Una hoja es diferente.'"},
-        { prompt: "¿Qué tiene de especial la hoja que encuentra Chica?",
+            {
+              label: "Una hoja diferente con líneas extrañas.",
+              correct: true
+            },
+            {
+              label: "Una flor rara.",
+              correct: false
+            },
+            {
+              label: "Un insecto grande.",
+              correct: false
+            },
+            {
+              label: "Una fruta desconocida.",
+              correct: false
+            }
+          ],
+          explain: "La hoja es más gruesa y tiene líneas que parecen un mensaje incompleto."
+        },
+        {
+          prompt: "¿Por qué caen tantas hojas de la Gran Ceiba ese día?",
           choices: [
-            {label:"Es gruesa, con líneas extrañas que parecen un mensaje.", correct:true},
-            {label:"Es de un color nuevo.", correct:false},
-            {label:"Tiene el nombre de Chica escrito.", correct:false},
-            {label:"Es muy pequeña.", correct:false}
-          ], explain:"'La hoja tiene líneas extrañas... Las líneas parecen un mensaje.'"},
-        { prompt: "¿Qué deciden hacer Chica, Teo e Iggy al final?",
+            {
+              label: "Porque hace mucho viento.",
+              correct: true
+            },
+            {
+              label: "Porque empieza a llover.",
+              correct: false
+            },
+            {
+              label: "Porque un animal sube al árbol.",
+              correct: false
+            },
+            {
+              label: "El cuento no lo explica.",
+              correct: false
+            }
+          ],
+          explain: "Un viento muy fuerte mueve la Gran Ceiba y hace caer muchas hojas."
+        },
+        {
+          prompt: "¿Quiénes son los dos amigos de Chica en este episodio?",
           choices: [
-            {label:"Buscar más pistas en el bosque.", correct:true},
-            {label:"Ignorar la hoja.", correct:false},
-            {label:"Contárselo a Don Pico y no hacer nada más.", correct:false},
-            {label:"Esconder la hoja.", correct:false}
-          ], explain:"'Tenemos que buscar más —dice Chica.' Los tres deciden explorar juntos."}
+            {
+              label: "Teo e Iggy.",
+              correct: true
+            },
+            {
+              label: "Nico y Mora.",
+              correct: false
+            },
+            {
+              label: "Bruno y Arlo.",
+              correct: false
+            },
+            {
+              label: "Luna y Toño.",
+              correct: false
+            }
+          ],
+          explain: "Los tres juntos deciden buscar más pistas sobre la hoja misteriosa."
+        },
+        {
+          prompt: "¿Qué tiene de especial la hoja que encuentra Chica?",
+          choices: [
+            {
+              label: "Es más gruesa y tiene líneas extrañas que parecen un mensaje.",
+              correct: true
+            },
+            {
+              label: "Tiene un color que nadie ha visto antes.",
+              correct: false
+            },
+            {
+              label: "Es la única hoja verde en el suelo.",
+              correct: false
+            },
+            {
+              label: "Tiene el nombre de Chica escrito.",
+              correct: false
+            }
+          ],
+          explain: "'Las líneas parecen un mensaje. Pero el mensaje no está completo.'"
+        },
+        {
+          prompt: "Al final del episodio, ¿qué deciden hacer los tres amigos?",
+          choices: [
+            {
+              label: "Buscar más pistas en el bosque.",
+              correct: true
+            },
+            {
+              label: "Contarle todo a Don Pico de inmediato.",
+              correct: false
+            },
+            {
+              label: "Olvidar la hoja y seguir jugando.",
+              correct: false
+            },
+            {
+              label: "Esconder la hoja para siempre.",
+              correct: false
+            }
+          ],
+          explain: "Empieza así la investigación del misterio que continúa el resto de la temporada."
+        }
       ]
     },
     "guardianes-ep12": {
       label: "Guardianes de Chiquibul — Ep. 12: El Regreso de Luna",
       rounds: [
-        { prompt: "¿Quién llega a Chiquibul y ayuda a entender la hoja misteriosa?",
+        {
+          prompt: "¿Quién regresa a Chiquibul en este episodio?",
           choices: [
-            {label:"Luna, la guacamaya de Yucatán.", correct:true},
-            {label:"Lucía.", correct:false},
-            {label:"Valentina.", correct:false},
-            {label:"La doctora Alma.", correct:false}
-          ], explain:"'Un día, Luna llega a Chiquibul. Luna es una guacamaya de Yucatán.'"},
-        { prompt: "Según Luna, ¿qué le contaba su abuela sobre símbolos como el de la hoja?",
+            {
+              label: "Luna, la guacamaya.",
+              correct: true
+            },
+            {
+              label: "Doña Tapir.",
+              correct: false
+            },
+            {
+              label: "La doctora Alma.",
+              correct: false
+            },
+            {
+              label: "Valentina.",
+              correct: false
+            }
+          ],
+          explain: "Luna regresa a visitar a sus abuelos, como en el Episodio 4."
+        },
+        {
+          prompt: "¿Dónde encuentran la segunda pista del misterio?",
           choices: [
-            {label:"Que aparecen cerca de raíces muy viejas.", correct:true},
-            {label:"Que son solo decoraciones.", correct:false},
-            {label:"Que traen mala suerte.", correct:false},
-            {label:"Que vienen de otro país.", correct:false}
-          ], explain:"'Mi abuela decía que estos símbolos aparecen cerca de raíces muy viejas.'"},
-        { prompt: "¿Qué encuentran los cuatro amigos al explorar juntos?",
+            {
+              label: "En una piedra grande cubierta de musgo.",
+              correct: true
+            },
+            {
+              label: "En el río.",
+              correct: false
+            },
+            {
+              label: "En la escuela.",
+              correct: false
+            },
+            {
+              label: "En el mercado.",
+              correct: false
+            }
+          ],
+          explain: "La piedra tiene líneas parecidas a las de la hoja — otro fragmento del mensaje."
+        },
+        {
+          prompt: "¿Qué le recuerdan a Luna las líneas de la hoja misteriosa?",
           choices: [
-            {label:"Una piedra grande cubierta de musgo con líneas también.", correct:true},
-            {label:"Otra hoja igual.", correct:false},
-            {label:"Un río nuevo.", correct:false},
-            {label:"Una casa abandonada.", correct:false}
-          ], explain:"'Por fin, ven una piedra grande cubierta de musgo. La piedra tiene líneas también.'"},
-        { prompt: "Al final del episodio, ¿cuántas partes del mensaje tienen los amigos?",
+            {
+              label: "Leyendas que le contaba su abuela sobre símbolos así.",
+              correct: true
+            },
+            {
+              label: "Una canción de su infancia.",
+              correct: false
+            },
+            {
+              label: "Un mapa que usó una vez.",
+              correct: false
+            },
+            {
+              label: "Nada — nunca vio algo parecido.",
+              correct: false
+            }
+          ],
+          explain: "'Mi abuela me contaba leyendas sobre símbolos así' — Luna conecta la pista con su propia familia."
+        },
+        {
+          prompt: "Según la abuela de Luna, ¿dónde aparecen estos símbolos?",
           choices: [
-            {label:"Dos partes, pero todavía falta más.", correct:true},
-            {label:"El mensaje completo.", correct:false},
-            {label:"Solo una parte.", correct:false},
-            {label:"Ninguna parte clara.", correct:false}
-          ], explain:"'—Ahora tenemos dos partes del mensaje —dice Chica—. Pero todavía falta más.'"}
+            {
+              label: "Cerca de raíces muy viejas.",
+              correct: true
+            },
+            {
+              label: "En la cima de las montañas.",
+              correct: false
+            },
+            {
+              label: "Dentro de las cuevas.",
+              correct: false
+            },
+            {
+              label: "En el fondo del río.",
+              correct: false
+            }
+          ],
+          explain: "Esta pista los guía hacia la piedra que encuentran cerca de raíces antiguas."
+        },
+        {
+          prompt: "¿A quién visita Luna en Chiquibul?",
+          choices: [
+            {
+              label: "A sus abuelos.",
+              correct: true
+            },
+            {
+              label: "A su hermana.",
+              correct: false
+            },
+            {
+              label: "A su maestra.",
+              correct: false
+            },
+            {
+              label: "A Don Pico.",
+              correct: false
+            }
+          ],
+          explain: "Luna, de Yucatán, tiene familia en Belice — su abuela es fuente de las leyendas."
+        },
+        {
+          prompt: "Al final del episodio, ¿cuántas partes del mensaje tienen los amigos?",
+          choices: [
+            {
+              label: "Dos.",
+              correct: true
+            },
+            {
+              label: "Una.",
+              correct: false
+            },
+            {
+              label: "Tres.",
+              correct: false
+            },
+            {
+              label: "El mensaje ya está completo.",
+              correct: false
+            }
+          ],
+          explain: "'Ahora tenemos dos partes del mensaje —dice Chica—. Pero todavía falta más.'"
+        }
       ]
     },
     "guardianes-ep13": {
       label: "Guardianes de Chiquibul — Ep. 13: La Tormenta de Chiquibul",
       rounds: [
-        { prompt: "¿Qué empieza a pasar de repente mientras buscan pistas?",
+        {
+          prompt: "¿Qué pasa de repente con el clima mientras los amigos buscan pistas?",
           choices: [
-            {label:"Empieza una tormenta muy fuerte.", correct:true},
-            {label:"Se pone muy oscuro sin lluvia.", correct:false},
-            {label:"Llega Bruno.", correct:false},
-            {label:"Se rompe la piedra.", correct:false}
-          ], explain:"'De repente, empieza a llover. Llueve mucho. Es una tormenta.'"},
-        { prompt: "¿Por qué está en peligro la piedra con el mensaje?",
+            {
+              label: "Llega una tormenta fuerte.",
+              correct: true
+            },
+            {
+              label: "Sale mucho sol.",
+              correct: false
+            },
+            {
+              label: "Hace mucho frío.",
+              correct: false
+            },
+            {
+              label: "Nieva por primera vez.",
+              correct: false
+            }
+          ],
+          explain: "Después de tanta sequía, llega una tormenta fuerte de repente."
+        },
+        {
+          prompt: "¿Cómo protegen la piedra con el mensaje durante la tormenta?",
           choices: [
-            {label:"El agua del arroyo sube y puede llevársela.", correct:true},
-            {label:"Alguien quiere robarla.", correct:false},
-            {label:"Se está rompiendo sola.", correct:false},
-            {label:"Un animal la ataca.", correct:false}
-          ], explain:"'¡El agua sube! —dice Iggy, preocupado. La piedra con el mensaje está en peligro.'"},
-        { prompt: "¿Qué usan Chica y sus amigos para proteger la piedra?",
+            {
+              label: "Trabajando juntos en equipo.",
+              correct: true
+            },
+            {
+              label: "Cada uno por su cuenta.",
+              correct: false
+            },
+            {
+              label: "No la protegen — la pierden.",
+              correct: false
+            },
+            {
+              label: "Le piden ayuda a Don Pico.",
+              correct: false
+            }
+          ],
+          explain: "Chica, Teo, Iggy y Luna trabajan juntos para salvar la piedra del agua que sube."
+        },
+        {
+          prompt: "¿Qué usan los amigos como puente durante la tormenta?",
           choices: [
-            {label:"Una rama grande como puente.", correct:true},
-            {label:"Una cuerda.", correct:false},
-            {label:"Una canasta.", correct:false},
-            {label:"Sus mochilas.", correct:false}
-          ], explain:"'Luna encuentra una rama grande. Usan la rama como puente. Todos trabajan juntos.'"},
-        { prompt: "¿Qué descubren después de poner la piedra a salvo?",
+            {
+              label: "Una rama grande.",
+              correct: true
+            },
+            {
+              label: "Una piedra plana.",
+              correct: false
+            },
+            {
+              label: "Hojas de la Gran Ceiba.",
+              correct: false
+            },
+            {
+              label: "No usan ningún puente.",
+              correct: false
+            }
+          ],
+          explain: "Luna encuentra la rama, y todos la usan para cruzar el agua que sube."
+        },
+        {
+          prompt: "Después de proteger la piedra, ¿cómo están los amigos?",
           choices: [
-            {label:"Una raíz enorme con una abertura, como una puerta pequeña.", correct:true},
-            {label:"Otra hoja misteriosa.", correct:false},
-            {label:"Un río nuevo.", correct:false},
-            {label:"A Luna esperándolos.", correct:false}
-          ], explain:"'Entonces ven algo nuevo: una raíz enorme, con una abertura.'"}
+            {
+              label: "Empapados, pero bien — nadie está herido.",
+              correct: true
+            },
+            {
+              label: "Muy heridos por el agua.",
+              correct: false
+            },
+            {
+              label: "Perdidos en el bosque.",
+              correct: false
+            },
+            {
+              label: "Separados unos de otros.",
+              correct: false
+            }
+          ],
+          explain: "A pesar del susto, el trabajo en equipo mantiene a todos a salvo."
+        },
+        {
+          prompt: "¿Qué descubren los amigos justo después de la tormenta?",
+          choices: [
+            {
+              label: "Una raíz enorme con una abertura misteriosa.",
+              correct: true
+            },
+            {
+              label: "Un río completamente nuevo.",
+              correct: false
+            },
+            {
+              label: "Una cueva llena de animales.",
+              correct: false
+            },
+            {
+              label: "El mensaje completo, ya resuelto.",
+              correct: false
+            }
+          ],
+          explain: "Esta abertura se convierte en la siguiente gran pista de la temporada."
+        },
+        {
+          prompt: "¿Quién sostiene la rama mientras Teo levanta la piedra?",
+          choices: [
+            {
+              label: "Chica.",
+              correct: true
+            },
+            {
+              label: "Iggy.",
+              correct: false
+            },
+            {
+              label: "Luna.",
+              correct: false
+            },
+            {
+              label: "Nadie — Teo lo hace solo.",
+              correct: false
+            }
+          ],
+          explain: "Cada amigo tiene un papel: Chica sostiene, Teo levanta, Iggy ayuda a Luna."
+        }
       ]
     },
     "guardianes-ep14": {
       label: "Guardianes de Chiquibul — Ep. 14: La Guardiana del Bosque",
       rounds: [
-        { prompt: "¿Qué deciden hacer Chica y sus amigos al ver la abertura en la raíz?",
+        {
+          prompt: "¿Por qué el grupo invita a todos sus amigos de la temporada?",
           choices: [
-            {label:"Pedir ayuda a todos sus amigos y escribir invitaciones.", correct:true},
-            {label:"Entrar solos de inmediato.", correct:false},
-            {label:"Ignorar la abertura.", correct:false},
-            {label:"Esperar a que crezca más.", correct:false}
-          ], explain:"'—Necesitamos ayuda —dice Chica—. Necesitamos a todos nuestros amigos.'"},
-        { prompt: "¿Qué reconoce Toño al ver las pistas juntas?",
+            {
+              label: "Necesitan ayuda para entender el mensaje completo.",
+              correct: true
+            },
+            {
+              label: "Quieren organizar una fiesta sorpresa.",
+              correct: false
+            },
+            {
+              label: "Están perdidos y necesitan que los encuentren.",
+              correct: false
+            },
+            {
+              label: "Es el cumpleaños de la Gran Ceiba.",
+              correct: false
+            }
+          ],
+          explain: "Cada amigo reconoce una parte diferente del mensaje misterioso."
+        },
+        {
+          prompt: "¿Qué es la Gran Ceiba en realidad?",
           choices: [
-            {label:"Que el mensaje habla de coraje.", correct:true},
-            {label:"Que el mensaje habla de compartir.", correct:false},
-            {label:"Que el mensaje habla de comida.", correct:false},
-            {label:"No reconoce nada.", correct:false}
-          ], explain:"'—¡Yo reconozco esto! —dice Toño—. Esto habla de coraje.'"},
-        { prompt: "Cuando todos juntan las partes del mensaje, ¿qué descubren sobre la Gran Ceiba?",
+            {
+              label: "Una guardiana de las historias del bosque.",
+              correct: true
+            },
+            {
+              label: "Un árbol común, sin ningún secreto.",
+              correct: false
+            },
+            {
+              label: "Una casa vacía y abandonada.",
+              correct: false
+            },
+            {
+              label: "Un mapa gigante dibujado en la tierra.",
+              correct: false
+            }
+          ],
+          explain: "'La Gran Ceiba guarda las historias de todos —dice Chica, sorprendida—. Es una guardiana de la memoria del bosque.'"
+        },
+        {
+          prompt: "¿Qué dicen las invitaciones que escribe el grupo?",
           choices: [
-            {label:"Que es una guardiana que guarda las historias de todos.", correct:true},
-            {label:"Que es un árbol común.", correct:false},
-            {label:"Que va a desaparecer.", correct:false},
-            {label:"Que tiene otro símbolo escondido.", correct:false}
-          ], explain:"'—La Gran Ceiba guarda las historias de todos —dice Chica, sorprendida—. Es una guardiana de la memoria del bosque.'"},
-        { prompt: "¿Por qué era importante la Palabra del Bosque de cada episodio, según Iggy?",
+            {
+              label: "'Ven a Chiquibul. Necesitamos tu ayuda.'",
+              correct: true
+            },
+            {
+              label: "'¡Fiesta sorpresa esta noche!'",
+              correct: false
+            },
+            {
+              label: "'La escuela empieza mañana.'",
+              correct: false
+            },
+            {
+              label: "'Hay un peligro en la selva.'",
+              correct: false
+            }
+          ],
+          explain: "Una invitación sencilla y honesta reúne a todos los amigos de la temporada."
+        },
+        {
+          prompt: "¿Qué reconoce Toño en una parte del mensaje?",
           choices: [
-            {label:"Porque la Ceiba recordaba cada historia.", correct:true},
-            {label:"Porque eran solo juegos.", correct:false},
-            {label:"Porque Don Pico las inventó.", correct:false},
-            {label:"No tenían ninguna importancia.", correct:false}
-          ], explain:"'—Por eso cada palabra especial de este año era importante —dice Iggy—. La Ceiba recordaba cada historia.'"}
+            {
+              label: "Algo que habla de coraje.",
+              correct: true
+            },
+            {
+              label: "Algo que habla de comida.",
+              correct: false
+            },
+            {
+              label: "Algo que habla de música.",
+              correct: false
+            },
+            {
+              label: "No reconoce nada.",
+              correct: false
+            }
+          ],
+          explain: "Cada amigo reconoce la Palabra del Bosque de su propio episodio — para Toño, fue coraje."
+        },
+        {
+          prompt: "Según Iggy, ¿por qué era importante cada palabra especial del año?",
+          choices: [
+            {
+              label: "Porque la Ceiba recordaba cada historia.",
+              correct: true
+            },
+            {
+              label: "Porque Don Pico las escribía en un libro.",
+              correct: false
+            },
+            {
+              label: "Porque cada palabra daba un premio.",
+              correct: false
+            },
+            {
+              label: "No tenían ninguna importancia especial.",
+              correct: false
+            }
+          ],
+          explain: "'Por eso cada palabra especial de este año era importante —dice Iggy—. La Ceiba recordaba cada historia.'"
+        },
+        {
+          prompt: "Al juntar todas las partes del mensaje, ¿qué logran los amigos?",
+          choices: [
+            {
+              label: "Completar el mensaje por fin.",
+              correct: true
+            },
+            {
+              label: "Descubrir un nuevo animal.",
+              correct: false
+            },
+            {
+              label: "Encontrar más hojas misteriosas.",
+              correct: false
+            },
+            {
+              label: "Nada — el mensaje sigue incompleto.",
+              correct: false
+            }
+          ],
+          explain: "Después de toda la temporada buscando pistas, el mensaje finalmente se completa."
+        }
       ]
     },
     "guardianes-ep15": {
       label: "Guardianes de Chiquibul — Ep. 15: La Gran Fiesta de Chiquibul",
       rounds: [
-        { prompt: "¿Qué celebra la gran fiesta en Chiquibul?",
-          choices: [
-            {label:"A la Gran Ceiba.", correct:true},
-            {label:"El cumpleaños de Don Pico.", correct:false},
-            {label:"El fin de la escuela.", correct:false},
-            {label:"La llegada de Toño.", correct:false}
-          ], explain:"'—Esta fiesta es para la Gran Ceiba —dice Chica—. Ella guarda todas nuestras historias.'"},
-        { prompt: "¿Qué trae cada amigo a la fiesta?",
-          choices: [
-            {label:"Algo especial de su país: comida, música, historias.", correct:true},
-            {label:"Solo regalos.", correct:false},
-            {label:"Nada, solo vienen a mirar.", correct:false},
-            {label:"Dinero.", correct:false}
-          ], explain:"'Cada amigo trae algo especial de su país: comida, música, historias.'"},
-        { prompt: "¿Qué instrumento suena en la fiesta?",
-          choices: [
-            {label:"La marimba.", correct:true},
-            {label:"La guitarra.", correct:false},
-            {label:"El tambor.", correct:false},
-            {label:"La flauta.", correct:false}
-          ], explain:"'Empieza a sonar la marimba. La música es alegre.'"},
-        { prompt: "¿Qué baile intentan todos juntos?",
-          choices: [
-            {label:"Un paso doble.", correct:true},
-            {label:"Salsa.", correct:false},
-            {label:"Tango.", correct:false},
-            {label:"Merengue.", correct:false}
-          ], explain:"'De repente, todos intentan bailar un paso doble al ritmo de la marimba.'"},
-        { prompt: "Al final, ¿qué dice Luna sobre otros árboles como la Gran Ceiba?",
-          choices: [
-            {label:"Que su abuela hablaba de otros árboles así en otros lugares.", correct:true},
-            {label:"Que no existen otros árboles así.", correct:false},
-            {label:"Que la Gran Ceiba es única en el mundo.", correct:false},
-            {label:"Que va a buscar otro árbol pronto.", correct:false}
-          ], explain:"'Mi abuela también hablaba de otros árboles como la Gran Ceiba. En otros lugares.' — un gancho para la Temporada 2."}
-      ]
-    },
-    "guardianes-ep5": {
-      label: "Guardianes de Chiquibul — Ep. 5: El cumpleaños sorpresa",
-      rounds: [
-        { prompt: "¿Por qué Bruno se va triste sin hablar con nadie?",
-          choices: [
-            {label:"Porque no le gustan las fiestas.", correct:false},
-            {label:"Porque escucha solo parte de la conversación y cree que nadie lo invitó.", correct:true},
-            {label:"Porque Don Pico le pide que se vaya.", correct:false},
-            {label:"Porque está muy cansado.", correct:false}
-          ], explain:"Bruno escucha '—No le digan nada a Nico... Solo los invitados lo saben' y se va sin preguntar."},
-        { prompt: "¿Qué le dice Chica a Bruno junto al río?",
-          choices: [
-            {label:"Que la próxima fiesta será solo para él.", correct:false},
-            {label:"Que la sorpresa era para Nico, pero que todos quieren que él esté allí también.", correct:true},
-            {label:"Que debió preguntar antes de escuchar a escondidas.", correct:false},
-            {label:"Que no puede volver a la fiesta.", correct:false}
-          ], explain:"'Bruno, la sorpresa era para Nico. No para esconderte a ti. Todos queremos que vengas.'"},
-        { prompt: "Don Pico dice: '—Recuerden: una sorpresa solo funciona si todos guardan el secreto.' ¿Qué significa 'secreto' aquí?",
-          choices: [
-            {label:"Algo que no dices a otros.", correct:true},
-            {label:"Un regalo caro.", correct:false},
-            {label:"Una canción especial.", correct:false},
-            {label:"Un juego nuevo.", correct:false}
-          ], explain:"Guardar el secreto es no contarle a Nico sobre la fiesta antes de tiempo."},
-        { prompt: "¿Quién enseña una canción especial de cumpleaños al grupo?",
-          choices: [
-            {label:"Lucía, la colibrí de Guatemala.", correct:true},
-            {label:"Nico.", correct:false},
-            {label:"Don Pico.", correct:false},
-            {label:"Mora.", correct:false}
-          ], explain:"Lucía comparte una tradición de su pueblo: cantar desde muy temprano cuando alguien cumple años."},
-        { prompt: "¿Qué le da Nico a Bruno cuando este regresa a la fiesta?",
-          choices: [
-            {label:"El primer pedazo de pastel.", correct:true},
-            {label:"Un regalo envuelto.", correct:false},
-            {label:"Una canción nueva.", correct:false},
-            {label:"Un abrazo únicamente.", correct:false}
-          ], explain:"Nico dice: 'Los cumpleaños son mejores cuando nadie se queda afuera' y comparte el primer pedazo con Bruno."},
-        { prompt: "Al terminar la fiesta, ¿qué cae de la Gran Ceiba?",
-          choices: [
-            {label:"Una hoja enorme con la misma espiral de cuatro hojas.", correct:true},
-            {label:"Una fruta madura.", correct:false},
-            {label:"Una flor morada.", correct:false},
-            {label:"Nada — el árbol se queda igual.", correct:false}
-          ], explain:"El misterio de la Gran Ceiba continúa — Don Pico guarda la hoja con cuidado en un libro antiguo."}
-      ]
-    },
-    "guardianes-ep6": {
-      label: "Guardianes de Chiquibul — Ep. 6: Vamos a la Escuela",
-      rounds: [
-        { prompt: "¿Por qué Bruno decide aprender solo, sin el grupo?",
-          choices: [
-            {label:"Porque Don Pico lo castiga.", correct:false},
-            {label:"Porque cree que ya sabe todo lo que necesita y no necesita una escuela.", correct:true},
-            {label:"Porque los demás no lo dejan participar.", correct:false},
-            {label:"Porque quiere explorar solo por diversión.", correct:false}
-          ], explain:"Bruno dice: '—No necesito una escuela. Ya sé todo.' y camina hacia el bosque, solo."},
-        { prompt: "Al final del día, ¿qué escribe Bruno en el Diario de los Guardianes?",
-          choices: [
-            {label:"Que la escuela es una pérdida de tiempo.", correct:false},
-            {label:"Que pedir ayuda también es una forma de aprender.", correct:true},
-            {label:"Que prefiere explorar solo, sin amigos.", correct:false},
-            {label:"Que Nico es el mejor guía de la selva.", correct:false}
-          ], explain:"Después de perderse y de que Nico lo ayude, Bruno entiende que aprender con otros no es debilidad."},
-        { prompt: "Don Pico pregunta '¿qué significa aprender?' ¿Qué añade después de escuchar las respuestas de los estudiantes?",
-          choices: [
-            {label:"Que hoy la selva también será una maestra.", correct:true},
-            {label:"Que aprender solo significa leer libros.", correct:false},
-            {label:"Que no van a tener clase hoy.", correct:false},
-            {label:"Que solo Bruno puede responder.", correct:false}
-          ], explain:"Don Pico amplía la idea de aprender más allá de leer, escribir y contar."},
-        { prompt: "¿De dónde viene Sofía, la nueva estudiante rana?",
-          choices: [
-            {label:"Costa Rica.", correct:true},
-            {label:"Guatemala.", correct:false},
-            {label:"Perú.", correct:false},
-            {label:"México.", correct:false}
-          ], explain:"Sofía comparte que en su escuela salían temprano a observar aves y aprendían a escuchar."},
-        { prompt: "¿Cómo se pierde Bruno en el bosque?",
-          choices: [
-            {label:"Camina solo por un sendero nuevo y todo empieza a parecer igual.", correct:true},
-            {label:"Sigue a un animal desconocido.", correct:false},
-            {label:"Se queda dormido.", correct:false},
-            {label:"Lo deja Nico en un lugar extraño.", correct:false}
-          ], explain:"'Mira a un lado. Mira a otro. Todo parece igual.' — Bruno admite que necesita ayuda."},
-        { prompt: "¿Quién ayuda a Bruno a regresar al grupo?",
-          choices: [
-            {label:"Nico.", correct:true},
-            {label:"Teo.", correct:false},
-            {label:"Mora.", correct:false},
-            {label:"Sofía.", correct:false}
-          ], explain:"Nico dice: '—Ven. Conozco el camino' y le enseña a orientarse."}
-      ]
-    },
-    "guardianes-ep7": {
-      label: "Guardianes de Chiquibul — Ep. 7: El Mercado de San Ignacio",
-      rounds: [
-        { prompt: "¿Por qué Bruno regresa con cocos, chile y calabazas en vez de mangos?",
-          choices: [
-            {label:"Porque el mercado ya no tenía mangos.", correct:false},
-            {label:"Porque leyó '4 mangos' como '4 cosas grandes' y compró sin pedir ayuda.", correct:true},
-            {label:"Porque Don Pico cambió la lista a propósito.", correct:false},
-            {label:"Porque quería sorprender a sus amigos.", correct:false}
-          ], explain:"Bruno quiso hacerlo todo solo, muy rápido, y leyó mal la lista de compras."},
-        { prompt: "¿Cómo ayuda Valentina a resolver el problema de las compras?",
-          choices: [
-            {label:"Les da todo lo que necesitan sin pedir nada a cambio.", correct:false},
-            {label:"Les ayuda a intercambiar productos con otros vendedores, así nadie pierde nada.", correct:true},
-            {label:"Le dice a Don Pico que castigue a Bruno.", correct:false},
-            {label:"Compra ella misma los mangos para el grupo.", correct:false}
-          ], explain:"Un buen mercado funciona porque las personas confían unas en otras, tal como dice el abuelo de Valentina."},
-        { prompt: "¿Qué vende Valentina en su puesto del mercado?",
-          choices: [
-            {label:"Especias, como el cardamomo.", correct:true},
-            {label:"Ropa tradicional.", correct:false},
-            {label:"Juguetes de madera.", correct:false},
-            {label:"Solo frutas.", correct:false}
-          ], explain:"Nico prueba el cardamomo y Valentina explica que su abuela lo usa para pan dulce."},
-        { prompt: "Según el abuelo de Valentina, ¿por qué funciona un buen mercado?",
-          choices: [
-            {label:"Porque las personas confían unas en otras.", correct:true},
-            {label:"Porque todo es muy barato.", correct:false},
-            {label:"Porque hay mucha comida.", correct:false},
-            {label:"Porque nadie discute nunca.", correct:false}
-          ], explain:"Don Pico conecta esa idea con la amistad — la confianza también hace fuertes las relaciones."},
-        { prompt: "Al final, Chica ve un mapa viejo con una ceiba dibujada. ¿Qué dice la frase debajo del dibujo?",
-          choices: [
-            {label:"\"Todos los caminos regresan al árbol.\"", correct:true},
-            {label:"\"El mercado nunca cierra.\"", correct:false},
-            {label:"\"Compra con cuidado.\"", correct:false},
-            {label:"\"La selva siempre da frutas.\"", correct:false}
-          ], explain:"Otra pista del misterio de la Gran Ceiba aparece — un viento mueve el mapa y la esquina se dobla."},
-        { prompt: "¿Qué instrumento toca un señor en el mercado?",
-          choices: [
-            {label:"La marimba.", correct:true},
-            {label:"El tambor.", correct:false},
-            {label:"La guitarra.", correct:false},
-            {label:"El violín.", correct:false}
-          ], explain:"El mercado está lleno de colores, aromas y música — la marimba forma parte de esa escena."}
-      ]
-    },
-    "guardianes-ep8": {
-      label: "Guardianes de Chiquibul — Ep. 8: El Restaurante de Doña Tapir",
-      rounds: [
-        { prompt: "¿Cuál es la misión que Don Pico les da antes de entrar al restaurante?",
-          choices: [
-            {label:"Pedir el plato más caro del menú.", correct:false},
-            {label:"Pedir con cortesía, hacer una pregunta al mesero, y probar algo nuevo.", correct:true},
-            {label:"Terminar toda la comida sin dejar nada en el plato.", correct:false},
-            {label:"No hablar durante toda la comida.", correct:false}
-          ], explain:"La misión combina buenos modales con curiosidad por probar algo diferente."},
-        { prompt: "Cuando cae la bandeja en la cocina, ¿cómo reaccionan los Guardianes?",
-          choices: [
-            {label:"Esperan sentados a que alguien más limpie.", correct:false},
-            {label:"Sin que nadie se lo pida, todos ayudan — hasta Bruno toma una escoba.", correct:true},
-            {label:"Se van del restaurante sin comer.", correct:false},
-            {label:"Le piden a Doña Tapir que llame a alguien más.", correct:false}
-          ], explain:"Como dice Mateo: 'En mi familia todos ayudamos cuando el restaurante está lleno.'"},
-        { prompt: "¿De dónde viene Mateo, el jaguar que conocen en el restaurante?",
-          choices: [
-            {label:"Perú.", correct:true},
-            {label:"Guatemala.", correct:false},
-            {label:"México.", correct:false},
-            {label:"Costa Rica.", correct:false}
-          ], explain:"Mateo está visitando a su tía y comparte que su plato favorito es el lomo saltado."},
-        { prompt: "¿Cuál es el plato favorito de Mateo, y qué dice su abuelo sobre la comida?",
-          choices: [
-            {label:"El lomo saltado — 'en un plato hay muchas historias.'", correct:true},
-            {label:"El arroz con coco — 'la comida es solo comida.'", correct:false},
-            {label:"Los tamales — 'hay que comer rápido.'", correct:false},
-            {label:"La sopa — no menciona a su abuelo.", correct:false}
-          ], explain:"Don Pico añade: '¿Ven? La comida también cuenta historias.'"},
-        { prompt: "¿Qué encuentra Chica en la pared del restaurante?",
-          choices: [
-            {label:"Un menú antiguo con una espiral de cuatro hojas.", correct:true},
-            {label:"Una foto de Don Pico.", correct:false},
-            {label:"Un mapa del mercado.", correct:false},
-            {label:"Un dibujo de la Gran Ceiba completo.", correct:false}
-          ], explain:"Cuando Chica mira otra vez, el menú ya no está — otra pista misteriosa que desaparece."},
-        { prompt: "Según la frase debajo del menú antiguo, ¿qué comparten las personas que comparten la mesa?",
-          choices: [
-            {label:"También comparten una historia.", correct:true},
-            {label:"También comparten el dinero.", correct:false},
-            {label:"También comparten el trabajo de cocinar.", correct:false},
-            {label:"No comparten nada más.", correct:false}
-          ], explain:"'Todo aquel que comparte la mesa comparte también una historia' — otra pieza del misterio de la Gran Ceiba."}
-      ]
-    },
-    "guardianes-ep9": {
-      label: "Guardianes de Chiquibul — Ep. 9: La Clínica del Colibrí",
-      rounds: [
-        { prompt: "¿Por qué Teo se enferma durante la caminata?",
-          choices: [
-            {label:"Porque camina demasiado rápido.", correct:false},
-            {label:"Porque prueba un fruto desconocido sin preguntar primero.", correct:true},
-            {label:"Porque no lleva suficiente agua.", correct:false},
-            {label:"Porque no descansa lo suficiente.", correct:false}
-          ], explain:"Teo aprende que hay que preguntar antes de comer algo que no conoce."},
-        { prompt: "¿Qué siente Bruno mientras Teo está en la clínica, aunque no quiere admitirlo?",
-          choices: [
-            {label:"Está aburrido y quiere irse.", correct:false},
-            {label:"Está preocupado por Teo, porque le importa como amigo.", correct:true},
-            {label:"Está enojado con Teo por interrumpir la caminata.", correct:false},
-            {label:"No siente nada en particular.", correct:false}
-          ], explain:"Chica le hace notar que preocuparse por un amigo es, en sí, una muestra de buena amistad."},
-        { prompt: "¿Quién es la doctora Alma, y de dónde viene?",
-          choices: [
-            {label:"Una colibrí de la Clínica del Colibrí, originaria de Colombia.", correct:true},
-            {label:"Una rana de Costa Rica que enseña en la escuela.", correct:false},
-            {label:"Una tapir bombera de Belice.", correct:false},
-            {label:"Una coatí que vende especias.", correct:false}
-          ], explain:"Alma creció en Colombia, donde su abuelo, también médico, le enseñó a escuchar al paciente primero."},
-        { prompt: "Según la doctora Alma, ¿qué necesita la curiosidad además de valentía?",
-          choices: [
-            {label:"Prudencia.", correct:true},
-            {label:"Dinero.", correct:false},
-            {label:"Compañía.", correct:false},
-            {label:"Nada más — la curiosidad es suficiente.", correct:false}
-          ], explain:"Alma dice: 'La curiosidad es maravillosa. Pero necesita prudencia también.'"},
-        { prompt: "¿Qué encuentra Chica en la clínica, dentro de una caja de madera antigua?",
-          choices: [
-            {label:"Una espiral con cuatro hojas — la misma marca de siempre.", correct:true},
-            {label:"Una fotografía de la doctora Alma de joven.", correct:false},
-            {label:"Un mapa del mercado.", correct:false},
-            {label:"Una carta de Don Pico.", correct:false}
-          ], explain:"La doctora cierra la caja con cuidado y dice: '—Eso era de mi abuelo.'"},
-        { prompt: "¿Quién le enseñó a la doctora Alma a escuchar al paciente primero?",
-          choices: [
-            {label:"Su abuelo, que era médico.", correct:true},
-            {label:"Don Pico.", correct:false},
-            {label:"Su madre.", correct:false},
-            {label:"Nadie — lo aprendió sola.", correct:false}
-          ], explain:"'Mi abuelo era médico. Me enseñó a escuchar al paciente primero.'"}
-      ]
-    },
-    "guardianes-ep10": {
-      label: "Guardianes de Chiquibul — Ep. 10: ¡Alerta en la Selva!",
-      rounds: [
-        { prompt: "Cuando ven el humo, ¿qué instrucción da Don Pico primero?",
-          choices: [
-            {label:"Que todos corran en direcciones diferentes.", correct:false},
-            {label:"Que nadie corra, que se mantengan juntos, y que Chica cuente a todos los Guardianes.", correct:true},
-            {label:"Que intenten apagar el fuego ellos mismos.", correct:false},
-            {label:"Que busquen agua inmediatamente.", correct:false}
-          ], explain:"Mantener la calma y contar a todos es el primer paso — no intentar apagarlo solos."},
-        { prompt: "Según Capitana Sofía, ¿por qué colaboran los bomberos forestales de varios países?",
-          choices: [
-            {label:"Porque Belice no tiene suficientes bomberos propios.", correct:false},
-            {label:"Porque la Selva Maya es un solo ecosistema compartido, y el humo no conoce fronteras.", correct:true},
-            {label:"Porque es una regla del gobierno.", correct:false},
-            {label:"Porque siempre trabajan juntos, no solo en emergencias.", correct:false}
-          ], explain:"Los animales, los árboles y el humo no saben dónde termina un país y empieza otro."},
-        { prompt: "¿Qué hace Bruno cuando ve un tucán pequeño atrapado en el humo?",
-          choices: [
-            {label:"Sube con cuidado por un camino que conoce bien y lleva el nido a un lugar seguro.", correct:true},
-            {label:"Le pide ayuda a la capitana Sofía primero.", correct:false},
-            {label:"Se queda mirando desde lejos.", correct:false},
-            {label:"Corre a avisarle a Don Pico y espera.", correct:false}
-          ], explain:"'Solo... no quería que estuviera solo' — Bruno actúa con valentía sin pensarlo dos veces."},
-        { prompt: "Según Don Pico al final, ¿qué es el valor?",
-          choices: [
-            {label:"Hacer lo correcto incluso con miedo.", correct:true},
-            {label:"No tener miedo nunca.", correct:false},
-            {label:"Ser el más fuerte del grupo.", correct:false},
-            {label:"Actuar solo, sin pedir ayuda.", correct:false}
-          ], explain:"'El valor no es no tener miedo. Es hacer lo correcto incluso con miedo.'"},
-        { prompt: "¿Quién es la capitana Sofía?",
-          choices: [
-            {label:"Una tapir bombera con casco amarillo.", correct:true},
-            {label:"Una rana que enseña en la escuela.", correct:false},
-            {label:"Una colibrí doctora.", correct:false},
-            {label:"Una coatí del mercado.", correct:false}
-          ], explain:"Llega al frente de un vehículo forestal para ayudar a controlar el incendio."},
-        { prompt: "¿Cuál es la misión de los Guardianes ese día, antes de ver el humo?",
-          choices: [
-            {label:"Limpiar un sendero para las familias.", correct:true},
-            {label:"Buscar frutas para el mercado.", correct:false},
-            {label:"Visitar la Clínica del Colibrí.", correct:false},
-            {label:"Practicar para una fiesta.", correct:false}
-          ], explain:"El episodio empieza con una misión sencilla que se interrumpe por la emergencia del incendio."}
-      ]
-    },
-    "guardianes-ep11": {
-      label: "Guardianes de Chiquibul — Ep. 11: El Susurro de las Raíces",
-      rounds: [
-        { prompt: "¿Qué estación debería estar llegando a Chiquibul?",
-          choices: [
-            {label:"La época de lluvias.", correct:true},
-            {label:"La época seca.", correct:false},
-            {label:"El invierno.", correct:false},
-            {label:"El verano.", correct:false}
-          ], explain:"La época de lluvias debería llegar, pero se retrasa — todos están preocupados."},
-        { prompt: "¿Qué encuentra Chica entre las hojas que caen de la Gran Ceiba?",
-          choices: [
-            {label:"Una hoja diferente con líneas extrañas.", correct:true},
-            {label:"Una flor rara.", correct:false},
-            {label:"Un insecto grande.", correct:false},
-            {label:"Una fruta desconocida.", correct:false}
-          ], explain:"La hoja es más gruesa y tiene líneas que parecen un mensaje incompleto."},
-        { prompt: "¿Por qué caen tantas hojas de la Gran Ceiba ese día?",
-          choices: [
-            {label:"Porque hace mucho viento.", correct:true},
-            {label:"Porque empieza a llover.", correct:false},
-            {label:"Porque un animal sube al árbol.", correct:false},
-            {label:"El cuento no lo explica.", correct:false}
-          ], explain:"Un viento muy fuerte mueve la Gran Ceiba y hace caer muchas hojas."},
-        { prompt: "¿Quiénes son los dos amigos de Chica en este episodio?",
-          choices: [
-            {label:"Teo e Iggy.", correct:true},
-            {label:"Nico y Mora.", correct:false},
-            {label:"Bruno y Arlo.", correct:false},
-            {label:"Luna y Toño.", correct:false}
-          ], explain:"Los tres juntos deciden buscar más pistas sobre la hoja misteriosa."},
-        { prompt: "¿Qué tiene de especial la hoja que encuentra Chica?",
-          choices: [
-            {label:"Es más gruesa y tiene líneas extrañas que parecen un mensaje.", correct:true},
-            {label:"Tiene un color que nadie ha visto antes.", correct:false},
-            {label:"Es la única hoja verde en el suelo.", correct:false},
-            {label:"Tiene el nombre de Chica escrito.", correct:false}
-          ], explain:"'Las líneas parecen un mensaje. Pero el mensaje no está completo.'"},
-        { prompt: "Al final del episodio, ¿qué deciden hacer los tres amigos?",
-          choices: [
-            {label:"Buscar más pistas en el bosque.", correct:true},
-            {label:"Contarle todo a Don Pico de inmediato.", correct:false},
-            {label:"Olvidar la hoja y seguir jugando.", correct:false},
-            {label:"Esconder la hoja para siempre.", correct:false}
-          ], explain:"Empieza así la investigación del misterio que continúa el resto de la temporada."}
-      ]
-    },
-    "guardianes-ep12": {
-      label: "Guardianes de Chiquibul — Ep. 12: El Regreso de Luna",
-      rounds: [
-        { prompt: "¿Quién regresa a Chiquibul en este episodio?",
-          choices: [
-            {label:"Luna, la guacamaya.", correct:true},
-            {label:"Doña Tapir.", correct:false},
-            {label:"La doctora Alma.", correct:false},
-            {label:"Valentina.", correct:false}
-          ], explain:"Luna regresa a visitar a sus abuelos, como en el Episodio 4."},
-        { prompt: "¿Dónde encuentran la segunda pista del misterio?",
-          choices: [
-            {label:"En una piedra grande cubierta de musgo.", correct:true},
-            {label:"En el río.", correct:false},
-            {label:"En la escuela.", correct:false},
-            {label:"En el mercado.", correct:false}
-          ], explain:"La piedra tiene líneas parecidas a las de la hoja — otro fragmento del mensaje."},
-        { prompt: "¿Qué le recuerdan a Luna las líneas de la hoja misteriosa?",
-          choices: [
-            {label:"Leyendas que le contaba su abuela sobre símbolos así.", correct:true},
-            {label:"Una canción de su infancia.", correct:false},
-            {label:"Un mapa que usó una vez.", correct:false},
-            {label:"Nada — nunca vio algo parecido.", correct:false}
-          ], explain:"'Mi abuela me contaba leyendas sobre símbolos así' — Luna conecta la pista con su propia familia."},
-        { prompt: "Según la abuela de Luna, ¿dónde aparecen estos símbolos?",
-          choices: [
-            {label:"Cerca de raíces muy viejas.", correct:true},
-            {label:"En la cima de las montañas.", correct:false},
-            {label:"Dentro de las cuevas.", correct:false},
-            {label:"En el fondo del río.", correct:false}
-          ], explain:"Esta pista los guía hacia la piedra que encuentran cerca de raíces antiguas."},
-        { prompt: "¿A quién visita Luna en Chiquibul?",
-          choices: [
-            {label:"A sus abuelos.", correct:true},
-            {label:"A su hermana.", correct:false},
-            {label:"A su maestra.", correct:false},
-            {label:"A Don Pico.", correct:false}
-          ], explain:"Luna, de Yucatán, tiene familia en Belice — su abuela es fuente de las leyendas."},
-        { prompt: "Al final del episodio, ¿cuántas partes del mensaje tienen los amigos?",
-          choices: [
-            {label:"Dos.", correct:true},
-            {label:"Una.", correct:false},
-            {label:"Tres.", correct:false},
-            {label:"El mensaje ya está completo.", correct:false}
-          ], explain:"'Ahora tenemos dos partes del mensaje —dice Chica—. Pero todavía falta más.'"}
-      ]
-    },
-    "guardianes-ep13": {
-      label: "Guardianes de Chiquibul — Ep. 13: La Tormenta de Chiquibul",
-      rounds: [
-        { prompt: "¿Qué pasa de repente con el clima mientras los amigos buscan pistas?",
-          choices: [
-            {label:"Llega una tormenta fuerte.", correct:true},
-            {label:"Sale mucho sol.", correct:false},
-            {label:"Hace mucho frío.", correct:false},
-            {label:"Nieva por primera vez.", correct:false}
-          ], explain:"Después de tanta sequía, llega una tormenta fuerte de repente."},
-        { prompt: "¿Cómo protegen la piedra con el mensaje durante la tormenta?",
-          choices: [
-            {label:"Trabajando juntos en equipo.", correct:true},
-            {label:"Cada uno por su cuenta.", correct:false},
-            {label:"No la protegen — la pierden.", correct:false},
-            {label:"Le piden ayuda a Don Pico.", correct:false}
-          ], explain:"Chica, Teo, Iggy y Luna trabajan juntos para salvar la piedra del agua que sube."},
-        { prompt: "¿Qué usan los amigos como puente durante la tormenta?",
-          choices: [
-            {label:"Una rama grande.", correct:true},
-            {label:"Una piedra plana.", correct:false},
-            {label:"Hojas de la Gran Ceiba.", correct:false},
-            {label:"No usan ningún puente.", correct:false}
-          ], explain:"Luna encuentra la rama, y todos la usan para cruzar el agua que sube."},
-        { prompt: "Después de proteger la piedra, ¿cómo están los amigos?",
-          choices: [
-            {label:"Empapados, pero bien — nadie está herido.", correct:true},
-            {label:"Muy heridos por el agua.", correct:false},
-            {label:"Perdidos en el bosque.", correct:false},
-            {label:"Separados unos de otros.", correct:false}
-          ], explain:"A pesar del susto, el trabajo en equipo mantiene a todos a salvo."},
-        { prompt: "¿Qué descubren los amigos justo después de la tormenta?",
-          choices: [
-            {label:"Una raíz enorme con una abertura misteriosa.", correct:true},
-            {label:"Un río completamente nuevo.", correct:false},
-            {label:"Una cueva llena de animales.", correct:false},
-            {label:"El mensaje completo, ya resuelto.", correct:false}
-          ], explain:"Esta abertura se convierte en la siguiente gran pista de la temporada."},
-        { prompt: "¿Quién sostiene la rama mientras Teo levanta la piedra?",
-          choices: [
-            {label:"Chica.", correct:true},
-            {label:"Iggy.", correct:false},
-            {label:"Luna.", correct:false},
-            {label:"Nadie — Teo lo hace solo.", correct:false}
-          ], explain:"Cada amigo tiene un papel: Chica sostiene, Teo levanta, Iggy ayuda a Luna."}
-      ]
-    },
-    "guardianes-ep14": {
-      label: "Guardianes de Chiquibul — Ep. 14: La Guardiana del Bosque",
-      rounds: [
-        { prompt: "¿Por qué el grupo invita a todos sus amigos de la temporada?",
-          choices: [
-            {label:"Necesitan ayuda para entender el mensaje completo.", correct:true},
-            {label:"Quieren organizar una fiesta sorpresa.", correct:false},
-            {label:"Están perdidos y necesitan que los encuentren.", correct:false},
-            {label:"Es el cumpleaños de la Gran Ceiba.", correct:false}
-          ], explain:"Cada amigo reconoce una parte diferente del mensaje misterioso."},
-        { prompt: "¿Qué es la Gran Ceiba en realidad?",
-          choices: [
-            {label:"Una guardiana de las historias del bosque.", correct:true},
-            {label:"Un árbol común, sin ningún secreto.", correct:false},
-            {label:"Una casa vacía y abandonada.", correct:false},
-            {label:"Un mapa gigante dibujado en la tierra.", correct:false}
-          ], explain:"'La Gran Ceiba guarda las historias de todos —dice Chica, sorprendida—. Es una guardiana de la memoria del bosque.'"},
-        { prompt: "¿Qué dicen las invitaciones que escribe el grupo?",
-          choices: [
-            {label:"'Ven a Chiquibul. Necesitamos tu ayuda.'", correct:true},
-            {label:"'¡Fiesta sorpresa esta noche!'", correct:false},
-            {label:"'La escuela empieza mañana.'", correct:false},
-            {label:"'Hay un peligro en la selva.'", correct:false}
-          ], explain:"Una invitación sencilla y honesta reúne a todos los amigos de la temporada."},
-        { prompt: "¿Qué reconoce Toño en una parte del mensaje?",
-          choices: [
-            {label:"Algo que habla de coraje.", correct:true},
-            {label:"Algo que habla de comida.", correct:false},
-            {label:"Algo que habla de música.", correct:false},
-            {label:"No reconoce nada.", correct:false}
-          ], explain:"Cada amigo reconoce la Palabra del Bosque de su propio episodio — para Toño, fue coraje."},
-        { prompt: "Según Iggy, ¿por qué era importante cada palabra especial del año?",
-          choices: [
-            {label:"Porque la Ceiba recordaba cada historia.", correct:true},
-            {label:"Porque Don Pico las escribía en un libro.", correct:false},
-            {label:"Porque cada palabra daba un premio.", correct:false},
-            {label:"No tenían ninguna importancia especial.", correct:false}
-          ], explain:"'Por eso cada palabra especial de este año era importante —dice Iggy—. La Ceiba recordaba cada historia.'"},
-        { prompt: "Al juntar todas las partes del mensaje, ¿qué logran los amigos?",
-          choices: [
-            {label:"Completar el mensaje por fin.", correct:true},
-            {label:"Descubrir un nuevo animal.", correct:false},
-            {label:"Encontrar más hojas misteriosas.", correct:false},
-            {label:"Nada — el mensaje sigue incompleto.", correct:false}
-          ], explain:"Después de toda la temporada buscando pistas, el mensaje finalmente se completa."}
-      ]
-    },
-    "guardianes-ep15": {
-      label: "Guardianes de Chiquibul — Ep. 15: La Gran Fiesta de Chiquibul",
-      rounds: [
-        { prompt: "¿Por qué organiza Chiquibul una gran fiesta?",
-          choices: [
-            {label:"Para celebrar el misterio resuelto.", correct:true},
-            {label:"Es el cumpleaños de Chica.", correct:false},
-            {label:"Empieza el verano.", correct:false},
-            {label:"Llega por fin la lluvia.", correct:false}
-          ], explain:"Celebran juntos ahora que el misterio de la Gran Ceiba está resuelto."},
-        { prompt: "¿Qué dice Luna al final del episodio?",
-          choices: [
-            {label:"Que hay otros árboles como la Gran Ceiba en otros lugares.", correct:true},
-            {label:"Que tiene que irse para siempre.", correct:false},
-            {label:"Que no le gustó la fiesta.", correct:false},
-            {label:"Que ya no quiere visitar Chiquibul.", correct:false}
-          ], explain:"Luna deja la puerta abierta a nuevas aventuras — puede haber más árboles guardianes."},
-        { prompt: "¿Qué trae cada amigo a la fiesta?",
-          choices: [
-            {label:"Algo especial de su país: comida, música o historias.", correct:true},
-            {label:"Un regalo envuelto para Chica.", correct:false},
-            {label:"Nada — solo vienen a mirar.", correct:false},
-            {label:"Una hoja misteriosa nueva.", correct:false}
-          ], explain:"Toño, Luna, Lucía, Sofía, Valentina, Mateo, la Doctora Alma y la Capitana Sofía comparten su cultura."},
-        { prompt: "¿Qué instrumento suena en la fiesta?",
-          choices: [
-            {label:"La marimba.", correct:true},
-            {label:"El tambor.", correct:false},
-            {label:"La guitarra.", correct:false},
-            {label:"El violín.", correct:false}
-          ], explain:"La música alegre de la marimba pone a todos a bailar."},
-        { prompt: "¿Qué baile intentan todos juntos?",
-          choices: [
-            {label:"Un paso doble.", correct:true},
-            {label:"Salsa.", correct:false},
-            {label:"Ballet.", correct:false},
-            {label:"Tango.", correct:false}
-          ], explain:"Al ritmo de la marimba, todos intentan bailar juntos, ¡y es muy divertido!"},
-        { prompt: "Según Chica, ¿para quién es la fiesta?",
-          choices: [
-            {label:"Para la Gran Ceiba, que guarda todas sus historias.", correct:true},
-            {label:"Para Don Pico, el maestro del año.", correct:false},
-            {label:"Para Luna, que se va de viaje.", correct:false},
-            {label:"Para todos los estudiantes nuevos.", correct:false}
-          ], explain:"'Esta fiesta es para la Gran Ceiba —dice—. Ella guarda todas nuestras historias.'"}
+        {
+          prompt: "¿Por qué organiza Chiquibul una gran fiesta?",
+          choices: [
+            {
+              label: "Para celebrar el misterio resuelto.",
+              correct: true
+            },
+            {
+              label: "Es el cumpleaños de Chica.",
+              correct: false
+            },
+            {
+              label: "Empieza el verano.",
+              correct: false
+            },
+            {
+              label: "Llega por fin la lluvia.",
+              correct: false
+            }
+          ],
+          explain: "Celebran juntos ahora que el misterio de la Gran Ceiba está resuelto."
+        },
+        {
+          prompt: "¿Qué dice Luna al final del episodio?",
+          choices: [
+            {
+              label: "Que hay otros árboles como la Gran Ceiba en otros lugares.",
+              correct: true
+            },
+            {
+              label: "Que tiene que irse para siempre.",
+              correct: false
+            },
+            {
+              label: "Que no le gustó la fiesta.",
+              correct: false
+            },
+            {
+              label: "Que ya no quiere visitar Chiquibul.",
+              correct: false
+            }
+          ],
+          explain: "Luna deja la puerta abierta a nuevas aventuras — puede haber más árboles guardianes."
+        },
+        {
+          prompt: "¿Qué trae cada amigo a la fiesta?",
+          choices: [
+            {
+              label: "Algo especial de su país: comida, música o historias.",
+              correct: true
+            },
+            {
+              label: "Un regalo envuelto para Chica.",
+              correct: false
+            },
+            {
+              label: "Nada — solo vienen a mirar.",
+              correct: false
+            },
+            {
+              label: "Una hoja misteriosa nueva.",
+              correct: false
+            }
+          ],
+          explain: "Toño, Luna, Lucía, Sofía, Valentina, Mateo, la Doctora Alma y la Capitana Sofía comparten su cultura."
+        },
+        {
+          prompt: "¿Qué instrumento suena en la fiesta?",
+          choices: [
+            {
+              label: "La marimba.",
+              correct: true
+            },
+            {
+              label: "El tambor.",
+              correct: false
+            },
+            {
+              label: "La guitarra.",
+              correct: false
+            },
+            {
+              label: "El violín.",
+              correct: false
+            }
+          ],
+          explain: "La música alegre de la marimba pone a todos a bailar."
+        },
+        {
+          prompt: "¿Qué baile intentan todos juntos?",
+          choices: [
+            {
+              label: "Un paso doble.",
+              correct: true
+            },
+            {
+              label: "Salsa.",
+              correct: false
+            },
+            {
+              label: "Ballet.",
+              correct: false
+            },
+            {
+              label: "Tango.",
+              correct: false
+            }
+          ],
+          explain: "Al ritmo de la marimba, todos intentan bailar juntos, ¡y es muy divertido!"
+        },
+        {
+          prompt: "Según Chica, ¿para quién es la fiesta?",
+          choices: [
+            {
+              label: "Para la Gran Ceiba, que guarda todas sus historias.",
+              correct: true
+            },
+            {
+              label: "Para Don Pico, el maestro del año.",
+              correct: false
+            },
+            {
+              label: "Para Luna, que se va de viaje.",
+              correct: false
+            },
+            {
+              label: "Para todos los estudiantes nuevos.",
+              correct: false
+            }
+          ],
+          explain: "'Esta fiesta es para la Gran Ceiba —dice—. Ella guarda todas nuestras historias.'"
+        }
       ]
     }
   }
