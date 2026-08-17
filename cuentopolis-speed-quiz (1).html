@@ -1,0 +1,4334 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Ronda Rápida — Cuentopolis</title>
+<style>
+  :root{
+    --navy:#0B2545; --gold:#C9A961; --parchment:#F6EFE0; --parchment-dark:#EDE2C8;
+    --forest:#2F6B4F; --purple:#5B3A82; --coral:#C4544A; --mint:#3F8F63;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; min-height:100vh; background:var(--navy);
+    background-image: radial-gradient(circle at 20% 20%, rgba(201,169,97,.08), transparent 40%),
+                       radial-gradient(circle at 80% 80%, rgba(201,169,97,.06), transparent 40%);
+    font-family:Georgia, 'Times New Roman', serif; color:var(--parchment);
+    display:flex; flex-direction:column; align-items:center; padding:24px;
+  }
+  .badge{position:fixed; bottom:16px; right:18px; width:64px; height:64px; border-radius:50%;
+    border:2px solid var(--gold); display:flex; align-items:center; justify-content:center;
+    font-size:.62rem; text-align:center; color:var(--gold); letter-spacing:.5px;
+    background:var(--navy); line-height:1.1; padding:4px;}
+  h1{font-size:2.1rem; margin:6px 0 2px; text-align:center;}
+  .sub{font-style:italic; color:var(--gold); font-size:.95rem; margin-bottom:14px; text-align:center;}
+  .setup, .card, .end{background:var(--parchment); color:var(--navy); border:3px double var(--gold); border-radius:6px;
+    padding:26px; max-width:760px; width:100%; box-shadow:0 10px 30px rgba(0,0,0,.4); text-align:center;}
+  .setup label{display:block; margin:14px 0 6px; color:var(--purple); font-style:italic;}
+  .setup input{padding:8px; border-radius:6px; border:1px solid var(--gold); width:80px; text-align:center; font-size:1rem;}
+  #teamNames{display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-top:14px;}
+  #teamNames input{width:130px;}
+  .btn{background:var(--gold); color:var(--navy); border:none; border-radius:6px;
+    padding:12px 26px; font-size:1.05rem; font-weight:bold; cursor:pointer; margin-top:16px; margin-right:8px; font-family:Georgia,serif;}
+  .btn.outline{background:var(--navy); color:var(--parchment); border:1px solid var(--gold);}
+  .card{display:none;}
+  .qmeta{color:var(--purple); font-style:italic; margin-bottom:8px;}
+  .timer{font-size:2.4rem; font-weight:bold; margin-bottom:10px;}
+  .timer.low{color:var(--coral);}
+  .question{font-size:1.4rem; margin-bottom:20px;}
+  .choices{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:18px;}
+  @media(max-width:560px){.choices{grid-template-columns:1fr;}}
+  .choice{background:var(--navy); color:var(--parchment); border:2px solid var(--gold); border-radius:6px;
+    padding:16px; font-size:1.05rem; font-weight:bold; cursor:pointer; font-family:Georgia,serif;}
+  .choice.correct{background:var(--mint); border-color:var(--mint); color:#fff;}
+  .choice.wrong{background:var(--coral); border-color:var(--coral); color:#fff;}
+  .scoreboard{display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin:18px 0;}
+  .team{background:var(--navy); color:var(--parchment); border:1px solid var(--gold); border-radius:6px; padding:8px 14px;}
+  .team .pts{font-size:1.3rem; color:var(--gold); font-weight:bold;}
+  .award{display:flex; flex-wrap:wrap; gap:8px; justify-content:center;}
+  .award button{background:var(--parchment-dark); color:var(--navy); border:1px solid var(--gold);
+    border-radius:6px; padding:8px 12px; cursor:pointer;}
+  .end{display:none;}
+  .end h2{font-size:2rem;}
+  .unitBtn{display:block; width:100%; text-align:left; background:var(--navy); color:var(--parchment);
+    border:1px solid var(--gold); border-radius:6px; padding:16px 18px; margin-bottom:12px; font-size:1.1rem;
+    font-weight:bold; cursor:pointer; font-family:Georgia,serif;}
+  .unitBtn small{display:block; font-weight:normal; font-style:italic; font-size:.8rem; margin-top:4px; opacity:.8;}
+</style>
+</head>
+<body>
+  <h1>⚡ Ronda Rápida</h1>
+  <div class="sub">Repaso de Dominio — Juego de equipos con cronómetro</div>
+
+  <div class="setup" id="pickerCard">
+    <p style="font-size:1.2rem; margin-bottom:16px;">Elige una unidad para practicar:</p>
+    <div id="unitList"></div>
+  </div>
+
+  <div class="setup" id="setup" style="display:none;">
+    <p>¿Cuántos equipos van a jugar?</p>
+    <input type="number" id="teamCount" min="1" max="6" value="3">
+    <button class="btn" id="setTeamsBtn">Configurar Equipos</button>
+    <div id="teamNames"></div>
+    <button class="btn" id="startBtn" style="display:none;">Comenzar</button>
+  </div>
+
+  <div class="card" id="gameCard">
+    <div class="qmeta">Pregunta <span id="qNum">1</span> / <span id="qTotal"></span></div>
+    <div class="timer" id="timer">15</div>
+    <div class="question" id="question"></div>
+    <div class="choices" id="choices"></div>
+    <div class="scoreboard" id="scoreboard"></div>
+    <div id="awardSection" style="display:none;">
+      <p>¿Qué equipo respondió correctamente?</p>
+      <div class="award" id="awardButtons"></div>
+    </div>
+    <button class="btn" id="nextBtn" style="display:none;">Siguiente Pregunta →</button>
+  </div>
+
+  <div class="end" id="endCard">
+    <h2>🏆 ¡Puntajes Finales!</h2>
+    <div class="scoreboard" id="finalScoreboard"></div>
+    <button class="btn" id="restartBtn">Jugar de Nuevo</button>
+    <button class="btn outline" id="switchBtn">Elegir Otra Unidad</button>
+  </div>
+
+  <div class="badge">CUENTO<br>POLIS</div>
+
+<script>
+/* =========================================================
+   AÑADIR UNA NUEVA UNIDAD: copia un bloque dentro de `units`.
+   El enlace de este juego NUNCA cambia.
+   DEMO content below — replace with real comprehension check
+   questions from an actual unit/CI lesson.
+   ========================================================= */
+const CONFIG = {
+  units: {
+    "guardianes-ep1": {
+      label: "Guardianes de Chiquibul — Ep. 1: ¡Hola, Chica!",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Cómo se llama la protagonista de la serie?",
+          choices: [
+            "Nico",
+            "Chica",
+            "Bruno",
+            "Don Pico"
+          ],
+          correct: 1
+        },
+        {
+          q: "¿Quién es el maestro de la escuela en la selva?",
+          choices: [
+            "Bruno",
+            "Nico",
+            "Don Pico",
+            "Chica"
+          ],
+          correct: 2
+        },
+        {
+          q: "¿De dónde es Nico, el coatí nuevo?",
+          choices: [
+            "Guatemala",
+            "Toledo, Belice",
+            "México",
+            "Costa Rica"
+          ],
+          correct: 1
+        },
+        {
+          q: "¿Qué palabra usa Don Pico para describir el trabajo de Chica?",
+          choices: [
+            "misión",
+            "aventura",
+            "fiesta",
+            "clase"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Quién mira de lejos y se siente un poco triste al final?",
+          choices: [
+            "Don Pico",
+            "Nico",
+            "Bruno",
+            "Chica"
+          ],
+          correct: 2
+        },
+        {
+          q: "¿Cuál es la Palabra del Bosque de este episodio?",
+          choices: [
+            "bienvenida",
+            "valentía",
+            "misterio",
+            "amistad"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "guardianes-ep2": {
+      label: "Guardianes de Chiquibul — Ep. 2: El Gran Árbol",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Qué árbol visitan los amigos en este episodio?",
+          choices: [
+            "la Gran Ceiba",
+            "un roble",
+            "una palmera",
+            "un mango"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué misión da Don Pico durante la excursión?",
+          choices: [
+            "buscar un color en la naturaleza",
+            "limpiar el río",
+            "dormir una siesta",
+            "cantar una canción"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué hace Bruno con el barro?",
+          choices: [
+            "cubre flores, piedras y hojas para que todo sea un color",
+            "construye una casa",
+            "pinta un dibujo",
+            "lo tira al río"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué lección aprende Bruno al final?",
+          choices: [
+            "que la diversidad hace bella a la selva",
+            "que el barro es divertido",
+            "que debe esconderse mejor",
+            "que el verde es el mejor color"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué símbolo aparece en el tronco de la Gran Ceiba?",
+          choices: [
+            "una espiral con cuatro hojas",
+            "una estrella",
+            "un sol",
+            "una flecha"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cuál es la Palabra del Bosque de este episodio?",
+          choices: [
+            "diversidad",
+            "valentía",
+            "coraje",
+            "misterio"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "guardianes-ep3": {
+      label: "Guardianes de Chiquibul — Ep. 3: Un amigo nuevo",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Cómo se llama el animal nuevo de este episodio?",
+          choices: [
+            "Toño",
+            "Nico",
+            "Iggy",
+            "Arlo"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué animal es Toño?",
+          choices: [
+            "un armadillo",
+            "un jaguar",
+            "una rana",
+            "un tucán"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Por qué Toño participa tan poco al principio?",
+          choices: [
+            "tiene miedo de que se burlen de él",
+            "no le gustan los juegos",
+            "está enfermo",
+            "no habla español"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué le dice Bruno a Toño que lo hace sentir mal?",
+          choices: [
+            "'¿Para qué viniste?'",
+            "'¡Bienvenido!'",
+            "'Vamos a jugar'",
+            "'Me gusta tu mochila'"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué palabra escribe Chica en una hoja grande?",
+          choices: [
+            "AMIGOS",
+            "MIEDO",
+            "SELVA",
+            "COLORES"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cuál es la Palabra del Bosque de este episodio?",
+          choices: [
+            "coraje",
+            "diversidad",
+            "bienvenida",
+            "confianza"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "guardianes-ep4": {
+      label: "Guardianes de Chiquibul — Ep. 4: ¿Dónde está Mora?",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Qué celebración es hoy en Chiquibul?",
+          choices: [
+            "el Festival de las Flores",
+            "el Festival de la Fruta",
+            "el Día de la Lluvia",
+            "el Cumpleaños de Don Pico"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Quién falta al principio del episodio?",
+          choices: [
+            "Mora",
+            "Nico",
+            "Luna",
+            "Bruno"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿De dónde viene Luna?",
+          choices: [
+            "Yucatán, México",
+            "Guatemala",
+            "Perú",
+            "Costa Rica"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué cuida Mora en el jardín escondido?",
+          choices: [
+            "una orquídea débil",
+            "un huevo de pájaro",
+            "un árbol pequeño",
+            "una mariposa herida"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué símbolo encuentran otra vez cerca del jardín?",
+          choices: [
+            "una espiral con cuatro hojas",
+            "una estrella",
+            "un corazón",
+            "una luna"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cuál es la Palabra del Bosque de este episodio?",
+          choices: [
+            "confianza",
+            "coraje",
+            "diversidad",
+            "bienvenida"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "guardianes-ep5": {
+      label: "Guardianes de Chiquibul — Ep. 5: El cumpleaños sorpresa",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Quién cumple años en este episodio?",
+          choices: [
+            "Nico",
+            "Chica",
+            "Bruno",
+            "Mora"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Quién escucha parte de la conversación y se va triste?",
+          choices: [
+            "Bruno",
+            "Teo",
+            "Iggy",
+            "Arlo"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿De dónde viene Lucía, la nueva amiga?",
+          choices: [
+            "Guatemala",
+            "Perú",
+            "México",
+            "Costa Rica"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué le da Nico a Bruno cuando regresa?",
+          choices: [
+            "el primer pedazo de pastel",
+            "un regalo",
+            "una canción",
+            "un abrazo"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué cae de la Gran Ceiba al final de la fiesta?",
+          choices: [
+            "una hoja enorme con una espiral",
+            "una flor",
+            "una fruta",
+            "una pluma"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cuál es la Palabra del Bosque de este episodio?",
+          choices: [
+            "compartir",
+            "coraje",
+            "confianza",
+            "diversidad"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "guardianes-ep6": {
+      label: "Guardianes de Chiquibul — Ep. 6: Vamos a la Escuela",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Qué pregunta hace Don Pico al principio de la clase?",
+          choices: [
+            "¿Qué significa aprender?",
+            "¿Quién quiere jugar?",
+            "¿Dónde está Mora?",
+            "¿Qué hora es?"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Por qué Bruno decide aprender solo?",
+          choices: [
+            "Cree que ya sabe todo",
+            "Está enfermo",
+            "No le gustan sus amigos",
+            "Quiere dormir"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿De dónde viene Sofía, la nueva estudiante?",
+          choices: [
+            "Costa Rica",
+            "Guatemala",
+            "Perú",
+            "México"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué animal es Sofía?",
+          choices: [
+            "una rana",
+            "un coatí",
+            "una guacamaya",
+            "un armadillo"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Quién ayuda a Bruno cuando se pierde?",
+          choices: [
+            "Nico",
+            "Teo",
+            "Mora",
+            "Iggy"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cuál es la Palabra del Bosque de este episodio?",
+          choices: [
+            "explorar",
+            "coraje",
+            "compartir",
+            "confianza"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "guardianes-ep7": {
+      label: "Guardianes de Chiquibul — Ep. 7: El Mercado de San Ignacio",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿A dónde va la clase hoy?",
+          choices: [
+            "al Mercado de San Ignacio",
+            "a la clínica",
+            "al restaurante",
+            "a la escuela"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cómo se llama la nueva amiga coatí del mercado?",
+          choices: [
+            "Valentina",
+            "Luna",
+            "Lucía",
+            "Sofía"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué vende Valentina?",
+          choices: [
+            "especias, como el cardamomo",
+            "ropa",
+            "frutas",
+            "juguetes"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué compra Bruno por error, en vez de mangos?",
+          choices: [
+            "cocos, chile y una calabaza",
+            "piñas y bananos",
+            "tortillas y miel",
+            "pan y cacao"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cómo resuelve Valentina el problema de las compras?",
+          choices: [
+            "ayuda a intercambiar productos con otros vendedores",
+            "le da todo gratis a Bruno",
+            "llama a Don Pico",
+            "no hace nada"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cuál es la Palabra del Bosque de este episodio?",
+          choices: [
+            "intercambiar",
+            "compartir",
+            "explorar",
+            "hospitalidad"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "guardianes-ep8": {
+      label: "Guardianes de Chiquibul — Ep. 8: El Restaurante de Doña Tapir",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿A dónde lleva Don Pico al grupo para celebrar?",
+          choices: [
+            "al restaurante de Doña Tapir",
+            "al mercado",
+            "a la clínica",
+            "a la escuela"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿De dónde viene Mateo, el invitado?",
+          choices: [
+            "Perú",
+            "Guatemala",
+            "México",
+            "Costa Rica"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué animal es Mateo?",
+          choices: [
+            "un jaguar",
+            "un coatí",
+            "una rana",
+            "un tucán"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué pasa en la cocina que hace que todos ayuden?",
+          choices: [
+            "cae una bandeja",
+            "se apaga la luz",
+            "llega más gente",
+            "se quema la comida"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Quién también ayuda a limpiar, aunque duda al principio?",
+          choices: [
+            "Bruno",
+            "Teo",
+            "Mora",
+            "Iggy"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cuál es la Palabra del Bosque de este episodio?",
+          choices: [
+            "hospitalidad",
+            "intercambiar",
+            "cuidar",
+            "valentía"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "guardianes-ep9": {
+      label: "Guardianes de Chiquibul — Ep. 9: La Clínica del Colibrí",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Quién se enferma después de comer un fruto desconocido?",
+          choices: [
+            "Teo",
+            "Nico",
+            "Bruno",
+            "Mora"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cómo se llama la doctora de la clínica?",
+          choices: [
+            "Alma",
+            "Sofía",
+            "Valentina",
+            "Luna"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué animal es la doctora Alma?",
+          choices: [
+            "una colibrí",
+            "una rana",
+            "un jaguar",
+            "un coatí"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿De dónde es la doctora Alma?",
+          choices: [
+            "Colombia",
+            "Perú",
+            "Guatemala",
+            "México"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Quién está preocupado por Teo, aunque no lo demuestra?",
+          choices: [
+            "Bruno",
+            "Iggy",
+            "Mora",
+            "Nico"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cuál es la Palabra del Bosque de este episodio?",
+          choices: [
+            "cuidar",
+            "hospitalidad",
+            "valentía",
+            "intercambiar"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "guardianes-ep10": {
+      label: "Guardianes de Chiquibul — Ep. 10: ¡Alerta en la Selva!",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Qué ven los Guardianes que los alarma?",
+          choices: [
+            "una columna de humo",
+            "un río creciendo",
+            "una tormenta",
+            "un animal perdido"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué instrucción da Don Pico primero?",
+          choices: [
+            "que nadie corra y se mantengan juntos",
+            "que todos corran",
+            "que apaguen el fuego solos",
+            "que se escondan"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Quién es la capitana Sofía?",
+          choices: [
+            "una tapir bombera",
+            "una rana doctora",
+            "una guacamaya viajera",
+            "una coatí vendedora"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué hace Bruno con el tucán atrapado?",
+          choices: [
+            "lo rescata del humo",
+            "lo ignora",
+            "llama a Don Pico",
+            "se esconde"
+          ],
+          correct: 0
+        },
+        {
+          q: "Según la capitana, ¿por qué colaboran bomberos de varios países?",
+          choices: [
+            "la Selva Maya es un solo ecosistema",
+            "Belice se lo pide",
+            "es una regla nueva",
+            "no hay suficiente agua"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cuál es la Palabra del Bosque de este episodio?",
+          choices: [
+            "valentía",
+            "cuidar",
+            "hospitalidad",
+            "misterio"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "guardianes-ep11": {
+      label: "Guardianes de Chiquibul — Ep. 11: El Susurro de las Raíces",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Qué esperan todos los animales en este episodio?",
+          choices: [
+            "la lluvia",
+            "un cumpleaños",
+            "una fiesta",
+            "un examen"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué causa que caigan muchas hojas de la Gran Ceiba?",
+          choices: [
+            "un viento muy fuerte",
+            "una tormenta",
+            "un animal grande",
+            "un incendio"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Quién encuentra la hoja diferente?",
+          choices: [
+            "Chica",
+            "Teo",
+            "Iggy",
+            "Nico"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué tiene de especial esa hoja?",
+          choices: [
+            "líneas extrañas que parecen un mensaje",
+            "un color nuevo",
+            "un olor dulce",
+            "un dibujo de un animal"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué deciden hacer los tres amigos al final?",
+          choices: [
+            "buscar más pistas",
+            "volver a casa",
+            "dormir",
+            "comer fruta"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cuál es la Palabra del Bosque de este episodio?",
+          choices: [
+            "misterio",
+            "leyenda",
+            "coraje",
+            "confianza"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "guardianes-ep12": {
+      label: "Guardianes de Chiquibul — Ep. 12: El Regreso de Luna",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Quién regresa a Chiquibul en este episodio?",
+          choices: [
+            "Luna",
+            "Valentina",
+            "Lucía",
+            "Sofía"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿A quién visita Luna?",
+          choices: [
+            "a sus abuelos",
+            "a su hermana",
+            "a su maestra",
+            "a Don Pico"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué le recuerdan a Luna las líneas de la hoja?",
+          choices: [
+            "leyendas de su abuela",
+            "una canción",
+            "un mapa viejo",
+            "un juego"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Dónde encuentran la segunda pista?",
+          choices: [
+            "en una piedra con musgo",
+            "en el río",
+            "en la escuela",
+            "en el mercado"
+          ],
+          correct: 0
+        },
+        {
+          q: "Según la abuela de Luna, ¿dónde aparecen estos símbolos?",
+          choices: [
+            "cerca de raíces muy viejas",
+            "en las montañas",
+            "en el cielo",
+            "en las nubes"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cuál es la Palabra del Bosque de este episodio?",
+          choices: [
+            "leyenda",
+            "misterio",
+            "coraje",
+            "perseverancia"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "guardianes-ep13": {
+      label: "Guardianes de Chiquibul — Ep. 13: La Tormenta de Chiquibul",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Qué pasa de repente con el clima?",
+          choices: [
+            "llega una tormenta fuerte",
+            "sale mucho sol",
+            "hace mucho frío",
+            "nieva"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué usan los amigos como puente durante la tormenta?",
+          choices: [
+            "una rama grande",
+            "una piedra",
+            "una hoja",
+            "una cuerda"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Quién encuentra la rama para el puente?",
+          choices: [
+            "Luna",
+            "Chica",
+            "Teo",
+            "Iggy"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cómo protegen la piedra con el mensaje?",
+          choices: [
+            "trabajando juntos en equipo",
+            "cada uno solo",
+            "no la protegen",
+            "la esconden"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué descubren después de la tormenta?",
+          choices: [
+            "una raíz enorme con una abertura",
+            "un río nuevo",
+            "una cueva",
+            "un animal herido"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cuál es la Palabra del Bosque de este episodio?",
+          choices: [
+            "perseverancia",
+            "misterio",
+            "leyenda",
+            "memoria"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "guardianes-ep14": {
+      label: "Guardianes de Chiquibul — Ep. 14: La Guardiana del Bosque",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Por qué el grupo invita a todos sus amigos?",
+          choices: [
+            "necesitan ayuda para entender el mensaje",
+            "quieren hacer una fiesta",
+            "están perdidos",
+            "tienen hambre"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué es la Gran Ceiba en realidad?",
+          choices: [
+            "una guardiana de las historias del bosque",
+            "un árbol común",
+            "una casa vacía",
+            "un mapa"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Quién reconoce la parte del mensaje sobre el coraje?",
+          choices: [
+            "Toño",
+            "Lucía",
+            "Mateo",
+            "Nico"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Quién reconoce la parte sobre compartir?",
+          choices: [
+            "Lucía",
+            "Toño",
+            "Valentina",
+            "Sofía"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué logran los amigos al juntar todas las partes?",
+          choices: [
+            "completar el mensaje",
+            "encontrar más hojas",
+            "construir una casa",
+            "perderse otra vez"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cuál es la Palabra del Bosque de este episodio?",
+          choices: [
+            "memoria",
+            "perseverancia",
+            "misterio",
+            "comunidad"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "guardianes-ep15": {
+      label: "Guardianes de Chiquibul — Ep. 15: La Gran Fiesta de Chiquibul",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Por qué organiza Chiquibul una gran fiesta?",
+          choices: [
+            "para celebrar el misterio resuelto",
+            "es el cumpleaños de Chica",
+            "empieza el verano",
+            "llega la lluvia"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué instrumento suena en la fiesta?",
+          choices: [
+            "la marimba",
+            "el tambor",
+            "la guitarra",
+            "el violín"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué baile intentan todos juntos?",
+          choices: [
+            "un paso doble",
+            "salsa",
+            "ballet",
+            "tango"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Para quién es la fiesta, según Chica?",
+          choices: [
+            "para la Gran Ceiba",
+            "para Don Pico",
+            "para Luna",
+            "para todos los maestros"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué dice Luna al final sobre la Gran Ceiba?",
+          choices: [
+            "que hay otros árboles como ella en otros lugares",
+            "que va a desaparecer",
+            "que es la única de su tipo",
+            "que ya no guarda secretos"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cuál es la Palabra del Bosque de este episodio?",
+          choices: [
+            "comunidad",
+            "memoria",
+            "perseverancia",
+            "misterio"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "club-barrio-ms1-ep1": {
+      label: "El Club del Barrio — MS1 Ep. 1: Un nuevo año escolar",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Cómo se llama el pueblo donde vive el grupo?",
+          choices: [
+            "San Antonio",
+            "San Ignacio",
+            "Belmopan",
+            "Orange Walk"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cuál es el lugar favorito del grupo después de la escuela?",
+          choices: [
+            "Guanacaste Park",
+            "el mercado",
+            "la playa",
+            "el cine"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Por qué está nervioso Mateo?",
+          choices: [
+            "no comprende su horario",
+            "perdió su mochila",
+            "llega tarde",
+            "no tiene amigos"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Quién tiene la misma clase de Matemáticas que Mateo?",
+          choices: [
+            "Diego",
+            "Sofía",
+            "Ana Lucía",
+            "Camila"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué palabra en inglés olvida Profe Rivera?",
+          choices: [
+            "schedule",
+            "teacher",
+            "student",
+            "classroom"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cómo se llama la maestra de español del grupo?",
+          choices: [
+            "Profe Rivera",
+            "Doña Tapir",
+            "Don Pico",
+            "Doctora Alma"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "club-barrio-ms1-ep2": {
+      label: "El Club del Barrio — MS1 Ep. 2: El partido y la mazmorra",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Qué quiere hacer Sofía en el parque?",
+          choices: [
+            "jugar un partido de fútbol",
+            "hacer un picnic",
+            "limpiar el parque",
+            "ir de compras"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Por qué Diego no puede jugar a las dos?",
+          choices: [
+            "tiene su campaña de D&D",
+            "está enfermo",
+            "tiene tarea",
+            "no le gusta el fútbol"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Quién propone hacer las dos actividades?",
+          choices: [
+            "Ana Lucía",
+            "Sofía",
+            "Camila",
+            "Mateo"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué es un cognado, según Profe Rivera?",
+          choices: [
+            "una palabra que se parece en dos idiomas",
+            "un tipo de deporte",
+            "un juego de mesa",
+            "una fruta"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué palabra usan como ejemplo de cognado?",
+          choices: [
+            "robótica",
+            "fútbol",
+            "campaña",
+            "parque"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Quién tiene interés en las dos actividades?",
+          choices: [
+            "Camila",
+            "Diego",
+            "Sofía",
+            "Mateo"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "club-barrio-ms1-ep3": {
+      label: "El Club del Barrio — MS1 Ep. 3: La merienda del picnic",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Dónde hace el grupo su picnic?",
+          choices: [
+            "cerca del río en Guanacaste Park",
+            "en la escuela",
+            "en el mercado",
+            "en casa de Ana Lucía"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué tiene Sofía en su merienda?",
+          choices: [
+            "pollo, huevos y agua",
+            "galletas y jugo",
+            "frutas",
+            "verduras"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué tiene Diego en su merienda?",
+          choices: [
+            "frutas: mango, banana y naranja",
+            "pan y queso",
+            "verduras",
+            "pollo"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cuál merienda dice Profe Rivera que es la mejor?",
+          choices: [
+            "no hay una sola respuesta",
+            "solo las frutas",
+            "solo la proteína",
+            "solo las verduras"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué palabra en inglés no recuerda Profe Rivera al principio?",
+          choices: [
+            "snack",
+            "protein",
+            "fruit",
+            "balanced"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué palabra descubre Mateo que se parece a 'balanced'?",
+          choices: [
+            "balanceada",
+            "variedad",
+            "proteína",
+            "saludable"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "club-barrio-ms1-ep4": {
+      label: "El Club del Barrio — MS1 Ep. 4: La celebración de Ana Lucía",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Qué celebra la familia de Ana Lucía este fin de semana?",
+          choices: [
+            "Diwali",
+            "el Año Nuevo Chino",
+            "el Día de los Muertos",
+            "el Mundial"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué tradición comparte Mateo?",
+          choices: [
+            "el Día de los Muertos",
+            "Diwali",
+            "el Año Nuevo Chino",
+            "la Nochevieja"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué tradición comparte Camila?",
+          choices: [
+            "el Año Nuevo Chino",
+            "Diwali",
+            "el Día de los Muertos",
+            "el Mundial"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué tradición familiar comparte Sofía?",
+          choices: [
+            "ver el Mundial cada cuatro años",
+            "celebrar Diwali",
+            "contar historias en Nochevieja",
+            "el Día de los Muertos"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué celebración es universal, según Profe Rivera?",
+          choices: [
+            "el cumpleaños",
+            "el Año Nuevo",
+            "la Navidad",
+            "el verano"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué palabra descubre Camila que se parece a 'tradition'?",
+          choices: [
+            "tradición",
+            "celebración",
+            "cumpleaños",
+            "piñata"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "club-barrio-ms1-ep5": {
+      label: "El Club del Barrio — MS1 Ep. 5: El paisaje de Guanacaste Park",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Qué quiere explorar Diego en el parque?",
+          choices: [
+            "el río",
+            "el mercado",
+            "la escuela",
+            "la ciudad"
+          ],
+          correct: 0
+        },
+        {
+          q: "Según Diego, ¿qué es un ecosistema?",
+          choices: [
+            "todo conectado: río, árboles, animales",
+            "solo los animales",
+            "solo las plantas",
+            "solo el agua"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué palabra en inglés adivina Mateo?",
+          choices: [
+            "landscape",
+            "ecosystem",
+            "nature",
+            "forest"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cómo se dice 'landscape' en español?",
+          choices: [
+            "paisaje",
+            "naturaleza",
+            "bosque",
+            "montaña"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué otro lugar con paisajes similares menciona Profe Rivera?",
+          choices: [
+            "las Montañas Mayas",
+            "el Río Hondo",
+            "la Ciudad Capital",
+            "el Caribe"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Por qué debemos proteger los paisajes, según Profe Rivera?",
+          choices: [
+            "porque cada uno es único",
+            "porque son caros",
+            "porque son raros",
+            "porque son peligrosos"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "club-barrio-ms1-ep6": {
+      label: "El Club del Barrio — MS1 Ep. 6: De compras para Diwali",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Por qué necesita Ana Lucía ropa nueva?",
+          choices: [
+            "para su celebración de Diwali",
+            "para la escuela",
+            "para un cumpleaños",
+            "para el fútbol"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cuánto cuesta la primera camisa que ve Sofía?",
+          choices: [
+            "quince dólares",
+            "veinticinco dólares",
+            "dieciocho dólares",
+            "diez dólares"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cuánto cuesta la camisa con descuento?",
+          choices: [
+            "dieciocho dólares",
+            "quince dólares",
+            "veinticinco dólares",
+            "veinte dólares"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Por qué elige Ana Lucía la camisa con descuento?",
+          choices: [
+            "es más barata y le gusta el color",
+            "es la única disponible",
+            "es un regalo",
+            "no tiene otra opción"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué palabra es un cognado de 'electronics'?",
+          choices: [
+            "electrónica",
+            "descuento",
+            "cajero",
+            "recibo"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué le da el cajero a Ana Lucía al final?",
+          choices: [
+            "el recibo",
+            "un descuento extra",
+            "una bolsa gratis",
+            "un regalo"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "club-barrio-ms1-ep7": {
+      label: "El Club del Barrio — MS1 Ep. 7: El día de limpieza",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Qué organiza el grupo hoy en el parque?",
+          choices: [
+            "un día de limpieza",
+            "un partido de fútbol",
+            "un picnic",
+            "una fiesta"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué palabra en inglés busca Profe Rivera?",
+          choices: [
+            "trash",
+            "recycle",
+            "environment",
+            "clean"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué encuentra Ana Lucía para reciclar?",
+          choices: [
+            "botellas de plástico",
+            "papeles",
+            "latas",
+            "vidrio"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cuántas bolsas de basura llena el grupo?",
+          choices: [
+            "tres",
+            "dos",
+            "cinco",
+            "una"
+          ],
+          correct: 0
+        },
+        {
+          q: "Según Profe Rivera, ¿qué pueden hacer cinco personas?",
+          choices: [
+            "una gran diferencia",
+            "nada importante",
+            "solo un poco",
+            "menos que una persona"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué palabra en español significa 'trash'?",
+          choices: [
+            "basura",
+            "reciclar",
+            "limpieza",
+            "botella"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "club-barrio-ms1-ep8": {
+      label: "El Club del Barrio — MS1 Ep. 8: El proyecto de personas famosas",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Qué proyecto empieza la clase?",
+          choices: [
+            "investigar a una persona famosa",
+            "escribir un cuento",
+            "hacer un examen",
+            "organizar una fiesta"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿A quién decide investigar Camila?",
+          choices: [
+            "a una influencer que ve en línea",
+            "a una científica",
+            "a un atleta",
+            "a un astronauta"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿A quién decide investigar Diego?",
+          choices: [
+            "a un astronauta",
+            "a una científica",
+            "a un atleta",
+            "a una artista"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué palabra descubre Camila que se parece a 'influence'?",
+          choices: [
+            "influencia",
+            "admiración",
+            "famoso",
+            "investigar"
+          ],
+          correct: 0
+        },
+        {
+          q: "Según Profe Rivera, ¿qué es lo importante sobre la influencia?",
+          choices: [
+            "lo que la persona hace con ella",
+            "cuánta gente la sigue",
+            "si es famosa históricamente",
+            "su edad"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Quién decide investigar a una científica?",
+          choices: [
+            "Mateo",
+            "Sofía",
+            "Diego",
+            "Ana Lucía"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "club-barrio-ms1-ep9": {
+      label: "El Club del Barrio — MS1 Ep. 9: Una amiga desde Perú",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Con qué país hace videollamada la clase?",
+          choices: [
+            "Perú",
+            "Guatemala",
+            "México",
+            "Costa Rica"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cómo se llama la estudiante peruana?",
+          choices: [
+            "Valentina",
+            "Sofía",
+            "Camila",
+            "Ana Lucía"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cerca de qué lugar famoso vive Valentina?",
+          choices: [
+            "Machu Picchu",
+            "el Amazonas",
+            "Lima",
+            "el Titicaca"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué comida importante menciona Valentina?",
+          choices: [
+            "la quinoa",
+            "el maíz",
+            "el arroz",
+            "la papa"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué palabra en inglés adivina Mateo?",
+          choices: [
+            "heritage",
+            "culture",
+            "country",
+            "tradition"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cómo se dice 'heritage' en español?",
+          choices: [
+            "patrimonio",
+            "cultura",
+            "país",
+            "tradición"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "club-barrio-ms2-ep1": {
+      label: "El Club del Barrio — MS2 Ep. 1: El horario perfecto",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Qué tiene Mateo en su cuaderno?",
+          choices: [
+            "un horario de estudio perfecto",
+            "una lista de compras",
+            "un mapa",
+            "un dibujo"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cómo estudia Camila?",
+          choices: [
+            "con una aplicación de recompensas",
+            "en silencio",
+            "caminando",
+            "con música"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cómo prefiere estudiar Sofía?",
+          choices: [
+            "caminando",
+            "en silencio",
+            "con música",
+            "con recompensas"
+          ],
+          correct: 0
+        },
+        {
+          q: "Según Profe Rivera, ¿qué es más importante que un horario perfecto?",
+          choices: [
+            "un horario realista con balance",
+            "estudiar más horas",
+            "no descansar nunca",
+            "copiar el horario de otro"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué agrega Mateo a su horario al final?",
+          choices: [
+            "tiempo para descansar y estar con amigos",
+            "más horas de estudio",
+            "más materias",
+            "nada, lo deja igual"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué palabra usa Camila para ayudar a Mateo a terminar su oración?",
+          choices: [
+            "detalle",
+            "horario",
+            "prioridad",
+            "balance"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "club-barrio-ms2-ep2": {
+      label: "El Club del Barrio — MS2 Ep. 2: El bienestar del grupo",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Qué hace Sofía para sentirse bien?",
+          choices: [
+            "correr",
+            "una rutina de cuidado personal",
+            "mirar el cielo",
+            "jugar videojuegos"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué hace Ana Lucía para relajarse?",
+          choices: [
+            "una rutina de cuidado personal",
+            "correr",
+            "jugar videojuegos",
+            "mirar el cielo"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué necesita Diego para pensar con calma?",
+          choices: [
+            "tiempo al aire libre",
+            "música",
+            "videojuegos",
+            "un horario"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué palabra en inglés adivina Diego?",
+          choices: [
+            "well-being",
+            "balance",
+            "routine",
+            "rest"
+          ],
+          correct: 0
+        },
+        {
+          q: "Según Profe Rivera, ¿qué incluye el bienestar?",
+          choices: [
+            "el cuerpo y la mente",
+            "solo el cuerpo",
+            "solo la mente",
+            "solo el ejercicio"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿A qué evento del año pasado hace callback el grupo?",
+          choices: [
+            "la dieta balanceada del picnic",
+            "el mercado de San Ignacio",
+            "el día de limpieza",
+            "la fiesta de Nico"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "club-barrio-ms2-ep3": {
+      label: "El Club del Barrio — MS2 Ep. 3: El día del plato tradicional",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Qué plato trae Ana Lucía?",
+          choices: [
+            "samosas",
+            "pan de muerto",
+            "dumplings",
+            "rice and beans"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿De qué celebración es el plato de Mateo?",
+          choices: [
+            "Día de los Muertos",
+            "Diwali",
+            "Año Nuevo Chino",
+            "Independencia"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué plato beliceño trae Sofía?",
+          choices: [
+            "rice and beans",
+            "panades",
+            "ropa vieja",
+            "samosas"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué plato trae Diego?",
+          choices: [
+            "panades",
+            "rice and beans",
+            "dumplings",
+            "pan de muerto"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿De dónde es el plato que trae Profe Rivera?",
+          choices: [
+            "Cuba",
+            "Belice",
+            "Perú",
+            "Guatemala"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué palabra en inglés busca Profe Rivera?",
+          choices: [
+            "ingredients",
+            "recipe",
+            "culture",
+            "tradition"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "club-barrio-ms2-ep4": {
+      label: "El Club del Barrio — MS2 Ep. 4: El orgullo de San Antonio",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Qué festival prepara San Antonio?",
+          choices: [
+            "el Día de la Independencia",
+            "Diwali",
+            "el Año Nuevo Chino",
+            "Halloween"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué representa el color azul de la bandera?",
+          choices: [
+            "el mar y el cielo",
+            "el coraje",
+            "la paz",
+            "el sol"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué representa el color rojo?",
+          choices: [
+            "el coraje",
+            "el mar",
+            "la paz",
+            "la tierra"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué representa el color blanco?",
+          choices: [
+            "la paz",
+            "el coraje",
+            "el mar",
+            "el fuego"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué palabra en inglés adivina Sofía?",
+          choices: [
+            "pride",
+            "flag",
+            "history",
+            "symbol"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué país también tiene un festival de independencia, según Profe Rivera?",
+          choices: [
+            "Cuba",
+            "Perú",
+            "México",
+            "Guatemala"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "club-barrio-ms2-ep5": {
+      label: "El Club del Barrio — MS2 Ep. 5: El viaje de nuestros sueños",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿A dónde quiere viajar Diego?",
+          choices: [
+            "Tikal",
+            "Perú",
+            "Cuba",
+            "España"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué quiere ver Sofía en su viaje?",
+          choices: [
+            "un partido del Mundial",
+            "ruinas antiguas",
+            "una convención de videojuegos",
+            "moda"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Quién organiza el itinerario completo del grupo?",
+          choices: [
+            "Mateo",
+            "Diego",
+            "Sofía",
+            "Camila"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué palabra en inglés adivina Diego?",
+          choices: [
+            "itinerary",
+            "destination",
+            "trip",
+            "hotel"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿A quién propone Camila visitar en Perú?",
+          choices: [
+            "a Valentina",
+            "a Ximena",
+            "a Luna",
+            "a nadie en particular"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué lugar famoso de Perú menciona Mateo?",
+          choices: [
+            "Machu Picchu",
+            "el Amazonas",
+            "Lima",
+            "el Titicaca"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "club-barrio-ms2-ep6": {
+      label: "El Club del Barrio — MS2 Ep. 6: El desfile de Ana Lucía",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Qué idea trae Ana Lucía al grupo?",
+          choices: [
+            "un desfile de moda",
+            "un viaje",
+            "un debate",
+            "una fiesta"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué tipo de ropa muestra Sofía?",
+          choices: [
+            "ropa deportiva",
+            "ropa elegante",
+            "ropa de videojuego",
+            "un chaleco"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué prefiere usar Diego?",
+          choices: [
+            "algo simple y cómodo",
+            "ropa deportiva",
+            "un chaleco elegante",
+            "ropa de moda"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué muestra Mateo?",
+          choices: [
+            "un chaleco elegante",
+            "ropa deportiva",
+            "una camiseta de videojuego",
+            "ropa cómoda"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué palabra en inglés adivina Mateo?",
+          choices: [
+            "outfit",
+            "style",
+            "clothes",
+            "fashion"
+          ],
+          correct: 0
+        },
+        {
+          q: "Según Profe Rivera, ¿qué dice la ropa que elegimos?",
+          choices: [
+            "algo sobre quiénes somos",
+            "nada importante",
+            "solo el precio",
+            "solo el clima"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "club-barrio-ms2-ep7": {
+      label: "El Club del Barrio — MS2 Ep. 7: El debate de la tecnología",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Cuál es el tema del debate?",
+          choices: [
+            "si la tecnología ayuda o daña el aprendizaje",
+            "qué ropa usar",
+            "a dónde viajar",
+            "qué comer"
+          ],
+          correct: 0
+        },
+        {
+          q: "Según Camila, ¿cómo ayuda la tecnología?",
+          choices: [
+            "podemos aprender de todo el mundo",
+            "nos hace más fuertes",
+            "es siempre gratis",
+            "reemplaza a los maestros"
+          ],
+          correct: 0
+        },
+        {
+          q: "Según Diego, ¿cuál es el riesgo de la tecnología?",
+          choices: [
+            "pasar demasiado tiempo adentro",
+            "cuesta mucho dinero",
+            "es difícil de usar",
+            "no funciona bien"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué palabra en inglés adivina Camila?",
+          choices: [
+            "artificial intelligence",
+            "technology",
+            "computer",
+            "internet"
+          ],
+          correct: 0
+        },
+        {
+          q: "Según Profe Rivera, ¿la tecnología es buena o mala?",
+          choices: [
+            "depende de cómo se usa",
+            "siempre es buena",
+            "siempre es mala",
+            "no importa"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿A qué compara Mateo la tecnología?",
+          choices: [
+            "a un cuchillo",
+            "a un libro",
+            "a una mochila",
+            "a un reloj"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "club-barrio-ms2-ep8": {
+      label: "El Club del Barrio — MS2 Ep. 8: La entrevista imaginaria",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Qué proyecto anuncia Profe Rivera?",
+          choices: [
+            "una entrevista imaginaria con un modelo a seguir",
+            "un viaje",
+            "un desfile",
+            "un debate"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cuál es el modelo a seguir de Diego?",
+          choices: [
+            "una activista ambiental",
+            "un atleta",
+            "una diseñadora",
+            "un ajedrecista"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿A quién elige Camila como modelo a seguir?",
+          choices: [
+            "la persona en línea del año pasado",
+            "una activista",
+            "un atleta",
+            "una diseñadora"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué palabra en inglés adivina Mateo?",
+          choices: [
+            "footprint",
+            "influence",
+            "model",
+            "digital"
+          ],
+          correct: 0
+        },
+        {
+          q: "Según Profe Rivera, ¿qué huella es difícil de borrar?",
+          choices: [
+            "la huella digital",
+            "la huella física",
+            "ninguna",
+            "las dos igual"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cuál es el modelo a seguir de Mateo?",
+          choices: [
+            "un jugador de ajedrez famoso",
+            "un atleta",
+            "un activista",
+            "una diseñadora"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "club-barrio-ms2-ep9": {
+      label: "El Club del Barrio — MS2 Ep. 9: Nuestra huella en Guanacaste Park (Final)",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Qué anuncia Profe Rivera al grupo?",
+          choices: [
+            "que es la última unidad antes de Secundaria",
+            "un nuevo estudiante",
+            "un examen",
+            "una fiesta"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué proyecto de legado construye el grupo?",
+          choices: [
+            "una estación de reciclaje",
+            "una biblioteca",
+            "un jardín",
+            "un mural"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Quién diseña el letrero del proyecto?",
+          choices: [
+            "Ana Lucía",
+            "Sofía",
+            "Diego",
+            "Camila"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué noticia comparte Ana Lucía?",
+          choices: [
+            "va a una secundaria diferente",
+            "se muda de país",
+            "deja el grupo para siempre",
+            "no tiene noticias"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿De quién es la postal que lee Profe Rivera?",
+          choices: [
+            "Valentina",
+            "Ximena",
+            "Luna",
+            "Mora"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cuál es el mensaje final de Profe Rivera?",
+          choices: [
+            "no tengan miedo de ser ridículos",
+            "estudien más",
+            "no olviden el español",
+            "vuelvan pronto"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "vecinos-ep1": {
+      label: "Los Vecinos — Ep. 1: La Calle de los Almendros",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Cómo se llama la calle donde viven los cinco?",
+          choices: [
+            "la Calle de los Almendros",
+            "Guanacaste Park",
+            "la Escuela San Antonio",
+            "San Ignacio"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Quién se cae al caminar?",
+          choices: [
+            "Tomás",
+            "Renata",
+            "Valentina",
+            "Emilio"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué le gusta hacer a Valentina?",
+          choices: [
+            "leer e inventar historias",
+            "dibujar",
+            "jugar fútbol",
+            "cocinar"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué tiene Emilio en las manos?",
+          choices: [
+            "objetos curiosos",
+            "un libro",
+            "un cuaderno",
+            "una pelota"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué dibuja Nico en su cuaderno?",
+          choices: [
+            "la calle y los vecinos",
+            "animales",
+            "comida",
+            "deportes"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cuántos vecinos hay al final?",
+          choices: [
+            "cinco",
+            "cuatro",
+            "tres",
+            "seis"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "vecinos-ep2": {
+      label: "Los Vecinos — Ep. 2: Un Sábado en la Calle",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Qué quiere jugar Tomás?",
+          choices: [
+            "fútbol",
+            "videojuegos",
+            "ajedrez",
+            "básquetbol"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué construye Emilio?",
+          choices: [
+            "un fuerte",
+            "una casa",
+            "un barco",
+            "un puente"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Dónde lee Valentina?",
+          choices: [
+            "bajo un árbol",
+            "en su casa",
+            "en la escuela",
+            "en el parque"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué pasa de repente?",
+          choices: [
+            "empieza a llover",
+            "se va la luz",
+            "llega un visitante",
+            "empieza un partido"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿A dónde corren los cinco?",
+          choices: [
+            "a la casa de Renata",
+            "a la escuela",
+            "al mercado",
+            "al parque"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué aprenden los vecinos al final?",
+          choices: [
+            "que lo importante es estar juntos",
+            "que el fútbol es mejor",
+            "que la lluvia es mala",
+            "que hay que quedarse en casa siempre"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "vecinos-ep3": {
+      label: "Los Vecinos — Ep. 3: La Cocina de Renata",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Qué cocinan los cinco vecinos?",
+          choices: [
+            "ensalada de frutas y quesadillas",
+            "pizza",
+            "sopa",
+            "pan"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Quién corta la fruta?",
+          choices: [
+            "Tomás",
+            "Valentina",
+            "Emilio",
+            "Nico"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Quién fríe la quesadilla?",
+          choices: [
+            "Emilio",
+            "Tomás",
+            "Valentina",
+            "Renata"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué hace Nico mientras cocinan?",
+          choices: [
+            "dibuja cada paso",
+            "corta fruta",
+            "mezcla",
+            "hornea"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué imagina Valentina sobre la receta?",
+          choices: [
+            "una historia secreta de hace cien años",
+            "un cuento de miedo",
+            "una canción",
+            "nada en especial"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué más hornea Renata?",
+          choices: [
+            "un poco de pan",
+            "un pastel",
+            "galletas",
+            "nada más"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "vecinos-ep4": {
+      label: "Los Vecinos — Ep. 4: Una Fiesta Sorpresa para Nico",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿De quién es el cumpleaños en este episodio?",
+          choices: [
+            "Nico",
+            "Renata",
+            "Tomás",
+            "Emilio"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Quién organiza la fiesta sorpresa?",
+          choices: [
+            "Renata",
+            "Nico",
+            "Tomás",
+            "Valentina"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué decora Tomás?",
+          choices: [
+            "la sala con globos",
+            "el jardín",
+            "la puerta",
+            "las ventanas"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué escribe Valentina?",
+          choices: [
+            "una invitación misteriosa",
+            "una canción",
+            "un poema",
+            "una carta"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué regalo le dan a Nico?",
+          choices: [
+            "un cuaderno y lápices de colores",
+            "una pelota",
+            "un libro",
+            "ropa nueva"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cómo reacciona Nico a la sorpresa?",
+          choices: [
+            "sonríe, sin palabras",
+            "se enoja",
+            "llora de tristeza",
+            "no dice nada y se va"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "vecinos-ep5": {
+      label: "Los Vecinos — Ep. 5: Un Tour por la Ciudad",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Cuántas paradas tiene el mapa?",
+          choices: [
+            "cuatro",
+            "tres",
+            "cinco",
+            "dos"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Por qué camina Tomás en la dirección equivocada?",
+          choices: [
+            "el mapa está al revés",
+            "no sabe leer",
+            "está distraído",
+            "no hay mapa"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Quién nota el error del mapa?",
+          choices: [
+            "Emilio",
+            "Valentina",
+            "Nico",
+            "Renata"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué hay en el centro de la plaza?",
+          choices: [
+            "una fuente antigua",
+            "una estatua",
+            "un mercado",
+            "un árbol"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cómo es la biblioteca?",
+          choices: [
+            "moderna, de vidrio",
+            "antigua, de piedra",
+            "pequeña y vieja",
+            "de madera"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué hace Nico en cada parada?",
+          choices: [
+            "dibuja",
+            "toma fotos",
+            "escribe",
+            "canta"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "vecinos-ep6": {
+      label: "Los Vecinos — Ep. 6: Acampando en el Parque",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿A dónde van a acampar los vecinos?",
+          choices: [
+            "al Parque Guanacaste",
+            "a la playa",
+            "a las montañas",
+            "a la ciudad"
+          ],
+          correct: 0
+        },
+        {
+          q: "Según Emilio, ¿cómo va a ser el clima de noche?",
+          choices: [
+            "frío",
+            "caluroso",
+            "lluvioso todo el día",
+            "igual que el día"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué olvida Tomás?",
+          choices: [
+            "su suéter",
+            "su mochila",
+            "su comida",
+            "su linterna"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué le presta Renata a Tomás?",
+          choices: [
+            "una manta extra",
+            "un suéter",
+            "un impermeable",
+            "dinero"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué pasa por la tarde?",
+          choices: [
+            "empieza a lloviznar",
+            "hace más calor",
+            "se pierde alguien",
+            "llega un animal"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué hace que la aventura sea más divertida?",
+          choices: [
+            "estar preparado",
+            "tener suerte",
+            "ser el más rápido",
+            "no llevar nada"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "vecinos-ep7": {
+      label: "Los Vecinos — Ep. 7: ¿Cómo Viajamos?",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Qué idea tiene Renata?",
+          choices: [
+            "un picnic junto al río",
+            "un viaje a la ciudad",
+            "una fiesta",
+            "un partido de fútbol"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué transporte deciden usar?",
+          choices: [
+            "bicicleta",
+            "autobús",
+            "a pie",
+            "carro"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Quién prefiere caminar?",
+          choices: [
+            "Valentina",
+            "Tomás",
+            "Emilio",
+            "Renata"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué problema tiene la bicicleta de Tomás?",
+          choices: [
+            "la cadena",
+            "una rueda",
+            "el asiento",
+            "los frenos"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Quién arregla el problema?",
+          choices: [
+            "Emilio",
+            "Nico",
+            "Renata",
+            "Valentina"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué es lo más importante de un viaje, según el episodio?",
+          choices: [
+            "con quién viajas",
+            "qué tan rápido llegas",
+            "cuánto cuesta",
+            "qué tan lejos es"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "vecinos-ep8": {
+      label: "Los Vecinos — Ep. 8: ¿Qué Quieres Ser?",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Qué pregunta hace Profe Rivera?",
+          choices: [
+            "¿qué quieren ser cuando sean grandes?",
+            "¿cuál es su comida favorita?",
+            "¿a dónde quieren viajar?",
+            "¿qué ropa prefieren?"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué quiere ser Renata?",
+          choices: [
+            "alcaldesa",
+            "escritora",
+            "artista",
+            "ingeniera"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué quiere ser Tomás?",
+          choices: [
+            "entrenador deportivo",
+            "alcalde",
+            "artista",
+            "ingeniero"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué quiere ser Valentina?",
+          choices: [
+            "escritora",
+            "alcaldesa",
+            "entrenadora",
+            "artista"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué quiere ser Nico?",
+          choices: [
+            "artista",
+            "ingeniero",
+            "alcalde",
+            "entrenador"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué quiere ser Emilio?",
+          choices: [
+            "ingeniero",
+            "artista",
+            "escritor",
+            "alcalde"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "vecinos-ep9": {
+      label: "Los Vecinos — Ep. 9: Bienvenida, Ximena (Final)",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿De dónde es Ximena?",
+          choices: [
+            "Guatemala",
+            "Perú",
+            "México",
+            "Cuba"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cuál es la comida favorita de Ximena?",
+          choices: [
+            "el pepián",
+            "la quinoa",
+            "el mole",
+            "las samosas"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cuál es el símbolo nacional de Guatemala?",
+          choices: [
+            "el quetzal",
+            "el tucán",
+            "el jaguar",
+            "la guacamaya"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cuál es el símbolo nacional de Belice?",
+          choices: [
+            "el tucán piquiverde",
+            "el quetzal",
+            "el águila",
+            "el colibrí"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Quién invita a Ximena a unirse al grupo?",
+          choices: [
+            "Renata",
+            "Tomás",
+            "Nico",
+            "Emilio"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Dónde está la nueva casa de Ximena?",
+          choices: [
+            "en la Calle de los Almendros",
+            "en el centro de la ciudad",
+            "cerca de la escuela solamente",
+            "no se sabe"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "cuadrilla-s1-ep1": {
+      label: "La Cuadrilla — S1 Ep. 1: El primer día",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Dónde se reúne el grupo después de clases?",
+          choices: [
+            "Café Formosa",
+            "la biblioteca",
+            "el parque",
+            "la casa de Vale"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué palabra en inglés no recuerda Profe Rivera?",
+          choices: [
+            "riddle",
+            "formal",
+            "cognado",
+            "adivinanza"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Quién es nueva en la escuela este año?",
+          choices: [
+            "Fernanda",
+            "Renata",
+            "Vale",
+            "Ximena"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿De dónde es Profe Rivera?",
+          choices: [
+            "Cuba",
+            "El Salvador",
+            "Guatemala",
+            "Colombia"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cómo saluda el grupo a Profe Rivera?",
+          choices: [
+            "\"Buenos días\", con \"usted\"",
+            "\"Hola\", informal",
+            "no la saludan",
+            "con un abrazo"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Por qué llega Renata corriendo?",
+          choices: [
+            "estaba terminando un dibujo",
+            "se quedó dormida",
+            "perdió el autobús",
+            "olvidó su mochila"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "cuadrilla-s1-ep2": {
+      label: "La Cuadrilla — S1 Ep. 2: Un día cualquiera",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿A qué hora empieza el turno de Ximena en el puesto?",
+          choices: [
+            "a las 3:15",
+            "a las 3:00",
+            "a las 9:30",
+            "a las 10:00"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Sobre qué presentan Vale y Emiliano?",
+          choices: [
+            "su clase preferida",
+            "un país",
+            "un animal",
+            "una receta"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué dibuja Renata?",
+          choices: [
+            "un pájaro",
+            "una flor",
+            "un gato",
+            "una casa"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Quién nota el dibujo de Renata en silencio?",
+          choices: [
+            "Andrés",
+            "Emiliano",
+            "Vale",
+            "Ximena"
+          ],
+          correct: 0
+        },
+        {
+          q: "Según Emiliano, ¿cuál es su clase preferida?",
+          choices: [
+            "el recreo",
+            "español",
+            "historia",
+            "ciencias"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cómo se comunica Ximena con el grupo esa tarde?",
+          choices: [
+            "por chat desde su teléfono",
+            "en persona",
+            "por teléfono",
+            "no se comunica"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "cuadrilla-s1-ep3": {
+      label: "La Cuadrilla — S1 Ep. 3: El nuevo estudiante",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿De dónde es Joaquín?",
+          choices: [
+            "El Salvador",
+            "Guatemala",
+            "Colombia",
+            "Perú"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Quién muestra el pueblo a Joaquín?",
+          choices: [
+            "Fernanda",
+            "Vale",
+            "Renata",
+            "Ximena"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué dibuja la clase para practicar direcciones?",
+          choices: [
+            "un mapa de San Antonio",
+            "un plano de la escuela",
+            "un dibujo del parque",
+            "nada"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué dibuja Joaquín en Café Formosa?",
+          choices: [
+            "un mapa",
+            "un animal",
+            "un edificio",
+            "nada"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Por qué dibuja mapas Joaquín?",
+          choices: [
+            "le ayuda a aprender lugares nuevos",
+            "le gusta el arte",
+            "es tarea de la clase",
+            "no tiene otra cosa que hacer"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué prueba Joaquín por primera vez en Café Formosa?",
+          choices: [
+            "bubble tea",
+            "café",
+            "jugo",
+            "agua"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "cuadrilla-s1-ep4": {
+      label: "La Cuadrilla — S1 Ep. 4: Mi familia y mis amigos",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Cómo describe Joaquín a su abuela?",
+          choices: [
+            "generosa",
+            "seria",
+            "perezosa",
+            "tímida"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué cocina la abuela de Joaquín?",
+          choices: [
+            "pupusas",
+            "mana'eesh",
+            "tamales",
+            "arepas"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿De dónde viene la prima de Andrés?",
+          choices: [
+            "Líbano",
+            "El Salvador",
+            "Colombia",
+            "Cuba"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué trae Andrés a Café Formosa?",
+          choices: [
+            "mana'eesh",
+            "pupusas",
+            "pan dulce",
+            "nada"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cómo describe Vale a Emiliano?",
+          choices: [
+            "gracioso, pero perezoso",
+            "serio y callado",
+            "tímido",
+            "muy trabajador"
+          ],
+          correct: 0
+        },
+        {
+          q: "Según Emiliano, ¿qué es él en realidad, no perezoso?",
+          choices: [
+            "relajado",
+            "ocupado",
+            "nervioso",
+            "serio"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "cuadrilla-s1-ep5": {
+      label: "La Cuadrilla — S1 Ep. 5: Días especiales",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Qué celebra Fernanda el 19 de noviembre?",
+          choices: [
+            "el Día de Garífuna",
+            "Bonfire Night",
+            "un festival de agosto",
+            "el Año Nuevo"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué comen en el Día de Garífuna?",
+          choices: [
+            "hudut",
+            "mana'eesh",
+            "pupusas",
+            "arepas"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué celebra Joaquín en su pueblo?",
+          choices: [
+            "un festival en agosto",
+            "el Día de Garífuna",
+            "Bonfire Night",
+            "una boda"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué celebra Renata?",
+          choices: [
+            "Bonfire Night",
+            "el Día de Garífuna",
+            "un festival salvadoreño",
+            "nada en especial"
+          ],
+          correct: 0
+        },
+        {
+          q: "Según Profe Rivera, ¿cómo son todas las tradiciones?",
+          choices: [
+            "importantes, grandes o pequeñas",
+            "solo las grandes importan",
+            "todas iguales",
+            "poco importantes"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué trae Fernanda a Café Formosa?",
+          choices: [
+            "hudut",
+            "mana'eesh",
+            "pupusas",
+            "nada"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "cuadrilla-s1-ep6": {
+      label: "La Cuadrilla — S1 Ep. 6: Mi casa",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Por qué Ximena no puede ir a Café Formosa?",
+          choices: [
+            "trabaja en el puesto familiar",
+            "está enferma",
+            "tiene tarea",
+            "no quiere ir"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿A dónde van todos en vez de Café Formosa?",
+          choices: [
+            "a la casa de Ximena",
+            "al parque",
+            "a la escuela",
+            "a la casa de Fernanda"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cómo es la casa de Ximena?",
+          choices: [
+            "pequeña, con jardín",
+            "grande y moderna",
+            "sin jardín",
+            "muy lujosa"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué trae la mamá de Ximena?",
+          choices: [
+            "panes y jugo",
+            "pizza",
+            "bubble tea",
+            "nada"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué dice la mamá de Ximena sobre los invitados?",
+          choices: [
+            "siempre hay comida para los amigos",
+            "no le gustan las visitas",
+            "prefiere estar sola",
+            "no tiene tiempo"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué dice Andrés sobre el tamaño de la casa?",
+          choices: [
+            "no importa, lo importante es el hogar",
+            "debería ser más grande",
+            "es demasiado pequeña",
+            "no dice nada"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "cuadrilla-s1-ep7": {
+      label: "La Cuadrilla — S1 Ep. 7: Un deporte para cada estación",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Qué deporte juega Emiliano, solo por diversión?",
+          choices: [
+            "fútbol",
+            "voleibol",
+            "natación",
+            "ciclismo"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué actividad prefiere Renata?",
+          choices: [
+            "andar en bicicleta",
+            "nadar",
+            "jugar voleibol",
+            "jugar fútbol"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Por qué nada Ximena cuando puede?",
+          choices: [
+            "es un momento solo para ella",
+            "es obligatorio",
+            "le gusta competir",
+            "no tiene otra opción"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué deporte jugaba Vale de niña?",
+          choices: [
+            "voleibol",
+            "fútbol",
+            "natación",
+            "ciclismo"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué dice Andrés sobre el debate del mejor deporte?",
+          choices: [
+            "\"Todos tienen razón, y todos están equivocados\"",
+            "el fútbol es mejor",
+            "no hay mejor deporte",
+            "el debate no importa"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Por qué Belice no usa las cuatro estaciones para hablar del clima?",
+          choices: [
+            "tiene temporada seca y de lluvia",
+            "tiene solo verano",
+            "tiene solo invierno",
+            "no importa el clima"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "cuadrilla-s1-ep8": {
+      label: "La Cuadrilla — S1 Ep. 8: Planes en común",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Cuál es el plan de siempre del grupo?",
+          choices: [
+            "ir a Café Formosa",
+            "ir al parque",
+            "ir a la playa",
+            "ir al cine"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Por qué Ximena no puede ir los sábados?",
+          choices: [
+            "trabaja en el puesto familiar",
+            "está enferma",
+            "tiene clases",
+            "no quiere ir"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Quién propone ir al puesto de Ximena?",
+          choices: [
+            "Vale",
+            "Renata",
+            "Emiliano",
+            "Andrés"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cómo se siente Ximena al principio de la idea?",
+          choices: [
+            "sorprendida e insegura",
+            "muy feliz",
+            "enojada",
+            "indiferente"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué le dice Fernanda a Ximena sobre por qué van?",
+          choices: [
+            "quieren estar con ella",
+            "quieren comprar cosas",
+            "es obligatorio",
+            "no tienen otro plan"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cómo termina Ximena sintiéndose sobre la visita?",
+          choices: [
+            "feliz de que la visiten",
+            "avergonzada",
+            "indiferente",
+            "triste"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "cuadrilla-s1-ep9": {
+      label: "La Cuadrilla — S1 Ep. 9: De compras en el puesto",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Qué hace el grupo esta vez en el puesto de Ximena?",
+          choices: [
+            "compras de verdad",
+            "solo visitarla",
+            "ayudar a limpiar",
+            "nada especial"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cuánto paga Renata al final por la pulsera?",
+          choices: [
+            "ocho dólares",
+            "diez dólares",
+            "cinco dólares",
+            "nueve dólares"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué compra Emiliano?",
+          choices: [
+            "un llavero tejido",
+            "una pulsera",
+            "un collar",
+            "una camisa"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Para quién compra Joaquín su llavero?",
+          choices: [
+            "su abuela",
+            "su mamá",
+            "un amigo",
+            "él mismo"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cómo describe Andrés a Ximena en el puesto?",
+          choices: [
+            "es como otra clase, pero ella es la maestra",
+            "es aburrido",
+            "no sabe mucho",
+            "es difícil"
+          ],
+          correct: 0
+        },
+        {
+          q: "Según Ximena, ¿desde cuándo trabaja en el puesto?",
+          choices: [
+            "desde niña",
+            "desde el año pasado",
+            "desde ayer",
+            "no trabaja mucho"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "cuadrilla-s1-ep10": {
+      label: "La Cuadrilla — S1 Ep. 10: Escuela sin Paredes",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Cuál fue el proyecto del viaje?",
+          choices: [
+            "la conservación de los bosques",
+            "un torneo deportivo",
+            "un festival de comida",
+            "un examen"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué plantan en el campamento San Miguel?",
+          choices: [
+            "árboles de pino",
+            "flores",
+            "vegetales",
+            "nada"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué evento especial pasó para Ximena?",
+          choices: [
+            "tuvo el día libre del puesto por primera vez",
+            "se enfermó",
+            "se perdió",
+            "no fue al viaje"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué animal asustó a Emiliano de noche?",
+          choices: [
+            "un mono aullador",
+            "un jaguar de verdad",
+            "una serpiente",
+            "nada"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué hicieron sin internet?",
+          choices: [
+            "contar historias junto a la fogata",
+            "dormir todo el tiempo",
+            "aburrirse",
+            "pelear"
+          ],
+          correct: 0
+        },
+        {
+          q: "Según Profe Rivera, ¿qué nos hace crecer?",
+          choices: [
+            "lo que más tememos hacer",
+            "estudiar mucho",
+            "descansar",
+            "viajar"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "cuadrilla-s2-ep1": {
+      label: "La Cuadrilla — S2 Ep. 1: De vuelta a clases",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Qué hizo Emiliano este verano?",
+          choices: [
+            "trabajó por primera vez",
+            "viajó a otro país",
+            "no hizo nada especial",
+            "estudió mucho"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cómo fueron las ventas del puesto de Ximena?",
+          choices: [
+            "muy buenas durante las fiestas",
+            "malas",
+            "igual que siempre",
+            "no hubo ventas"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué curso tomó Renata?",
+          choices: [
+            "un curso de arte",
+            "un curso de cocina",
+            "un curso de idiomas",
+            "ninguno"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué hizo Andrés durante el verano?",
+          choices: [
+            "leyó mucho y escribió en su cuaderno",
+            "viajó",
+            "trabajó",
+            "no hizo nada"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cuánto tiempo lleva Joaquín en Belice?",
+          choices: [
+            "un año completo",
+            "seis meses",
+            "dos años",
+            "una semana"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué saca Vale ni bien se reúnen?",
+          choices: [
+            "una libreta nueva",
+            "un mapa",
+            "fotos",
+            "nada"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "cuadrilla-s2-ep2": {
+      label: "La Cuadrilla — S2 Ep. 2: Cuidarnos un poco más",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Qué hábito le cuesta a Ximena?",
+          choices: [
+            "dormir bien",
+            "comer bien",
+            "hacer ejercicio",
+            "estudiar"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué le pasa a Vale antes de un proyecto grande?",
+          choices: [
+            "no duerme bien",
+            "se enferma",
+            "se enoja",
+            "no hace nada"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cuál es el \"problema\" de Emiliano?",
+          choices: [
+            "duerme muy bien, nunca piensa demasiado",
+            "no duerme nunca",
+            "se estresa mucho",
+            "trabaja demasiado"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué hace Andrés cuando está estresado?",
+          choices: [
+            "escribe en su cuaderno",
+            "duerme más",
+            "habla mucho",
+            "hace ejercicio"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Quién propone el chequeo semanal?",
+          choices: [
+            "Renata",
+            "Vale",
+            "Ximena",
+            "Joaquín"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Para quién es finalmente el chequeo semanal?",
+          choices: [
+            "para todo el grupo",
+            "solo para Ximena",
+            "solo para Vale",
+            "nadie lo quiere"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "cuadrilla-s2-ep3": {
+      label: "La Cuadrilla — S2 Ep. 3: Buscando el camino",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Qué necesita la familia de Ximena?",
+          choices: [
+            "un nuevo proveedor",
+            "más dinero",
+            "un nuevo puesto",
+            "ayuda con la tarea"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Por qué duda Ximena en aceptar ayuda?",
+          choices: [
+            "no está acostumbrada a pedir ayuda",
+            "no confía en el grupo",
+            "no quiere ir",
+            "está muy ocupada"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Quién le pide direcciones a un señor?",
+          choices: [
+            "Andrés",
+            "Vale",
+            "Emiliano",
+            "Renata"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué forma de hablar usan para pedir direcciones?",
+          choices: [
+            "\"usted\"",
+            "\"tú\"",
+            "\"vos\"",
+            "ninguna en especial"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿De qué color es la tienda que buscan?",
+          choices: [
+            "azul",
+            "roja",
+            "verde",
+            "amarilla"
+          ],
+          correct: 0
+        },
+        {
+          q: "Según Joaquín, ¿qué aprendió sobre pedir ayuda?",
+          choices: [
+            "que todos la necesitamos a veces",
+            "que es de débiles",
+            "que nunca hay que pedirla",
+            "que solo los niños la piden"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "cuadrilla-s2-ep4": {
+      label: "La Cuadrilla — S2 Ep. 4: Animales asombrosos",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Cuál es el animal nacional de Belice?",
+          choices: [
+            "el tapir",
+            "el jaguar",
+            "el tucán",
+            "el manatí"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué animal quiere dibujar Renata?",
+          choices: [
+            "el tapir",
+            "el jaguar",
+            "el manatí",
+            "el perezoso"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Con qué animal se compara Emiliano?",
+          choices: [
+            "el perezoso",
+            "el jaguar",
+            "la hormiga",
+            "el tucán"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué animal fascina a Andrés?",
+          choices: [
+            "el manatí",
+            "el jaguar",
+            "el tapir",
+            "el perezoso"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Con qué animal se compara Vale?",
+          choices: [
+            "una hormiga",
+            "un perezoso",
+            "un manatí",
+            "un jaguar"
+          ],
+          correct: 0
+        },
+        {
+          q: "Según Ximena, ¿cómo son Vale y Emiliano juntos?",
+          choices: [
+            "el equilibrio perfecto",
+            "muy diferentes y en conflicto",
+            "iguales",
+            "aburridos"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "cuadrilla-s2-ep5": {
+      label: "La Cuadrilla — S2 Ep. 5: Un visitante de Colombia",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿De dónde es Santiago?",
+          choices: [
+            "Colombia",
+            "Perú",
+            "México",
+            "Guatemala"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué palabra usa Santiago en vez de \"tú\"?",
+          choices: [
+            "vos",
+            "usted",
+            "che",
+            "vosotros"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué festival colombiano menciona Santiago?",
+          choices: [
+            "el Carnaval de Barranquilla",
+            "el Día de Garífuna",
+            "el Festival de Verano",
+            "ninguno"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué leyenda comparte Santiago?",
+          choices: [
+            "El Dorado",
+            "La Llorona",
+            "El Cadejo",
+            "ninguna"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿De qué origen es la familia de Ximena?",
+          choices: [
+            "maya",
+            "libanesa",
+            "colombiana",
+            "garífuna"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué prueba Santiago por primera vez?",
+          choices: [
+            "bubble tea",
+            "pupusas",
+            "mana'eesh",
+            "hudut"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "cuadrilla-s2-ep6": {
+      label: "La Cuadrilla — S2 Ep. 6: La vida en casa",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Qué tarea le toca a Vale?",
+          choices: [
+            "lavar los platos",
+            "cocinar",
+            "limpiar el jardín",
+            "cuidar a sus hermanos"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cuánto le toca hacer a Emiliano, según él?",
+          choices: [
+            "poco, la verdad",
+            "mucho",
+            "todo",
+            "nada nunca"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cuál es la responsabilidad de Andrés?",
+          choices: [
+            "ayudar en la tienda familiar",
+            "lavar platos",
+            "cocinar",
+            "cuidar el jardín"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿De dónde es Renata originalmente?",
+          choices: [
+            "Inglaterra",
+            "Colombia",
+            "El Salvador",
+            "Cuba"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Por qué está la familia de Renata en Belice?",
+          choices: [
+            "su mamá trabaja en el proyecto de la carretera",
+            "de vacaciones",
+            "por la escuela",
+            "no se sabe"
+          ],
+          correct: 0
+        },
+        {
+          q: "Según Profe Rivera, ¿qué nos ayuda a sentirnos en casa?",
+          choices: [
+            "la familia",
+            "el tamaño de la casa",
+            "el país donde naces",
+            "el dinero"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "cuadrilla-s2-ep7": {
+      label: "La Cuadrilla — S2 Ep. 7: ¿Qué hay de nuevo?",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Qué escriben juntos en clase?",
+          choices: [
+            "un artículo para el boletín de padres",
+            "un cuento",
+            "un poema",
+            "una carta"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Sobre qué tema es la noticia?",
+          choices: [
+            "los árboles de pino del viaje",
+            "un partido de fútbol",
+            "una fiesta",
+            "el clima"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿De qué se ríe el grupo, recordando el viaje?",
+          choices: [
+            "el mono aullador que asustó a Emiliano",
+            "una tormenta",
+            "un examen",
+            "nada en especial"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿A quién invita Profe Rivera a unirse al periódico?",
+          choices: [
+            "Andrés",
+            "Vale",
+            "Emiliano",
+            "Renata"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Por qué elige Profe Rivera a esa persona?",
+          choices: [
+            "escribe con claridad y observa bien",
+            "es el más popular",
+            "habla mucho",
+            "saca las mejores notas"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cómo reacciona el grupo a la noticia?",
+          choices: [
+            "con emoción y orgullo",
+            "con indiferencia",
+            "con celos",
+            "con sorpresa negativa"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "cuadrilla-s2-ep8": {
+      label: "La Cuadrilla — S2 Ep. 8: Planeando el viaje a Tikal",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿A dónde van a viajar?",
+          choices: [
+            "Tikal, Guatemala",
+            "Cuba",
+            "Colombia",
+            "Perú"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Cómo cruzan la frontera?",
+          choices: [
+            "en autobús",
+            "en avión",
+            "a pie",
+            "en tren"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué necesitan llevar, según Fernanda?",
+          choices: [
+            "el pasaporte",
+            "dinero extra",
+            "una cámara",
+            "nada especial"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Por qué le importa tanto el viaje a Ximena?",
+          choices: [
+            "su familia es maya",
+            "nunca ha viajado",
+            "le gusta Guatemala",
+            "es su cumpleaños"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué van a hacer por la mañana en Tikal?",
+          choices: [
+            "visitar las ruinas, cuando hace menos calor",
+            "comer",
+            "dormir",
+            "jugar"
+          ],
+          correct: 0
+        },
+        {
+          q: "Según Profe Rivera, ¿qué es la mitad de la emoción de un viaje?",
+          choices: [
+            "planear con anticipación",
+            "el destino",
+            "el dinero",
+            "la comida"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "cuadrilla-s2-ep9": {
+      label: "La Cuadrilla — S2 Ep. 9: Nos preocupa",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿Qué problema le preocupa a Andrés?",
+          choices: [
+            "la basura de plástico",
+            "el tráfico",
+            "el ruido",
+            "la falta de árboles"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Dónde ve Ximena este problema cada sábado?",
+          choices: [
+            "en el mercado del GG Field",
+            "en la escuela",
+            "en su casa",
+            "en el parque"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué propone Renata?",
+          choices: [
+            "un basurero especial para reciclar",
+            "una multa",
+            "un cartel de advertencia",
+            "nada"
+          ],
+          correct: 0
+        },
+        {
+          q: "Según Andrés, ¿cuál es el problema más profundo?",
+          choices: [
+            "la gente no aprendió a cuidar espacios públicos",
+            "no hay suficientes basureros",
+            "no hay dinero",
+            "nadie se preocupa"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Quién escribe sobre el proyecto para el periódico?",
+          choices: [
+            "Andrés",
+            "Renata",
+            "Vale",
+            "Ximena"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Quién diseña el basurero?",
+          choices: [
+            "Renata",
+            "Andrés",
+            "Emiliano",
+            "Joaquín"
+          ],
+          correct: 0
+        }
+      ]
+    },
+    "cuadrilla-s2-ep10": {
+      label: "La Cuadrilla — S2 Ep. 10: Diplomáticos por un día (Final)",
+      timePerQuestion: 15,
+      questions: [
+        {
+          q: "¿A dónde viaja el grupo?",
+          choices: [
+            "Monterrey, México",
+            "Guatemala",
+            "Cuba",
+            "Colombia"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿A qué evento van?",
+          choices: [
+            "el Modelo de Naciones Unidas",
+            "un festival",
+            "un concurso de arte",
+            "una boda"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué país representa Vale?",
+          choices: [
+            "Francia",
+            "Japón",
+            "Brasil",
+            "España"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿Qué país representa Andrés?",
+          choices: [
+            "Japón",
+            "Francia",
+            "Brasil",
+            "México"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿En qué piensa Ximena durante el vuelo?",
+          choices: [
+            "en su viaje a Tikal",
+            "en su familia",
+            "en el puesto",
+            "en la escuela"
+          ],
+          correct: 0
+        },
+        {
+          q: "¿De quién recibe un mensaje Fernanda?",
+          choices: [
+            "Santiago",
+            "Joaquín",
+            "su familia",
+            "Profe Rivera"
+          ],
+          correct: 0
+        }
+      ]
+    }
+  }
+};
+/* ========================================================= */
+
+let currentUnit=null, teams=[], scores=[], qIdx=0, timeLeft=0, timerId=null, answered=false;
+
+function showPicker(){
+  document.getElementById('pickerCard').style.display='block';
+  document.getElementById('setup').style.display='none';
+  document.getElementById('gameCard').style.display='none';
+  document.getElementById('endCard').style.display='none';
+  const list = document.getElementById('unitList');
+  list.innerHTML='';
+  Object.entries(CONFIG.units).forEach(([key, unit])=>{
+    const btn = document.createElement('button');
+    btn.className='unitBtn';
+    btn.innerHTML = `${unit.label}<small>${unit.questions.length} preguntas</small>`;
+    btn.onclick = ()=>{ currentUnit = unit; goToSetup(); };
+    list.appendChild(btn);
+  });
+}
+
+function goToSetup(){
+  document.getElementById('pickerCard').style.display='none';
+  document.getElementById('setup').style.display='block';
+  document.getElementById('qTotal').textContent = currentUnit.questions.length;
+}
+
+document.getElementById('setTeamsBtn').onclick = ()=>{
+  const n = Math.max(1, Math.min(6, +document.getElementById('teamCount').value || 1));
+  const box = document.getElementById('teamNames');
+  box.innerHTML='';
+  for(let i=0;i<n;i++){
+    const inp = document.createElement('input');
+    inp.placeholder = `Equipo ${i+1}`;
+    inp.id = 'teamInput'+i;
+    box.appendChild(inp);
+  }
+  document.getElementById('startBtn').style.display='inline-block';
+};
+
+document.getElementById('startBtn').onclick = ()=>{
+  teams=[];
+  document.querySelectorAll('[id^=teamInput]').forEach(inp=>{
+    teams.push(inp.value.trim() || inp.placeholder);
+  });
+  scores = teams.map(()=>0);
+  qIdx=0;
+  document.getElementById('setup').style.display='none';
+  document.getElementById('gameCard').style.display='block';
+  loadQuestion();
+};
+
+function renderScoreboard(targetId){
+  const box = document.getElementById(targetId);
+  box.innerHTML='';
+  teams.forEach((t,i)=>{
+    const div = document.createElement('div');
+    div.className='team';
+    div.innerHTML = `${t}<br><span class="pts">${scores[i]}</span>`;
+    box.appendChild(div);
+  });
+}
+
+function loadQuestion(){
+  answered=false;
+  const item = currentUnit.questions[qIdx];
+  document.getElementById('qNum').textContent = qIdx+1;
+  document.getElementById('question').textContent = item.q;
+  document.getElementById('awardSection').style.display='none';
+  document.getElementById('nextBtn').style.display='none';
+  const box = document.getElementById('choices');
+  box.innerHTML='';
+  item.choices.forEach((c,i)=>{
+    const btn = document.createElement('button');
+    btn.className='choice';
+    btn.textContent = c;
+    btn.onclick = ()=>revealAnswer(i);
+    box.appendChild(btn);
+  });
+  renderScoreboard('scoreboard');
+  timeLeft = currentUnit.timePerQuestion;
+  document.getElementById('timer').textContent = timeLeft;
+  document.getElementById('timer').classList.remove('low');
+  clearInterval(timerId);
+  timerId = setInterval(()=>{
+    timeLeft--;
+    document.getElementById('timer').textContent = timeLeft;
+    if(timeLeft<=5) document.getElementById('timer').classList.add('low');
+    if(timeLeft<=0){ clearInterval(timerId); if(!answered) revealAnswer(-1); }
+  },1000);
+}
+
+function revealAnswer(clickedIdx){
+  if(answered) return;
+  answered=true;
+  clearInterval(timerId);
+  const item = currentUnit.questions[qIdx];
+  document.querySelectorAll('.choice').forEach((b,i)=>{
+    if(i===item.correct) b.classList.add('correct');
+    else if(i===clickedIdx) b.classList.add('wrong');
+  });
+  const awardBox = document.getElementById('awardButtons');
+  awardBox.innerHTML='';
+  teams.forEach((t,i)=>{
+    const btn = document.createElement('button');
+    btn.textContent = t;
+    btn.onclick = ()=>{ scores[i]++; renderScoreboard('scoreboard'); };
+    awardBox.appendChild(btn);
+  });
+  document.getElementById('awardSection').style.display='block';
+  document.getElementById('nextBtn').style.display='inline-block';
+}
+
+document.getElementById('nextBtn').onclick = ()=>{
+  qIdx++;
+  if(qIdx < currentUnit.questions.length){ loadQuestion(); }
+  else {
+    document.getElementById('gameCard').style.display='none';
+    document.getElementById('endCard').style.display='block';
+    renderScoreboard('finalScoreboard');
+  }
+};
+
+document.getElementById('restartBtn').onclick = ()=>{
+  qIdx=0;
+  document.getElementById('endCard').style.display='none';
+  document.getElementById('setup').style.display='block';
+  document.getElementById('gameCard').style.display='none';
+};
+document.getElementById('switchBtn').onclick = showPicker;
+
+showPicker();
+</script>
+</body>
+</html>

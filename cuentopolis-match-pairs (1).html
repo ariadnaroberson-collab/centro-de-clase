@@ -1,0 +1,2374 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Repaso de Dominio — Cuentopolis</title>
+<style>
+  :root{
+    --navy:#0B2545; --gold:#C9A961; --parchment:#F6EFE0; --parchment-dark:#EDE2C8;
+    --forest:#2F6B4F; --purple:#5B3A82; --coral:#C4544A; --mint:#3F8F63;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; min-height:100vh; background:var(--navy);
+    background-image: radial-gradient(circle at 20% 20%, rgba(201,169,97,.08), transparent 40%),
+                       radial-gradient(circle at 80% 80%, rgba(201,169,97,.06), transparent 40%);
+    font-family:Georgia, 'Times New Roman', serif; color:var(--parchment);
+    display:flex; flex-direction:column; align-items:center; padding:24px;
+  }
+  .badge{position:fixed; bottom:16px; right:18px; width:64px; height:64px; border-radius:50%;
+    border:2px solid var(--gold); display:flex; align-items:center; justify-content:center;
+    font-size:.62rem; text-align:center; color:var(--gold); font-family:Georgia,serif; letter-spacing:.5px;
+    background:var(--navy); line-height:1.1; padding:4px;}
+  h1{font-size:2.1rem; margin:6px 0 2px; letter-spacing:.5px; text-align:center;}
+  .sub{font-family:Georgia,serif; font-style:italic; color:var(--gold); font-size:.95rem; margin-bottom:18px; text-align:center;}
+  .scorebar{font-family:Georgia,serif; font-size:1rem; margin-bottom:16px;}
+  .card{
+    background:var(--parchment); color:var(--navy); border:3px double var(--gold); border-radius:6px;
+    padding:26px; max-width:640px; width:100%; box-shadow:0 10px 30px rgba(0,0,0,.4);
+  }
+  .grid{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; max-width:820px; width:100%;}
+  @media(max-width:640px){.grid{grid-template-columns:repeat(2,1fr);}}
+  .tile{
+    background:var(--navy); color:var(--parchment); border:2px solid var(--gold); border-radius:6px;
+    min-height:100px; display:flex; align-items:center; justify-content:center; text-align:center;
+    padding:10px; font-size:.95rem; cursor:pointer; font-weight:bold; user-select:none;
+  }
+  .tile .back{font-size:1.8rem; color:var(--gold);}
+  .tile.flipped{background:var(--parchment-dark); color:var(--navy); border-color:var(--navy);}
+  .tile.matched{background:var(--mint); color:#fff; border-color:var(--mint); opacity:.9; cursor:default;}
+  .end{display:none; text-align:center; margin-top:20px;}
+  .end h2{font-size:2rem;}
+  .btn{background:var(--gold); color:var(--navy); border:none; border-radius:6px;
+    padding:12px 26px; font-size:1.05rem; font-weight:bold; cursor:pointer; margin-top:14px; margin-right:8px;
+    font-family:Georgia,serif;}
+  .btn.outline{background:var(--navy); color:var(--parchment); border:1px solid var(--gold);}
+  .unitBtn{
+    display:block; width:100%; text-align:left; background:var(--navy); color:var(--parchment);
+    border:1px solid var(--gold); border-radius:6px; padding:16px 18px; margin-bottom:12px; font-size:1.1rem;
+    font-weight:bold; cursor:pointer; font-family:Georgia,serif;
+  }
+  .unitBtn small{display:block; font-weight:normal; font-style:italic; font-size:.8rem; margin-top:4px; opacity:.8;}
+  .mode-tag{display:inline-block; font-size:.7rem; font-family:Georgia,serif; padding:2px 8px; border-radius:10px;
+    margin-left:8px; vertical-align:middle;}
+  .mode-interpretive{background:var(--navy); color:#fff;}
+  .mode-interpersonal{background:var(--forest); color:#fff;}
+  .mode-presentational{background:var(--purple); color:#fff;}
+</style>
+</head>
+<body>
+  <h1>📖 Repaso de Dominio</h1>
+  <div class="sub">Mastery Check — Voltea dos tarjetas para encontrar la pareja</div>
+
+  <div class="card" id="pickerCard">
+    <p style="font-size:1.2rem; margin-bottom:16px;">Elige una unidad para practicar:</p>
+    <div id="unitList"></div>
+  </div>
+
+  <div class="scorebar" id="scorebar" style="display:none;">Intentos: <span id="moves">0</span> &nbsp;|&nbsp; Parejas: <span id="matches">0</span> / <span id="total"></span></div>
+
+  <div class="grid" id="grid" style="display:none;"></div>
+
+  <div class="end" id="endCard">
+    <h2>🎉 ¡Completado!</h2>
+    <p id="finalStats"></p>
+    <button class="btn" id="restartBtn">Jugar de Nuevo</button>
+    <button class="btn outline" id="switchBtn">Elegir Otra Unidad</button>
+  </div>
+
+  <div class="badge">CUENTO<br>POLIS</div>
+
+<script>
+/* =========================================================
+   AÑADIR UNA NUEVA UNIDAD: copia uno de los bloques dentro de
+   `units` y dale una nueva clave. El enlace de este juego NUNCA
+   cambia — solo hay que volver a subir este mismo archivo con
+   la nueva unidad añadida.
+
+   This is a DEMO unit with placeholder content — swap in real
+   vocabulary/concepts from an actual Cuentopolis title/CI lesson
+   before using with students. Each pair can optionally carry a
+   `mode` tag (interpretive / interpersonal / presentational) to
+   mirror the ACTFL assessment-mode color coding.
+   ========================================================= */
+const CONFIG = {
+  units: {
+    "guardianes-ep1": {
+      label: "Guardianes de Chiquibul — Ep. 1: ¡Hola, Chica!",
+      pairs: [
+        {
+          term: "la misión",
+          def: "un trabajo especial e importante que alguien te da",
+          mode: "interpretive"
+        },
+        {
+          term: "estar nervioso/a",
+          def: "sentir un poco de miedo o preocupación cuando algo es nuevo",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Cómo te llamas?",
+          def: "pregunta para saber el nombre de alguien",
+          mode: "interpersonal"
+        },
+        {
+          term: "¿De dónde eres?",
+          def: "pregunta para saber el origen de alguien",
+          mode: "interpersonal"
+        },
+        {
+          term: "Me llamo...",
+          def: "forma de decir tu nombre a alguien nuevo",
+          mode: "presentational"
+        },
+        {
+          term: "dar la bienvenida",
+          def: "recibir a alguien nuevo con calidez",
+          mode: "presentational"
+        }
+      ]
+    },
+    "guardianes-ep2": {
+      label: "Guardianes de Chiquibul — Ep. 2: El Gran Árbol",
+      pairs: [
+        {
+          term: "la Gran Ceiba",
+          def: "el árbol más antiguo de la selva de Chiquibul",
+          mode: "interpretive"
+        },
+        {
+          term: "el barro",
+          def: "tierra mojada",
+          mode: "interpretive"
+        },
+        {
+          term: "orgulloso/a",
+          def: "contento consigo mismo por algo que hizo",
+          mode: "interpretive"
+        },
+        {
+          term: "asentir",
+          def: "decir que sí con la cabeza",
+          mode: "interpretive"
+        },
+        {
+          term: "Busquen un color en la naturaleza.",
+          def: "instrucción que da Don Pico para la misión del día",
+          mode: "interpersonal"
+        },
+        {
+          term: "cada color tiene un lugar",
+          def: "idea de que la diversidad hace bella a la selva",
+          mode: "presentational"
+        }
+      ]
+    },
+    "guardianes-ep3": {
+      label: "Guardianes de Chiquibul — Ep. 3: Un amigo nuevo",
+      pairs: [
+        {
+          term: "la mochila",
+          def: "una bolsa para llevar cosas",
+          mode: "interpretive"
+        },
+        {
+          term: "la vergüenza",
+          def: "un sentimiento de timidez o pena",
+          mode: "interpretive"
+        },
+        {
+          term: "el nudo (en la garganta)",
+          def: "una sensación de tristeza",
+          mode: "interpretive"
+        },
+        {
+          term: "sincero/a",
+          def: "que dice la verdad, sin esconder nada",
+          mode: "interpretive"
+        },
+        {
+          term: "Me llamo Toño. Mucho gusto.",
+          def: "manera de presentarse a alguien nuevo",
+          mode: "interpersonal"
+        },
+        {
+          term: "Yo tenía miedo de...",
+          def: "forma de compartir un sentimiento personal con el grupo",
+          mode: "presentational"
+        }
+      ]
+    },
+    "guardianes-ep4": {
+      label: "Guardianes de Chiquibul — Ep. 4: ¿Dónde está Mora?",
+      pairs: [
+        {
+          term: "las plumas",
+          def: "cubren el cuerpo de un pájaro",
+          mode: "interpretive"
+        },
+        {
+          term: "el sendero",
+          def: "un camino pequeño en la selva",
+          mode: "interpretive"
+        },
+        {
+          term: "la orquídea",
+          def: "una flor especial y delicada",
+          mode: "interpretive"
+        },
+        {
+          term: "débil",
+          def: "que no tiene mucha fuerza",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Buscan a alguien?",
+          def: "pregunta que hace Luna para ofrecer ayuda",
+          mode: "interpersonal"
+        },
+        {
+          term: "Me llamo Luna. Llego de Yucatán para visitar a mis abuelos.",
+          def: "manera de presentarse y decir de dónde vienes",
+          mode: "presentational"
+        }
+      ]
+    },
+    "guardianes-ep5": {
+      label: "Guardianes de Chiquibul — Ep. 5: El cumpleaños sorpresa",
+      pairs: [
+        {
+          term: "la sorpresa",
+          def: "algo secreto y especial",
+          mode: "interpretive"
+        },
+        {
+          term: "el secreto",
+          def: "algo que no dices a otros",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Todo esto es para mí?",
+          def: "pregunta que hace Nico al ver la fiesta",
+          mode: "interpersonal"
+        },
+        {
+          term: "¿Por qué no viniste?",
+          def: "pregunta que Chica le hace a Bruno",
+          mode: "interpersonal"
+        },
+        {
+          term: "Feliz cumpleaños",
+          def: "expresión para celebrar el día de nacimiento de alguien",
+          mode: "presentational"
+        },
+        {
+          term: "Los cumpleaños son mejores cuando nadie se queda afuera.",
+          def: "lección que dice Nico al final del episodio",
+          mode: "presentational"
+        }
+      ]
+    },
+    "guardianes-ep6": {
+      label: "Guardianes de Chiquibul — Ep. 6: Vamos a la Escuela",
+      pairs: [
+        {
+          term: "la lupa",
+          def: "un objeto para ver cosas pequeñas más grandes",
+          mode: "interpretive"
+        },
+        {
+          term: "la telaraña",
+          def: "la casa de una araña, hecha de hilos",
+          mode: "interpretive"
+        },
+        {
+          term: "la debilidad",
+          def: "no tener fuerza o valor",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Cómo aprendiste a orientarte?",
+          def: "pregunta que Bruno le hace a Nico",
+          mode: "interpersonal"
+        },
+        {
+          term: "Creo que necesito ayuda.",
+          def: "manera de admitir que necesitas apoyo",
+          mode: "interpersonal"
+        },
+        {
+          term: "Hoy aprendí que pedir ayuda también es una forma de aprender.",
+          def: "reflexión que Bruno escribe en el Diario de los Guardianes",
+          mode: "presentational"
+        }
+      ]
+    },
+    "guardianes-ep7": {
+      label: "Guardianes de Chiquibul — Ep. 7: El Mercado de San Ignacio",
+      pairs: [
+        {
+          term: "las especias",
+          def: "plantas secas que dan sabor a la comida",
+          mode: "interpretive"
+        },
+        {
+          term: "las semillas (del mercado)",
+          def: "el dinero especial del mercado educativo",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Dónde están los mangos?",
+          def: "pregunta que Chica le hace a Bruno",
+          mode: "interpersonal"
+        },
+        {
+          term: "¿Qué es esto?",
+          def: "pregunta que Nico le hace a Valentina sobre el cardamomo",
+          mode: "interpersonal"
+        },
+        {
+          term: "Los mercados no solo venden comida. También guardan recuerdos de las familias.",
+          def: "reflexión que comparte Valentina",
+          mode: "presentational"
+        },
+        {
+          term: "Todos los caminos regresan al árbol.",
+          def: "frase misteriosa que Chica encuentra en un mapa viejo",
+          mode: "interpretive"
+        }
+      ]
+    },
+    "guardianes-ep8": {
+      label: "Guardianes de Chiquibul — Ep. 8: El Restaurante de Doña Tapir",
+      pairs: [
+        {
+          term: "la escoba",
+          def: "un objeto para limpiar el suelo",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Cuál es tu plato favorito?",
+          def: "pregunta que Chica le hace a Mateo",
+          mode: "interpersonal"
+        },
+        {
+          term: "¿Qué me recomienda?",
+          def: "pregunta que Nico hace para pedir sugerencias en el restaurante",
+          mode: "interpersonal"
+        },
+        {
+          term: "Sean curiosos. Pregunten. Prueben algo nuevo.",
+          def: "instrucción que da Don Pico antes de ordenar",
+          mode: "interpersonal"
+        },
+        {
+          term: "En mi familia todos ayudamos cuando el restaurante está lleno.",
+          def: "reflexión que comparte Mateo sobre su cultura",
+          mode: "presentational"
+        },
+        {
+          term: "Todo aquel que comparte la mesa comparte también una historia.",
+          def: "frase misteriosa en el menú antiguo",
+          mode: "interpretive"
+        }
+      ]
+    },
+    "guardianes-ep9": {
+      label: "Guardianes de Chiquibul — Ep. 9: La Clínica del Colibrí",
+      pairs: [
+        {
+          term: "la infusión",
+          def: "una bebida hecha con hierbas y agua caliente",
+          mode: "interpretive"
+        },
+        {
+          term: "la prudencia",
+          def: "pensar con cuidado antes de actuar",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Qué ocurrió?",
+          def: "pregunta que hace la doctora Alma para entender el problema",
+          mode: "interpersonal"
+        },
+        {
+          term: "¿Estás bien?",
+          def: "pregunta que Chica le hace a Bruno",
+          mode: "interpersonal"
+        },
+        {
+          term: "Creo que debí preguntar antes de comer.",
+          def: "reflexión de Teo sobre su error",
+          mode: "presentational"
+        },
+        {
+          term: "Quien protege la vida, protege también la memoria del bosque.",
+          def: "frase misteriosa dentro de la caja antigua",
+          mode: "interpretive"
+        }
+      ]
+    },
+    "guardianes-ep10": {
+      label: "Guardianes de Chiquibul — Ep. 10: ¡Alerta en la Selva!",
+      pairs: [
+        {
+          term: "el arroyo",
+          def: "un río pequeño",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Todos están bien?",
+          def: "pregunta que hace la capitana Sofía al llegar",
+          mode: "interpersonal"
+        },
+        {
+          term: "¿Huelen eso?",
+          def: "pregunta que hace Iggy cuando nota el humo",
+          mode: "interpersonal"
+        },
+        {
+          term: "¡Nadie corra! ¡Manténganse juntos!",
+          def: "instrucción que da Don Pico para mantener la calma",
+          mode: "presentational"
+        },
+        {
+          term: "Eso fue muy valiente.",
+          def: "lo que dice la capitana Sofía sobre el acto de Bruno",
+          mode: "presentational"
+        },
+        {
+          term: "El valor no es no tener miedo. Es hacer lo correcto incluso con miedo.",
+          def: "lección final de Don Pico",
+          mode: "interpretive"
+        }
+      ]
+    },
+    "guardianes-ep11": {
+      label: "Guardianes de Chiquibul — Ep. 11: El Susurro de las Raíces",
+      pairs: [
+        {
+          term: "gruesa",
+          def: "muy ancha, no delgada",
+          mode: "interpretive"
+        },
+        {
+          term: "el mensaje",
+          def: "información que alguien deja para otra persona",
+          mode: "interpretive"
+        },
+        {
+          term: "¡Miren esto!",
+          def: "lo que dice Chica al encontrar la hoja extraña",
+          mode: "interpersonal"
+        },
+        {
+          term: "Nunca vimos una hoja así.",
+          def: "reacción de Teo al ver la hoja misteriosa",
+          mode: "interpersonal"
+        },
+        {
+          term: "Tenemos que buscar más.",
+          def: "decisión que toma Chica al final del episodio",
+          mode: "presentational"
+        },
+        {
+          term: "la época seca",
+          def: "el momento del año sin lluvia en Chiquibul",
+          mode: "interpretive"
+        }
+      ]
+    },
+    "guardianes-ep12": {
+      label: "Guardianes de Chiquibul — Ep. 12: El Regreso de Luna",
+      pairs: [
+        {
+          term: "las leyendas",
+          def: "historias antiguas que se cuentan de familia en familia",
+          mode: "interpretive"
+        },
+        {
+          term: "el fragmento",
+          def: "una parte pequeña de algo más grande",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Qué tienen ahí?",
+          def: "pregunta que Luna les hace a sus amigos",
+          mode: "interpersonal"
+        },
+        {
+          term: "¿Qué leyendas?",
+          def: "pregunta que hace Teo, muy interesado",
+          mode: "interpersonal"
+        },
+        {
+          term: "Esto me recuerda algo.",
+          def: "lo que dice Luna al ver la hoja misteriosa",
+          mode: "presentational"
+        },
+        {
+          term: "Ahora tenemos dos partes del mensaje.",
+          def: "resumen que hace Chica al final del episodio",
+          mode: "presentational"
+        }
+      ]
+    },
+    "guardianes-ep13": {
+      label: "Guardianes de Chiquibul — Ep. 13: La Tormenta de Chiquibul",
+      pairs: [
+        {
+          term: "la tormenta",
+          def: "lluvia muy fuerte con viento",
+          mode: "interpretive"
+        },
+        {
+          term: "la abertura",
+          def: "un espacio abierto, como una puerta pequeña",
+          mode: "interpretive"
+        },
+        {
+          term: "¡El agua sube!",
+          def: "lo que dice Iggy, preocupado, durante la tormenta",
+          mode: "interpersonal"
+        },
+        {
+          term: "¡Tenemos que proteger la piedra!",
+          def: "lo que dice Chica para organizar al grupo",
+          mode: "interpersonal"
+        },
+        {
+          term: "¿Qué es eso?",
+          def: "pregunta que hace Teo al ver la raíz con la abertura",
+          mode: "interpersonal"
+        },
+        {
+          term: "Están empapados, pero están bien.",
+          def: "descripción de cómo terminan los amigos después de la tormenta",
+          mode: "presentational"
+        }
+      ]
+    },
+    "guardianes-ep14": {
+      label: "Guardianes de Chiquibul — Ep. 14: La Guardiana del Bosque",
+      pairs: [
+        {
+          term: "el coraje",
+          def: "valentía, no tener miedo de intentar algo",
+          mode: "interpretive"
+        },
+        {
+          term: "la guardiana",
+          def: "alguien que cuida y protege algo",
+          mode: "interpretive"
+        },
+        {
+          term: "Necesitamos tu ayuda.",
+          def: "mensaje que escribe el grupo en las invitaciones",
+          mode: "interpersonal"
+        },
+        {
+          term: "¡Yo reconozco esto!",
+          def: "lo que dice Toño al ver una parte del mensaje",
+          mode: "interpersonal"
+        },
+        {
+          term: "La Gran Ceiba guarda las historias de todos.",
+          def: "descubrimiento que hace Chica sobre el árbol",
+          mode: "presentational"
+        },
+        {
+          term: "La Ceiba recordaba cada historia.",
+          def: "reflexión final de Iggy sobre por qué importaba cada palabra del año",
+          mode: "presentational"
+        }
+      ]
+    },
+    "guardianes-ep15": {
+      label: "Guardianes de Chiquibul — Ep. 15: La Gran Fiesta de Chiquibul",
+      pairs: [
+        {
+          term: "la celebración",
+          def: "una fiesta especial",
+          mode: "interpretive"
+        },
+        {
+          term: "¡En mi país bailamos así!",
+          def: "lo que dice Mateo mientras baila",
+          mode: "interpersonal"
+        },
+        {
+          term: "¿De verdad?",
+          def: "pregunta que hace Teo, muy curioso, al escuchar a Luna",
+          mode: "interpersonal"
+        },
+        {
+          term: "Esta fiesta es para la Gran Ceiba.",
+          def: "lo que dice Chica sobre el propósito de la celebración",
+          mode: "presentational"
+        },
+        {
+          term: "Ella guarda todas nuestras historias.",
+          def: "reflexión de Chica sobre la Gran Ceiba",
+          mode: "presentational"
+        },
+        {
+          term: "otros árboles como la Gran Ceiba, en otros lugares",
+          def: "lo que menciona Luna, dejando la puerta abierta a nuevas aventuras",
+          mode: "interpretive"
+        }
+      ]
+    },
+    "club-barrio-ms1-ep1": {
+      label: "El Club del Barrio — MS1 Ep. 1: Un nuevo año escolar",
+      pairs: [
+        {
+          term: "el horario",
+          def: "una lista con horas y actividades en orden",
+          mode: "interpretive"
+        },
+        {
+          term: "nervioso/a",
+          def: "con miedo o preocupación",
+          mode: "interpretive"
+        },
+        {
+          term: "el recreo",
+          def: "un descanso durante el día escolar",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Tienes tu horario?",
+          def: "pregunta que Sofía le hace a Mateo",
+          mode: "interpersonal"
+        },
+        {
+          term: "¿Cómo se dice...?",
+          def: "pregunta que usa Profe Rivera cuando busca una palabra en inglés",
+          mode: "interpersonal"
+        },
+        {
+          term: "No tengan miedo de ser ridículos.",
+          def: "consejo de Profe Rivera sobre aprender un idioma",
+          mode: "presentational"
+        }
+      ]
+    },
+    "club-barrio-ms1-ep2": {
+      label: "El Club del Barrio — MS1 Ep. 2: El partido y la mazmorra",
+      pairs: [
+        {
+          term: "el partido",
+          def: "un juego, como de fútbol",
+          mode: "interpretive"
+        },
+        {
+          term: "la campaña (de D&D)",
+          def: "una historia larga que se juega en varias partes",
+          mode: "interpretive"
+        },
+        {
+          term: "el cognado",
+          def: "una palabra que se parece en dos idiomas",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Por qué no hacemos las dos cosas?",
+          def: "idea que propone Ana Lucía para resolver el conflicto",
+          mode: "interpersonal"
+        },
+        {
+          term: "Me interesa...",
+          def: "forma de expresar que algo te llama la atención",
+          mode: "interpersonal"
+        },
+        {
+          term: "Los cognados nos ayudan mucho cuando aprendemos un idioma nuevo.",
+          def: "explicación de Profe Rivera sobre los cognados",
+          mode: "presentational"
+        }
+      ]
+    },
+    "club-barrio-ms1-ep3": {
+      label: "El Club del Barrio — MS1 Ep. 3: La merienda del picnic",
+      pairs: [
+        {
+          term: "la merienda",
+          def: "una comida pequeña antes de la comida grande",
+          mode: "interpretive"
+        },
+        {
+          term: "la proteína",
+          def: "nutriente que se encuentra en carnes, huevos y pescado",
+          mode: "interpretive"
+        },
+        {
+          term: "balanceado/a",
+          def: "con un poco de todo, en equilibrio",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Qué merienda es la mejor?",
+          def: "pregunta que hace Mateo al grupo",
+          mode: "interpersonal"
+        },
+        {
+          term: "¿Cómo se dice 'merienda' en inglés?",
+          def: "pregunta que hace Profe Rivera",
+          mode: "interpersonal"
+        },
+        {
+          term: "Lo importante es tener variedad.",
+          def: "conclusión de Profe Rivera sobre comer bien",
+          mode: "presentational"
+        }
+      ]
+    },
+    "club-barrio-ms1-ep4": {
+      label: "El Club del Barrio — MS1 Ep. 4: La celebración de Ana Lucía",
+      pairs: [
+        {
+          term: "la tradición",
+          def: "algo especial que una familia o cultura hace siempre",
+          mode: "interpretive"
+        },
+        {
+          term: "la celebración",
+          def: "un evento especial para festejar algo",
+          mode: "interpretive"
+        },
+        {
+          term: "el cumpleaños",
+          def: "el día que celebra el nacimiento de alguien",
+          mode: "interpretive"
+        },
+        {
+          term: "¿De qué hablan?",
+          def: "pregunta que hace Profe Rivera al llegar",
+          mode: "interpersonal"
+        },
+        {
+          term: "¿Vienen a mi celebración?",
+          def: "invitación que hace Ana Lucía al grupo",
+          mode: "interpersonal"
+        },
+        {
+          term: "Hay tradiciones culturales, y también tradiciones que la familia crea.",
+          def: "reflexión de Mateo sobre los dos tipos de tradición",
+          mode: "presentational"
+        }
+      ]
+    },
+    "club-barrio-ms1-ep5": {
+      label: "El Club del Barrio — MS1 Ep. 5: El paisaje de Guanacaste Park",
+      pairs: [
+        {
+          term: "el paisaje",
+          def: "todo lo que ves en la naturaleza junto: montañas, ríos, árboles",
+          mode: "interpretive"
+        },
+        {
+          term: "el ecosistema",
+          def: "un sistema donde todo está conectado — animales, plantas, agua",
+          mode: "interpretive"
+        },
+        {
+          term: "único/a",
+          def: "que no hay otro igual",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Cómo se llaman esas montañas?",
+          def: "pregunta que hace Mateo sobre el paisaje",
+          mode: "interpersonal"
+        },
+        {
+          term: "¿Cómo se dice esto en inglés?",
+          def: "pregunta que hace Ana Lucía sobre 'paisaje'",
+          mode: "interpersonal"
+        },
+        {
+          term: "Cada paisaje es único. Por eso es importante protegerlos.",
+          def: "reflexión final de Profe Rivera",
+          mode: "presentational"
+        }
+      ]
+    },
+    "club-barrio-ms1-ep6": {
+      label: "El Club del Barrio — MS1 Ep. 6: De compras para Diwali",
+      pairs: [
+        {
+          term: "el descuento",
+          def: "una rebaja en el precio de algo",
+          mode: "interpretive"
+        },
+        {
+          term: "más caro/a que",
+          def: "cuesta más dinero que otra cosa",
+          mode: "interpretive"
+        },
+        {
+          term: "más barato/a que",
+          def: "cuesta menos dinero que otra cosa",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Cuánto cuesta?",
+          def: "pregunta típica para saber el precio de algo",
+          mode: "interpersonal"
+        },
+        {
+          term: "¿Encontró todo bien?",
+          def: "pregunta que hace el cajero a Ana Lucía",
+          mode: "interpersonal"
+        },
+        {
+          term: "Esta con descuento es más barata, y también me gusta el color.",
+          def: "razón que da Ana Lucía para elegir su camisa",
+          mode: "presentational"
+        }
+      ]
+    },
+    "club-barrio-ms1-ep7": {
+      label: "El Club del Barrio — MS1 Ep. 7: El día de limpieza",
+      pairs: [
+        {
+          term: "la basura",
+          def: "las cosas que la gente tira al suelo, que no se quieren",
+          mode: "interpretive"
+        },
+        {
+          term: "reciclar",
+          def: "usar de nuevo un material en vez de tirarlo",
+          mode: "interpretive"
+        },
+        {
+          term: "el medio ambiente",
+          def: "la naturaleza que nos rodea: aire, agua, tierra",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Cómo se dice esto en inglés?",
+          def: "pregunta que hace Profe Rivera sobre 'basura'",
+          mode: "interpersonal"
+        },
+        {
+          term: "¡Miren cuánto recogimos!",
+          def: "lo que dice Mateo, contento con el trabajo del grupo",
+          mode: "interpersonal"
+        },
+        {
+          term: "Cinco personas pueden hacer una gran diferencia.",
+          def: "lección de Profe Rivera sobre cuidar el medio ambiente",
+          mode: "presentational"
+        }
+      ]
+    },
+    "club-barrio-ms1-ep8": {
+      label: "El Club del Barrio — MS1 Ep. 8: El proyecto de personas famosas",
+      pairs: [
+        {
+          term: "investigar",
+          def: "buscar información sobre algo o alguien",
+          mode: "interpretive"
+        },
+        {
+          term: "la influencia",
+          def: "el efecto que una persona tiene sobre las ideas de otros",
+          mode: "interpretive"
+        },
+        {
+          term: "famoso/a",
+          def: "conocido por mucha gente",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Cualquier persona?",
+          def: "pregunta que hace Mateo sobre el proyecto",
+          mode: "interpersonal"
+        },
+        {
+          term: "¿Qué hace que una persona sea digna de admiración?",
+          def: "pregunta que hace Profe Rivera a la clase",
+          mode: "interpersonal"
+        },
+        {
+          term: "Lo importante es lo que esa persona hace con su influencia.",
+          def: "reflexión de Profe Rivera sobre la influencia",
+          mode: "presentational"
+        }
+      ]
+    },
+    "club-barrio-ms1-ep9": {
+      label: "El Club del Barrio — MS1 Ep. 9: Una amiga desde Perú",
+      pairs: [
+        {
+          term: "el patrimonio",
+          def: "las cosas de tu cultura que vienen de tu familia y tu país",
+          mode: "interpretive"
+        },
+        {
+          term: "la videollamada",
+          def: "una llamada donde te ves y te escuchas por video",
+          mode: "interpretive"
+        },
+        {
+          term: "el país",
+          def: "una nación, como Belice o Perú",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Dónde está eso?",
+          def: "pregunta que hace Diego sobre Perú",
+          mode: "interpersonal"
+        },
+        {
+          term: "Me llamo Valentina. Soy de Cusco, Perú.",
+          def: "manera en que Valentina se presenta al grupo",
+          mode: "interpersonal"
+        },
+        {
+          term: "Me encanta aprender sobre San Antonio.",
+          def: "lo que dice Valentina al final, mostrando interés genuino",
+          mode: "presentational"
+        }
+      ]
+    },
+    "club-barrio-ms2-ep1": {
+      label: "El Club del Barrio — MS2 Ep. 1: El horario perfecto",
+      pairs: [
+        {
+          term: "el horario",
+          def: "una lista con horas y actividades en orden",
+          mode: "interpretive"
+        },
+        {
+          term: "la prioridad",
+          def: "lo que es más importante hacer primero",
+          mode: "interpretive"
+        },
+        {
+          term: "descansar",
+          def: "parar de trabajar para relajarte",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Cuándo descansas?",
+          def: "pregunta que Diego le hace a Mateo",
+          mode: "interpersonal"
+        },
+        {
+          term: "¿Es mejor un horario perfecto o uno realista?",
+          def: "pregunta que Profe Rivera le hace a Mateo",
+          mode: "interpersonal"
+        },
+        {
+          term: "Cada persona estudia diferente. Lo importante es encontrar lo que funciona para ti, con balance.",
+          def: "lección de Profe Rivera sobre el estudio",
+          mode: "presentational"
+        }
+      ]
+    },
+    "club-barrio-ms2-ep2": {
+      label: "El Club del Barrio — MS2 Ep. 2: El bienestar del grupo",
+      pairs: [
+        {
+          term: "la rutina",
+          def: "algo que haces regularmente, de la misma manera",
+          mode: "interpretive"
+        },
+        {
+          term: "relajarse",
+          def: "descansar y sentirte tranquilo",
+          mode: "interpretive"
+        },
+        {
+          term: "el bienestar",
+          def: "sentirte bien, en el cuerpo y en la mente",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Qué haces tú para sentirte bien?",
+          def: "pregunta reflexiva del episodio",
+          mode: "interpersonal"
+        },
+        {
+          term: "¿Cómo se dice esto en inglés?",
+          def: "pregunta que hace Profe Rivera sobre 'bienestar'",
+          mode: "interpersonal"
+        },
+        {
+          term: "El bienestar incluye el cuerpo Y la mente.",
+          def: "explicación de Profe Rivera",
+          mode: "presentational"
+        }
+      ]
+    },
+    "club-barrio-ms2-ep3": {
+      label: "El Club del Barrio — MS2 Ep. 3: El día del plato tradicional",
+      pairs: [
+        {
+          term: "el ingrediente",
+          def: "una cosa que usas para cocinar un plato",
+          mode: "interpretive"
+        },
+        {
+          term: "el plato tradicional",
+          def: "una comida especial de tu familia o cultura",
+          mode: "interpretive"
+        },
+        {
+          term: "el patrimonio",
+          def: "las cosas de tu cultura que vienen de tu familia",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Qué palabra busca, Profe?",
+          def: "pregunta que Mateo le hace a Profe Rivera",
+          mode: "interpersonal"
+        },
+        {
+          term: "Yo traje...",
+          def: "manera de presentar el plato que trajiste",
+          mode: "interpersonal"
+        },
+        {
+          term: "La comida es una manera poderosa de compartir tu cultura.",
+          def: "reflexión de Profe Rivera sobre la comida",
+          mode: "presentational"
+        }
+      ]
+    },
+    "club-barrio-ms2-ep4": {
+      label: "El Club del Barrio — MS2 Ep. 4: El orgullo de San Antonio",
+      pairs: [
+        {
+          term: "la bandera",
+          def: "símbolo de colores que representa a un país",
+          mode: "interpretive"
+        },
+        {
+          term: "el orgullo",
+          def: "sentimiento feliz por algo que es tuyo, de tu país o familia",
+          mode: "interpretive"
+        },
+        {
+          term: "el significado",
+          def: "lo que representa o quiere decir algo",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Cómo sabes tanto?",
+          def: "pregunta que Sofía le hace a Mateo",
+          mode: "interpersonal"
+        },
+        {
+          term: "¿Cuba también tiene un festival de independencia?",
+          def: "pregunta que Mateo le hace a Profe Rivera",
+          mode: "interpersonal"
+        },
+        {
+          term: "Cada país tiene su propia historia, sus propios símbolos, y su propio orgullo.",
+          def: "reflexión de Profe Rivera",
+          mode: "presentational"
+        }
+      ]
+    },
+    "club-barrio-ms2-ep5": {
+      label: "El Club del Barrio — MS2 Ep. 5: El viaje de nuestros sueños",
+      pairs: [
+        {
+          term: "el destino",
+          def: "el lugar a donde quieres viajar",
+          mode: "interpretive"
+        },
+        {
+          term: "el itinerario",
+          def: "el plan completo de un viaje, con fechas y actividades",
+          mode: "interpretive"
+        },
+        {
+          term: "planear un viaje",
+          def: "organizar los detalles de un viaje antes de hacerlo",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Cualquier lugar?",
+          def: "pregunta que Camila le hace a Profe Rivera",
+          mode: "interpersonal"
+        },
+        {
+          term: "¿Y si un día viajamos todos juntos a Perú?",
+          def: "propuesta que hace Camila al grupo",
+          mode: "interpersonal"
+        },
+        {
+          term: "Me encanta que piensen en grande.",
+          def: "lo que dice Profe Rivera sobre los sueños de viaje del grupo",
+          mode: "presentational"
+        }
+      ]
+    },
+    "club-barrio-ms2-ep6": {
+      label: "El Club del Barrio — MS2 Ep. 6: El desfile de Ana Lucía",
+      pairs: [
+        {
+          term: "el atuendo",
+          def: "la combinación completa de ropa que alguien lleva puesta",
+          mode: "interpretive"
+        },
+        {
+          term: "cómodo/a",
+          def: "que se siente bien, no incómodo",
+          mode: "interpretive"
+        },
+        {
+          term: "el estilo",
+          def: "la manera personal de vestirse de alguien",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Cómo funciona un desfile?",
+          def: "pregunta que Diego le hace a Ana Lucía",
+          mode: "interpersonal"
+        },
+        {
+          term: "Cada persona puede mostrar su propio estilo.",
+          def: "idea que propone Ana Lucía",
+          mode: "interpersonal"
+        },
+        {
+          term: "No hay una manera correcta de vestirse.",
+          def: "lección de Profe Rivera sobre la moda",
+          mode: "presentational"
+        }
+      ]
+    },
+    "club-barrio-ms2-ep7": {
+      label: "El Club del Barrio — MS2 Ep. 7: El debate de la tecnología",
+      pairs: [
+        {
+          term: "el debate",
+          def: "una discusión organizada con diferentes opiniones",
+          mode: "interpretive"
+        },
+        {
+          term: "la distracción",
+          def: "algo que te aparta de lo que debes hacer",
+          mode: "interpretive"
+        },
+        {
+          term: "la herramienta",
+          def: "un objeto o recurso que usas para hacer algo",
+          mode: "interpretive"
+        },
+        {
+          term: "¿La tecnología es buena o mala?",
+          def: "pregunta que hace Diego durante el debate",
+          mode: "interpersonal"
+        },
+        {
+          term: "Por un lado... por otro lado...",
+          def: "estructura que usa Mateo para presentar dos puntos de vista",
+          mode: "presentational"
+        },
+        {
+          term: "Todo depende del uso.",
+          def: "conclusión de Profe Rivera sobre la tecnología",
+          mode: "presentational"
+        }
+      ]
+    },
+    "club-barrio-ms2-ep8": {
+      label: "El Club del Barrio — MS2 Ep. 8: La entrevista imaginaria",
+      pairs: [
+        {
+          term: "el modelo a seguir",
+          def: "una persona que admiras y quieres imitar",
+          mode: "interpretive"
+        },
+        {
+          term: "la influencia",
+          def: "el efecto que una persona tiene sobre las ideas de otros",
+          mode: "interpretive"
+        },
+        {
+          term: "la huella digital",
+          def: "la marca que dejas en línea, muy difícil de borrar",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Todavía la admiras?",
+          def: "pregunta que Ana Lucía le hace a Camila",
+          mode: "interpersonal"
+        },
+        {
+          term: "¿Cómo sabemos si una influencia es positiva o negativa?",
+          def: "pregunta que hace Mateo",
+          mode: "interpersonal"
+        },
+        {
+          term: "Algún día, tú también vas a dejar tu propia huella.",
+          def: "reflexión final de Profe Rivera",
+          mode: "presentational"
+        }
+      ]
+    },
+    "club-barrio-ms2-ep9": {
+      label: "El Club del Barrio — MS2 Ep. 9: Nuestra huella en Guanacaste Park (Final)",
+      pairs: [
+        {
+          term: "la huella",
+          def: "la marca que dejas, física o digital, después de algo",
+          mode: "interpretive"
+        },
+        {
+          term: "la generación",
+          def: "un grupo de personas que viene después de otro",
+          mode: "interpretive"
+        },
+        {
+          term: "el legado",
+          def: "algo que dejas para el futuro",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Cómo se dice esto en inglés?",
+          def: "pregunta que hace Diego sobre 'generación'",
+          mode: "interpersonal"
+        },
+        {
+          term: "Tengo una noticia.",
+          def: "cómo Ana Lucía anuncia su cambio de escuela",
+          mode: "interpersonal"
+        },
+        {
+          term: "No tengan miedo de ser ridículos. Así es como aprendemos, y así es como crecemos.",
+          def: "mensaje final de Profe Rivera al grupo",
+          mode: "presentational"
+        }
+      ]
+    },
+    "vecinos-ep1": {
+      label: "Los Vecinos — Ep. 1: La Calle de los Almendros",
+      pairs: [
+        {
+          term: "torpe",
+          def: "que se cae o tropieza fácilmente",
+          mode: "interpretive"
+        },
+        {
+          term: "curioso/a",
+          def: "que le gusta preguntar y explorar",
+          mode: "interpretive"
+        },
+        {
+          term: "tímido/a",
+          def: "que tiene un poco de miedo de hablar con otros",
+          mode: "interpretive"
+        },
+        {
+          term: "Se llama...",
+          def: "forma de decir el nombre de alguien",
+          mode: "interpersonal"
+        },
+        {
+          term: "¿A cuál de los cinco vecinos te pareces más?",
+          def: "pregunta reflexiva del episodio",
+          mode: "interpersonal"
+        },
+        {
+          term: "Es el comienzo de una gran amistad.",
+          def: "línea final del episodio",
+          mode: "presentational"
+        }
+      ]
+    },
+    "vecinos-ep2": {
+      label: "Los Vecinos — Ep. 2: Un Sábado en la Calle",
+      pairs: [
+        {
+          term: "el fuerte",
+          def: "una construcción pequeña hecha para jugar",
+          mode: "interpretive"
+        },
+        {
+          term: "relajante",
+          def: "que ayuda a sentirte tranquilo",
+          mode: "interpretive"
+        },
+        {
+          term: "de repente",
+          def: "algo que pasa sin aviso, muy rápido",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Prefieres las actividades de adentro o de afuera?",
+          def: "pregunta reflexiva del episodio",
+          mode: "interpersonal"
+        },
+        {
+          term: "Los cinco corren a la casa de Renata.",
+          def: "lo que hacen cuando empieza a llover",
+          mode: "interpersonal"
+        },
+        {
+          term: "No importa el lugar. Lo importante es estar juntos.",
+          def: "lección del episodio",
+          mode: "presentational"
+        }
+      ]
+    },
+    "vecinos-ep3": {
+      label: "Los Vecinos — Ep. 3: La Cocina de Renata",
+      pairs: [
+        {
+          term: "la receta",
+          def: "instrucciones para cocinar un plato",
+          mode: "interpretive"
+        },
+        {
+          term: "la sartén",
+          def: "objeto de cocina para freír comida",
+          mode: "interpretive"
+        },
+        {
+          term: "con cuidado",
+          def: "haciendo algo despacio y con atención",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Cuál es una receta especial de tu familia?",
+          def: "pregunta reflexiva del episodio",
+          mode: "interpersonal"
+        },
+        {
+          term: "Primero... Después...",
+          def: "palabras que organizan los pasos de la receta",
+          mode: "presentational"
+        },
+        {
+          term: "Cocinar juntos es más divertido que cocinar solo.",
+          def: "lección del episodio",
+          mode: "presentational"
+        }
+      ]
+    },
+    "vecinos-ep4": {
+      label: "Los Vecinos — Ep. 4: Una Fiesta Sorpresa para Nico",
+      pairs: [
+        {
+          term: "la sorpresa",
+          def: "algo secreto y especial que no esperas",
+          mode: "interpretive"
+        },
+        {
+          term: "decorar",
+          def: "poner cosas bonitas para una celebración",
+          mode: "interpretive"
+        },
+        {
+          term: "el regalo",
+          def: "algo que le das a alguien para celebrar",
+          mode: "interpretive"
+        },
+        {
+          term: "¡SORPRESA!",
+          def: "lo que gritan todos cuando Nico abre la puerta",
+          mode: "interpersonal"
+        },
+        {
+          term: "Creo que...",
+          def: "forma de dar una opinión o idea",
+          mode: "interpersonal"
+        },
+        {
+          term: "Los amigos celebran juntos.",
+          def: "explicación de Renata a Nico",
+          mode: "presentational"
+        }
+      ]
+    },
+    "vecinos-ep5": {
+      label: "Los Vecinos — Ep. 5: Un Tour por la Ciudad",
+      pairs: [
+        {
+          term: "antiguo/a",
+          def: "que existe desde hace mucho tiempo",
+          mode: "interpretive"
+        },
+        {
+          term: "moderno/a",
+          def: "nuevo, de hoy en día",
+          mode: "interpretive"
+        },
+        {
+          term: "la parada",
+          def: "un lugar donde te detienes durante un paseo",
+          mode: "interpretive"
+        },
+        {
+          term: "El mapa está al revés.",
+          def: "lo que nota Emilio sobre el error de Tomás",
+          mode: "interpersonal"
+        },
+        {
+          term: "¿Cuál es tu lugar favorito de tu ciudad?",
+          def: "pregunta reflexiva del episodio",
+          mode: "interpersonal"
+        },
+        {
+          term: "La iglesia es de piedra. La biblioteca es de vidrio. Las dos son importantes.",
+          def: "comparación del episodio",
+          mode: "presentational"
+        }
+      ]
+    },
+    "vecinos-ep6": {
+      label: "Los Vecinos — Ep. 6: Acampando en el Parque",
+      pairs: [
+        {
+          term: "el pronóstico",
+          def: "predicción de cómo va a estar el clima",
+          mode: "interpretive"
+        },
+        {
+          term: "el impermeable",
+          def: "ropa especial para protegerte de la lluvia",
+          mode: "interpretive"
+        },
+        {
+          term: "preparado/a",
+          def: "listo para lo que pueda pasar",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Qué ropa llevas tú en un día de mucho calor?",
+          def: "pregunta reflexiva del episodio",
+          mode: "interpersonal"
+        },
+        {
+          term: "Renata trae una manta extra.",
+          def: "solución cuando Tomás olvida su suéter",
+          mode: "interpersonal"
+        },
+        {
+          term: "Estar preparado hace que la aventura sea más divertida.",
+          def: "lección del episodio",
+          mode: "presentational"
+        }
+      ]
+    },
+    "vecinos-ep7": {
+      label: "Los Vecinos — Ep. 7: ¿Cómo Viajamos?",
+      pairs: [
+        {
+          term: "a pie",
+          def: "caminando, sin ningún vehículo",
+          mode: "interpretive"
+        },
+        {
+          term: "la cadena (de la bicicleta)",
+          def: "la parte que hace que la bicicleta se mueva",
+          mode: "interpretive"
+        },
+        {
+          term: "arreglar",
+          def: "reparar algo que no funciona",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Cómo prefieres viajar tú?",
+          def: "pregunta reflexiva del episodio",
+          mode: "interpersonal"
+        },
+        {
+          term: "Prefiero... porque...",
+          def: "estructura para explicar una preferencia",
+          mode: "presentational"
+        },
+        {
+          term: "Lo más importante no es cómo viaja el grupo, sino con quién viaja.",
+          def: "lección del episodio",
+          mode: "presentational"
+        }
+      ]
+    },
+    "vecinos-ep8": {
+      label: "Los Vecinos — Ep. 8: ¿Qué Quieres Ser?",
+      pairs: [
+        {
+          term: "la profesión",
+          def: "el trabajo que alguien tiene o quiere tener",
+          mode: "interpretive"
+        },
+        {
+          term: "el alcalde / la alcaldesa",
+          def: "la persona que dirige un pueblo o ciudad",
+          mode: "interpretive"
+        },
+        {
+          term: "el ingeniero / la ingeniera",
+          def: "persona que arregla y construye cosas",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Qué quieren ser cuando sean grandes?",
+          def: "pregunta que hace Profe Rivera a la clase",
+          mode: "interpersonal"
+        },
+        {
+          term: "Quiero ser... porque...",
+          def: "estructura para expresar una aspiración profesional",
+          mode: "presentational"
+        },
+        {
+          term: "Los intereses de hoy pueden ser el comienzo de quiénes son mañana.",
+          def: "reflexión de Profe Rivera",
+          mode: "presentational"
+        }
+      ]
+    },
+    "vecinos-ep9": {
+      label: "Los Vecinos — Ep. 9: Bienvenida, Ximena (Final)",
+      pairs: [
+        {
+          term: "el símbolo nacional",
+          def: "algo (como un animal) que representa a un país",
+          mode: "interpretive"
+        },
+        {
+          term: "la moneda",
+          def: "el dinero oficial de un país",
+          mode: "interpretive"
+        },
+        {
+          term: "nervioso/a",
+          def: "con un poco de miedo o preocupación",
+          mode: "interpretive"
+        },
+        {
+          term: "Ven con nosotros.",
+          def: "invitación que Renata le hace a Ximena",
+          mode: "interpersonal"
+        },
+        {
+          term: "En mi país... / Aquí en Belice...",
+          def: "estructura para comparar dos países",
+          mode: "presentational"
+        },
+        {
+          term: "Bienvenida a la calle, Ximena. Ahora somos seis.",
+          def: "línea final de Renata",
+          mode: "presentational"
+        }
+      ]
+    },
+    "cuadrilla-s1-ep1": {
+      label: "La Cuadrilla — S1 Ep. 1: El primer día",
+      pairs: [
+        {
+          term: "formal",
+          def: "manera de hablar más respetuosa, como con un maestro",
+          mode: "interpretive"
+        },
+        {
+          term: "el cognado",
+          def: "palabra que se parece en dos idiomas",
+          mode: "interpretive"
+        },
+        {
+          term: "Café Formosa",
+          def: "el lugar favorito del grupo después de clases",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Qué tal el verano?",
+          def: "saludo informal entre amigos",
+          mode: "interpersonal"
+        },
+        {
+          term: "Buenos días",
+          def: "saludo formal, usado con Profe Rivera",
+          mode: "interpersonal"
+        },
+        {
+          term: "Ven, hasta yo todavía aprendo palabras nuevas.",
+          def: "reflexión de Profe Rivera sobre aprender idiomas",
+          mode: "presentational"
+        }
+      ]
+    },
+    "cuadrilla-s1-ep2": {
+      label: "La Cuadrilla — S1 Ep. 2: Un día cualquiera",
+      pairs: [
+        {
+          term: "el horario",
+          def: "la lista de clases y horas del día",
+          mode: "interpretive"
+        },
+        {
+          term: "el recreo",
+          def: "un descanso durante el día escolar",
+          mode: "interpretive"
+        },
+        {
+          term: "el puesto",
+          def: "lugar pequeño donde una familia vende cosas",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Cuál es su clase preferida?",
+          def: "pregunta que hace Profe Rivera a la clase",
+          mode: "interpersonal"
+        },
+        {
+          term: "Dibujas bien.",
+          def: "lo que le dice Andrés a Renata sobre su dibujo",
+          mode: "interpersonal"
+        },
+        {
+          term: "Está bien tener una clase favorita — y también está bien que no todas nos gusten igual.",
+          def: "reflexión de Profe Rivera",
+          mode: "presentational"
+        }
+      ]
+    },
+    "cuadrilla-s1-ep3": {
+      label: "La Cuadrilla — S1 Ep. 3: El nuevo estudiante",
+      pairs: [
+        {
+          term: "el mapa",
+          def: "dibujo que muestra lugares y calles",
+          mode: "interpretive"
+        },
+        {
+          term: "nuevo/a",
+          def: "que acaba de llegar a un lugar",
+          mode: "interpretive"
+        },
+        {
+          term: "bienvenido/a",
+          def: "palabra para recibir a alguien con calidez",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Cómo llego a la tienda?",
+          def: "pregunta para pedir direcciones",
+          mode: "interpersonal"
+        },
+        {
+          term: "Camina todo derecho.",
+          def: "instrucción para dar direcciones",
+          mode: "interpersonal"
+        },
+        {
+          term: "Alguien me ayudó a encontrar mi camino. Hoy, ustedes pueden ser esa persona para Joaquín.",
+          def: "reflexión de Profe Rivera",
+          mode: "presentational"
+        }
+      ]
+    },
+    "cuadrilla-s1-ep4": {
+      label: "La Cuadrilla — S1 Ep. 4: Mi familia y mis amigos",
+      pairs: [
+        {
+          term: "generoso/a",
+          def: "que comparte con otros fácilmente",
+          mode: "interpretive"
+        },
+        {
+          term: "la celebración",
+          def: "un evento especial para festejar algo",
+          mode: "interpretive"
+        },
+        {
+          term: "perezoso/a",
+          def: "que no le gusta trabajar mucho",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Qué cocina?",
+          def: "pregunta que hace Profe Rivera sobre la abuela de Joaquín",
+          mode: "interpersonal"
+        },
+        {
+          term: "Mi amigo Emiliano es gracioso, pero también un poco perezoso.",
+          def: "descripción que hace Vale de Emiliano",
+          mode: "presentational"
+        },
+        {
+          term: "La familia es algo muy importante para todos. Pero a veces, los amigos son como una familia también.",
+          def: "reflexión de Profe Rivera",
+          mode: "presentational"
+        }
+      ]
+    },
+    "cuadrilla-s1-ep5": {
+      label: "La Cuadrilla — S1 Ep. 5: Días especiales",
+      pairs: [
+        {
+          term: "la tradición",
+          def: "algo especial que una cultura o familia celebra siempre",
+          mode: "interpretive"
+        },
+        {
+          term: "los tambores",
+          def: "instrumentos que se tocan con las manos",
+          mode: "interpretive"
+        },
+        {
+          term: "los ancestros",
+          def: "las personas de tu familia que vivieron hace mucho tiempo",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Es difícil explicar tu cultura a personas que no la conocen?",
+          def: "pregunta que hace Profe Rivera",
+          mode: "interpersonal"
+        },
+        {
+          term: "Cuéntanos más.",
+          def: "pregunta que anima a alguien a compartir más detalles",
+          mode: "interpersonal"
+        },
+        {
+          term: "Todas las tradiciones son importantes. Grandes o pequeñas.",
+          def: "reflexión de Profe Rivera",
+          mode: "presentational"
+        }
+      ]
+    },
+    "cuadrilla-s1-ep6": {
+      label: "La Cuadrilla — S1 Ep. 6: Mi casa",
+      pairs: [
+        {
+          term: "el hogar",
+          def: "el lugar donde vives y te sientes en casa",
+          mode: "interpretive"
+        },
+        {
+          term: "modesto/a",
+          def: "simple, sin ser lujoso",
+          mode: "interpretive"
+        },
+        {
+          term: "el jardín",
+          def: "espacio afuera de la casa con plantas",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Podemos ir contigo?",
+          def: "pregunta que hace Fernanda a Ximena",
+          mode: "interpersonal"
+        },
+        {
+          term: "En esta casa, siempre hay comida para los amigos.",
+          def: "lo que dice la mamá de Ximena",
+          mode: "presentational"
+        },
+        {
+          term: "Una casa no tiene que ser grande para ser un hogar lleno de amor.",
+          def: "lección del episodio",
+          mode: "presentational"
+        }
+      ]
+    },
+    "cuadrilla-s1-ep7": {
+      label: "La Cuadrilla — S1 Ep. 7: Un deporte para cada estación",
+      pairs: [
+        {
+          term: "el equipo",
+          def: "grupo de personas que juegan juntas un deporte",
+          mode: "interpretive"
+        },
+        {
+          term: "relajado/a",
+          def: "tranquilo, sin mucha presión",
+          mode: "interpretive"
+        },
+        {
+          term: "extrañar",
+          def: "sentir la falta de algo que ya no haces",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Nunca quieres jugar en un equipo?",
+          def: "pregunta que hace Profe Rivera a Emiliano",
+          mode: "interpersonal"
+        },
+        {
+          term: "¿Extrañas jugar?",
+          def: "pregunta que Fernanda le hace a Vale sobre el voleibol",
+          mode: "interpersonal"
+        },
+        {
+          term: "No todos tenemos que ser atletas para disfrutar de estar activos.",
+          def: "reflexión del episodio",
+          mode: "presentational"
+        }
+      ]
+    },
+    "cuadrilla-s1-ep8": {
+      label: "La Cuadrilla — S1 Ep. 8: Planes en común",
+      pairs: [
+        {
+          term: "el plan",
+          def: "una idea organizada de qué hacer",
+          mode: "interpretive"
+        },
+        {
+          term: "inseguro/a",
+          def: "que no está seguro de algo",
+          mode: "interpretive"
+        },
+        {
+          term: "a mitad de camino",
+          def: "cuando todos hacen un esfuerzo por encontrarse",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Qué tal si vamos nosotros al puesto?",
+          def: "propuesta que hace Vale",
+          mode: "interpersonal"
+        },
+        {
+          term: "Queremos estar contigo, no en un lugar específico.",
+          def: "lo que le dice Fernanda a Ximena",
+          mode: "interpersonal"
+        },
+        {
+          term: "A veces, estar juntos significa que todos hacen un pequeño esfuerzo por encontrarse a mitad de camino.",
+          def: "reflexión del episodio",
+          mode: "presentational"
+        }
+      ]
+    },
+    "cuadrilla-s1-ep9": {
+      label: "La Cuadrilla — S1 Ep. 9: De compras en el puesto",
+      pairs: [
+        {
+          term: "el descuento",
+          def: "una rebaja en el precio de algo",
+          mode: "interpretive"
+        },
+        {
+          term: "regatear",
+          def: "negociar el precio de algo con amabilidad",
+          mode: "interpretive"
+        },
+        {
+          term: "el cliente",
+          def: "la persona que compra algo",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Cuánto cuesta esta?",
+          def: "pregunta que hace Renata sobre la pulsera",
+          mode: "interpersonal"
+        },
+        {
+          term: "¿Me puede hacer un descuento?",
+          def: "pregunta que hace Renata a Ximena",
+          mode: "interpersonal"
+        },
+        {
+          term: "Todos tenemos algo en lo que somos expertos, aunque no siempre lo mostramos en la escuela.",
+          def: "reflexión del episodio",
+          mode: "presentational"
+        }
+      ]
+    },
+    "cuadrilla-s1-ep10": {
+      label: "La Cuadrilla — S1 Ep. 10: Escuela sin Paredes",
+      pairs: [
+        {
+          term: "la reforestación",
+          def: "plantar árboles nuevos para recuperar un bosque",
+          mode: "interpretive"
+        },
+        {
+          term: "la zona de confort",
+          def: "lo que ya conoces y donde te sientes cómodo",
+          mode: "interpretive"
+        },
+        {
+          term: "la fogata",
+          def: "un fuego que se hace para reunirse por la noche",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Estás segura?",
+          def: "pregunta que hace Emiliano sobre el sonido en el bosque",
+          mode: "interpersonal"
+        },
+        {
+          term: "Nunca voy a olvidar este viaje.",
+          def: "lo que dice Joaquín, reflexionando sobre su año en Belice",
+          mode: "interpersonal"
+        },
+        {
+          term: "A veces, lo que más tememos hacer es lo que más nos hace crecer.",
+          def: "reflexión de Profe Rivera junto a la fogata",
+          mode: "presentational"
+        }
+      ]
+    },
+    "cuadrilla-s2-ep1": {
+      label: "La Cuadrilla — S2 Ep. 1: De vuelta a clases",
+      pairs: [
+        {
+          term: "la rutina",
+          def: "lo que haces regularmente, cada día",
+          mode: "interpretive"
+        },
+        {
+          term: "las ventas",
+          def: "el dinero que se gana vendiendo algo",
+          mode: "interpretive"
+        },
+        {
+          term: "intensivo/a",
+          def: "muy concentrado, en poco tiempo",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Y tú, Andrés?",
+          def: "pregunta que le hace Renata a Andrés sobre su verano",
+          mode: "interpersonal"
+        },
+        {
+          term: "Nunca es muy pronto para organizar.",
+          def: "lo que dice Vale sobre planear la rutina",
+          mode: "interpersonal"
+        },
+        {
+          term: "Cada año que pasa, ustedes cambian un poco — nuevas experiencias, nuevas rutinas.",
+          def: "reflexión de Profe Rivera",
+          mode: "presentational"
+        }
+      ]
+    },
+    "cuadrilla-s2-ep2": {
+      label: "La Cuadrilla — S2 Ep. 2: Cuidarnos un poco más",
+      pairs: [
+        {
+          term: "el equilibrio",
+          def: "balance entre diferentes partes de la vida",
+          mode: "interpretive"
+        },
+        {
+          term: "el estrés",
+          def: "sentirte presionado o preocupado",
+          mode: "interpretive"
+        },
+        {
+          term: "el chequeo",
+          def: "revisar cómo está alguien, con cuidado",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Cuánto duermes?",
+          def: "pregunta que Fernanda le hace a Ximena",
+          mode: "interpersonal"
+        },
+        {
+          term: "¿Y si nosotros te ayudamos a recordar?",
+          def: "propuesta que hace Renata",
+          mode: "interpersonal"
+        },
+        {
+          term: "Cuidar de ustedes mismos no es egoísta — es necesario.",
+          def: "reflexión de Profe Rivera",
+          mode: "presentational"
+        }
+      ]
+    },
+    "cuadrilla-s2-ep3": {
+      label: "La Cuadrilla — S2 Ep. 3: Buscando el camino",
+      pairs: [
+        {
+          term: "el proveedor",
+          def: "quien vende productos a un negocio",
+          mode: "interpretive"
+        },
+        {
+          term: "la esquina",
+          def: "donde se encuentran dos calles",
+          mode: "interpretive"
+        },
+        {
+          term: "imponerse",
+          def: "pedir demasiado de otra persona",
+          mode: "interpretive"
+        },
+        {
+          term: "Disculpe, ¿usted sabe dónde está...?",
+          def: "forma formal de pedir direcciones",
+          mode: "interpersonal"
+        },
+        {
+          term: "Doble en la esquina, y siga derecho dos cuadras.",
+          def: "instrucciones formales que da el señor",
+          mode: "presentational"
+        },
+        {
+          term: "Necesitar ayuda no significa que no eres capaz.",
+          def: "lo que le dice Joaquín a Ximena",
+          mode: "presentational"
+        }
+      ]
+    },
+    "cuadrilla-s2-ep4": {
+      label: "La Cuadrilla — S2 Ep. 4: Animales asombrosos",
+      pairs: [
+        {
+          term: "fascinante",
+          def: "que causa mucho interés y admiración",
+          mode: "interpretive"
+        },
+        {
+          term: "el tapir / la danta",
+          def: "el animal nacional de Belice",
+          mode: "interpretive"
+        },
+        {
+          term: "más...que / menos...que / tan...como",
+          def: "estructuras para comparar dos cosas",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Sabían que el tapir es el animal nacional de Belice?",
+          def: "pregunta que hace Profe Rivera",
+          mode: "interpersonal"
+        },
+        {
+          term: "¿Qué animal te representa a ti?",
+          def: "pregunta que Ximena le hace a Vale",
+          mode: "interpersonal"
+        },
+        {
+          term: "El animal que más nos fascina dice algo sobre quiénes somos.",
+          def: "reflexión del episodio",
+          mode: "presentational"
+        }
+      ]
+    },
+    "cuadrilla-s2-ep5": {
+      label: "La Cuadrilla — S2 Ep. 5: Un visitante de Colombia",
+      pairs: [
+        {
+          term: "la leyenda",
+          def: "una historia antigua, transmitida de generación en generación",
+          mode: "interpretive"
+        },
+        {
+          term: "vos",
+          def: "forma de decir 'tú', usada en Colombia y otros países",
+          mode: "interpretive"
+        },
+        {
+          term: "el consultor / la consultora",
+          def: "persona que da asesoría profesional a una empresa",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Cómo estás? / ¿Cómo estás, vos?",
+          def: "formas de saludar en diferentes países hispanohablantes",
+          mode: "interpersonal"
+        },
+        {
+          term: "En mi país... / En Belice...",
+          def: "estructura para comparar culturas",
+          mode: "presentational"
+        },
+        {
+          term: "El español es diferente en cada país. Eso es normal.",
+          def: "reflexión de Profe Rivera",
+          mode: "presentational"
+        }
+      ]
+    },
+    "cuadrilla-s2-ep6": {
+      label: "La Cuadrilla — S2 Ep. 6: La vida en casa",
+      pairs: [
+        {
+          term: "la responsabilidad",
+          def: "algo que debes hacer regularmente",
+          mode: "interpretive"
+        },
+        {
+          term: "me toca...",
+          def: "expresión para decir cuál es tu tarea",
+          mode: "interpretive"
+        },
+        {
+          term: "temporal",
+          def: "que dura poco tiempo, no para siempre",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Y a ti, Emiliano?",
+          def: "pregunta que hace Profe Rivera sobre sus responsabilidades",
+          mode: "interpersonal"
+        },
+        {
+          term: "¿Extrañas tu casa en Inglaterra?",
+          def: "pregunta que Fernanda le hace a Renata",
+          mode: "interpersonal"
+        },
+        {
+          term: "El hogar no siempre es el mismo lugar. Pero la familia nos ayuda a sentirnos en casa, siempre.",
+          def: "reflexión de Profe Rivera",
+          mode: "presentational"
+        }
+      ]
+    },
+    "cuadrilla-s2-ep7": {
+      label: "La Cuadrilla — S2 Ep. 7: ¿Qué hay de nuevo?",
+      pairs: [
+        {
+          term: "el reportero / la reportera",
+          def: "persona que escribe noticias",
+          mode: "interpretive"
+        },
+        {
+          term: "el boletín",
+          def: "comunicación escrita para las familias de la escuela",
+          mode: "interpretive"
+        },
+        {
+          term: "observar",
+          def: "mirar con atención y notar detalles",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Tienes algo que añadir?",
+          def: "pregunta que Profe Rivera le hace a Andrés en clase",
+          mode: "interpersonal"
+        },
+        {
+          term: "¿Te interesaría?",
+          def: "pregunta que Profe Rivera le hace a Andrés sobre el periódico",
+          mode: "interpersonal"
+        },
+        {
+          term: "Los mejores reporteros escuchan más de lo que hablan.",
+          def: "lo que le dice Profe Rivera a Andrés",
+          mode: "presentational"
+        }
+      ]
+    },
+    "cuadrilla-s2-ep8": {
+      label: "La Cuadrilla — S2 Ep. 8: Planeando el viaje a Tikal",
+      pairs: [
+        {
+          term: "la frontera",
+          def: "la línea que separa un país de otro",
+          mode: "interpretive"
+        },
+        {
+          term: "las ruinas",
+          def: "restos antiguos de una construcción",
+          mode: "interpretive"
+        },
+        {
+          term: "el itinerario",
+          def: "el plan de un viaje, con actividades y fechas",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Cruzamos al otro lado de la frontera?",
+          def: "pregunta que hace Emiliano",
+          mode: "interpersonal"
+        },
+        {
+          term: "¿Estás bien, Ximena?",
+          def: "pregunta que le hace Fernanda a Ximena",
+          mode: "interpersonal"
+        },
+        {
+          term: "Planear algo con anticipación es la mitad de la emoción.",
+          def: "reflexión de Profe Rivera",
+          mode: "presentational"
+        }
+      ]
+    },
+    "cuadrilla-s2-ep9": {
+      label: "La Cuadrilla — S2 Ep. 9: Nos preocupa",
+      pairs: [
+        {
+          term: "la contaminación",
+          def: "cuando algo daña un espacio natural o público",
+          mode: "interpretive"
+        },
+        {
+          term: "el basurero",
+          def: "contenedor donde se pone la basura",
+          mode: "interpretive"
+        },
+        {
+          term: "el espacio público",
+          def: "lugar compartido por toda la comunidad",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Podemos hacer una diferencia real, como estudiantes?",
+          def: "pregunta que hace Fernanda",
+          mode: "interpersonal"
+        },
+        {
+          term: "¿Cómo sería?",
+          def: "pregunta que Joaquín le hace a Renata sobre el basurero",
+          mode: "interpersonal"
+        },
+        {
+          term: "No podemos resolver todos los problemas del mundo, pero sí podemos elegir uno.",
+          def: "reflexión de Profe Rivera",
+          mode: "presentational"
+        }
+      ]
+    },
+    "cuadrilla-s2-ep10": {
+      label: "La Cuadrilla — S2 Ep. 10: Diplomáticos por un día (Final)",
+      pairs: [
+        {
+          term: "el delegado / la delegada",
+          def: "persona que representa a un país en un debate",
+          mode: "interpretive"
+        },
+        {
+          term: "debatir",
+          def: "discutir un tema con argumentos organizados",
+          mode: "interpretive"
+        },
+        {
+          term: "la zona de confort",
+          def: "lo cómodo y conocido, que a veces hay que dejar",
+          mode: "interpretive"
+        },
+        {
+          term: "¿Todavía hablan con él?",
+          def: "pregunta que Renata le hace a Fernanda sobre Santiago",
+          mode: "interpersonal"
+        },
+        {
+          term: "¿Recuerdan el primer día, en Café Formosa?",
+          def: "pregunta que hace Vale, recordando el comienzo de la serie",
+          mode: "interpersonal"
+        },
+        {
+          term: "Cuando los conocí, apenas podían presentarse en español. Ahora, van a debatir problemas del mundo, en su segundo idioma.",
+          def: "reflexión final de Profe Rivera",
+          mode: "presentational"
+        }
+      ]
+    }
+  }
+};
+/* ========================================================= */
+
+let currentUnit=null, cards=[], flipped=[], matchedCount=0, moves=0, lock=false;
+const modeLabel = {interpretive:"Interpretativo", interpersonal:"Interpersonal", presentational:"Presentacional"};
+
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+
+function showPicker(){
+  document.getElementById('pickerCard').style.display='block';
+  document.getElementById('scorebar').style.display='none';
+  document.getElementById('grid').style.display='none';
+  document.getElementById('endCard').style.display='none';
+  const list = document.getElementById('unitList');
+  list.innerHTML='';
+  Object.entries(CONFIG.units).forEach(([key, unit])=>{
+    const btn = document.createElement('button');
+    btn.className='unitBtn';
+    btn.innerHTML = `${unit.label}<small>${unit.pairs.length} parejas</small>`;
+    btn.onclick = ()=>startUnit(key);
+    list.appendChild(btn);
+  });
+}
+
+function buildDeck(pairs){
+  let deck=[];
+  pairs.forEach((p,i)=>{
+    deck.push({pairId:i, label:p.term, type:'term', mode:p.mode});
+    deck.push({pairId:i, label:p.def, type:'def', mode:p.mode});
+  });
+  return shuffle(deck);
+}
+
+function startUnit(key){
+  currentUnit = CONFIG.units[key];
+  cards = buildDeck(currentUnit.pairs);
+  flipped=[]; matchedCount=0; moves=0; lock=false;
+  document.getElementById('moves').textContent=0;
+  document.getElementById('matches').textContent=0;
+  document.getElementById('total').textContent=currentUnit.pairs.length;
+  document.getElementById('pickerCard').style.display='none';
+  document.getElementById('scorebar').style.display='block';
+  document.getElementById('grid').style.display='grid';
+  document.getElementById('endCard').style.display='none';
+  render();
+}
+
+function render(){
+  const grid = document.getElementById('grid');
+  grid.innerHTML='';
+  cards.forEach((c, i)=>{
+    const div = document.createElement('div');
+    div.className='tile' + (c.state==='flipped'?' flipped':'') + (c.state==='matched'?' matched':'');
+    const tag = c.state ? `<span class="mode-tag mode-${c.mode}">${modeLabel[c.mode]||''}</span>` : '';
+    div.innerHTML = c.state ? `${c.label}${c.mode?('<br>'+tag):''}` : '<span class="back">?</span>';
+    div.onclick = ()=>flipCard(i);
+    grid.appendChild(div);
+  });
+}
+
+function flipCard(i){
+  if(lock) return;
+  const c = cards[i];
+  if(c.state) return;
+  c.state='flipped';
+  flipped.push(i);
+  render();
+  if(flipped.length===2){
+    moves++;
+    document.getElementById('moves').textContent = moves;
+    lock=true;
+    const [a,b] = flipped;
+    if(cards[a].pairId===cards[b].pairId && cards[a].type!==cards[b].type){
+      cards[a].state='matched'; cards[b].state='matched';
+      matchedCount++;
+      document.getElementById('matches').textContent = matchedCount;
+      flipped=[]; lock=false; render();
+      if(matchedCount===currentUnit.pairs.length){
+        setTimeout(()=>{
+          document.getElementById('grid').style.display='none';
+          document.getElementById('scorebar').style.display='none';
+          document.getElementById('endCard').style.display='block';
+          document.getElementById('finalStats').textContent = `¡Resuelto en ${moves} intentos!`;
+        },300);
+      }
+    } else {
+      setTimeout(()=>{
+        cards[a].state=null; cards[b].state=null;
+        flipped=[]; lock=false; render();
+      },800);
+    }
+  }
+}
+
+document.getElementById('restartBtn').onclick = ()=>{
+  const key = Object.keys(CONFIG.units).find(k=>CONFIG.units[k]===currentUnit);
+  startUnit(key);
+};
+document.getElementById('switchBtn').onclick = showPicker;
+
+showPicker();
+</script>
+</body>
+</html>
