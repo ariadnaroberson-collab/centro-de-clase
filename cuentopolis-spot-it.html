@@ -608,10 +608,52 @@ const CONFIG = {
         },
         {
           prompt: "Llevan a Teo a la clínica. ¿Cómo se llama la doctora?",
-          choices: ["guardianes-ep10": {
+                    choices: [
+            { label: "Alma", correct: true },
+            { label: "Valentina", correct: false },
+            { label: "Sofía", correct: false },
+            { label: "Luna", correct: false }
+          ],
+          explain: "La colibrí dice: 'Soy la doctora Alma.'"
+        },
+        {
+          prompt: "El abuelo de la doctora Alma también era...",
+          choices: [
+            { label: "médico", correct: true },
+            { label: "maestro", correct: false },
+            { label: "cocinero", correct: false },
+            { label: "artista", correct: false }
+          ],
+          explain: "Nico ve fotos. La doctora dice: 'Mi abuelo era médico también.'"
+        },
+        {
+          prompt: "Bruno está sentado afuera, callado. ¿Cómo está Bruno?",
+          choices: [
+            { label: "preocupado por Teo", correct: true },
+            { label: "feliz", correct: false },
+            { label: "enojado", correct: false },
+            { label: "cansado", correct: false }
+          ],
+          explain: "Bruno dice: 'Me preocupé por Teo.'"
+        },
+        {
+          prompt: "Según la doctora, ¿cuál es la mejor medicina?",
+          choices: [
+            { label: "dormir bien y comer sano", correct: true },
+            { label: "comer mucha fruta nueva", correct: false },
+            { label: "caminar rápido", correct: false },
+            { label: "tomar mucha agua fría", correct: false }
+          ],
+          explain: "La doctora dice: 'Dormir bien. Comer sano. Y preguntar antes de comer algo nuevo.'"
+        }
+      ]
+    },
+    "guardianes-ep10": {
       label: "Guardianes de Chiquibul — Ep. 10: ¡Alerta en la Selva!",
       rounds: [
         {
+          prompt: "Iggy levanta la cabeza. Iggy dice: '¿Huelen eso? Hay...'",
+          choices: [
           prompt: "Iggy levanta la cabeza. Iggy dice: '¿Huelen eso? Hay...'",
           choices: [
             { label: "humo", correct: true },
