@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dato del día — Charlas de Calendario</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Work+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F3EBD9;
+    --paper-shadow: #E4D9C0;
+    --ink: #2A2622;
+    --ink-soft: #6B6255;
+    --ring: #D8CBAE;
+
+    --lengua: #B8481F;
+    --lengua-bg: #F3D9CC;
+    --mundo: #2E7259;
+    --mundo-bg: #D6E7DE;
+    --musical: #B07A16;
+    --musical-bg: #F0DFB8;
+    --humor: #A83E64;
+    --humor-bg: #F0D3DF;
+    --voz: #375C86;
+    --voz-bg: #D6E1EE;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: #DCD3BE;
+    background-image: radial-gradient(circle at 1px 1px, rgba(42,38,34,0.06) 1px, transparent 0);
+    background-size: 18px 18px;
+    font-family: 'Work Sans', sans-serif;
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 16px 80px;
+  }
+
+  .site-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+  }
+
+  h1.brand {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 28px;
+    margin: 0 0 32px;
+    color: var(--ink);
+  }
+
+  .page-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 440px;
+  }
+
+  .rings {
+    position: absolute;
+    top: -14px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-evenly;
+    z-index: 2;
+  }
+  .rings span {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #DCD3BE;
+    border: 3px solid var(--ring);
+    box-shadow: inset 0 2px 3px rgba(0,0,0,0.15);
+  }
+
+  .card {
+    position: relative;
+    background: var(--paper);
+    border-radius: 10px;
+    box-shadow: 0 10px 0 -4px var(--paper-shadow), 0 14px 24px rgba(42,38,34,0.18);
+    padding: 34px 28px 26px;
+    transition: box-shadow .2s ease;
+  }
+
+  .day-ribbon {
+    position: absolute;
+    top: 0;
+    right: 22px;
+    padding: 6px 14px 8px;
+    border-radius: 0 0 8px 8px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  .date-row {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 4px;
+  }
+  .date-num {
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 44px;
+    line-height: 1;
+  }
+  .date-meta { display: flex; flex-direction: column; }
+  .date-dow {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    text-transform: capitalize;
+  }
+  .date-month {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  hr.tear {
+    border: none;
+    border-top: 2px dashed var(--ring);
+    margin: 18px 0 20px;
+  }
+
+  h2.titulo {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 21px;
+    margin: 0 0 18px;
+  }
+
+  .paso {
+    display: none;
+    animation: fadeIn .35s ease;
+  }
+  .paso.activo { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+  .paso-etiqueta {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .paso-texto {
+    font-size: 16px;
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .controles {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 24px;
+  }
+
+  .puntos { display: flex; gap: 6px; }
+  .punto {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--ring);
+  }
+  .punto.hecho { background: var(--ink-soft); }
+  .punto.actual { background: var(--ink); transform: scale(1.3); }
+
+  button.siguiente {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    border: none;
+    border-radius: 999px;
+    padding: 10px 20px;
+    cursor: pointer;
+    color: #fff;
+    background: var(--ink);
+    transition: transform .1s ease;
+  }
+  button.siguiente:active { transform: scale(0.96); }
+  button.siguiente:disabled { opacity: 0.35; cursor: default; }
+
+  .tabs {
+    display: flex;
+    gap: 8px;
+    margin-top: 28px;
+    width: 100%;
+    max-width: 440px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .tab {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    background: rgba(255,255,255,0.5);
+    color: var(--ink-soft);
+    font-weight: 700;
+  }
+  .tab.activo {
+    background: #fff;
+    color: var(--ink);
+  }
+
+  .nota {
+    max-width: 440px;
+    margin-top: 28px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    text-align: center;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+  <div class="site-eyebrow">Charlas de Calendario</div>
+  <h1 class="brand">Dato del día</h1>
+
+  <div class="page-wrap">
+    <div class="rings">
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <div class="card" id="card">
+      <div class="day-ribbon" id="ribbon">LUNES DE LENGUA</div>
+      <div class="date-row">
+        <div class="date-num" id="dateNum">30</div>
+        <div class="date-meta">
+          <div class="date-dow" id="dateDow">lunes</div>
+          <div class="date-month" id="dateMonth">agosto</div>
+        </div>
+      </div>
+      <hr class="tear">
+      <h2 class="titulo" id="titulo">—</h2>
+
+      <div id="pasos"></div>
+
+      <div class="controles">
+        <div class="puntos" id="puntos"></div>
+        <button class="siguiente" id="btnSiguiente">Siguiente</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <p class="nota" id="notaEstado">Cargando el banco de datos...</p>
+
+<script>
+  // Ruta al JSON real. Ajusta esta ruta si tu archivo queda en otra carpeta.
+  const RUTA_DATOS = '../data/dato-del-dia-FINAL.json';
+
+  const DIA_INFO = {
+    lengua:  { nombre:"Lunes de Lengua",     color:"var(--lengua)",  bg:"var(--lengua-bg)"  },
+    mundo:   { nombre:"Martes de Mundo",     color:"var(--mundo)",   bg:"var(--mundo-bg)"   },
+    musical: { nombre:"Miércoles Musical",   color:"var(--musical)", bg:"var(--musical-bg)" },
+    humor:   { nombre:"Jueves de ¡Ja, ja!",  color:"var(--humor)",   bg:"var(--humor-bg)"   },
+    voz:     { nombre:"Viernes de Voz",      color:"var(--voz)",     bg:"var(--voz-bg)"     }
+  };
+
+  const ORDEN_PASOS = ["mira","escucha","reacciona","dato","recicla"];
+  const MESES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+  const DIAS_SEMANA = { 1:"lengua", 2:"mundo", 3:"musical", 4:"humor", 5:"voz" }; // 1=lunes ... 5=viernes
+
+  let DATOS = [];
+  let datoActual = null;
+  let pasoIndex = 0;
+
+  // Número de semana del año (para rotar el dato de cada día de forma predecible)
+  function numeroDeSemana(fecha) {
+    const d = new Date(Date.UTC(fecha.getFullYear(), fecha.getMonth(), fecha.getDate()));
+    const dayNum = d.getUTCDay() || 7;
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+  }
+
+  function datoDelDia(diaClave, fecha, semana) {
+    const hoyMes = fecha.getMonth() + 1;
+    // Si existe una colección especial para el mes actual, se usa esa en vez de la rotación normal
+    const especiales = DATOS.filter(d => d.dia === diaClave && d.coleccion && d.mes === hoyMes);
+    const lista = especiales.length ? especiales : DATOS.filter(d => d.dia === diaClave);
+    if (!lista.length) return null;
+    return lista[semana % lista.length];
+  }
+
+  async function cargarDatos() {
+    const notaEl = document.getElementById('notaEstado');
+    try {
+      const resp = await fetch(RUTA_DATOS);
+      if (!resp.ok) throw new Error('No se pudo cargar el archivo (' + resp.status + ')');
+      const json = await resp.json();
+      DATOS = json.datos;
+      notaEl.textContent = 'Cargado desde ' + RUTA_DATOS + ' — ' + DATOS.length + ' datos disponibles.';
+      iniciar();
+    } catch (err) {
+      notaEl.textContent = 'No se pudo cargar el JSON (' + err.message + '). Revisa que la ruta RUTA_DATOS sea correcta.';
+      console.error(err);
+    }
+  }
+
+  function iniciar() {
+    const hoy = new Date();
+    const diaSemana = hoy.getDay(); // 0=domingo ... 6=sábado
+    const semana = numeroDeSemana(hoy);
+    const diaClaveHoy = DIAS_SEMANA[diaSemana] || 'lengua'; // fin de semana: muestra un ejemplo de lunes
+
+    const tabsEl = document.getElementById('tabs');
+    tabsEl.innerHTML = '';
+    Object.values(DIA_INFO).forEach((info, i) => {
+      const claveDia = Object.keys(DIA_INFO)[i];
+      const tab = document.createElement('div');
+      tab.className = 'tab' + (claveDia === diaClaveHoy ? ' activo' : '');
+      tab.textContent = info.nombre.split(' ')[0];
+      tab.addEventListener('click', () => {
+        const dato = datoDelDia(claveDia, hoy, semana);
+        if (!dato) return;
+        datoActual = dato;
+        pasoIndex = 0;
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('activo'));
+        tab.classList.add('activo');
+        render();
+      });
+      tabsEl.appendChild(tab);
+    });
+
+    datoActual = datoDelDia(diaClaveHoy, hoy, semana);
+    pasoIndex = 0;
+    render();
+  }
+
+  function pasosPresentes(dato) {
+    return ORDEN_PASOS.filter(p => dato.pasos[p]);
+  }
+
+  function render() {
+    const info = DIA_INFO[datoActual.dia];
+    const ribbon = document.getElementById('ribbon');
+    ribbon.textContent = info.nombre.toUpperCase();
+    ribbon.style.background = info.bg;
+    ribbon.style.color = info.color;
+
+    document.getElementById('card').style.borderTop = `6px solid ${info.color}`;
+    document.getElementById('titulo').textContent = datoActual.titulo;
+
+    const hoy = new Date();
+    document.getElementById('dateNum').textContent = hoy.getDate();
+    document.getElementById('dateNum').style.color = info.color;
+    document.getElementById('dateDow').textContent = info.nombre.split(' ')[0];
+    document.getElementById('dateMonth').textContent = MESES[hoy.getMonth()];
+
+    const pasos = pasosPresentes(datoActual);
+    const pasosEl = document.getElementById('pasos');
+    pasosEl.innerHTML = '';
+    pasos.forEach((p, i) => {
+      const div = document.createElement('div');
+      div.className = 'paso' + (i === pasoIndex ? ' activo' : '');
+      div.innerHTML = `<div class="paso-etiqueta" style="color:${info.color}">${p}</div><p class="paso-texto">${datoActual.pasos[p]}</p>`;
+      pasosEl.appendChild(div);
+    });
+
+    const puntosEl = document.getElementById('puntos');
+    puntosEl.innerHTML = '';
+    pasos.forEach((_, i) => {
+      const span = document.createElement('span');
+      span.className = 'punto' + (i < pasoIndex ? ' hecho' : i === pasoIndex ? ' actual' : '');
+      puntosEl.appendChild(span);
+    });
+
+    const btn = document.getElementById('btnSiguiente');
+    btn.textContent = pasoIndex === pasos.length - 1 ? 'Listo' : 'Siguiente';
+    btn.disabled = pasoIndex === pasos.length - 1;
+  }
+
+  document.getElementById('btnSiguiente').addEventListener('click', () => {
+    const total = pasosPresentes(datoActual).length;
+    if (pasoIndex < total - 1) {
+      pasoIndex++;
+      render();
+    }
+  });
+
+  cargarDatos();
+</script>
+
+</body>
+</html>
