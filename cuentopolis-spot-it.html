@@ -608,141 +608,68 @@ const CONFIG = {
         },
         {
           prompt: "Llevan a Teo a la clínica. ¿Cómo se llama la doctora?",
-          choices: [
-    "guardianes-ep10": {
+          choices: ["guardianes-ep10": {
       label: "Guardianes de Chiquibul — Ep. 10: ¡Alerta en la Selva!",
       rounds: [
         {
-          prompt: "Cuando ven el humo, ¿qué instrucción da Don Pico primero?",
+          prompt: "Iggy levanta la cabeza. Iggy dice: '¿Huelen eso? Hay...'",
           choices: [
-            {
-              label: "Que todos corran en direcciones diferentes.",
-              correct: false
-            },
-            {
-              label: "Que nadie corra, que se mantengan juntos, y que Chica cuente a todos los Guardianes.",
-              correct: true
-            },
-            {
-              label: "Que intenten apagar el fuego ellos mismos.",
-              correct: false
-            },
-            {
-              label: "Que busquen agua inmediatamente.",
-              correct: false
-            }
+            { label: "humo", correct: true },
+            { label: "agua", correct: false },
+            { label: "comida", correct: false },
+            { label: "flores", correct: false }
           ],
-          explain: "Mantener la calma y contar a todos es el primer paso — no intentar apagarlo solos."
+          explain: "Iggy dice: 'Hay humo entre los árboles.'"
         },
         {
-          prompt: "Según Capitana Sofía, ¿por qué colaboran los bomberos forestales de varios países?",
+          prompt: "Don Pico habla con calma. Don Pico dice: 'Nadie...'",
           choices: [
-            {
-              label: "Porque Belice no tiene suficientes bomberos propios.",
-              correct: false
-            },
-            {
-              label: "Porque la Selva Maya es un solo ecosistema compartido, y el humo no conoce fronteras.",
-              correct: true
-            },
-            {
-              label: "Porque es una regla del gobierno.",
-              correct: false
-            },
-            {
-              label: "Porque siempre trabajan juntos, no solo en emergencias.",
-              correct: false
-            }
+            { label: "corra", correct: true },
+            { label: "hable", correct: false },
+            { label: "coma", correct: false },
+            { label: "duerma", correct: false }
           ],
-          explain: "Los animales, los árboles y el humo no saben dónde termina un país y empieza otro."
+          explain: "Don Pico dice: 'Nadie corra. Todos juntos.'"
         },
         {
-          prompt: "¿Qué hace Bruno cuando ve un tucán pequeño atrapado en el humo?",
+          prompt: "Llega un camión. ¿Cómo se llama la tapir con casco amarillo?",
           choices: [
-            {
-              label: "Sube con cuidado por un camino que conoce bien y lleva el nido a un lugar seguro.",
-              correct: true
-            },
-            {
-              label: "Le pide ayuda a la capitana Sofía primero.",
-              correct: false
-            },
-            {
-              label: "Se queda mirando desde lejos.",
-              correct: false
-            },
-            {
-              label: "Corre a avisarle a Don Pico y espera.",
-              correct: false
-            }
+            { label: "Sofía", correct: true },
+            { label: "Alma", correct: false },
+            { label: "Valentina", correct: false },
+            { label: "Luna", correct: false }
           ],
-          explain: "'Solo... no quería que estuviera solo' — Bruno actúa con valentía sin pensarlo dos veces."
+          explain: "La tapir dice: 'Soy la capitana Sofía.'"
         },
         {
-          prompt: "Según Don Pico al final, ¿qué es el valor?",
+          prompt: "Mora ve un nido. ¿Qué animal pequeño está allí?",
           choices: [
-            {
-              label: "Hacer lo correcto incluso con miedo.",
-              correct: true
-            },
-            {
-              label: "No tener miedo nunca.",
-              correct: false
-            },
-            {
-              label: "Ser el más fuerte del grupo.",
-              correct: false
-            },
-            {
-              label: "Actuar solo, sin pedir ayuda.",
-              correct: false
-            }
+            { label: "un tucán", correct: true },
+            { label: "un mono", correct: false },
+            { label: "una rana", correct: false },
+            { label: "un coatí", correct: false }
           ],
-          explain: "'El valor no es no tener miedo. Es hacer lo correcto incluso con miedo.'"
+          explain: "Mora dice: '¡Un nido! Hay un tucán pequeño allí.'"
         },
         {
-          prompt: "¿Quién es la capitana Sofía?",
+          prompt: "Bruno sube con cuidado. Bruno lleva el nido a un lugar...",
           choices: [
-            {
-              label: "Una tapir bombera con casco amarillo.",
-              correct: true
-            },
-            {
-              label: "Una rana que enseña en la escuela.",
-              correct: false
-            },
-            {
-              label: "Una colibrí doctora.",
-              correct: false
-            },
-            {
-              label: "Una coatí del mercado.",
-              correct: false
-            }
+            { label: "seguro", correct: true },
+            { label: "lejano", correct: false },
+            { label: "oscuro", correct: false },
+            { label: "alto", correct: false }
           ],
-          explain: "Llega al frente de un vehículo forestal para ayudar a controlar el incendio."
+          explain: "Bruno toma el nido y lo lleva a un lugar seguro."
         },
         {
-          prompt: "¿Cuál es la misión de los Guardianes ese día, antes de ver el humo?",
+          prompt: "Según Don Pico, ser valiente es hacer lo correcto...",
           choices: [
-            {
-              label: "Limpiar un sendero para las familias.",
-              correct: true
-            },
-            {
-              label: "Buscar frutas para el mercado.",
-              correct: false
-            },
-            {
-              label: "Visitar la Clínica del Colibrí.",
-              correct: false
-            },
-            {
-              label: "Practicar para una fiesta.",
-              correct: false
-            }
+            { label: "con miedo", correct: true },
+            { label: "sin miedo", correct: false },
+            { label: "rápido", correct: false },
+            { label: "solo", correct: false }
           ],
-          explain: "El episodio empieza con una misión sencilla que se interrumpe por la emergencia del incendio."
+          explain: "Don Pico dice: 'Ser valiente no es no tener miedo. Es hacer lo correcto con miedo.'"
         }
       ]
     },
