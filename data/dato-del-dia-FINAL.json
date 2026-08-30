@@ -1,0 +1,1102 @@
+{
+  "datos": [
+    {
+      "id": "lengua-001",
+      "dia": "lengua",
+      "nivel": [
+        "3-6",
+        "MS",
+        "Secondary"
+      ],
+      "titulo": "Un falso amigo: 'embarazada'",
+      "pasos": {
+        "escucha": "En inglés, 'embarrassed' significa tener vergüenza. En español, 'embarazada' significa algo muy diferente.",
+        "reacciona": "¿Qué crees que significa 'embarazada'?",
+        "dato": "Significa 'pregnant' (esperando un bebé), ¡no 'embarrassed'! Es uno de los falsos cognados más famosos entre el inglés y el español.",
+        "recicla": "Si tienes vergüenza, di: 'Tengo vergüenza.'"
+      },
+      "reciclaje": [
+        "tener vergüenza",
+        "significa",
+        "falso cognado"
+      ]
+    },
+    {
+      "id": "lengua-002",
+      "dia": "lengua",
+      "nivel": [
+        "K-2",
+        "3-6"
+      ],
+      "titulo": "Una palabra, dos significados",
+      "pasos": {
+        "mira": "La palabra 'GUAGUA' escrita en grande",
+        "escucha": "Esta palabra significa cosas distintas según el país.",
+        "reacciona": "¿Autobús o bebé? ¡Adivina!",
+        "dato": "En Cuba y Puerto Rico, 'guagua' es el autobús. En Perú, Bolivia y Chile, 'guagua' es un bebé. ¡La misma palabra, dos significados totalmente distintos!",
+        "recicla": "En mi país se dice..."
+      },
+      "reciclaje": [
+        "significa",
+        "en mi país se dice",
+        "distinto"
+      ]
+    },
+    {
+      "id": "lengua-003",
+      "dia": "lengua",
+      "nivel": [
+        "3-6",
+        "MS",
+        "Secondary"
+      ],
+      "titulo": "El chocolate viene de una palabra indígena",
+      "pasos": {
+        "escucha": "Antes de que el chocolate existiera en inglés, existía en náhuatl, la lengua de los aztecas.",
+        "reacciona": "¿De qué lengua crees que viene la palabra 'chocolate'?",
+        "dato": "Viene de 'xocolātl', una palabra náhuatl. Muchas palabras que usamos en español (y en inglés) vienen de lenguas indígenas de América.",
+        "recicla": "Viene de... / Es una palabra de origen..."
+      },
+      "reciclaje": [
+        "viene de",
+        "lengua indígena",
+        "origen"
+      ]
+    },
+    {
+      "id": "lengua-004",
+      "dia": "lengua",
+      "nivel": [
+        "MS",
+        "Secondary"
+      ],
+      "titulo": "'Ojalá' viene del árabe",
+      "pasos": {
+        "escucha": "'Ojalá' es una de las palabras más usadas en español para expresar un deseo.",
+        "reacciona": "¿De qué lengua crees que viene 'ojalá'?",
+        "dato": "Viene del árabe 'law šā' allāh', que significa 'si Dios quiere'. España tuvo casi 800 años de presencia árabe, y por eso el español tiene cientos de palabras de origen árabe.",
+        "recicla": "Ojalá que..."
+      },
+      "reciclaje": [
+        "ojalá",
+        "viene del árabe",
+        "expresar un deseo"
+      ]
+    },
+    {
+      "id": "lengua-005",
+      "dia": "lengua",
+      "nivel": [
+        "K-2",
+        "3-6"
+      ],
+      "titulo": "¿Tú, vos o usted?",
+      "pasos": {
+        "escucha": "En español hay varias formas de decir 'you', y cambian según el país.",
+        "reacciona": "¿Cuál de estas palabras conoces: tú, vos o usted?",
+        "dato": "En España y México se usa mucho 'tú'. En Argentina y partes de Centroamérica se usa 'vos'. 'Usted' se usa para mostrar respeto en casi todos los países.",
+        "recicla": "En mi clase usamos..."
+      },
+      "reciclaje": [
+        "tú",
+        "vos",
+        "usted",
+        "respeto"
+      ]
+    },
+    {
+      "id": "lengua-006",
+      "dia": "lengua",
+      "nivel": [
+        "3-6",
+        "MS"
+      ],
+      "titulo": "La papaya no es de España",
+      "pasos": {
+        "mira": "Foto de una papaya",
+        "escucha": "Muchas frutas y alimentos que asociamos con Latinoamérica tienen nombres que no vienen del español.",
+        "reacciona": "¿De dónde crees que viene la palabra 'papaya'?",
+        "dato": "'Papaya' viene de una lengua indígena del Caribe, probablemente taína o arahuaca. El español adoptó la palabra tal como la usaban los pueblos originarios.",
+        "recicla": "Es una fruta de..."
+      },
+      "reciclaje": [
+        "viene de",
+        "pueblos originarios",
+        "adoptó"
+      ]
+    },
+    {
+      "id": "lengua-007",
+      "dia": "lengua",
+      "nivel": [
+        "Secondary"
+      ],
+      "titulo": "La palabra más larga para decir 'American'",
+      "pasos": {
+        "escucha": "En inglés, alguien de Estados Unidos se llama simplemente 'American'.",
+        "reacciona": "¿Cómo crees que se dice en español?",
+        "dato": "En español se dice 'estadounidense', una palabra mucho más larga. Esto es porque 'americano' en español a veces se refiere a cualquier persona del continente americano, no solo de EE.UU.",
+        "recicla": "Soy de... / Soy estadounidense."
+      },
+      "reciclaje": [
+        "estadounidense",
+        "el continente",
+        "se refiere a"
+      ]
+    },
+    {
+      "id": "lengua-008",
+      "dia": "lengua",
+      "nivel": [
+        "3-6",
+        "MS",
+        "Secondary"
+      ],
+      "titulo": "'Chévere' no se usa en todos lados",
+      "pasos": {
+        "mira": "La palabra 'CHÉVERE'",
+        "escucha": "Esta palabra significa 'genial' o 'cool', pero no todos los países hispanohablantes la usan.",
+        "reacciona": "¿Alguna vez escuchaste esta palabra?",
+        "dato": "'Chévere' se usa mucho en Venezuela, Colombia y el Caribe. En México dirían 'padre' o 'chido', y en España dirían 'guay'. ¡Un mismo sentimiento, muchas palabras distintas!",
+        "recicla": "En mi región decimos..."
+      },
+      "reciclaje": [
+        "genial",
+        "según el país",
+        "decimos"
+      ]
+    },
+    {
+      "id": "lengua-009",
+      "dia": "lengua",
+      "nivel": [
+        "MS",
+        "Secondary"
+      ],
+      "titulo": "'Sensible' no significa lo que crees",
+      "pasos": {
+        "escucha": "En inglés, 'sensible' describe a alguien razonable y práctico.",
+        "reacciona": "¿Qué crees que significa 'sensible' en español?",
+        "dato": "En español, 'sensible' significa que alguien se emociona fácilmente (sensitive). Para decir 'sensible' como en inglés, usamos 'sensato'. ¡Otro falso amigo clásico!",
+        "recicla": "Es una persona sensata. / Es una persona sensible."
+      },
+      "reciclaje": [
+        "sensato",
+        "falso amigo",
+        "se emociona"
+      ]
+    },
+    {
+      "id": "lengua-010",
+      "dia": "lengua",
+      "nivel": [
+        "K-2",
+        "3-6"
+      ],
+      "titulo": "¿Cómo se llama esto para tomar agua?",
+      "pasos": {
+        "mira": "Foto de un popote/pajilla/sorbete/pitillo",
+        "escucha": "Este objeto sirve para tomar bebidas, y tiene muchísimos nombres distintos en español.",
+        "reacciona": "¿Cómo crees que se llama?",
+        "dato": "En México se dice 'popote', en España 'pajita', en Argentina 'sorbete', y en Colombia 'pitillo'. ¡Un objeto tan simple, con tantos nombres!",
+        "recicla": "En mi país se llama..."
+      },
+      "reciclaje": [
+        "se llama",
+        "tantos nombres",
+        "objeto"
+      ]
+    },
+    {
+      "id": "mundo-001",
+      "dia": "mundo",
+      "categoria": "país",
+      "nivel": [
+        "K-2",
+        "3-6",
+        "MS"
+      ],
+      "titulo": "El país más largo y angosto del mundo",
+      "pasos": {
+        "mira": "Mapa de Chile junto a un mapa de otro país de forma más redonda",
+        "escucha": "Este país mide casi 4,300 kilómetros de norte a sur, pero en promedio solo 180 kilómetros de ancho.",
+        "reacciona": "¿Dónde está este país tan largo y angosto?",
+        "dato": "¡Es Chile! Es tan largo que en el norte hay desierto, en el centro hay ciudades y viñedos, y en el sur hay glaciares, todo en el mismo país.",
+        "recicla": "Está en... / Es muy largo/angosto."
+      },
+      "reciclaje": [
+        "está en",
+        "de norte a sur",
+        "tan largo como"
+      ]
+    },
+    {
+      "id": "mundo-002",
+      "dia": "mundo",
+      "categoria": "ciudad",
+      "nivel": [
+        "K-2",
+        "3-6",
+        "MS"
+      ],
+      "titulo": "La ciudad de los colores y las murallas",
+      "pasos": {
+        "mira": "Foto de Cartagena de Indias, Colombia",
+        "escucha": "Esta ciudad en la costa de Colombia tiene edificios pintados de colores brillantes y una muralla que la rodea desde hace siglos.",
+        "reacciona": "¿Te gustaría visitar una ciudad con casas de todos los colores?",
+        "dato": "Cartagena de Indias fue construida con murallas para protegerse de piratas hace más de 400 años. Hoy es Patrimonio de la Humanidad y una de las ciudades más fotografiadas de Latinoamérica.",
+        "recicla": "Me gustaría visitar... / Es de color..."
+      },
+      "reciclaje": [
+        "me gustaría visitar",
+        "de colores",
+        "hace siglos"
+      ]
+    },
+    {
+      "id": "mundo-003",
+      "dia": "mundo",
+      "categoria": "lugar extraordinario",
+      "nivel": [
+        "3-6",
+        "MS",
+        "Secondary"
+      ],
+      "titulo": "Pozos sagrados de agua turquesa",
+      "pasos": {
+        "mira": "Foto de un cenote en Yucatán, México",
+        "escucha": "Estos pozos de agua dulce y transparente están escondidos bajo tierra en la selva de México.",
+        "reacciona": "¿Qué crees que es esto: un pozo, una piscina natural, o un lago escondido?",
+        "dato": "Se llaman cenotes, y para los mayas eran lugares sagrados, una entrada al inframundo. Hoy la gente nada y bucea en sus aguas cristalinas.",
+        "recicla": "Es un lugar sagrado. / Está escondido."
+      },
+      "reciclaje": [
+        "sagrado",
+        "escondido",
+        "agua transparente"
+      ]
+    },
+    {
+      "id": "mundo-004",
+      "dia": "mundo",
+      "categoria": "tradición",
+      "nivel": [
+        "3-6",
+        "MS",
+        "Secondary"
+      ],
+      "titulo": "Una fiesta que termina en fuego",
+      "pasos": {
+        "mira": "Foto de una 'falla' gigante de Valencia, España",
+        "escucha": "En esta fiesta de España, la gente pasa meses construyendo figuras gigantes de cartón y madera.",
+        "reacciona": "¿Te gustaría visitar una fiesta donde queman figuras gigantes al final?",
+        "dato": "Se llaman Las Fallas de Valencia. Después de semanas de trabajo, todas las figuras se queman en una noche gigante de fuegos artificiales cada mes de marzo.",
+        "recicla": "Se celebra en... / Dura..."
+      },
+      "reciclaje": [
+        "se celebra en",
+        "gigante",
+        "al final"
+      ]
+    },
+    {
+      "id": "mundo-005",
+      "dia": "mundo",
+      "categoria": "comida",
+      "nivel": [
+        "K-2",
+        "3-6",
+        "MS"
+      ],
+      "titulo": "La comida que dos países dicen haber inventado",
+      "pasos": {
+        "mira": "Foto de una arepa",
+        "escucha": "Esta comida se hace con masa de maíz y se puede rellenar con casi cualquier cosa.",
+        "reacciona": "¿Se parece a una tortilla, a un pan, o a otra cosa que conoces?",
+        "dato": "Se llama arepa. Tanto Venezuela como Colombia dicen ser el país de origen, ¡y en ambos países la gente la come casi todos los días!",
+        "recicla": "Se parece a... / Se rellena con..."
+      },
+      "reciclaje": [
+        "se parece a",
+        "se rellena con",
+        "casi todos los días"
+      ]
+    },
+    {
+      "id": "mundo-006",
+      "dia": "mundo",
+      "categoria": "animal",
+      "nivel": [
+        "K-2",
+        "3-6",
+        "MS"
+      ],
+      "titulo": "El oso que inspiró a un personaje famoso",
+      "pasos": {
+        "mira": "Foto de un oso de anteojos (oso andino)",
+        "escucha": "Este es el único oso que vive en Sudamérica, en las montañas de los Andes.",
+        "reacciona": "¿Se parece a algún oso de película o de libro que conoces?",
+        "dato": "Se llama oso de anteojos, por las marcas claras alrededor de sus ojos. ¡Inspiró al personaje del oso Paddington, que en los libros viene 'del Perú más oscuro'!",
+        "recicla": "Se parece a... / Vive en..."
+      },
+      "reciclaje": [
+        "se parece a",
+        "vive en",
+        "único"
+      ]
+    },
+    {
+      "id": "mundo-007",
+      "dia": "mundo",
+      "categoria": "festival",
+      "nivel": [
+        "MS",
+        "Secondary"
+      ],
+      "titulo": "La fiesta del sol que casi desaparece",
+      "pasos": {
+        "mira": "Foto del festival Inti Raymi en Cusco, Perú",
+        "escucha": "Este festival celebraba al sol, y era una de las fiestas más importantes del Imperio inca.",
+        "reacciona": "¿Te gustaría visitar una fiesta dedicada al sol?",
+        "dato": "Se llama Inti Raymi. Los españoles lo prohibieron durante la colonia, pero en el siglo XX la gente de Cusco lo revivió, y hoy es uno de los festivales más grandes de Sudamérica.",
+        "recicla": "Se celebra cada... / Fue prohibido/a."
+      },
+      "reciclaje": [
+        "se celebra",
+        "revivió",
+        "importante"
+      ]
+    },
+    {
+      "id": "mundo-008",
+      "dia": "mundo",
+      "categoria": "símbolo nacional",
+      "nivel": [
+        "3-6",
+        "MS",
+        "Secondary"
+      ],
+      "titulo": "El sol que comparten dos banderas",
+      "pasos": {
+        "mira": "Las banderas de Argentina y Uruguay lado a lado",
+        "escucha": "Estas dos banderas tienen algo en común que no es una coincidencia.",
+        "reacciona": "¿Es parecido el símbolo en el centro de las dos banderas?",
+        "dato": "¡Sí! Se llama el Sol de Mayo, y representa al dios sol inca, Inti. Apareció durante la Revolución de Mayo de 1810 y hoy está en las banderas de ambos países.",
+        "recicla": "Es parecido a... / Representa..."
+      },
+      "reciclaje": [
+        "es parecido a",
+        "representa",
+        "en común"
+      ]
+    },
+    {
+      "id": "mundo-009",
+      "dia": "mundo",
+      "categoria": "persona interesante",
+      "nivel": [
+        "K-2",
+        "3-6",
+        "MS",
+        "Secondary"
+      ],
+      "titulo": "La pintora de las cejas unidas y las flores",
+      "pasos": {
+        "mira": "Un autorretrato de Frida Kahlo",
+        "escucha": "Esta pintora mexicana se pintaba a sí misma una y otra vez, siempre con flores en el cabello.",
+        "reacciona": "¿Quién crees que es esta artista tan reconocible?",
+        "dato": "Es Frida Kahlo, una de las pintoras más famosas del mundo. Su casa en Ciudad de México, La Casa Azul, hoy es un museo que millones de personas visitan cada año.",
+        "recicla": "Es famosa por... / Se reconoce por..."
+      },
+      "reciclaje": [
+        "es famosa por",
+        "se reconoce por",
+        "cada año"
+      ]
+    },
+    {
+      "id": "mundo-010",
+      "dia": "mundo",
+      "categoria": "cultura indígena",
+      "nivel": [
+        "MS",
+        "Secondary"
+      ],
+      "titulo": "El pueblo que nunca fue conquistado",
+      "pasos": {
+        "escucha": "Este pueblo indígena vive en el sur de Chile y Argentina, y su nombre significa 'gente de la tierra'.",
+        "reacciona": "¿Dónde crees que vive este pueblo?",
+        "dato": "Son los mapuche. Resistieron durante siglos tanto al Imperio inca como a los colonizadores españoles, y nunca fueron completamente conquistados. Hoy son conocidos también por su hermosa platería tradicional.",
+        "recicla": "Vive en... / Es conocido/a por..."
+      },
+      "reciclaje": [
+        "vive en",
+        "es conocido por",
+        "resistió"
+      ]
+    },
+    {
+      "id": "musical-001",
+      "dia": "musical",
+      "nivel": [
+        "3-6",
+        "MS",
+        "Secondary"
+      ],
+      "titulo": "La cumbia se sigue reinventando",
+      "pasos": {
+        "escucha": "Este ritmo nació en Colombia hace generaciones, pero grupos de hoy lo siguen usando en canciones nuevas.",
+        "reacciona": "¿Cómo te hace sentir esta música? ¿Rápida o lenta?",
+        "dato": "La cumbia nació en la costa de Colombia. Sus pasos cortos vienen de una época en que la gente bailaba con cadenas en los tobillos. Hoy artistas como Los Ángeles Azules la mezclan con voces nuevas y la mantienen viva.",
+        "recicla": "Me hace sentir... / Es un ritmo de..."
+      },
+      "reciclaje": [
+        "me hace sentir",
+        "es de",
+        "el ritmo"
+      ],
+      "video": {
+        "titulo": "Perdonarte, ¿Para Qué?",
+        "artista": "Los Ángeles Azules ft. Emilia",
+        "anio": 2024,
+        "url": "https://www.youtube.com/watch?v=beH6uqy6Xsw"
+      }
+    },
+    {
+      "id": "musical-002",
+      "dia": "musical",
+      "nivel": [
+        "K-2",
+        "3-6",
+        "MS"
+      ],
+      "titulo": "La música que se baila con los pies",
+      "pasos": {
+        "escucha": "En este estilo musical, los pies son casi como un instrumento.",
+        "reacciona": "¿Qué sonido crees que hacen los zapatos?",
+        "dato": "El flamenco nació en el sur de España, en Andalucía. Combina cante, guitarra y 'zapateo': golpear el suelo con los zapatos siguiendo el ritmo. Paco de Lucía es considerado el guitarrista de flamenco más importante de la historia.",
+        "recicla": "Se hace con..."
+      },
+      "reciclaje": [
+        "nació en",
+        "combina",
+        "el ritmo"
+      ],
+      "video": {
+        "titulo": "Actuación de guitarra flamenca (canal oficial)",
+        "artista": "Paco de Lucía",
+        "nota": "Instrumental, sin letra — ideal para el paso MIRA sin preocupación por el contenido de las letras.",
+        "url": "https://www.youtube.com/@pacodelucia1637"
+      }
+    },
+    {
+      "id": "musical-003",
+      "dia": "musical",
+      "nivel": [
+        "K-2",
+        "3-6",
+        "MS",
+        "Secondary"
+      ],
+      "titulo": "Una canción de salsa hecha para toda la familia",
+      "pasos": {
+        "escucha": "Esta canción mezcla salsa auténtica con un mensaje pensado para niños y familias.",
+        "reacciona": "¿Qué instrumentos crees que vas a escuchar?",
+        "dato": "'Actívate' fue creada por 123 Andrés, un dúo ganador del Grammy, junto al superestrella de salsa Gilberto Santa Rosa. La canción y el video se usan en salones de clase de todo el continente.",
+        "recicla": "Me activo cuando..."
+      },
+      "reciclaje": [
+        "me activo",
+        "el ritmo",
+        "todos juntos"
+      ],
+      "video": {
+        "titulo": "Actívate",
+        "artista": "123 Andrés ft. Gilberto Santa Rosa",
+        "anio": 2021,
+        "nota": "Álbum diseñado específicamente para público infantil.",
+        "url": "https://www.youtube.com/watch?v=K-LVITReKnU"
+      }
+    },
+    {
+      "id": "musical-004",
+      "dia": "musical",
+      "nivel": [
+        "K-2",
+        "3-6",
+        "MS"
+      ],
+      "titulo": "La familia que canta mariachi junta",
+      "pasos": {
+        "mira": "Foto de un mariachi con trompetas, violines y guitarrón",
+        "escucha": "El mariachi usa una guitarra gigante ('guitarrón') y una pequeña ('vihuela'), además de trompetas y violines.",
+        "reacciona": "¿Cuál crees que hace el sonido más grave (bajo)?",
+        "dato": "En 2023, Becky G grabó una canción de mariachi junto a Ángela y Leonardo Aguilar, de una familia mexicana famosa por generaciones de música mariachi. ¡La canción fue nominada a un Latin Grammy!",
+        "recicla": "Es grande / Es pequeño."
+      },
+      "reciclaje": [
+        "grande",
+        "pequeño",
+        "el sonido"
+      ],
+      "video": {
+        "titulo": "Por el Contrario",
+        "artista": "Becky G, Ángela Aguilar y Leonardo Aguilar",
+        "anio": 2023,
+        "url": "https://www.youtube.com/watch?v=8c7KOGxeY3w"
+      }
+    },
+    {
+      "id": "musical-005",
+      "dia": "musical",
+      "nivel": [
+        "3-6",
+        "MS",
+        "Secondary"
+      ],
+      "titulo": "Un himno sobre ser tú mismo/a",
+      "pasos": {
+        "escucha": "Esta canción colombiana se hizo viral por un video sobre una niña que no le importa lo que piensen de ella.",
+        "reacciona": "¿Qué crees que significa el título 'Soy Yo'?",
+        "dato": "'Soy Yo' de Bomba Estéreo tiene más de 179 millones de vistas y sigue siendo popular en redes sociales. Su mensaje: ser auténtico/a, sin importar la opinión de los demás.",
+        "recicla": "Soy yo. / Soy auténtico/a."
+      },
+      "reciclaje": [
+        "soy yo",
+        "auténtico",
+        "no me importa"
+      ],
+      "video": {
+        "titulo": "Soy Yo",
+        "artista": "Bomba Estéreo",
+        "anio": 2015,
+        "nota": "Más antigua que las otras, pero sigue teniendo resurgimientos virales constantes; mensaje muy apropiado para el salón de clases.",
+        "url": "https://www.youtube.com/watch?v=bxWxXncl53U"
+      }
+    },
+    {
+      "id": "musical-006",
+      "dia": "musical",
+      "nivel": [
+        "3-6",
+        "MS"
+      ],
+      "titulo": "El instrumento triste de Buenos Aires",
+      "pasos": {
+        "mira": "Foto de un bandoneón",
+        "escucha": "Este instrumento es clave para un baile muy famoso de Argentina y Uruguay.",
+        "reacciona": "¿Cómo crees que suena: alegre o melancólico?",
+        "dato": "El tango nació en la región del Río de la Plata, entre Argentina y Uruguay. El bandoneón, un instrumento parecido al acordeón, le da su sonido melancólico y característico.",
+        "recicla": "Suena... / Es de..."
+      },
+      "reciclaje": [
+        "suena",
+        "característico",
+        "región"
+      ],
+      "video": {
+        "titulo": "Sugerencia de búsqueda",
+        "artista": "Orquesta de tango instrumental",
+        "nota": "El tango tradicional es casi siempre instrumental. Busca en YouTube 'tango instrumental bandoneón' o el canal oficial de una orquesta de tango reconocida — no encontré un enlace específico que pudiera verificar hoy.",
+        "url": null
+      }
+    },
+    {
+      "id": "musical-007",
+      "dia": "musical",
+      "nivel": [
+        "K-2",
+        "3-6",
+        "MS"
+      ],
+      "titulo": "Una boda con bachata y con agua",
+      "pasos": {
+        "mira": "Foto de Aventura, grupo dominicano de bachata",
+        "escucha": "Este ritmo romántico y lento viene de una isla del Caribe.",
+        "reacciona": "¿Rápido o lento? ¿Alegre o romántico?",
+        "dato": "La bachata nació en la República Dominicana. En 2024, la legendaria banda Aventura lanzó 'Brindo Con Agua', una canción sobre celebrar y agradecer la vida.",
+        "recicla": "Es romántico. / Es de..."
+      },
+      "reciclaje": [
+        "romántico",
+        "nació en",
+        "celebrar"
+      ],
+      "video": {
+        "titulo": "Brindo Con Agua",
+        "artista": "Aventura",
+        "anio": 2024,
+        "url": "https://www.youtube.com/watch?v=ExWI-BGswro"
+      }
+    },
+    {
+      "id": "musical-008",
+      "dia": "musical",
+      "nivel": [
+        "K-2",
+        "3-6",
+        "MS",
+        "Secondary"
+      ],
+      "titulo": "Un ritmo que se volvió mundial",
+      "pasos": {
+        "escucha": "Este ritmo dominicano se mezcló con música electrónica y se volvió un éxito global.",
+        "reacciona": "¿Qué crees que pasa cuando se combinan dos estilos de música muy diferentes?",
+        "dato": "'El Merengue' de Marshmello y Manuel Turizo combina el merengue dominicano con música electrónica (EDM). ¡Alcanzó más de 100 millones de vistas en su primer año!",
+        "recicla": "Se combina con... / Es un éxito porque..."
+      },
+      "reciclaje": [
+        "se combina con",
+        "éxito",
+        "mundial"
+      ],
+      "video": {
+        "titulo": "El Merengue",
+        "artista": "Marshmello, Manuel Turizo",
+        "anio": 2023,
+        "url": "https://www.youtube.com/watch?v=25vNYV0qdgA"
+      }
+    },
+    {
+      "id": "musical-009",
+      "dia": "musical",
+      "nivel": [
+        "3-6",
+        "MS",
+        "Secondary"
+      ],
+      "titulo": "El rey del vallenato sigue reinventándose",
+      "pasos": {
+        "mira": "Foto de un acordeón vallenato",
+        "escucha": "Este género colombiano usa el acordeón como protagonista.",
+        "reacciona": "¿Has escuchado un acordeón antes? ¿Cómo suena?",
+        "dato": "Carlos Vives, ganador de 18 premios Latin Grammy, fue nombrado Persona del Año 2024 por la Academia Latina de la Grabación. En 2023 sacó una nueva versión de su clásico 'Los Sabanales' junto al artista urbano Ryan Castro.",
+        "recicla": "Toca el acordeón. / Es un clásico."
+      },
+      "reciclaje": [
+        "el acordeón",
+        "clásico",
+        "nueva versión"
+      ],
+      "video": {
+        "titulo": "Los Sabanales 3.0",
+        "artista": "Carlos Vives, Ryan Castro",
+        "anio": 2023,
+        "nota": "Colaboración con un artista urbano; recomendable previsualizar antes de usar con los grupos más pequeños.",
+        "url": "https://www.youtube.com/watch?v=e-BNcEarr34"
+      }
+    },
+    {
+      "id": "musical-010",
+      "dia": "musical",
+      "nivel": [
+        "MS",
+        "Secondary"
+      ],
+      "titulo": "Un instrumento con una historia complicada",
+      "pasos": {
+        "mira": "Foto de un charango",
+        "escucha": "Este pequeño instrumento de cuerdas es típico de los Andes.",
+        "reacciona": "¿De qué material crees que se hacía tradicionalmente?",
+        "dato": "El charango tradicionalmente se hacía con el caparazón de un armadillo (quirquincho). Hoy en día, la mayoría se hacen de madera para proteger a estos animales.",
+        "recicla": "Se hacía de... / Hoy se hace de..."
+      },
+      "reciclaje": [
+        "tradicionalmente",
+        "hoy en día",
+        "proteger"
+      ],
+      "video": {
+        "titulo": "Sugerencia de búsqueda",
+        "artista": "Música andina con charango",
+        "nota": "Busca en YouTube el canal oficial de un grupo de música andina reconocido — no encontré un enlace específico verificado hoy para este instrumento.",
+        "url": null
+      }
+    },
+    {
+      "id": "humor-001",
+      "dia": "humor",
+      "nivel": [
+        "K-2",
+        "3-6"
+      ],
+      "titulo": "Adivinanza: verde por fuera",
+      "pasos": {
+        "mira": "Ilustración de un aguacate",
+        "reacciona": "Verde por fuera, verde por dentro, con un hueso enorme en el centro. ¿Qué es?",
+        "dato": "¡Es el aguacate! En algunos países también se llama 'palta'.",
+        "recicla": "Es verde. / Tiene un hueso."
+      },
+      "reciclaje": [
+        "verde",
+        "por fuera / por dentro",
+        "también se llama"
+      ]
+    },
+    {
+      "id": "humor-002",
+      "dia": "humor",
+      "nivel": [
+        "K-2",
+        "3-6"
+      ],
+      "titulo": "Adivinanza: oro parece",
+      "pasos": {
+        "reacciona": "Oro parece, plata no es. ¿Qué es?",
+        "dato": "¡Es el plátano! (banana). Es una adivinanza clásica que se dice en muchos países hispanohablantes.",
+        "recicla": "Parece... pero no es."
+      },
+      "reciclaje": [
+        "parece",
+        "adivinanza",
+        "clásica"
+      ]
+    },
+    {
+      "id": "humor-003",
+      "dia": "humor",
+      "nivel": [
+        "3-6",
+        "MS"
+      ],
+      "titulo": "Verdadero o falso: el pulpo",
+      "pasos": {
+        "reacciona": "Verdadero o falso: el pulpo tiene tres corazones.",
+        "dato": "¡Verdadero! El pulpo tiene tres corazones: dos bombean sangre a las branquias y uno al resto del cuerpo. Cuando nada rápido, ¡el corazón principal deja de latir por un momento!",
+        "recicla": "Es verdad que... / Es falso que..."
+      },
+      "reciclaje": [
+        "verdadero",
+        "falso",
+        "es verdad que"
+      ]
+    },
+    {
+      "id": "humor-004",
+      "dia": "humor",
+      "nivel": [
+        "K-2",
+        "3-6"
+      ],
+      "titulo": "Adivinanza: blanca por dentro",
+      "pasos": {
+        "reacciona": "Blanca por dentro, verde por fuera. Si quieres que te lo diga, espera... ¿Qué es?",
+        "dato": "¡Es la pera! Una fruta con una adivinanza muy popular en el mundo hispano.",
+        "recicla": "Por dentro es... / Por fuera es..."
+      },
+      "reciclaje": [
+        "por dentro",
+        "por fuera",
+        "popular"
+      ]
+    },
+    {
+      "id": "humor-005",
+      "dia": "humor",
+      "nivel": [
+        "MS",
+        "Secondary"
+      ],
+      "titulo": "Un error muy común (y muy gracioso)",
+      "pasos": {
+        "escucha": "Cuando hace calor, muchos estudiantes de español cometen el mismo error sin saberlo.",
+        "reacciona": "¿Qué crees que pasa si dices 'Estoy caliente' para decir que tienes calor?",
+        "dato": "¡Cuidado! 'Estoy caliente' no significa lo que crees. La forma correcta es 'Tengo calor'. Es uno de los errores más comunes (y más graciosos) entre estudiantes de español.",
+        "recicla": "Tengo calor. / Tengo frío."
+      },
+      "reciclaje": [
+        "tengo calor",
+        "error común",
+        "la forma correcta"
+      ]
+    },
+    {
+      "id": "humor-006",
+      "dia": "humor",
+      "nivel": [
+        "3-6",
+        "MS",
+        "Secondary"
+      ],
+      "titulo": "Trabalenguas de velocidad",
+      "pasos": {
+        "reacciona": "Repite esto tres veces, lo más rápido que puedas: 'Tres tristes tigres tragaban trigo en un trigal.'",
+        "dato": "¡Es un trabalenguas clásico! Se usa en muchos países hispanohablantes para practicar la pronunciación de la letra 'r' y 't'.",
+        "recicla": "Practico mi pronunciación."
+      },
+      "reciclaje": [
+        "trabalenguas",
+        "pronunciación",
+        "rápido"
+      ]
+    },
+    {
+      "id": "humor-007",
+      "dia": "humor",
+      "nivel": [
+        "K-2",
+        "3-6"
+      ],
+      "titulo": "¿Qué animal dice 'guau'?",
+      "pasos": {
+        "reacciona": "En español, ¿cómo crees que 'habla' un perro? ¿Y un gato?",
+        "dato": "¡Los animales 'hablan' distinto según el idioma! En español el perro dice 'guau guau' y el gato dice 'miau'. En inglés son 'woof' y 'meow'. ¡El sonido real es el mismo, pero lo escribimos diferente!",
+        "recicla": "El perro dice... / El gato dice..."
+      },
+      "reciclaje": [
+        "dice",
+        "según el idioma",
+        "distinto"
+      ]
+    },
+    {
+      "id": "humor-008",
+      "dia": "humor",
+      "nivel": [
+        "MS",
+        "Secondary"
+      ],
+      "titulo": "Verdadero o falso: la eñe",
+      "pasos": {
+        "reacciona": "Verdadero o falso: la letra 'ñ' no existe en ningún otro idioma del mundo.",
+        "dato": "¡Falso! Aunque es muy característica del español, la 'ñ' también existe en gallego, asturiano y algunas lenguas de Filipinas y África, entre otras. Pero sí es exclusiva del alfabeto latino usado en pocos idiomas.",
+        "recicla": "Es característico de... / También existe en..."
+      },
+      "reciclaje": [
+        "característico",
+        "también existe en",
+        "exclusiva"
+      ]
+    },
+    {
+      "id": "humor-009",
+      "dia": "humor",
+      "nivel": [
+        "K-2",
+        "3-6"
+      ],
+      "titulo": "Adivinanza: redondo como un plato",
+      "pasos": {
+        "reacciona": "Redondo como un plato, dulce como la miel; nunca lo he probado, jamás lo probaré. ¿Qué es?",
+        "dato": "¡Es la luna! Es una adivinanza tradicional muy conocida en el mundo hispano, ¡porque nadie puede probar la luna!",
+        "recicla": "Redondo como... / Nunca..."
+      },
+      "reciclaje": [
+        "redondo",
+        "tradicional",
+        "nunca"
+      ]
+    },
+    {
+      "id": "humor-010",
+      "dia": "humor",
+      "nivel": [
+        "3-6",
+        "MS"
+      ],
+      "titulo": "Verdadero o falso: las jirafas",
+      "pasos": {
+        "reacciona": "Verdadero o falso: las jirafas duermen solo 2 horas al día.",
+        "dato": "¡Verdadero! Las jirafas son de los animales que menos duermen, a veces solo 30 minutos en total, en pequeñas siestas de pie.",
+        "recicla": "Duerme... / Es sorprendente que..."
+      },
+      "reciclaje": [
+        "duerme",
+        "sorprendente",
+        "verdadero"
+      ]
+    },
+    {
+      "id": "voz-001",
+      "dia": "voz",
+      "nivel": [
+        "K-2",
+        "3-6"
+      ],
+      "titulo": "Enséñame algo",
+      "coleccion": "show_and_tell",
+      "pasos": {
+        "reacciona": "Hoy alguien nos va a enseñar algo especial.",
+        "dato": "Usa estas frases para compartir tu objeto: 'Esto es...' 'Es de color...' 'Me gusta porque...' 'Lo tengo desde...' 'Es especial porque...'",
+        "recicla": "Esto es... / Me gusta porque..."
+      },
+      "reciclaje": [
+        "esto es",
+        "me gusta porque",
+        "es especial porque"
+      ]
+    },
+    {
+      "id": "voz-002",
+      "dia": "voz",
+      "nivel": [
+        "K-2",
+        "3-6",
+        "MS"
+      ],
+      "titulo": "Mi comida favorita",
+      "pasos": {
+        "reacciona": "¿Cuál es tu comida favorita? ¿De qué color es? ¿Con quién la comes?",
+        "dato": "Usa: 'Mi comida favorita es...' 'Es de color...' 'La como con...'",
+        "recicla": "Mi comida favorita es..."
+      },
+      "reciclaje": [
+        "mi comida favorita",
+        "es de color",
+        "la como con"
+      ]
+    },
+    {
+      "id": "voz-003",
+      "dia": "voz",
+      "nivel": [
+        "3-6",
+        "MS",
+        "Secondary"
+      ],
+      "titulo": "Un lugar especial para mí",
+      "pasos": {
+        "reacciona": "Piensa en un lugar especial para ti. ¿Dónde está? ¿Por qué es especial?",
+        "dato": "Usa: 'Un lugar especial para mí es...' 'Está en...' 'Es especial porque...'",
+        "recicla": "Un lugar especial para mí es..."
+      },
+      "reciclaje": [
+        "un lugar especial",
+        "está en",
+        "es especial porque"
+      ]
+    },
+    {
+      "id": "voz-004",
+      "dia": "voz",
+      "nivel": [
+        "K-2",
+        "3-6"
+      ],
+      "titulo": "Algo que hice el fin de semana",
+      "pasos": {
+        "reacciona": "¿Qué hiciste el fin de semana? Comparte con un compañero.",
+        "dato": "Usa: 'El fin de semana yo...' 'Fue divertido porque...'",
+        "recicla": "El fin de semana yo..."
+      },
+      "reciclaje": [
+        "el fin de semana",
+        "fue divertido porque"
+      ]
+    },
+    {
+      "id": "voz-005",
+      "dia": "voz",
+      "nivel": [
+        "K-2",
+        "3-6",
+        "MS"
+      ],
+      "titulo": "Mi animal favorito",
+      "pasos": {
+        "reacciona": "¿Cuál es tu animal favorito? ¿Cómo es?",
+        "dato": "Usa: 'Mi animal favorito es...' 'Es de color...' 'Me gusta porque...'",
+        "recicla": "Mi animal favorito es..."
+      },
+      "reciclaje": [
+        "mi animal favorito",
+        "me gusta porque"
+      ]
+    },
+    {
+      "id": "voz-006",
+      "dia": "voz",
+      "nivel": [
+        "3-6",
+        "MS",
+        "Secondary"
+      ],
+      "titulo": "Una persona importante en mi vida",
+      "pasos": {
+        "reacciona": "Piensa en una persona importante para ti. ¿Quién es? ¿Por qué es importante?",
+        "dato": "Usa: 'Una persona importante para mí es...' 'Es importante porque...'",
+        "recicla": "Una persona importante para mí es..."
+      },
+      "reciclaje": [
+        "una persona importante",
+        "es importante porque"
+      ]
+    },
+    {
+      "id": "voz-007",
+      "dia": "voz",
+      "nivel": [
+        "MS",
+        "Secondary"
+      ],
+      "titulo": "Algo que aprendí esta semana",
+      "pasos": {
+        "reacciona": "Piensa en algo nuevo que aprendiste esta semana, en cualquier clase.",
+        "dato": "Usa: 'Esta semana aprendí...' 'Me sorprendió porque...'",
+        "recicla": "Esta semana aprendí..."
+      },
+      "reciclaje": [
+        "esta semana aprendí",
+        "me sorprendió"
+      ]
+    },
+    {
+      "id": "voz-008",
+      "dia": "voz",
+      "nivel": [
+        "3-6",
+        "MS",
+        "Secondary"
+      ],
+      "titulo": "Si pudiera viajar a cualquier lugar...",
+      "pasos": {
+        "reacciona": "Si pudieras viajar a cualquier lugar del mundo, ¿a dónde irías?",
+        "dato": "Usa: 'Si pudiera viajar, iría a...' 'Porque quiero...'",
+        "recicla": "Si pudiera viajar, iría a..."
+      },
+      "reciclaje": [
+        "si pudiera viajar",
+        "iría a",
+        "porque quiero"
+      ]
+    },
+    {
+      "id": "voz-009",
+      "dia": "voz",
+      "nivel": [
+        "K-2",
+        "3-6",
+        "MS"
+      ],
+      "titulo": "Mi superpoder sería...",
+      "pasos": {
+        "reacciona": "Si pudieras tener un superpoder, ¿cuál sería y por qué?",
+        "dato": "Usa: 'Mi superpoder sería...' 'Lo usaría para...'",
+        "recicla": "Mi superpoder sería..."
+      },
+      "reciclaje": [
+        "mi superpoder",
+        "lo usaría para"
+      ]
+    },
+    {
+      "id": "voz-010",
+      "dia": "voz",
+      "nivel": [
+        "3-6",
+        "MS",
+        "Secondary"
+      ],
+      "titulo": "Algo que me hace sentir orgulloso/a",
+      "pasos": {
+        "reacciona": "Piensa en algo que hiciste que te hizo sentir orgulloso/a de ti mismo/a.",
+        "dato": "Usa: 'Me siento orgulloso/a cuando...' 'Logré...'",
+        "recicla": "Me siento orgulloso/a cuando..."
+      },
+      "reciclaje": [
+        "me siento orgulloso",
+        "logré"
+      ]
+    }
+  ]
+}
