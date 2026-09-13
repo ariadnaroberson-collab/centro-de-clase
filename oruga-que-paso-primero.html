@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¿Qué pasó primero?</title>
+<style>
+  :root{
+    --verde:#4a8f3c;
+    --verde-osc:#2e6b24;
+    --rojo:#d9432e;
+    --amarillo:#f4b942;
+    --azul:#2f6690;
+    --crema:#fdf6e8;
+    --texto:#2b2b2b;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Comic Sans MS', 'Trebuchet MS', 'Segoe UI', sans-serif;
+    background: linear-gradient(180deg,#eaf5e6 0%, #fdf6e8 100%);
+    color:var(--texto);
+    min-height:100vh;
+    padding:16px;
+  }
+  header{ text-align:center; margin-bottom:10px; }
+  h1{
+    font-size:clamp(22px, 5vw, 32px);
+    color:var(--verde-osc);
+    margin:6px 0;
+  }
+  .sub{
+    font-size:clamp(14px, 3vw, 18px);
+    color:var(--azul);
+    margin-bottom:10px;
+    max-width:600px;
+    margin-left:auto;
+    margin-right:auto;
+  }
+  .cards{
+    display:flex;
+    flex-wrap:wrap;
+    gap:16px;
+    justify-content:center;
+    max-width:900px;
+    margin:0 auto;
+  }
+  .card{
+    position:relative;
+    border:3px solid var(--verde);
+    background:#fff;
+    border-radius:18px;
+    padding:16px 12px 14px 12px;
+    width:180px;
+    min-height:150px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    cursor:pointer;
+    transition:transform .12s ease, background .2s ease, border-color .2s ease;
+    user-select:none;
+  }
+  .card:active{ transform:scale(0.97); }
+  .card .emoji{ font-size:34px; margin-bottom:8px; }
+  .card .texto{ font-size:15px; font-weight:bold; }
+  .badge{
+    position:absolute;
+    top:-14px;
+    left:-14px;
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    background:var(--amarillo);
+    color:#fff;
+    font-weight:bold;
+    font-size:18px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:3px solid #fff;
+    box-shadow:0 2px 5px rgba(0,0,0,0.2);
+  }
+  .card.correct{ border-color:var(--verde-osc); background:#e3f4df; }
+  .card.wrong{ border-color:var(--rojo); background:#fbe4e0; }
+  .buttons{
+    text-align:center;
+    margin-top:24px;
+  }
+  button{
+    font-size:16px;
+    font-weight:bold;
+    border:none;
+    border-radius:20px;
+    padding:10px 22px;
+    cursor:pointer;
+    margin:4px;
+  }
+  .btn-check{ background:var(--verde-osc); color:#fff; }
+  .btn-reset{ background:var(--azul); color:#fff; }
+  .feedback{
+    text-align:center;
+    min-height:32px;
+    font-size:18px;
+    font-weight:bold;
+    margin-top:16px;
+    color:var(--azul);
+  }
+  .celebration{
+    display:none;
+    text-align:center;
+    margin-top:16px;
+  }
+  .celebration.show{ display:block; }
+  .celebration .butterfly{
+    font-size:70px;
+    animation: fly 1.6s ease-in-out infinite;
+  }
+  @keyframes fly{
+    0%,100%{transform:translateY(0) rotate(0deg);}
+    50%{transform:translateY(-16px) rotate(6deg);}
+  }
+  .celebration p{ font-size:20px; color:var(--verde-osc); font-weight:bold; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🐛 ¿Qué pasó primero? 🐛</h1>
+  <div class="sub">Toca las tarjetas en el orden correcto de la historia: primero, segundo, tercero...</div>
+</header>
+
+<div class="cards" id="cards"></div>
+
+<div class="buttons">
+  <button class="btn-check" onclick="checkOrder()">✔️ Revisar</button>
+  <button class="btn-reset" onclick="resetGame()">🔄 Empezar de nuevo</button>
+</div>
+
+<div class="feedback" id="feedback"></div>
+
+<div class="celebration" id="celebration">
+  <div class="butterfly">🦋</div>
+  <p>¡Perfecto! Organizaste bien la historia.</p>
+</div>
+
+<script>
+const eventos = [
+  {id:1, emoji:"🌙🥚", texto:"Bajo la luna, un huevo duerme en una hoja."},
+  {id:2, emoji:"☀️🐛", texto:"¡Pop! Sale una oruga pequeña y hambrienta."},
+  {id:3, emoji:"🍎🍊🍓", texto:"La oruga come mucha comida toda la semana."},
+  {id:4, emoji:"🏠🐛", texto:"La oruga construye un capullo."},
+  {id:5, emoji:"🦋", texto:"Sale una mariposa hermosa."}
+];
+
+let orden = []; // array of chosen ids in click order
+let locked = false;
+
+function shuffle(arr){
+  const a = [...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function buildBoard(){
+  orden = [];
+  locked = false;
+  const cont = document.getElementById('cards');
+  cont.innerHTML = "";
+  const shuffled = shuffle(eventos);
+  shuffled.forEach(ev=>{
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.dataset.id = ev.id;
+    card.innerHTML = `<div class="emoji">${ev.emoji}</div><div class="texto">${ev.texto}</div>`;
+    card.onclick = () => selectCard(card, ev.id);
+    cont.appendChild(card);
+  });
+  document.getElementById('feedback').textContent = "";
+  document.getElementById('celebration').classList.remove('show');
+}
+
+function selectCard(card, id){
+  if(locked) return;
+  if(orden.includes(id)) return; // already picked
+  orden.push(id);
+  const badge = document.createElement('div');
+  badge.className = 'badge';
+  badge.textContent = orden.length;
+  card.appendChild(badge);
+}
+
+function checkOrder(){
+  const feedback = document.getElementById('feedback');
+  if(orden.length < eventos.length){
+    feedback.style.color = "#d9432e";
+    feedback.textContent = "Toca todas las tarjetas en orden antes de revisar.";
+    return;
+  }
+  locked = true;
+  const correctOrder = eventos.map(e=>e.id);
+  let allCorrect = true;
+  document.querySelectorAll('.card').forEach(card=>{
+    const id = parseInt(card.dataset.id);
+    const posElegida = orden.indexOf(id);
+    const posCorrecta = correctOrder.indexOf(id);
+    if(posElegida === posCorrecta){
+      card.classList.add('correct');
+    } else {
+      card.classList.add('wrong');
+      allCorrect = false;
+    }
+  });
+  if(allCorrect){
+    feedback.textContent = "";
+    document.getElementById('celebration').classList.add('show');
+  } else {
+    feedback.style.color = "#d9432e";
+    feedback.textContent = "Casi. Mira las tarjetas rojas e inténtalo de nuevo.";
+  }
+}
+
+function resetGame(){
+  buildBoard();
+}
+
+buildBoard();
+</script>
+
+</body>
+</html>

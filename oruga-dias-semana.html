@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¿Qué comió la oruga?</title>
+<style>
+  :root{
+    --verde:#4a8f3c;
+    --verde-osc:#2e6b24;
+    --rojo:#d9432e;
+    --amarillo:#f4b942;
+    --azul:#2f6690;
+    --crema:#fdf6e8;
+    --texto:#2b2b2b;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Comic Sans MS', 'Trebuchet MS', 'Segoe UI', sans-serif;
+    background: linear-gradient(180deg,#eaf5e6 0%, #fdf6e8 100%);
+    color:var(--texto);
+    min-height:100vh;
+    padding:16px;
+  }
+  header{
+    text-align:center;
+    margin-bottom:10px;
+  }
+  h1{
+    font-size:clamp(22px, 5vw, 34px);
+    color:var(--verde-osc);
+    margin:6px 0;
+  }
+  .sub{
+    font-size:clamp(14px, 3vw, 18px);
+    color:var(--azul);
+    margin-bottom:6px;
+  }
+  .progress-wrap{
+    max-width:500px;
+    margin:0 auto 18px auto;
+    background:#fff;
+    border:3px solid var(--verde);
+    border-radius:20px;
+    padding:6px 14px;
+    text-align:center;
+    font-weight:bold;
+    font-size:16px;
+    color:var(--verde-osc);
+  }
+  .board{
+    display:flex;
+    gap:24px;
+    justify-content:center;
+    flex-wrap:wrap;
+    max-width:900px;
+    margin:0 auto;
+  }
+  .col{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    min-width:160px;
+  }
+  .col-title{
+    text-align:center;
+    font-weight:bold;
+    color:#fff;
+    background:var(--azul);
+    border-radius:14px;
+    padding:6px;
+    margin-bottom:4px;
+    font-size:16px;
+  }
+  .card{
+    border:3px solid var(--verde);
+    background:#fff;
+    border-radius:16px;
+    padding:10px 8px;
+    min-width:150px;
+    min-height:64px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    font-size:18px;
+    font-weight:bold;
+    text-align:center;
+    transition:transform .12s ease, background .2s ease, border-color .2s ease;
+    user-select:none;
+  }
+  .card:active{transform:scale(0.96);}
+  .card .emoji{font-size:28px; line-height:1;}
+  .card .label{font-size:13px; font-weight:normal; margin-top:4px; color:#555;}
+  .card.selected{
+    border-color:var(--amarillo);
+    background:#fff8e1;
+    box-shadow:0 0 0 4px rgba(244,185,66,0.4);
+  }
+  .card.correct{
+    border-color:var(--verde-osc);
+    background:#e3f4df;
+    color:var(--verde-osc);
+    cursor:default;
+    pointer-events:none;
+  }
+  .card.wrong{
+    border-color:var(--rojo);
+    background:#fbe4e0;
+    animation: shake .35s;
+  }
+  @keyframes shake{
+    0%,100%{transform:translateX(0);}
+    25%{transform:translateX(-6px);}
+    75%{transform:translateX(6px);}
+  }
+  .feedback{
+    text-align:center;
+    min-height:30px;
+    font-size:18px;
+    font-weight:bold;
+    margin-top:16px;
+    color:var(--azul);
+  }
+  .controls{
+    text-align:center;
+    margin-top:18px;
+  }
+  button.reset{
+    background:var(--azul);
+    color:#fff;
+    border:none;
+    border-radius:20px;
+    padding:10px 22px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+  }
+  .celebration{
+    display:none;
+    text-align:center;
+    margin-top:20px;
+  }
+  .celebration.show{
+    display:block;
+  }
+  .celebration .butterfly{
+    font-size:70px;
+    animation: fly 1.6s ease-in-out infinite;
+  }
+  @keyframes fly{
+    0%,100%{transform:translateY(0) rotate(0deg);}
+    50%{transform:translateY(-16px) rotate(6deg);}
+  }
+  .celebration p{
+    font-size:20px;
+    color:var(--verde-osc);
+    font-weight:bold;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🐛 ¿Qué comió la oruga? 🐛</h1>
+  <div class="sub">Toca un día. Luego toca lo que comió ese día.</div>
+</header>
+
+<div class="progress-wrap">Correctos: <span id="score">0</span> / 7</div>
+
+<div class="board">
+  <div class="col" id="col-dias">
+    <div class="col-title">Los días</div>
+  </div>
+  <div class="col" id="col-comida">
+    <div class="col-title">La comida</div>
+  </div>
+</div>
+
+<div class="feedback" id="feedback"></div>
+
+<div class="controls">
+  <button class="reset" onclick="resetGame()">🔄 Jugar de nuevo</button>
+</div>
+
+<div class="celebration" id="celebration">
+  <div class="butterfly">🦋</div>
+  <p>¡Excelente! Ya conoces los días de la semana.</p>
+</div>
+
+<script>
+const pares = [
+  {dia:"lunes",    emoji:"🍎",             label:"una manzana"},
+  {dia:"martes",   emoji:"🍐🍐",           label:"dos peras"},
+  {dia:"miércoles",emoji:"🍇🍇🍇",         label:"tres ciruelas"},
+  {dia:"jueves",   emoji:"🍓🍓🍓🍓",       label:"cuatro fresas"},
+  {dia:"viernes",  emoji:"🍊🍊🍊🍊🍊",     label:"cinco naranjas"},
+  {dia:"sábado",   emoji:"🍰🍦🥒🧀🌭",     label:"¡mucha comida! le duele el estómago"},
+  {dia:"domingo",  emoji:"🍃",             label:"una hoja verde"}
+];
+
+let selectedDia = null;
+let selectedComida = null;
+let correctCount = 0;
+
+function shuffle(arr){
+  const a = [...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function buildBoard(){
+  const colDias = document.getElementById('col-dias');
+  const colComida = document.getElementById('col-comida');
+  colDias.querySelectorAll('.card').forEach(c=>c.remove());
+  colComida.querySelectorAll('.card').forEach(c=>c.remove());
+
+  pares.forEach(p=>{
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.dataset.dia = p.dia;
+    card.innerHTML = `<div>${p.dia.charAt(0).toUpperCase()+p.dia.slice(1)}</div>`;
+    card.onclick = () => selectDia(card, p.dia);
+    colDias.appendChild(card);
+  });
+
+  const comidaShuffled = shuffle(pares);
+  comidaShuffled.forEach(p=>{
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.dataset.dia = p.dia;
+    card.innerHTML = `<div class="emoji">${p.emoji}</div><div class="label">${p.label}</div>`;
+    card.onclick = () => selectComida(card, p.dia);
+    colComida.appendChild(card);
+  });
+}
+
+function selectDia(card, dia){
+  if(card.classList.contains('correct')) return;
+  document.querySelectorAll('#col-dias .card').forEach(c=>c.classList.remove('selected'));
+  card.classList.add('selected');
+  selectedDia = {card, dia};
+  checkMatch();
+}
+
+function selectComida(card, dia){
+  if(card.classList.contains('correct')) return;
+  document.querySelectorAll('#col-comida .card').forEach(c=>c.classList.remove('selected'));
+  card.classList.add('selected');
+  selectedComida = {card, dia};
+  checkMatch();
+}
+
+function checkMatch(){
+  if(!selectedDia || !selectedComida) return;
+  const feedback = document.getElementById('feedback');
+  if(selectedDia.dia === selectedComida.dia){
+    selectedDia.card.classList.remove('selected');
+    selectedComida.card.classList.remove('selected');
+    selectedDia.card.classList.add('correct');
+    selectedComida.card.classList.add('correct');
+    feedback.textContent = "¡Sí! 🎉";
+    feedback.style.color = "#2e6b24";
+    correctCount++;
+    document.getElementById('score').textContent = correctCount;
+    selectedDia = null;
+    selectedComida = null;
+    if(correctCount === pares.length){
+      setTimeout(()=>{
+        document.getElementById('celebration').classList.add('show');
+        feedback.textContent = "";
+      }, 500);
+    }
+  } else {
+    selectedDia.card.classList.add('wrong');
+    selectedComida.card.classList.add('wrong');
+    feedback.textContent = "Inténtalo otra vez.";
+    feedback.style.color = "#d9432e";
+    const d = selectedDia.card, c = selectedComida.card;
+    setTimeout(()=>{
+      d.classList.remove('selected','wrong');
+      c.classList.remove('selected','wrong');
+      feedback.textContent = "";
+    }, 700);
+    selectedDia = null;
+    selectedComida = null;
+  }
+}
+
+function resetGame(){
+  correctCount = 0;
+  selectedDia = null;
+  selectedComida = null;
+  document.getElementById('score').textContent = 0;
+  document.getElementById('feedback').textContent = "";
+  document.getElementById('celebration').classList.remove('show');
+  buildBoard();
+}
+
+buildBoard();
+</script>
+
+</body>
+</html>
