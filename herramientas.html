@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herramientas de Clase</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Nunito:wght@400;600;700;800&family=Schoolbell&display=swap');
+
+  :root {
+    --bg: #2c4a3e;
+    --bg-dark: #1a2e25;
+    --card: #f7f4ef;
+    --card-2: #ece6da;
+    --chalk: #e8e4d9;
+    --gold: #f5c842;
+    --red: #e84545;
+    --blue: #4a90d9;
+    --green: #7fae6f;
+    --text-dark: #2c2c2c;
+    --text-mid: #5a5a5a;
+    --dash: rgba(255,255,255,0.25);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg-dark);
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(255,255,255,0.025), transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(255,255,255,0.02), transparent 45%);
+    color: var(--chalk);
+    min-height: 100vh;
+  }
+  button, select, input, textarea { font-family: inherit; font-size: inherit; }
+  button { cursor: pointer; }
+
+  /* ---------- TOP BAR ---------- */
+  .topbar {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    padding: 12px 18px; border-bottom: 2px dashed var(--dash);
+    position: sticky; top: 0; z-index: 30; background: var(--bg-dark);
+  }
+  .home-link {
+    color: var(--chalk); text-decoration: none; font-family: 'Schoolbell', cursive;
+    border: 1.5px dashed rgba(232,228,217,0.4); padding: 6px 12px; border-radius: 14px; font-size: 0.95rem;
+  }
+  .home-link:hover { border-color: var(--gold); color: var(--gold); }
+  .brand { font-family: 'Caveat', cursive; font-size: 2.1rem; font-weight: 700; line-height: 1; }
+  .brand small { font-family: 'Schoolbell', cursive; font-size: 0.8rem; color: var(--gold); letter-spacing: 2px; display: block; }
+  .spacer { flex: 1; }
+  .class-pick { display: flex; align-items: center; gap: 8px; font-family: 'Schoolbell', cursive; }
+  .class-pick select {
+    background: var(--gold); color: var(--bg-dark); border: none; border-radius: 14px;
+    padding: 8px 14px; font-weight: 800; font-family: 'Nunito', sans-serif; font-size: 1rem;
+  }
+  .tb-btn {
+    background: transparent; color: var(--chalk); border: 1.5px solid rgba(232,228,217,0.45);
+    border-radius: 14px; padding: 7px 13px; font-weight: 700; font-size: 0.92rem;
+  }
+  .tb-btn:hover { border-color: var(--gold); color: var(--gold); }
+  #timerPill {
+    display: none; background: var(--red); color: #fff; border: none; border-radius: 14px;
+    padding: 7px 13px; font-weight: 800; font-variant-numeric: tabular-nums;
+  }
+
+  /* ---------- LAYOUT ---------- */
+  .layout { display: grid; grid-template-columns: 250px 1fr; min-height: calc(100vh - 66px); }
+  nav.side { border-right: 2px dashed var(--dash); padding: 16px 12px 30px; overflow-y: auto; max-height: calc(100vh - 66px); position: sticky; top: 66px; }
+  .sec-title {
+    font-family: 'Schoolbell', cursive; color: var(--gold); font-size: 0.85rem; letter-spacing: 2px;
+    text-transform: uppercase; margin: 16px 8px 6px;
+  }
+  .sec-title:first-child { margin-top: 0; }
+  .nav-btn {
+    display: flex; align-items: center; gap: 9px; width: 100%; text-align: left;
+    background: transparent; border: none; color: var(--chalk); padding: 7px 10px; border-radius: 10px;
+    font-size: 0.95rem; font-weight: 700; line-height: 1.15;
+  }
+  .nav-btn .ic { font-size: 1.2rem; width: 26px; text-align: center; flex-shrink: 0; }
+  .nav-btn .en { display: block; font-weight: 400; font-size: 0.72rem; opacity: 0.55; }
+  .nav-btn:hover { background: rgba(255,255,255,0.07); }
+  .nav-btn.on { background: var(--card); color: var(--bg-dark); }
+  .nav-btn.on .en { opacity: 0.7; }
+  .backup { margin: 22px 8px 0; display: flex; flex-direction: column; gap: 6px; }
+  .backup p { font-size: 0.72rem; opacity: 0.55; line-height: 1.35; }
+
+  main { padding: 22px 26px 50px; min-width: 0; }
+  .panel {
+    background: var(--card); color: var(--text-dark); border-radius: 18px; padding: 24px 28px 30px;
+    box-shadow: 0 6px 0 rgba(0,0,0,0.22), 0 12px 22px rgba(0,0,0,0.22); min-height: 70vh;
+  }
+  .p-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 4px; }
+  .p-head h2 { font-family: 'Caveat', cursive; font-size: 2.6rem; color: var(--bg); line-height: 1; }
+  .p-head .cls { font-family: 'Schoolbell', cursive; background: var(--bg); color: var(--chalk); border-radius: 12px; padding: 3px 12px; font-size: 0.9rem; }
+  .hint { color: var(--text-mid); font-size: 0.92rem; margin-bottom: 18px; }
+
+  @media (max-width: 820px) {
+    .layout { grid-template-columns: 1fr; }
+    nav.side { position: static; max-height: none; border-right: none; border-bottom: 2px dashed var(--dash);
+      display: flex; overflow-x: auto; gap: 4px; padding: 10px; }
+    .sec-title, .backup { display: none; }
+    .nav-btn { width: auto; white-space: nowrap; }
+    .nav-btn .en { display: none; }
+    main { padding: 16px; }
+    .panel { padding: 18px 16px 24px; }
+  }
+
+  /* ---------- SHARED UI ---------- */
+  .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .row + .row { margin-top: 10px; }
+  .center { text-align: center; }
+  .btn {
+    background: var(--bg); color: var(--chalk); border: none; border-radius: 14px; padding: 10px 18px;
+    font-weight: 800; font-size: 1rem; box-shadow: 0 4px 0 rgba(0,0,0,0.25); transition: transform .08s;
+  }
+  .btn:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(0,0,0,0.25); }
+  .btn.gold { background: var(--gold); color: var(--bg-dark); }
+  .btn.red { background: var(--red); color: #fff; }
+  .btn.ghost { background: transparent; color: var(--bg); border: 2px solid var(--bg); box-shadow: none; }
+  .btn.sm { padding: 6px 11px; font-size: 0.88rem; border-radius: 10px; }
+  .btn.xl { font-size: 1.35rem; padding: 14px 30px; border-radius: 18px; }
+  .btn:disabled { opacity: 0.45; cursor: default; }
+  .field { border: 2px solid #d8d0c0; border-radius: 10px; padding: 7px 10px; background: #fff; color: var(--text-dark); }
+  label.chk { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: var(--text-mid); }
+  textarea.field { width: 100%; min-height: 110px; resize: vertical; line-height: 1.4; }
+
+  .big {
+    font-family: 'Caveat', cursive; font-weight: 700; color: var(--bg);
+    font-size: clamp(3rem, 8vw, 6.5rem); line-height: 1.05; text-align: center; word-break: break-word;
+  }
+  .reveal {
+    background: #fff; border: 3px dashed #d8d0c0; border-radius: 20px; padding: 30px 20px; margin: 18px 0;
+    min-height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+  }
+  .reveal .sub { font-size: 1.25rem; color: var(--text-mid); text-align: center; }
+  .reveal .frame { font-family: 'Schoolbell', cursive; font-size: 1.4rem; color: var(--bg); text-align: center; }
+  .pop { animation: pop .35s ease; }
+  @keyframes pop { 0% { transform: scale(.7); opacity: 0 } 70% { transform: scale(1.06) } 100% { transform: scale(1); opacity: 1 } }
+  .muted { color: var(--text-mid); }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .chip { background: var(--card-2); border-radius: 10px; padding: 4px 10px; font-size: 0.88rem; font-weight: 700; }
+  .chip.done { opacity: 0.35; text-decoration: line-through; }
+
+  /* student card grid */
+  .sgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; margin-top: 14px; }
+  .scard {
+    background: #fff; border: 2px solid #e1d9c9; border-radius: 14px; padding: 12px; position: relative;
+    display: flex; flex-direction: column; gap: 6px; user-select: none;
+  }
+  .scard.click { cursor: pointer; }
+  .scard.click:hover { border-color: var(--gold); }
+  .scard .nm { font-weight: 800; font-size: 1.05rem; }
+  .scard .val { font-family: 'Caveat', cursive; font-size: 2.3rem; font-weight: 700; color: var(--bg); line-height: 1; }
+  .scard .mini { display: flex; gap: 5px; flex-wrap: wrap; }
+  .scard.zero { border-style: dashed; border-color: var(--red); }
+  .scard.flash { animation: flash .6s ease; }
+  @keyframes flash { 0%,100% { background: #fff } 40% { background: #fff2bf } }
+
+  /* groups */
+  .ggrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-top: 16px; }
+  .gcard { background: #fff; border-radius: 16px; padding: 14px 16px; border-top: 8px solid var(--gold); box-shadow: 0 3px 0 rgba(0,0,0,0.08); }
+  .gcard h3 { font-family: 'Caveat', cursive; font-size: 1.9rem; color: var(--bg); line-height: 1; margin-bottom: 6px; }
+  .gcard li { list-style: none; font-weight: 700; font-size: 1.15rem; padding: 2px 0; }
+
+  /* timers */
+  .tgrid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); margin-top: 8px; }
+  .tcard { background: #fff; border-radius: 18px; padding: 16px 18px; border: 3px solid #e1d9c9; position: relative; }
+  .tcard.run { border-color: var(--green); }
+  .tcard.done { border-color: var(--red); animation: alarm 1s infinite; }
+  @keyframes alarm { 0%,100% { background: #fff } 50% { background: #ffd9d9 } }
+  .tcard input.lbl { border: none; border-bottom: 2px dashed #d8d0c0; font-weight: 800; font-size: 1.1rem; width: 75%; background: transparent; color: var(--bg); }
+  .tcard .x { position: absolute; top: 10px; right: 12px; background: none; border: none; font-size: 1.2rem; color: var(--text-mid); }
+  .tdisp { font-family: 'Nunito', sans-serif; font-weight: 800; font-variant-numeric: tabular-nums; text-align: center; color: var(--bg); line-height: 1.1; margin: 8px 0; }
+  .tbar { height: 12px; background: var(--card-2); border-radius: 8px; overflow: hidden; margin-bottom: 12px; }
+  .tbar div { height: 100%; background: var(--green); transition: width .2s linear; }
+  .tcard.done .tbar div { background: var(--red); }
+  .presets { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; margin-bottom: 10px; }
+
+  /* wheel */
+  .wheel-wrap { position: relative; width: min(520px, 86vw); margin: 10px auto 0; }
+  .wheel-wrap canvas { width: 100%; height: auto; display: block; cursor: pointer; }
+  .pointer { position: absolute; top: -6px; left: 50%; transform: translateX(-50%); width: 0; height: 0;
+    border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 38px solid var(--red);
+    filter: drop-shadow(0 3px 2px rgba(0,0,0,.3)); z-index: 2; }
+  .wheel-layout { display: grid; grid-template-columns: 1fr 260px; gap: 20px; align-items: start; }
+  @media (max-width: 1000px) { .wheel-layout { grid-template-columns: 1fr; } }
+  .side-box { background: var(--card-2); border-radius: 14px; padding: 14px; }
+  .side-box h4 { font-family: 'Schoolbell', cursive; color: var(--bg); margin-bottom: 6px; }
+
+  /* overlay winner */
+  #overlay { position: fixed; inset: 0; background: rgba(26,46,37,0.88); display: none; z-index: 100;
+    align-items: center; justify-content: center; flex-direction: column; gap: 18px; padding: 20px; }
+  #overlay.show { display: flex; }
+  #overlay .ov-card { background: var(--card); border-radius: 24px; padding: 30px 46px; text-align: center; max-width: 92vw; }
+  #overlay .ov-sm { font-family: 'Schoolbell', cursive; color: var(--text-mid); font-size: 1.3rem; }
+
+  /* seats */
+  .board-front { background: var(--bg); color: var(--chalk); text-align: center; border-radius: 10px; padding: 8px; font-family: 'Schoolbell', cursive; margin: 14px 0; }
+  .seats { display: grid; gap: 10px; }
+  .seat { background: #fff; border: 2px solid #d8d0c0; border-radius: 10px; padding: 14px 6px; text-align: center; font-weight: 800; cursor: pointer; min-height: 56px; display: flex; align-items: center; justify-content: center; }
+  .seat.sel { border-color: var(--red); background: #ffecec; }
+  .seat.empty { border-style: dashed; color: #bbb; font-weight: 400; cursor: default; }
+
+  /* noise meter */
+  .meter { height: 70px; background: var(--card-2); border-radius: 35px; overflow: hidden; position: relative; margin: 18px 0 8px; }
+  .meter .fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--green), var(--gold) 60%, var(--red)); transition: width .1s linear; }
+  .meter .thr { position: absolute; top: 0; bottom: 0; width: 4px; background: var(--bg-dark); }
+  .voice-levels { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px; }
+  @media (max-width: 700px) { .voice-levels { grid-template-columns: repeat(2, 1fr); } }
+  .vl { background: #fff; border: 3px solid #e1d9c9; border-radius: 16px; padding: 14px 8px; text-align: center; cursor: pointer; }
+  .vl .e { font-size: 2.6rem; }
+  .vl .t { font-weight: 800; }
+  .vl.on { border-color: var(--bg); background: #e6f0ea; }
+
+  /* points */
+  .progress { height: 34px; background: var(--card-2); border-radius: 17px; overflow: hidden; margin: 10px 0; }
+  .progress div { height: 100%; background: var(--green); border-radius: 17px; transition: width .4s; }
+  .house { display: grid; grid-template-columns: 70px 1fr auto; gap: 12px; align-items: center; background: #fff; border-radius: 14px; padding: 10px 14px; margin-bottom: 10px; }
+  .house .em { font-size: 2.6rem; text-align: center; }
+  .house .hn { font-family: 'Caveat', cursive; font-size: 1.8rem; font-weight: 700; color: var(--bg); line-height: 1; cursor: pointer; }
+  .house .hb { height: 18px; background: var(--card-2); border-radius: 9px; overflow: hidden; margin-top: 6px; }
+  .house .hb div { height: 100%; background: var(--gold); transition: width .4s; }
+  .house .hp { font-family: 'Caveat', cursive; font-size: 2.6rem; font-weight: 700; min-width: 70px; text-align: right; color: var(--bg); }
+  .house .members { font-size: 0.85rem; color: var(--text-mid); margin-top: 4px; }
+  .house.lead { outline: 3px solid var(--gold); }
+
+  /* cubes */
+  .cubes { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; margin: 20px 0; }
+  .cube { width: 120px; height: 120px; background: #fff; border-radius: 22px; border: 3px solid #d8d0c0; display: flex; align-items: center; justify-content: center; font-size: 4rem; box-shadow: 0 5px 0 rgba(0,0,0,.12); }
+  .cube.roll { animation: shake .12s infinite; }
+  @keyframes shake { 0% { transform: rotate(-8deg) } 50% { transform: rotate(8deg) } 100% { transform: rotate(-8deg) } }
+
+  /* generator rows */
+  .gen-row { display: grid; grid-template-columns: 150px 1fr auto; gap: 12px; align-items: center; background: #fff; border-radius: 14px; padding: 12px 16px; margin-bottom: 10px; }
+  .gen-row .gl { font-family: 'Schoolbell', cursive; color: var(--text-mid); }
+  .gen-row .gv { font-family: 'Caveat', cursive; font-size: 2.1rem; font-weight: 700; color: var(--bg); line-height: 1.1; }
+  @media (max-width: 640px) { .gen-row { grid-template-columns: 1fr auto; } .gen-row .gl { grid-column: 1 / -1; } }
+  .story-out { background: var(--bg); color: var(--chalk); border-radius: 16px; padding: 18px 22px; font-size: 1.35rem; line-height: 1.5; margin-top: 14px; }
+
+  /* verb card */
+  .verb-forms { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 100%; max-width: 640px; }
+  .verb-forms div { background: var(--card-2); border-radius: 12px; padding: 10px; text-align: center; }
+  .verb-forms b { display: block; font-family: 'Schoolbell', cursive; font-weight: 400; color: var(--text-mid); font-size: 0.85rem; }
+  .verb-forms span { font-size: 1.5rem; font-weight: 800; color: var(--bg); }
+
+  /* stickers */
+  .palette { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .palette button { font-size: 1.8rem; background: #fff; border: 3px solid transparent; border-radius: 12px; width: 52px; height: 52px; }
+  .palette button.on { border-color: var(--bg); background: #e6f0ea; }
+  .stk { font-size: 1.5rem; line-height: 1.2; min-height: 30px; word-break: break-all; }
+
+  /* modal */
+  #modal { position: fixed; inset: 0; background: rgba(0,0,0,.55); display: none; z-index: 90; align-items: center; justify-content: center; padding: 20px; }
+  #modal.show { display: flex; }
+  #modal .m-card { background: var(--card); color: var(--text-dark); border-radius: 18px; padding: 22px 24px; width: min(520px, 100%); max-height: 85vh; overflow-y: auto; }
+  #modal h3 { font-family: 'Caveat', cursive; font-size: 2rem; color: var(--bg); }
+  .abs-list { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 12px 0; }
+
+  #toast { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); background: var(--gold); color: var(--bg-dark);
+    font-weight: 800; padding: 10px 20px; border-radius: 14px; box-shadow: 0 6px 18px rgba(0,0,0,.3); display: none; z-index: 120; }
+  .confetti { position: fixed; top: -40px; font-size: 2rem; z-index: 110; pointer-events: none; animation: fall linear forwards; }
+  @keyframes fall { to { transform: translateY(110vh) rotate(540deg); } }
+  .notice { background: #fff6d6; border: 2px dashed var(--gold); border-radius: 12px; padding: 10px 14px; color: var(--text-dark); font-size: 0.9rem; margin-bottom: 14px; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="home-link" href="index.html">← Centro de Clase</a>
+  <div class="brand"><small>Caja de</small>Herramientas</div>
+  <div class="spacer"></div>
+  <button id="timerPill" title="Ir al temporizador"></button>
+  <div class="class-pick">Clase: <select id="classSel"></select></div>
+  <button class="tb-btn" id="absBtn">🙋 Asistencia</button>
+  <button class="tb-btn" id="fsBtn">⛶ Pantalla completa</button>
+</div>
+
+<div class="layout">
+  <nav class="side" id="nav"></nav>
+  <main><div class="panel" id="panel"></div></main>
+</div>
+
+<div id="overlay"><div class="ov-card"><div class="ov-sm" id="ovSm"></div><div class="big" id="ovBig"></div></div>
+  <div class="row"><button class="btn gold xl" id="ovOk">¡Listo!</button></div></div>
+<div id="modal"><div class="m-card" id="mCard"></div></div>
+<div id="toast"></div>
+<input type="file" id="importFile" accept=".json,application/json" hidden>
+
+<script>
+/* =========================================================
+   DATA BANKS
+   ========================================================= */
+const DEFAULT_CLASSES = [
+  { nombre: "Clase de ejemplo", estudiantes: ["Estudiante 1","Estudiante 2","Estudiante 3","Estudiante 4","Estudiante 5","Estudiante 6","Estudiante 7","Estudiante 8"] }
+];
+
+const VOCAB = {
+  "Saludos": ["👋 hola","👋 adiós","🙂 ¿cómo estás?","😊 bien","😐 más o menos","🙏 por favor","🙌 gracias","🤝 mucho gusto","🌅 buenos días","🌇 buenas tardes","🌙 buenas noches","👀 hasta luego"],
+  "Colores": ["🔴 rojo","🔵 azul","🟢 verde","🟡 amarillo","🟠 anaranjado","🟣 morado","🩷 rosado","⚫ negro","⚪ blanco","🟤 café","🩶 gris"],
+  "Animales": ["🐶 el perro","🐱 el gato","🐆 el jaguar","🦜 el tucán","🐒 el mono","🐢 la tortuga","🐍 la serpiente","🐟 el pez","🐦 el pájaro","🐴 el caballo","🐮 la vaca","🐷 el cerdo","🐭 el ratón","🐊 el cocodrilo"],
+  "Familia": ["👩 la mamá","👨 el papá","👧 la hermana","👦 el hermano","👵 la abuela","👴 el abuelo","👩 la tía","👨 el tío","🧒 el primo","🧒 la prima","👶 el bebé"],
+  "Comida": ["🍎 la manzana","🍌 el plátano","🌮 el taco","🍕 la pizza","🍚 el arroz","🫘 los frijoles","🥚 el huevo","🍞 el pan","🥛 la leche","💧 el agua","🍗 el pollo","🧀 el queso","🍦 el helado","🥑 el aguacate"],
+  "Escuela": ["✏️ el lápiz","📚 el libro","🎒 la mochila","🪑 la silla","💻 la computadora","📓 el cuaderno","✂️ las tijeras","🧑‍🏫 el maestro","🏫 la escuela","🖍️ el crayón","📏 la regla"],
+  "Lugares": ["🏠 la casa","🏫 la escuela","🏞️ el parque","🏖️ la playa","🛒 el supermercado","🏥 el hospital","🍽️ el restaurante","🏬 la tienda","🏙️ la ciudad","🌳 el bosque","⛪ la iglesia"],
+  "Clima": ["☀️ hace sol","🔥 hace calor","🥶 hace frío","🌬️ hace viento","🌧️ llueve","❄️ nieva","☁️ está nublado","⛈️ hay tormenta","🌈 hay un arcoíris"],
+  "Emociones": ["😊 feliz","😢 triste","😡 enojado","😨 nervioso","😴 cansado","🤒 enfermo","😲 sorprendido","😌 tranquilo","🤩 emocionado","😱 asustado","😐 aburrido"],
+  "Estructuras de alta frecuencia": ["💬 hay","💬 quiere","💬 tiene","💬 va a","💬 le gusta","💬 es","💬 está","💬 dice","💬 ve","💬 necesita","💬 puede","💬 no sabe"]
+};
+
+const NAMES = ["Sofía","Mateo","Valentina","Diego","Camila","Santiago","Lucía","Carlos","Isabela","Javier","Mariana","Tomás","Ximena","Andrés","Paola","Luis","Daniela","Pedro","Gabriela","Emilio","Renata","Joaquín","Fernanda","Rafael"];
+const CHAR_TYPES = ["un niño","una niña","un gato","un perro","una abuela","un abuelo","un robot","una astronauta","un jaguar","un tucán","una maestra","un pirata","una princesa","un dinosaurio","un chef","una detective","un fantasma","un futbolista","una cantante","un extraterrestre","un tapir","un mono aullador","una vaca","un tiburón"];
+const CHAR_TRAITS = ["Tiene tres ojos.","Tiene el pelo verde.","Es muy inteligente.","Es muy valiente.","Es muy impaciente.","Es muy fuerte.","Siempre está feliz.","Siempre está triste.","Tiene mucho miedo de todo.","Habla muy, muy rápido.","No habla nunca.","Canta todo el tiempo.","Come muchísimo.","Es súper amable.","Tiene una cola muy larga.","Baila muy mal.","Usa lentes enormes.","Tiene un sombrero mágico.","Es muy, muy grande.","Duerme en clase."];
+const CHAR_WANTS = ["Quiere ser una estrella.","Quiere un helado gigante.","Quiere viajar a la luna.","Quiere un amigo nuevo.","Quiere ganar un concurso.","Quiere aprender a bailar.","Quiere una mascota.","Quiere encontrar un tesoro.","Quiere comer tacos todos los días.","Quiere dormir todo el día.","Quiere volar.","Quiere ir a la playa.","Quiere un teléfono nuevo.","Quiere ser presidente.","Quiere conocer a su ídolo.","Quiere un carro rojo."];
+
+const PROBLEMS = ["No encuentra su mochila.","Quiere una pizza, pero no tiene dinero.","Su gato está perdido.","Tiene un examen y no estudió.","Su mejor amigo está enojado.","Llega tarde a la escuela.","Tiene miedo de la oscuridad.","Pierde el autobús.","Necesita un regalo para su mamá.","Rompe la ventana del vecino.","Quiere ser famoso, pero es muy tímido.","Hay un monstruo debajo de la cama.","Tiene hambre, pero el refrigerador está vacío.","Su teléfono no funciona.","Olvida el cumpleaños de su abuela.","Quiere ganar un concurso de baile.","Está perdido en una ciudad nueva.","No puede dormir.","Su perro se come la tarea.","Quiere un helado, pero la tienda está cerrada.","Necesita encontrar un tesoro.","Tiene que cuidar a un bebé dragón.","No habla el idioma del país.","Su bicicleta está rota.","Llueve y no tiene paraguas."];
+
+const LOCATIONS = ["en San Ignacio, Cayo","en las ruinas de Xunantunich","en Caye Caulker","en Belmopan","en el río Macal","en la reserva Chiquibul","en un mercado de Oaxaca, México","en la Ciudad de Guatemala","en el lago de Atitlán, Guatemala","en una playa de Puerto Rico","en Machu Picchu, Perú","en Buenos Aires, Argentina","en Madrid, España","en La Habana, Cuba","en una finca de café en Colombia","en las Islas Galápagos, Ecuador","en un volcán de Costa Rica","en Santo Domingo, República Dominicana","en la Patagonia, Chile","en Tegucigalpa, Honduras","en San Salvador, El Salvador","en Panamá, cerca del canal","en Montevideo, Uruguay","en el Salar de Uyuni, Bolivia","en la cafetería de la escuela","en un baño público","en el autobús","en un supermercado","en el parque","en un hospital","en la luna","debajo del mar","dentro de un videojuego","en un castillo embrujado","en una nave espacial","dentro del refrigerador"];
+
+const CIRCUMSTANCES = ["El perro es invisible.","Todos están bailando.","Está nevando en Belice.","El maestro es un gato.","Nadie puede hablar, solo cantar.","Todo es de chocolate.","Hay un elefante en el salón.","La gravedad no funciona.","Todos tienen el pelo azul.","Es medianoche y el sol brilla.","Los animales hablan español.","¡El piso es lava!","Solo se puede caminar hacia atrás.","Todo el mundo está susurrando.","Hay una fiesta sorpresa.","Llueven tortillas.","El personaje es muy, muy pequeño.","El personaje tiene 100 años.","El teléfono no deja de sonar.","Todos tienen hipo.","Hay un dinosaurio en la cafetería.","La puerta no se abre.","Es el cumpleaños de todos.","El agua es de color morado.","Todos los carros son burros.","El personaje no puede dejar de reír.","Hace un calor de 50 grados.","Un tucán sigue al personaje.","El personaje es famoso en TikTok.","Todos hablan como robots.","El personaje tiene una mochila mágica.","Hay un examen sorpresa.","Se va la luz.","Las sillas son invisibles.","El personaje solo puede decir «sí».","Todo pasa en cámara lenta.","Hay un concurso de baile.","El héroe tiene miedo de las mariposas.","Un jaguar entra en la tienda.","Es el año 3000."];
+
+const CUBE_POOL = Array.from("🐶🐱🐉🦖🐊🐒🦜🐢🦋🐝🌵🌋🏝️🌧️❄️🌙⭐🌈🔥💧🍕🌮🍦🍌🥑🎂☕🏠🏰🏫🏥🚗🚌🚲✈️🚀⛵🚂🎒📱💻📚✏️🎸🥁🎨⚽🏀🎮🧸🎁🔑💎💰👑🎩👓🧦👟☂️🕯️🔦🗺️🧭⏰📷🎈🎃👻👽🤖🧙🦸🧜👵👶🏆🧪🔬🌻🍄🌊🪐🦷💤😱🥳😡😢🤔🪑🛁🧊🍿").filter(c => c.trim() && !/[️‍]/.test(c));
+
+const QWORDS = [
+  ["¿Quién?","¿Quién es el personaje?","Es ___."],
+  ["¿Qué?","¿Qué quiere el personaje?","Quiere ___."],
+  ["¿Dónde?","¿Dónde está el personaje?","Está en ___."],
+  ["¿Cuándo?","¿Cuándo pasa?","Pasa ___ (por la mañana / el lunes...)."],
+  ["¿Por qué?","¿Por qué está triste?","Está triste porque ___."],
+  ["¿Cómo?","¿Cómo es el personaje?","Es ___ y ___."],
+  ["¿Cuántos?","¿Cuántos gatos tiene?","Tiene ___ gatos."],
+  ["¿Cuál?","¿Cuál es su comida favorita?","Su comida favorita es ___."],
+  ["¿De dónde?","¿De dónde es?","Es de ___."],
+  ["¿Adónde?","¿Adónde va?","Va a ___."]
+];
+
+// [infinitivo, inglés, yo (presente), él/ella (presente), él/ella (pretérito), emoji, súper7]
+const VERBS = [
+  ["ser","to be (identity)","soy","es","fue","🌟",1],["estar","to be (state/place)","estoy","está","estuvo","📍",1],
+  ["tener","to have","tengo","tiene","tuvo","🎒",1],["gustar","to like","me gusta","le gusta","le gustó","❤️",1],
+  ["ir","to go","voy","va","fue","🚶",1],["haber","there is / are","—","hay","hubo","👀",1],
+  ["querer","to want","quiero","quiere","quiso","🙏",1],["poder","to be able","puedo","puede","pudo","💪",0],
+  ["hacer","to do / make","hago","hace","hizo","🔨",0],["decir","to say","digo","dice","dijo","💬",0],
+  ["ver","to see","veo","ve","vio","👁️",0],["dar","to give","doy","da","dio","🎁",0],
+  ["saber","to know (info)","sé","sabe","supo","🧠",0],["conocer","to know (people/places)","conozco","conoce","conoció","🤝",0],
+  ["venir","to come","vengo","viene","vino","👋",0],["salir","to leave","salgo","sale","salió","🚪",0],
+  ["poner","to put","pongo","pone","puso","📥",0],["llegar","to arrive","llego","llega","llegó","🏁",0],
+  ["comer","to eat","como","come","comió","🍽️",0],["beber","to drink","bebo","bebe","bebió","🥤",0],
+  ["hablar","to speak","hablo","habla","habló","🗣️",0],["vivir","to live","vivo","vive","vivió","🏠",0],
+  ["correr","to run","corro","corre","corrió","🏃",0],["buscar","to look for","busco","busca","buscó","🔍",0],
+  ["encontrar","to find","encuentro","encuentra","encontró","💡",0],["necesitar","to need","necesito","necesita","necesitó","❗",0],
+  ["llevar","to carry / wear","llevo","lleva","llevó","👜",0],["jugar","to play","juego","juega","jugó","⚽",0],
+  ["dormir","to sleep","duermo","duerme","durmió","😴",0],["mirar","to look at","miro","mira","miró","👀",0],
+  ["escuchar","to listen","escucho","escucha","escuchó","👂",0],["pensar","to think","pienso","piensa","pensó","🤔",0],
+  ["sentir","to feel","siento","siente","sintió","💓",0],["tomar","to take / drink","tomo","toma","tomó","☕",0],
+  ["volver","to return","vuelvo","vuelve","volvió","🔁",0],["llorar","to cry","lloro","llora","lloró","😢",0],
+  ["gritar","to shout","grito","grita","gritó","📢",0],["bailar","to dance","bailo","baila","bailó","💃",0]
+];
+
+// [nombre, nivel, ejemplo, inglés]
+const TENSES = [
+  ["Presente","Novato","Juan habla con su perro.","present"],
+  ["Presente progresivo","Novato","Juan está hablando con su perro.","present progressive"],
+  ["Futuro con «ir a»","Novato","Juan va a hablar con su perro.","going to…"],
+  ["Pretérito","Intermedio","Juan habló con su perro.","preterite (completed past)"],
+  ["Imperfecto","Intermedio","Juan hablaba con su perro todos los días.","imperfect (ongoing past)"],
+  ["Presente perfecto","Intermedio","Juan ha hablado con su perro.","present perfect"],
+  ["Mandato","Intermedio","¡Habla con tu perro, Juan!","command"],
+  ["Futuro","Avanzado","Juan hablará con su perro mañana.","future"],
+  ["Condicional","Avanzado","Juan hablaría con su perro, pero tiene miedo.","conditional"],
+  ["Presente de subjuntivo","Avanzado","Quiero que Juan hable con su perro.","present subjunctive"]
+];
+
+const CONVO = {
+  "Novato": [
+    ["¿Cómo te llamas?","Me llamo ___."],["¿Cómo estás hoy?","Estoy ___ porque ___."],["¿Qué te gusta comer?","Me gusta ___."],
+    ["¿Cuál es tu color favorito?","Mi color favorito es ___."],["¿Tienes una mascota?","Sí, tengo ___. / No, no tengo ___."],
+    ["¿Qué haces después de la escuela?","Después de la escuela, yo ___."],["¿Cuántos años tienes?","Tengo ___ años."],
+    ["¿Qué tiempo hace hoy?","Hoy hace ___."],["¿Te gusta el fútbol?","Sí, me gusta. / No, no me gusta."],
+    ["¿De dónde eres?","Soy de ___."],["¿Qué animal te gusta más?","Me gusta más ___."],["¿Qué día es hoy?","Hoy es ___."]
+  ],
+  "Intermedio": [
+    ["¿Qué hiciste el fin de semana?","El fin de semana, yo ___."],["Describe a tu mejor amigo o amiga.","Mi mejor amigo/a es ___ y ___."],
+    ["¿Prefieres la playa o la montaña? ¿Por qué?","Prefiero ___ porque ___."],["¿Cuál es tu comida favorita y quién la prepara?","Mi comida favorita es ___. La prepara ___."],
+    ["¿A qué país hispano quieres viajar? ¿Por qué?","Quiero viajar a ___ porque ___."],["¿Qué hacías cuando eras pequeño/a?","Cuando era pequeño/a, yo ___."],
+    ["¿Cuál es tu película o serie favorita? ¿De qué se trata?","Mi favorita es ___. Se trata de ___."],["¿Qué haces para relajarte?","Para relajarme, yo ___."],
+    ["Describe tu rutina de la mañana.","Primero ___, luego ___, después ___."],["¿Qué celebración te gusta más?","Me gusta ___ porque ___."]
+  ],
+  "Avanzado": [
+    ["¿Qué cambiarías de tu escuela?","Yo cambiaría ___ porque ___."],["¿Las redes sociales ayudan o hacen daño?","Creo que ___ porque ___."],
+    ["¿Qué consejo le darías a un estudiante nuevo?","Le diría que ___."],["¿Cómo sería tu vida sin teléfono?","Sin teléfono, mi vida sería ___."],
+    ["¿Qué tradición de tu familia quieres mantener?","Quiero mantener ___ porque ___."],["¿Es importante aprender otro idioma? Defiende tu opinión.","En mi opinión, ___. Además, ___."],
+    ["¿Qué harías con un millón de dólares?","Con un millón de dólares, yo ___."],["Describe un momento en que tuviste que ser valiente.","Una vez, ___. Me sentí ___."],
+    ["¿Cuál es el mayor problema de nuestro mundo? ¿Qué podemos hacer?","El mayor problema es ___. Podemos ___."],["¿Qué opinas de la inteligencia artificial en la escuela?","Pienso que ___, pero ___."]
+  ]
+};
+
+// [texto, para pequeños (1) o no (0)]
+const EXIT_TICKETS = [
+  ["3-2-1: Escribe 3 palabras nuevas, 2 frases de la clase y 1 pregunta que tienes.",0],
+  ["Hoy aprendí ___. Todavía no entiendo ___.",0],
+  ["Dibuja una escena de la historia de hoy y escribe una frase.",1],
+  ["Semáforo 🟢🟡🔴 — ¿Cómo te sientes con {tema}? Explica.",1],
+  ["Escribe una frase con: {tema}",0],
+  ["¿Quién? ¿Qué? ¿Dónde? Contesta sobre la historia de hoy.",0],
+  ["Una palabra que describe la clase de hoy es ___ porque ___.",0],
+  ["Enséñale a un amigo: explica {tema} en 2 frases.",0],
+  ["Escribe una pregunta para el examen sobre {tema}.",0],
+  ["Antes pensaba ___. Ahora pienso ___.",0],
+  ["Emoji del día: elige un emoji para la clase de hoy y di por qué.",1],
+  ["Termina la frase: El personaje quiere ___, pero ___.",0],
+  ["Dibuja y etiqueta 3 palabras de vocabulario.",1],
+  ["¿Qué pasó primero? ¿Qué pasó después? ¿Qué pasó al final?",0],
+  ["Muestra con los dedos (1–5): ¿Cuánto entiendes {tema}?",1],
+  ["Di una palabra en español a la puerta antes de salir.",1]
+];
+
+const DEFAULT_REWARDS = ["🎵 Elegir la música de fondo","🪑 Sentarse en la silla del maestro","🎮 5 minutos de juego","⭐ Sticker extra","🙋 Ayudante del día","🃏 Escoger el próximo juego","🎟️ Pase sin tarea","🖍️ Dibujar en la pizarra","😎 Elegir el ánimo del día","🎧 DJ de la clase"];
+const DEFAULT_SHOP = "🖍️ Usar los marcadores especiales = 3\n🎵 Elegir la canción = 5\n🪑 Silla del maestro por un día = 8\n🎟️ Pase sin tarea = 10\n👑 Corona de la clase = 15";
+const DEFAULT_HOUSES = [["🐆","Jaguares"],["🦜","Tucanes"],["🐒","Monos Aulladores"],["🐢","Tortugas"]];
+const STICKERS = ["⭐","🌟","🏆","❤️","🔥","👍","😎","🎉","🦄","🐆","🦜","🌈","🍀","💎","🚀","👑"];
+const LEVELS = [["🌱","Novato"],["🧭","Explorador"],["🎒","Aventurero"],["✈️","Viajero"],["🦸","Héroe"],["👑","Leyenda"],["🐉","Maestro Dragón"]];
+const XP_PER_LEVEL = 10;
+const WHEEL_COLORS = ["#f5c842","#f58b8b","#7fb3ea","#a5cf94","#f7a072","#cdb9ec","#8fd3c7","#f2a7c3"];
+
+/* =========================================================
+   HELPERS
+   ========================================================= */
+const $ = s => document.querySelector(s);
+const h = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const rnd = n => Math.floor(Math.random() * n);
+const pick = a => a[rnd(a.length)];
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = rnd(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const today = () => { const d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); };
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.style.display = 'block'; clearTimeout(toast._t); toast._t = setTimeout(() => t.style.display = 'none', 2200); }
+function confetti(set) {
+  set = set || ["🎉","⭐","🎊","✨","🌟"];
+  for (let i = 0; i < 40; i++) {
+    const c = document.createElement('div'); c.className = 'confetti'; c.textContent = pick(set);
+    c.style.left = Math.random() * 100 + 'vw'; c.style.animationDuration = (2 + Math.random() * 2) + 's';
+    c.style.animationDelay = Math.random() * 0.6 + 's'; document.body.appendChild(c);
+    setTimeout(() => c.remove(), 5000);
+  }
+}
+function showWinner(small, big, sound = true) {
+  $('#ovSm').textContent = small; $('#ovBig').textContent = big;
+  $('#overlay').classList.add('show'); $('#ovBig').classList.remove('pop'); void $('#ovBig').offsetWidth; $('#ovBig').classList.add('pop');
+  if (sound) fanfare();
+}
+$('#ovOk').onclick = () => $('#overlay').classList.remove('show');
+
+/* ---------- Sound ---------- */
+let AC = null;
+function ac() { if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === 'suspended') AC.resume(); return AC; }
+function tone(freq, dur, vol = 0.15, type = 'sine', when = 0) {
+  try {
+    const a = ac(), o = a.createOscillator(), g = a.createGain(), t = a.currentTime + when;
+    o.type = type; o.frequency.value = freq; g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(a.destination); o.start(t); o.stop(t + dur + 0.02);
+  } catch (e) {}
+}
+const tick = () => tone(900, 0.03, 0.06, 'square');
+const fanfare = () => { [523, 659, 784, 1046].forEach((f, i) => tone(f, 0.25, 0.14, 'triangle', i * 0.11)); };
+const alarm = () => { for (let i = 0; i < 6; i++) tone(i % 2 ? 660 : 880, 0.22, 0.2, 'square', i * 0.28); };
+const ding = () => tone(1200, 0.35, 0.12, 'sine');
+
+/* =========================================================
+   STATE + STORAGE
+   ========================================================= */
+const LS_KEY = 'cdc-herramientas-v1';
+const S = { clases: DEFAULT_CLASSES, cur: 0, usingFile: false, store: { c: {}, g: {} }, tool: 'timer' };
+try { const raw = localStorage.getItem(LS_KEY); if (raw) S.store = Object.assign({ c: {}, g: {} }, JSON.parse(raw)); } catch (e) {}
+function save() { try { localStorage.setItem(LS_KEY, JSON.stringify(S.store)); } catch (e) {} }
+function cname() { return (S.clases[S.cur] || {}).nombre || '—'; }
+function cdata() { const k = cname(); if (!S.store.c[k]) S.store.c[k] = {}; return S.store.c[k]; }
+function gdata() { return S.store.g; }
+function roster() { return ((S.clases[S.cur] || {}).estudiantes || []).filter(n => String(n).trim()); }
+function absentList() { const a = cdata().absent; return (a && a.date === today()) ? a.list : []; }
+function present() { const ab = absentList(); return roster().filter(n => !ab.includes(n)); }
+
+/* session-only state (not saved): wheel removals, decks, generator values */
+const SES = {};
+function ses(key, def) { const k = cname() + '|' + key; if (!(k in SES)) SES[k] = typeof def === 'function' ? def() : def; return SES[k]; }
+function sesSet(key, v) { SES[cname() + '|' + key] = v; }
+
+/* =========================================================
+   WHEEL COMPONENT
+   ========================================================= */
+class Wheel {
+  constructor(canvas, items, onDone) { this.cv = canvas; this.items = items; this.onDone = onDone; this.rot = 0; this.spinning = false; this.draw(); }
+  setItems(items) { this.items = items; this.draw(); }
+  draw() {
+    const c = this.cv, x = c.getContext('2d'), W = c.width, cx = W / 2, r = W / 2 - 10, n = this.items.length;
+    x.clearRect(0, 0, W, W);
+    if (!n) {
+      x.beginPath(); x.arc(cx, cx, r, 0, Math.PI * 2); x.fillStyle = '#ece6da'; x.fill();
+      x.fillStyle = '#5a5a5a'; x.font = '700 28px Nunito'; x.textAlign = 'center'; x.fillText('¡Sin elementos!', cx, cx + 10); return;
+    }
+    const seg = Math.PI * 2 / n;
+    const fs = Math.max(14, Math.min(34, Math.floor(560 / Math.max(n, 6))));
+    for (let i = 0; i < n; i++) {
+      const a0 = this.rot + i * seg;
+      x.beginPath(); x.moveTo(cx, cx); x.arc(cx, cx, r, a0, a0 + seg); x.closePath();
+      x.fillStyle = WHEEL_COLORS[(n % WHEEL_COLORS.length === 1 && i === n - 1) ? 2 : i % WHEEL_COLORS.length];
+      x.fill(); x.strokeStyle = '#1a2e25'; x.lineWidth = 3; x.stroke();
+      x.save(); x.translate(cx, cx); x.rotate(a0 + seg / 2); x.textAlign = 'right';
+      x.fillStyle = '#1a2e25'; x.font = '800 ' + fs + 'px Nunito';
+      let label = String(this.items[i]); if (label.length > 20) label = label.slice(0, 19) + '…';
+      x.fillText(label, r - 18, fs / 3); x.restore();
+    }
+    x.beginPath(); x.arc(cx, cx, 34, 0, Math.PI * 2); x.fillStyle = '#1a2e25'; x.fill();
+    x.beginPath(); x.arc(cx, cx, 26, 0, Math.PI * 2); x.fillStyle = '#f5c842'; x.fill();
+  }
+  idxAt(rot) { const n = this.items.length, seg = Math.PI * 2 / n, TAU = Math.PI * 2; const rel = (((-Math.PI / 2 - rot) % TAU) + TAU) % TAU; return Math.floor(rel / seg) % n; }
+  spin() {
+    const n = this.items.length; if (this.spinning || !n) return;
+    ac();
+    const TAU = Math.PI * 2, seg = TAU / n, w = rnd(n);
+    const desired = -Math.PI / 2 - (w * seg + seg * (0.2 + 0.6 * Math.random()));
+    const cur = this.rot, diff = (((desired - cur) % TAU) + TAU) % TAU;
+    const target = cur + TAU * (5 + rnd(3)) + diff, dur = 4200 + rnd(1200), start = performance.now();
+    let last = this.idxAt(cur); this.spinning = true;
+    const frame = now => {
+      const t = Math.min(1, (now - start) / dur), e = 1 - Math.pow(1 - t, 4);
+      this.rot = cur + (target - cur) * e;
+      const idx = this.idxAt(this.rot); if (idx !== last) { last = idx; tick(); }
+      this.draw();
+      if (t < 1 && this.cv.isConnected) requestAnimationFrame(frame);
+      else { this.rot = target; this.spinning = false; this.draw(); if (this.cv.isConnected) this.onDone(this.items[w], w); }
+    };
+    requestAnimationFrame(frame);
+  }
+}
+function wheelHTML(id) { return `<div class="wheel-wrap"><div class="pointer"></div><canvas id="${id}" width="640" height="640"></canvas></div>`; }
+
+/* =========================================================
+   TIMERS (global so they keep running between tools)
+   ========================================================= */
+const TIMERS = [{ label: 'Temporizador 1', total: 300, remaining: 300, running: false, endAt: 0, done: false }];
+function fmt(sec) { sec = Math.ceil(sec); const m = Math.floor(sec / 60), s = sec % 60; return m + ':' + String(s).padStart(2, '0'); }
+function tRemain(t) { return t.running ? Math.max(0, (t.endAt - Date.now()) / 1000) : t.remaining; }
+setInterval(() => {
+  let pillTxt = '';
+  TIMERS.forEach((t, i) => {
+    if (t.running && Date.now() >= t.endAt) { t.running = false; t.remaining = 0; t.done = true; alarm(); if (S.tool === 'timer') render(); else toast('⏰ ¡Tiempo! — ' + t.label); }
+    const r = tRemain(t);
+    const d = document.getElementById('tmD' + i); if (d) d.textContent = fmt(r);
+    const b = document.getElementById('tmB' + i); if (b) b.style.width = (t.total ? (r / t.total * 100) : 0) + '%';
+    if (t.running && !pillTxt) pillTxt = '⏱️ ' + fmt(r);
+  });
+  const pill = $('#timerPill');
+  if (pillTxt && S.tool !== 'timer') { pill.style.display = 'inline-block'; pill.textContent = pillTxt; } else pill.style.display = 'none';
+}, 200);
+$('#timerPill').onclick = () => go('timer');
+
+/* =========================================================
+   TOOLS
+   ========================================================= */
+const SECTIONS = [["manage","🧑‍🏫 Manejo de clase"],["rewards","🏆 Premios y conducta"],["lang","🇪🇸 Herramientas CI / TPRS"]];
+const TOOLS = [];
+function tool(id, sec, icon, es, en, hint, renderFn) { TOOLS.push({ id, sec, icon, es, en, hint, render: renderFn }); }
+function needStudents(el) {
+  if (present().length) return false;
+  el.innerHTML += `<div class="reveal"><div class="sub">No hay estudiantes en esta clase (o todos están ausentes).<br>Agrega nombres en <b>data/clases.json</b> o revisa 🙋 Asistencia.</div></div>`;
+  return true;
+}
+
+/* ---------- 1. MULTI TIMER ---------- */
+tool('timer', 'manage', '⏱️', 'Temporizadores', 'Multi timer (up to 4)', 'Hasta 4 temporizadores a la vez. Siguen corriendo aunque cambies de herramienta.', el => {
+  const presets = [[30,'0:30'],[60,'1 min'],[120,'2 min'],[180,'3 min'],[300,'5 min'],[600,'10 min'],[900,'15 min']];
+  const size = TIMERS.length === 1 ? 'clamp(5rem, 16vw, 11rem)' : TIMERS.length === 2 ? 'clamp(3.5rem, 8vw, 6rem)' : 'clamp(3rem, 6vw, 4.5rem)';
+  el.innerHTML += `<div class="tgrid">${TIMERS.map((t, i) => `
+    <div class="tcard ${t.running ? 'run' : ''} ${t.done ? 'done' : ''}">
+      <input class="lbl" data-i="${i}" value="${h(t.label)}" aria-label="Nombre del temporizador">
+      ${TIMERS.length > 1 ? `<button class="x" data-del="${i}" title="Quitar">✕</button>` : ''}
+      <div class="tdisp" id="tmD${i}" style="font-size:${size}">${t.done ? '¡Tiempo!' : fmt(tRemain(t))}</div>
+      <div class="tbar"><div id="tmB${i}" style="width:${t.total ? tRemain(t) / t.total * 100 : 0}%"></div></div>
+      <div class="presets">${presets.map(p => `<button class="btn sm ghost" data-set="${i}:${p[0]}">${p[1]}</button>`).join('')}</div>
+      <div class="row" style="justify-content:center">
+        <button class="btn sm" data-add="${i}:-60">−1 min</button>
+        <button class="btn sm" data-add="${i}:-10">−10 s</button>
+        <button class="btn ${t.running ? 'red' : 'gold'}" data-go="${i}" ${i === 0 ? 'data-primary' : ''}>${t.running ? '⏸ Pausa' : '▶ Empezar'}</button>
+        <button class="btn sm" data-add="${i}:10">+10 s</button>
+        <button class="btn sm" data-add="${i}:60">+1 min</button>
+        <button class="btn sm ghost" data-reset="${i}">↺</button>
+      </div>
+    </div>`).join('')}</div>
+    <div class="row" style="margin-top:16px">${TIMERS.length < 4 ? `<button class="btn" id="tAdd">＋ Añadir temporizador</button>` : ''}
+    <span class="muted">Consejo: la barra espaciadora inicia / pausa el primer temporizador.</span></div>`;
+  el.querySelectorAll('input.lbl').forEach(inp => inp.oninput = () => TIMERS[inp.dataset.i].label = inp.value);
+  el.querySelectorAll('[data-set]').forEach(b => b.onclick = () => { const [i, s] = b.dataset.set.split(':').map(Number); Object.assign(TIMERS[i], { total: s, remaining: s, running: false, done: false }); render(); });
+  el.querySelectorAll('[data-add]').forEach(b => b.onclick = () => {
+    const [i, s] = b.dataset.add.split(':').map(Number), t = TIMERS[i];
+    if (t.running) { t.endAt = Math.max(Date.now() + 1000, t.endAt + s * 1000); t.total = Math.max(t.total, tRemain(t)); }
+    else { t.remaining = Math.max(0, t.remaining + s); t.total = Math.max(t.total, t.remaining); t.done = false; }
+    render();
+  });
+  el.querySelectorAll('[data-go]').forEach(b => b.onclick = () => {
+    const t = TIMERS[b.dataset.go]; ac();
+    if (t.running) { t.remaining = tRemain(t); t.running = false; }
+    else { if (t.remaining <= 0) { t.remaining = t.total || 60; t.total = t.remaining; } t.done = false; t.endAt = Date.now() + t.remaining * 1000; t.running = true; }
+    render();
+  });
+  el.querySelectorAll('[data-reset]').forEach(b => b.onclick = () => { const t = TIMERS[b.dataset.reset]; Object.assign(t, { remaining: t.total, running: false, done: false }); render(); });
+  el.querySelectorAll('[data-del]').forEach(b => b.onclick = () => { TIMERS.splice(+b.dataset.del, 1); render(); });
+  const add = el.querySelector('#tAdd'); if (add) add.onclick = () => { TIMERS.push({ label: 'Temporizador ' + (TIMERS.length + 1), total: 120, remaining: 120, running: false, endAt: 0, done: false }); render(); };
+});
+
+/* ---------- 2. NOISE METER ---------- */
+tool('noise', 'manage', '🔔', 'Medidor de ruido', 'Noise meter', 'Muestra el nivel de voz esperado. El micrófono es opcional: actívalo para ver el ruido real del salón.', el => {
+  const g = gdata(); if (g.voice == null) g.voice = 1; if (g.noiseThr == null) g.noiseThr = 60; if (g.noiseSens == null) g.noiseSens = 5;
+  const levels = [["🤫","0 · Silencio","Trabajo solo"],["🐭","1 · Susurro","Con tu pareja"],["🗣️","2 · Voz de grupo","En tu mesa"],["📣","3 · Voz de presentación","Para toda la clase"]];
+  el.innerHTML += `
+    <h3 style="font-family:Schoolbell;color:var(--bg)">Nivel de voz permitido ahora:</h3>
+    <div class="voice-levels">${levels.map((l, i) => `<div class="vl ${g.voice === i ? 'on' : ''}" data-v="${i}"><div class="e">${l[0]}</div><div class="t">${l[1]}</div><div class="muted">${l[2]}</div></div>`).join('')}</div>
+    <hr style="border:none;border-top:2px dashed #d8d0c0;margin:24px 0 16px">
+    <div class="row"><button class="btn gold" id="micBtn">🎙️ Activar micrófono</button><span class="muted" id="micMsg">Micrófono apagado</span></div>
+    <div class="meter"><div class="fill" id="nFill"></div><div class="thr" id="nThr"></div></div>
+    <div class="big" id="nMsg" style="font-size:clamp(2.2rem,5vw,3.8rem)">🙂</div>
+    <div class="row" style="margin-top:10px">
+      <label class="chk">Límite: <input type="range" min="10" max="95" id="thr" value="${g.noiseThr}"></label>
+      <label class="chk">Sensibilidad: <input type="range" min="1" max="10" id="sens" value="${g.noiseSens}"></label>
+    </div>`;
+  el.querySelectorAll('.vl').forEach(v => v.onclick = () => { g.voice = +v.dataset.v; save(); render(); });
+  const thr = el.querySelector('#thr'), sens = el.querySelector('#sens'), thrMark = el.querySelector('#nThr');
+  const place = () => thrMark.style.left = thr.value + '%'; place();
+  thr.oninput = () => { g.noiseThr = +thr.value; save(); place(); };
+  sens.oninput = () => { g.noiseSens = +sens.value; save(); };
+  let stream = null, raf = 0, smooth = 0, overSince = 0;
+  el.querySelector('#micBtn').onclick = async () => {
+    if (stream) { stop(); return; }
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const a = ac(), src = a.createMediaStreamSource(stream), an = a.createAnalyser(); an.fftSize = 1024; src.connect(an);
+      const buf = new Uint8Array(an.fftSize);
+      el.querySelector('#micBtn').textContent = '⏹ Apagar micrófono'; el.querySelector('#micMsg').textContent = 'Escuchando… (nada se graba)';
+      const loop = () => {
+        an.getByteTimeDomainData(buf); let sum = 0; for (const v of buf) { const d = (v - 128) / 128; sum += d * d; }
+        const lvl = Math.min(100, Math.sqrt(sum / buf.length) * 100 * g.noiseSens * 1.6);
+        smooth = smooth * 0.85 + lvl * 0.15;
+        const f = document.getElementById('nFill'), m = document.getElementById('nMsg'); if (!f) return;
+        f.style.width = smooth + '%';
+        if (smooth > g.noiseThr) { if (!overSince) overSince = Date.now(); if (Date.now() - overSince > 1200) { m.textContent = '🤫 ¡Shhh! Demasiado ruido'; m.style.color = 'var(--red)'; } }
+        else { overSince = 0; m.textContent = smooth > g.noiseThr * 0.7 ? '😬 Cuidado…' : '😊 ¡Muy bien!'; m.style.color = 'var(--bg)'; }
+        raf = requestAnimationFrame(loop);
+      };
+      loop();
+    } catch (e) { el.querySelector('#micMsg').textContent = 'No se pudo usar el micrófono (permiso denegado o no disponible).'; stream = null; }
+  };
+  function stop() { cancelAnimationFrame(raf); if (stream) stream.getTracks().forEach(t => t.stop()); stream = null; const b = document.getElementById('micBtn'); if (b) { b.textContent = '🎙️ Activar micrófono'; document.getElementById('micMsg').textContent = 'Micrófono apagado'; } }
+  return stop;
+});
+
+/* ---------- 3. WHEEL OF NAMES ---------- */
+tool('wheel', 'manage', '🎡', 'Rueda de nombres', 'Wheel of names', 'Gira la rueda con los nombres de la clase seleccionada. Haz clic en la rueda o presiona la barra espaciadora.', el => {
+  if (needStudents(el)) return;
+  const removed = ses('wheelRemoved', []), opt = ses('wheelOpt', { remove: true });
+  const items = present().filter(n => !removed.includes(n));
+  el.innerHTML += `<div class="wheel-layout"><div>${wheelHTML('wcv')}
+    <div class="row" style="justify-content:center;margin-top:14px"><button class="btn gold xl" id="spin" data-primary>🎡 ¡Girar!</button></div></div>
+    <div class="side-box"><h4>Opciones</h4>
+      <label class="chk"><input type="checkbox" id="rm" ${opt.remove ? 'checked' : ''}> Quitar al ganador después</label>
+      <h4 style="margin-top:14px">Ya salieron (${removed.length})</h4>
+      <div class="chips">${removed.map(n => `<span class="chip">${h(n)}</span>`).join('') || '<span class="muted">Nadie todavía</span>'}</div>
+      <div class="row" style="margin-top:12px"><button class="btn sm" id="wReset">↺ Todos de nuevo</button></div>
+      <p class="muted" style="margin-top:10px;font-size:.85rem">${items.length} en la rueda</p></div></div>`;
+  if (!items.length) { removed.length = 0; return render(); }
+  const w = new Wheel(el.querySelector('#wcv'), items, name => {
+    showWinner('🎡 ¡Le toca a…!', name);
+    if (opt.remove) { removed.push(name); $('#ovOk').addEventListener('click', render, { once: true }); }
+  });
+  el.querySelector('#wcv').onclick = el.querySelector('#spin').onclick = () => w.spin();
+  el.querySelector('#rm').onchange = e => opt.remove = e.target.checked;
+  el.querySelector('#wReset').onclick = () => { removed.length = 0; render(); };
+});
+
+/* ---------- 4. RANDOM STUDENT PICKER ---------- */
+tool('picker', 'manage', '🎲', 'Estudiante al azar', 'Random student picker', 'Elige a un estudiante al azar (puede repetir). Para no repetir usa ✋ Llamada sin repetir.', el => {
+  if (needStudents(el)) return;
+  el.innerHTML += `<div class="reveal"><div class="big" id="pkName">¿Quién será?</div></div>
+    <div class="row" style="justify-content:center"><button class="btn gold xl" id="pk" data-primary>🎲 Elegir</button></div>`;
+  el.querySelector('#pk').onclick = () => {
+    const list = present(), out = el.querySelector('#pkName'), btn = el.querySelector('#pk'); btn.disabled = true;
+    let n = 0, delay = 50;
+    const step = () => {
+      out.textContent = pick(list); tick(); n++;
+      if (n < 22) { delay *= 1.12; setTimeout(step, delay); }
+      else { const final = pick(list); out.textContent = final; out.classList.remove('pop'); void out.offsetWidth; out.classList.add('pop'); fanfare(); btn.disabled = false; }
+    };
+    step();
+  };
+});
+
+/* ---------- 5. RANDOM GROUPS ---------- */
+const GROUP_TAGS = ["🐆","🦜","🐒","🐢","🌋","🌊","⭐","🌵","🦋","🍍","🌮","🚀"];
+function renderGroups(groups) {
+  return `<div class="ggrid">${groups.map((g, i) => `<div class="gcard" style="border-top-color:${WHEEL_COLORS[i % WHEEL_COLORS.length]}"><h3>${GROUP_TAGS[i % GROUP_TAGS.length]} Grupo ${i + 1}</h3><ul>${g.map(n => `<li>${h(n)}</li>`).join('')}</ul></div>`).join('')}</div>`;
+}
+tool('groups', 'manage', '👥', 'Grupos al azar', 'Random groups', 'Divide la clase en grupos por tamaño o por número de grupos.', el => {
+  if (needStudents(el)) return;
+  const o = ses('groupOpt', { mode: 'size', n: 3, groups: null });
+  el.innerHTML += `<div class="row">
+      <select class="field" id="gMode"><option value="size" ${o.mode === 'size' ? 'selected' : ''}>Personas por grupo</option><option value="count" ${o.mode === 'count' ? 'selected' : ''}>Número de grupos</option></select>
+      <input class="field" type="number" min="1" max="20" id="gN" value="${o.n}" style="width:80px">
+      <button class="btn gold" id="gGo" data-primary>👥 Hacer grupos</button>
+      <span class="muted">${present().length} estudiantes presentes</span></div>
+    <div id="gOut">${o.groups ? renderGroups(o.groups) : ''}</div>`;
+  el.querySelector('#gGo').onclick = () => {
+    o.mode = el.querySelector('#gMode').value; o.n = Math.max(1, +el.querySelector('#gN').value || 1);
+    const list = shuffle(present()), k = o.mode === 'size' ? Math.ceil(list.length / o.n) : Math.min(o.n, list.length);
+    const groups = Array.from({ length: k }, () => []); list.forEach((n, i) => groups[i % k].push(n));
+    o.groups = groups; el.querySelector('#gOut').innerHTML = renderGroups(groups); ding();
+  };
+});
+
+/* ---------- 6. RANDOM PAIRS ---------- */
+tool('pairs', 'manage', '🃏', 'Parejas al azar', 'Random pairs', 'Forma parejas al azar. Si sobra alguien, se forma un trío.', el => {
+  if (needStudents(el)) return;
+  const o = ses('pairs', { groups: null });
+  el.innerHTML += `<div class="row"><button class="btn gold" id="pGo" data-primary>🃏 Hacer parejas</button><span class="muted">${present().length} estudiantes presentes</span></div><div id="pOut">${o.groups ? renderGroups(o.groups).replace(/Grupo/g, 'Pareja') : ''}</div>`;
+  el.querySelector('#pGo').onclick = () => {
+    const list = shuffle(present()), g = [];
+    for (let i = 0; i < list.length; i += 2) g.push(list.slice(i, i + 2));
+    if (g.length > 1 && g[g.length - 1].length === 1) g[g.length - 2].push(g.pop()[0]);
+    o.groups = g; el.querySelector('#pOut').innerHTML = renderGroups(g).replace(/Grupo/g, 'Pareja'); ding();
+  };
+});
+
+/* ---------- 7. SEAT ARRANGEMENT ---------- */
+tool('seats', 'manage', '🔀', 'Plan de asientos', 'Seat arrangement', 'Mezcla los asientos. Haz clic en dos asientos para intercambiarlos. Se guarda por clase.', el => {
+  if (needStudents(el)) return;
+  const d = cdata(); if (!d.seats) d.seats = { cols: 4, order: [] };
+  const names = roster(), valid = d.seats.order.length === names.length && names.every(n => d.seats.order.includes(n));
+  if (!valid) { d.seats.order = shuffle(names); save(); }
+  const ab = absentList(); let sel = -1;
+  el.innerHTML += `<div class="row"><label class="chk">Columnas: <input class="field" type="number" min="1" max="10" id="sCols" value="${d.seats.cols}" style="width:70px"></label>
+    <button class="btn gold" id="sMix" data-primary>🔀 Mezclar asientos</button></div>
+    <div class="board-front">🧑‍🏫 Frente del salón / Pizarra</div><div class="seats" id="sGrid"></div>`;
+  const draw = () => {
+    const g = el.querySelector('#sGrid'); g.style.gridTemplateColumns = `repeat(${d.seats.cols}, 1fr)`;
+    g.innerHTML = d.seats.order.map((n, i) => `<div class="seat ${sel === i ? 'sel' : ''}" data-i="${i}">${h(n)}${ab.includes(n) ? ' <span title="Ausente">🏠</span>' : ''}</div>`).join('');
+    g.querySelectorAll('.seat').forEach(s => s.onclick = () => {
+      const i = +s.dataset.i; if (sel < 0) sel = i; else { const o = d.seats.order; [o[sel], o[i]] = [o[i], o[sel]]; sel = -1; save(); }
+      draw();
+    });
+  };
+  draw();
+  el.querySelector('#sCols').oninput = e => { d.seats.cols = Math.max(1, Math.min(10, +e.target.value || 1)); save(); draw(); };
+  el.querySelector('#sMix').onclick = () => { d.seats.order = shuffle(names); sel = -1; save(); draw(); ding(); };
+});
+
+/* ---------- 8. COLD CALL ---------- */
+tool('cold', 'manage', '✋', 'Llamada sin repetir', 'Cold call (no repeats)', 'Nadie repite hasta que todos hayan participado. Se guarda por clase.', el => {
+  if (needStudents(el)) return;
+  const d = cdata(), names = present();
+  if (!d.cold) d.cold = { left: shuffle(names), called: [] };
+  d.cold.left = d.cold.left.filter(n => names.includes(n));
+  names.forEach(n => { if (!d.cold.left.includes(n) && !d.cold.called.includes(n)) d.cold.left.push(n); });
+  const last = d.cold.called[d.cold.called.length - 1];
+  el.innerHTML += `<div class="reveal"><div class="big" id="ccName">${last ? h(last) : '✋ ¿Listos?'}</div><div class="sub">Quedan <b>${d.cold.left.length}</b> de ${d.cold.left.length + d.cold.called.length}</div></div>
+    <div class="row" style="justify-content:center"><button class="btn gold xl" id="cc" data-primary>✋ Siguiente</button><button class="btn ghost" id="ccReset">↺ Empezar ronda nueva</button></div>
+    <div class="chips" style="justify-content:center;margin-top:18px">${names.map(n => `<span class="chip ${d.cold.called.includes(n) ? 'done' : ''}">${h(n)}</span>`).join('')}</div>`;
+  el.querySelector('#cc').onclick = () => {
+    if (!d.cold.left.length) { toast('🎉 ¡Todos participaron! Nueva ronda.'); confetti(); d.cold = { left: shuffle(names), called: [] }; }
+    const i = rnd(d.cold.left.length), n = d.cold.left.splice(i, 1)[0]; d.cold.called.push(n); save(); ding(); render();
+  };
+  el.querySelector('#ccReset').onclick = () => { d.cold = { left: shuffle(names), called: [] }; save(); render(); };
+});
+
+/* ---------- 9. PARTICIPATION TRACKER ---------- */
+tool('part', 'manage', '⭐', 'Participación', 'Participation tracker', 'Toca la tarjeta de un estudiante cada vez que participa. Las tarjetas con borde rojo todavía no han participado hoy.', el => {
+  if (needStudents(el)) return;
+  const d = cdata(); if (!d.part || d.part.date !== today()) d.part = { date: today(), counts: {}, sort: d.part ? d.part.sort : false };
+  let names = present(); const c = d.part.counts;
+  if (d.part.sort) names = names.slice().sort((a, b) => (c[a] || 0) - (c[b] || 0));
+  const total = names.reduce((s, n) => s + (c[n] || 0), 0), zero = names.filter(n => !c[n]).length;
+  el.innerHTML += `<div class="row"><span class="chip">Total hoy: ${total}</span><span class="chip">Sin participar: ${zero}</span>
+    <label class="chk"><input type="checkbox" id="pSort" ${d.part.sort ? 'checked' : ''}> Ordenar: menos participación primero</label>
+    <button class="btn sm ghost" id="pReset">↺ Reiniciar hoy</button></div>
+    <div class="sgrid">${names.map(n => `<div class="scard click ${c[n] ? '' : 'zero'}" data-n="${h(n)}"><div class="nm">${h(n)}</div><div class="val">${'⭐'.repeat(Math.min(c[n] || 0, 5))}${(c[n] || 0) > 5 ? ' ×' + c[n] : ''}${!c[n] ? '—' : ''}</div><div class="mini"><button class="btn sm ghost" data-minus="${h(n)}">−</button></div></div>`).join('')}</div>`;
+  el.querySelectorAll('.scard').forEach(s => s.onclick = e => {
+    const n = s.dataset.n; if (e.target.dataset.minus != null) c[n] = Math.max(0, (c[n] || 0) - 1); else { c[n] = (c[n] || 0) + 1; ding(); }
+    save(); render();
+  });
+  el.querySelector('#pSort').onchange = e => { d.part.sort = e.target.checked; save(); render(); };
+  el.querySelector('#pReset').onclick = () => { if (confirm('¿Reiniciar la participación de hoy?')) { d.part.counts = {}; save(); render(); } };
+});
+
+/* ---------- 10. EXIT TICKET ---------- */
+tool('exit', 'manage', '📋', 'Boleto de salida', 'Exit ticket generator', 'Proyecta una pregunta de salida. Escribe el tema o la palabra de hoy y aparecerá dentro de la pregunta.', el => {
+  const o = ses('exit', { tema: '', small: false, i: -1 });
+  el.innerHTML += `<div class="row"><label class="chk">Tema / palabra de hoy: <input class="field" id="eTema" value="${h(o.tema)}" placeholder="ej. «quiere», los colores..." style="width:240px"></label>
+    <label class="chk"><input type="checkbox" id="eSmall" ${o.small ? 'checked' : ''}> Solo para pequeños (K-2)</label></div>
+    <div class="reveal"><div class="big" id="eOut" style="font-size:clamp(2.2rem,4.6vw,3.8rem)">📋</div></div>
+    <div class="row" style="justify-content:center"><button class="btn gold xl" id="eGo" data-primary>📋 Nuevo boleto</button></div>`;
+  const out = el.querySelector('#eOut');
+  const show = () => { if (o.i < 0) return; const t = EXIT_TICKETS[o.i][0].replace(/\{tema\}/g, o.tema.trim() || 'el tema de hoy'); out.textContent = t; };
+  show();
+  el.querySelector('#eTema').oninput = e => { o.tema = e.target.value; show(); };
+  el.querySelector('#eSmall').onchange = e => o.small = e.target.checked;
+  el.querySelector('#eGo').onclick = () => {
+    const pool = EXIT_TICKETS.map((t, i) => i).filter(i => !o.small || EXIT_TICKETS[i][1]).filter(i => i !== o.i);
+    o.i = pick(pool); show(); out.classList.remove('pop'); void out.offsetWidth; out.classList.add('pop'); ding();
+  };
+});
+
+/* ---------- 11. CLASS POINTS ---------- */
+tool('points', 'rewards', '💯', 'Puntos de la clase', 'Class points tracker', 'Toda la clase trabaja junta para llegar a la meta. Se guarda por clase.', el => {
+  const d = cdata(); if (!d.points) d.points = { pts: 0, goal: 50, reward: '🎉 ¡Fiesta de baile!' };
+  const p = d.points, pct = Math.min(100, p.pts / p.goal * 100);
+  el.innerHTML += `<div class="reveal"><div class="big">${p.pts} <span style="font-size:.45em;color:var(--text-mid)">/ ${p.goal}</span></div>
+    <div style="width:100%;max-width:700px"><div class="progress"><div style="width:${pct}%"></div></div></div>
+    <div class="frame">Meta: ${h(p.reward)}</div></div>
+    <div class="row" style="justify-content:center"><button class="btn red" data-p="-1">−1</button><button class="btn gold xl" data-p="1" data-primary>+1</button>
+    <button class="btn" data-p="5">+5</button><button class="btn" data-p="10">+10</button></div>
+    <div class="row" style="justify-content:center;margin-top:18px"><label class="chk">Meta: <input class="field" type="number" id="pGoal" min="1" value="${p.goal}" style="width:80px"></label>
+    <label class="chk">Premio: <input class="field" id="pRew" value="${h(p.reward)}" style="width:240px"></label><button class="btn sm ghost" id="pZero">↺ Volver a 0</button></div>`;
+  el.querySelectorAll('[data-p]').forEach(b => b.onclick = () => {
+    const before = p.pts; p.pts = Math.max(0, p.pts + +b.dataset.p); save();
+    if (before < p.goal && p.pts >= p.goal) { confetti(); showWinner('🏆 ¡Llegamos a la meta!', p.reward); } else if (+b.dataset.p > 0) ding();
+    render();
+  });
+  el.querySelector('#pGoal').onchange = e => { p.goal = Math.max(1, +e.target.value || 1); save(); render(); };
+  el.querySelector('#pRew').onchange = e => { p.reward = e.target.value; save(); render(); };
+  el.querySelector('#pZero').onclick = () => { if (confirm('¿Volver los puntos a 0?')) { p.pts = 0; save(); render(); } };
+});
+
+/* ---------- 12. HOUSE TEAMS ---------- */
+tool('houses', 'rewards', '🏠', 'Puntos por equipos', 'House team points', 'Equipos con puntos. Haz clic en el nombre de un equipo para cambiarlo. «Sortear miembros» reparte a los estudiantes.', el => {
+  const d = cdata(); if (!d.houses) d.houses = DEFAULT_HOUSES.map(([e, n]) => ({ e, n, pts: 0, members: [] }));
+  const H = d.houses, max = Math.max(1, ...H.map(x => x.pts)), top = Math.max(...H.map(x => x.pts));
+  el.innerHTML += `<div>${H.map((x, i) => `<div class="house ${x.pts === top && top > 0 ? 'lead' : ''}"><div class="em">${x.e}</div>
+      <div><div class="hn" data-ren="${i}" title="Cambiar nombre">${h(x.n)}</div><div class="hb"><div style="width:${x.pts / max * 100}%"></div></div>
+      ${x.members.length ? `<div class="members">${x.members.map(h).join(' · ')}</div>` : ''}</div>
+      <div class="row"><button class="btn sm red" data-h="${i}:-1">−1</button><button class="btn sm gold" data-h="${i}:1">+1</button><button class="btn sm" data-h="${i}:5">+5</button><div class="hp">${x.pts}</div></div></div>`).join('')}</div>
+    <div class="row" style="margin-top:14px"><button class="btn" id="hMem">🎲 Sortear miembros</button>
+    ${H.length < 8 ? '<button class="btn ghost" id="hAdd">＋ Equipo</button>' : ''}${H.length > 2 ? '<button class="btn ghost" id="hDel">− Equipo</button>' : ''}
+    <button class="btn sm ghost" id="hZero">↺ Puntos a 0</button></div>`;
+  el.querySelectorAll('[data-h]').forEach(b => b.onclick = () => { const [i, v] = b.dataset.h.split(':').map(Number); H[i].pts = Math.max(0, H[i].pts + v); if (v > 0) ding(); save(); render(); });
+  el.querySelectorAll('[data-ren]').forEach(b => b.onclick = () => { const x = H[b.dataset.ren], n = prompt('Nombre del equipo:', x.n); if (n) { x.n = n; const e = prompt('Emoji del equipo:', x.e); if (e) x.e = e; save(); render(); } });
+  el.querySelector('#hMem').onclick = () => { H.forEach(x => x.members = []); shuffle(present()).forEach((n, i) => H[i % H.length].members.push(n)); save(); render(); ding(); };
+  const add = el.querySelector('#hAdd'); if (add) add.onclick = () => { const extra = [["🌋","Volcanes"],["🌊","Olas"],["🦋","Mariposas"],["🌵","Cactus"]][H.length - 4] || ["⭐","Estrellas"]; H.push({ e: extra[0], n: extra[1], pts: 0, members: [] }); save(); render(); };
+  const del = el.querySelector('#hDel'); if (del) del.onclick = () => { if (confirm('¿Quitar el último equipo?')) { H.pop(); save(); render(); } };
+  el.querySelector('#hZero').onclick = () => { if (confirm('¿Todos los equipos a 0?')) { H.forEach(x => x.pts = 0); save(); render(); } };
+});
+
+/* ---------- 13. MYSTERY STUDENT ---------- */
+tool('mystery', 'rewards', '🕵️', 'Estudiante misterioso', 'Mystery student', 'Elige en secreto a un estudiante. Si sigue las reglas toda la clase, al final revela su nombre y celebra.', el => {
+  if (needStudents(el)) return;
+  const d = cdata(); if (!d.mystery) d.mystery = { secret: null, revealed: false };
+  const m = d.mystery;
+  el.innerHTML += `<div class="reveal">${!m.secret ? `<div class="big">🕵️</div><div class="sub">Toca «Elegir en secreto» al empezar la clase.</div>`
+      : !m.revealed ? `<div class="big">🤫 ¿Quién será?</div><div class="sub">¡Alguien está en una misión secreta! Todos deben dar su mejor esfuerzo.</div>`
+      : `<div class="sub">El estudiante misterioso es…</div><div class="big pop">${h(m.secret)}</div>`}</div>
+    <div class="row" style="justify-content:center">
+      ${!m.secret || m.revealed ? '<button class="btn gold xl" id="mPick" data-primary>🎲 Elegir en secreto</button>' : '<button class="btn gold xl" id="mShow" data-primary>🎭 Revelar</button>'}
+      ${m.revealed ? '<button class="btn" id="mYes">🌟 ¡Lo logró!</button><button class="btn ghost" id="mNo">🙂 Otra vez será</button>' : ''}
+      ${m.secret && !m.revealed ? '<button class="btn ghost" id="mPeek">👀 Solo para el maestro</button>' : ''}</div>`;
+  const b = id => el.querySelector(id);
+  if (b('#mPick')) b('#mPick').onclick = () => { m.secret = pick(present()); m.revealed = false; save(); render(); };
+  if (b('#mShow')) b('#mShow').onclick = () => { m.revealed = true; save(); fanfare(); render(); };
+  if (b('#mPeek')) b('#mPeek').onclick = () => alert('Estudiante misterioso: ' + m.secret);
+  if (b('#mYes')) b('#mYes').onclick = () => { confetti(); toast('🌟 ¡Felicidades, ' + m.secret + '!'); };
+  if (b('#mNo')) b('#mNo').onclick = () => toast('🙂 ¡Mañana hay otra oportunidad!');
+});
+
+/* ---------- 14. STICKER BOARD ---------- */
+tool('stickers', 'rewards', '🌟', 'Tablero de stickers', 'Digital sticker board', 'Elige un sticker y toca la tarjeta de un estudiante para dárselo. «↩︎» quita el último.', el => {
+  if (needStudents(el)) return;
+  const d = cdata(); if (!d.stickers) d.stickers = {}; const g = gdata(); if (!g.sticker) g.sticker = '⭐';
+  el.innerHTML += `<div class="palette">${STICKERS.map(s => `<button data-s="${s}" class="${g.sticker === s ? 'on' : ''}">${s}</button>`).join('')}</div>
+    <div class="sgrid">${roster().map(n => `<div class="scard click" data-n="${h(n)}"><div class="nm">${h(n)} <span class="muted" style="font-weight:600">(${(d.stickers[n] || []).length})</span></div><div class="stk">${(d.stickers[n] || []).join('')}</div><div class="mini"><button class="btn sm ghost" data-undo="1">↩︎</button></div></div>`).join('')}</div>
+    <div class="row" style="margin-top:14px"><button class="btn sm ghost" id="stClear">↺ Borrar todo el tablero</button></div>`;
+  el.querySelectorAll('[data-s]').forEach(b => b.onclick = () => { g.sticker = b.dataset.s; save(); render(); });
+  el.querySelectorAll('.scard').forEach(c => c.onclick = e => {
+    const n = c.dataset.n, a = d.stickers[n] = d.stickers[n] || [];
+    if (e.target.dataset.undo) a.pop(); else { a.push(g.sticker); ding(); }
+    save(); render();
+  });
+  el.querySelector('#stClear').onclick = () => { if (confirm('¿Borrar todos los stickers de esta clase?')) { d.stickers = {}; save(); render(); } };
+});
+
+/* ---------- 15. TOKEN ECONOMY ---------- */
+tool('tokens', 'rewards', '🪙', 'Economía de fichas', 'Token economy', 'Da fichas por buen trabajo. En la tienda, elige al estudiante y luego el premio para canjear.', el => {
+  if (needStudents(el)) return;
+  const d = cdata(); if (!d.tokens) d.tokens = {}; const g = gdata(); if (g.shop == null) g.shop = DEFAULT_SHOP;
+  const shop = g.shop.split('\n').map(l => l.split('=')).filter(p => p.length === 2 && +p[1] > 0).map(p => [p[0].trim(), +p[1]]);
+  const T = d.tokens, names = roster(), buyer = ses('buyer', names[0]);
+  el.innerHTML += `<div class="sgrid">${names.map(n => `<div class="scard" data-n="${h(n)}"><div class="nm">${h(n)}</div><div class="val">🪙 ${T[n] || 0}</div>
+      <div class="mini"><button class="btn sm red" data-t="-1">−1</button><button class="btn sm gold" data-t="1">+1</button><button class="btn sm" data-t="3">+3</button></div></div>`).join('')}</div>
+    <div class="side-box" style="margin-top:18px"><h4>🛍️ La tienda</h4>
+      <div class="row"><label class="chk">Estudiante: <select class="field" id="tBuyer">${names.map(n => `<option ${n === buyer ? 'selected' : ''}>${h(n)}</option>`).join('')}</select></label></div>
+      <div class="row">${shop.map((s, i) => `<button class="btn sm" data-buy="${i}">${h(s[0])} · 🪙${s[1]}</button>`).join('')}</div>
+      <details style="margin-top:12px"><summary class="muted" style="cursor:pointer">✏️ Editar la tienda (una línea por premio: nombre = precio)</summary>
+      <textarea class="field" id="tShop" style="margin-top:8px">${h(g.shop)}</textarea><button class="btn sm" id="tSave" style="margin-top:6px">Guardar tienda</button></details></div>`;
+  el.querySelectorAll('[data-t]').forEach(b => b.onclick = () => { const n = b.closest('.scard').dataset.n; T[n] = Math.max(0, (T[n] || 0) + +b.dataset.t); if (+b.dataset.t > 0) ding(); save(); render(); });
+  el.querySelector('#tBuyer').onchange = e => sesSet('buyer', e.target.value);
+  el.querySelectorAll('[data-buy]').forEach(b => b.onclick = () => {
+    const n = el.querySelector('#tBuyer').value, [item, cost] = shop[+b.dataset.buy];
+    if ((T[n] || 0) < cost) { toast(`${n} necesita ${cost - (T[n] || 0)} fichas más`); return; }
+    T[n] -= cost; save(); sesSet('buyer', n); confetti(['🪙','🎁','✨']); toast(`🎁 ${n} canjeó: ${item}`); render();
+  });
+  el.querySelector('#tSave').onclick = () => { g.shop = el.querySelector('#tShop').value; save(); render(); toast('Tienda guardada'); };
+});
+
+/* ---------- 16. LEVEL UP ---------- */
+tool('levels', 'rewards', '🎮', 'Sube de nivel', 'Level-up tracker', `Cada ${XP_PER_LEVEL} puntos de experiencia (XP) el estudiante sube de nivel: ${LEVELS.map(l => l[0] + ' ' + l[1]).join(' → ')}.`, el => {
+  if (needStudents(el)) return;
+  const d = cdata(); if (!d.xp) d.xp = {}; const X = d.xp;
+  const lv = xp => Math.min(LEVELS.length - 1, Math.floor(xp / XP_PER_LEVEL));
+  el.innerHTML += `<div class="sgrid">${roster().map(n => { const xp = X[n] || 0, L = LEVELS[lv(xp)], maxed = lv(xp) === LEVELS.length - 1, pr = maxed ? 100 : (xp % XP_PER_LEVEL) / XP_PER_LEVEL * 100;
+      return `<div class="scard" data-n="${h(n)}"><div class="nm">${h(n)}</div><div style="font-size:1.6rem">${L[0]} <b style="font-size:1rem">Nivel ${lv(xp) + 1} · ${L[1]}</b></div>
+      <div class="progress" style="height:14px;margin:2px 0"><div style="width:${pr}%;background:var(--gold)"></div></div><div class="muted" style="font-size:.85rem">${xp} XP</div>
+      <div class="mini"><button class="btn sm red" data-x="-1">−1</button><button class="btn sm gold" data-x="1">+1 XP</button><button class="btn sm" data-x="3">+3 XP</button></div></div>`; }).join('')}</div>
+    <div class="row" style="margin-top:14px"><button class="btn sm ghost" id="xZero">↺ Reiniciar niveles</button></div>`;
+  el.querySelectorAll('[data-x]').forEach(b => b.onclick = () => {
+    const n = b.closest('.scard').dataset.n, before = lv(X[n] || 0); X[n] = Math.max(0, (X[n] || 0) + +b.dataset.x); save();
+    const after = lv(X[n]); if (after > before) { confetti([LEVELS[after][0], '⬆️', '✨']); showWinner(`⬆️ ¡${n} subió de nivel!`, LEVELS[after][0] + ' ' + LEVELS[after][1]); } else if (+b.dataset.x > 0) ding();
+    render();
+  });
+  el.querySelector('#xZero').onclick = () => { if (confirm('¿Reiniciar la experiencia de toda la clase?')) { d.xp = {}; save(); render(); } };
+});
+
+/* ---------- 17. RANDOM REWARD ---------- */
+tool('reward', 'rewards', '🎁', 'Premio sorpresa', 'Random reward generator', 'Gira la rueda para un premio sorpresa. Puedes editar la lista de premios.', el => {
+  const g = gdata(); if (!g.rewards) g.rewards = DEFAULT_REWARDS.slice();
+  el.innerHTML += `<div class="wheel-layout"><div>${wheelHTML('rcv')}<div class="row" style="justify-content:center;margin-top:14px"><button class="btn gold xl" id="rSpin" data-primary>🎁 ¡Girar!</button></div></div>
+    <div class="side-box"><h4>✏️ Premios (uno por línea)</h4><textarea class="field" id="rList" style="min-height:260px">${h(g.rewards.join('\n'))}</textarea>
+    <div class="row" style="margin-top:6px"><button class="btn sm" id="rSave">Guardar</button><button class="btn sm ghost" id="rDef">Restaurar</button></div></div></div>`;
+  const w = new Wheel(el.querySelector('#rcv'), g.rewards, r => { confetti(['🎁','✨','🎉']); showWinner('🎁 Premio sorpresa:', r); });
+  el.querySelector('#rcv').onclick = el.querySelector('#rSpin').onclick = () => w.spin();
+  el.querySelector('#rSave').onclick = () => { g.rewards = el.querySelector('#rList').value.split('\n').map(s => s.trim()).filter(Boolean); save(); render(); toast('Premios guardados'); };
+  el.querySelector('#rDef').onclick = () => { g.rewards = DEFAULT_REWARDS.slice(); save(); render(); };
+});
+
+/* ---------- LANGUAGE: generic generator rows ---------- */
+function genTool(el, key, fields, after) {
+  const v = ses('gen-' + key, () => { const o = {}; fields.forEach(f => o[f.k] = pick(f.bank)); return o; });
+  el.innerHTML += fields.map(f => `<div class="gen-row"><div class="gl">${f.label}</div><div class="gv" id="gv-${f.k}">${h(v[f.k])}</div><button class="btn sm" data-re="${f.k}" title="Otra">🎲</button></div>`).join('')
+    + `<div class="row" style="margin-top:6px"><button class="btn gold xl" id="genAll" data-primary>🎲 ¡Todo nuevo!</button></div><div id="genAfter"></div>`;
+  const upd = () => { if (after) el.querySelector('#genAfter').innerHTML = after(v); };
+  const reroll = k => { const f = fields.find(x => x.k === k); let n; do { n = pick(f.bank); } while (f.bank.length > 1 && n === v[k]); v[k] = n; const e = el.querySelector('#gv-' + k); e.textContent = n; e.classList.remove('pop'); void e.offsetWidth; e.classList.add('pop'); };
+  el.querySelectorAll('[data-re]').forEach(b => b.onclick = () => { reroll(b.dataset.re); tick(); upd(); });
+  el.querySelector('#genAll').onclick = () => { fields.forEach(f => reroll(f.k)); ding(); upd(); };
+  upd();
+}
+const lowerFirst = s => s.charAt(0).toLowerCase() + s.slice(1);
+const capFirst = s => s.charAt(0).toUpperCase() + s.slice(1);
+
+/* ---------- 18. STORY MIX (bonus) ---------- */
+tool('story', 'lang', '📖', '¡Historia al instante!', 'Instant story starter', 'Personaje + lugar + problema + circunstancia: el punto de partida para una historia de clase (TPRS).', el => {
+  genTool(el, 'story', [
+    { k: 'name', label: 'Nombre', bank: NAMES }, { k: 'type', label: '¿Quién es?', bank: CHAR_TYPES },
+    { k: 'loc', label: '¿Dónde?', bank: LOCATIONS }, { k: 'prob', label: 'Problema', bank: PROBLEMS }, { k: 'circ', label: 'Circunstancia', bank: CIRCUMSTANCES }
+  ], v => `<div class="story-out">📖 Había una vez ${h(v.type)} que se llamaba <b>${h(v.name)}</b>. ${h(v.name)} estaba ${h(v.loc)}. Un día, ${h(lowerFirst(v.prob))} ¡Y además… ${h(lowerFirst(v.circ))}<br><span style="opacity:.7;font-size:1rem">¿Qué pasa después? 🤔</span></div>`);
+});
+
+/* ---------- 19. VOCAB PICKER ---------- */
+tool('vocab', 'lang', '🔤', 'Vocabulario al azar', 'Target vocabulary picker', 'Saca palabras de un tema sin repetir. Elige «Mi lista» para usar las palabras de tu unidad.', el => {
+  const g = gdata(); if (g.vocabMine == null) g.vocabMine = '';
+  const o = ses('vocab', { theme: Object.keys(VOCAB)[0], left: null, cur: null });
+  const words = () => o.theme === '__mine' ? g.vocabMine.split('\n').map(s => s.trim()).filter(Boolean) : VOCAB[o.theme];
+  if (!o.left) o.left = shuffle(words());
+  const all = words();
+  el.innerHTML += `<div class="row"><label class="chk">Tema: <select class="field" id="vTheme">${Object.keys(VOCAB).map(k => `<option ${o.theme === k ? 'selected' : ''}>${k}</option>`).join('')}<option value="__mine" ${o.theme === '__mine' ? 'selected' : ''}>⭐ Mi lista</option></select></label>
+    <span class="muted">Quedan ${o.left.length} de ${all.length}</span></div>
+    ${o.theme === '__mine' ? `<div style="margin-top:10px"><textarea class="field" id="vMine" placeholder="Escribe una palabra o frase por línea (puedes poner un emoji al inicio)">${h(g.vocabMine)}</textarea><button class="btn sm" id="vSave" style="margin-top:6px">Guardar mi lista</button></div>` : ''}
+    <div class="reveal"><div class="big" id="vOut">${o.cur ? h(o.cur) : '🔤'}</div></div>
+    <div class="row" style="justify-content:center"><button class="btn gold xl" id="vGo" data-primary ${all.length ? '' : 'disabled'}>🔤 Sacar palabra</button><button class="btn ghost" id="vReset">↺ Barajar de nuevo</button></div>
+    <div class="chips" style="justify-content:center;margin-top:14px">${all.map(w => `<span class="chip ${o.left.includes(w) ? '' : 'done'}">${h(w)}</span>`).join('')}</div>`;
+  el.querySelector('#vTheme').onchange = e => { o.theme = e.target.value; o.left = null; o.cur = null; render(); };
+  el.querySelector('#vGo').onclick = () => { if (!o.left.length) { o.left = shuffle(all); toast('🔁 ¡Se acabaron! Barajando de nuevo.'); } o.cur = o.left.pop(); ding(); render(); };
+  el.querySelector('#vReset').onclick = () => { o.left = shuffle(all); o.cur = null; render(); };
+  const vs = el.querySelector('#vSave'); if (vs) vs.onclick = () => { g.vocabMine = el.querySelector('#vMine').value; save(); o.left = null; o.cur = null; render(); toast('Lista guardada'); };
+});
+
+/* ---------- 20. CHARACTER ---------- */
+tool('character', 'lang', '🧑‍🎤', 'Personajes', 'Story character generator', 'Crea un personaje loco para la historia. Toca 🎲 para cambiar solo una parte.', el => {
+  genTool(el, 'char', [
+    { k: 'name', label: 'Se llama…', bank: NAMES }, { k: 'type', label: 'Es…', bank: CHAR_TYPES },
+    { k: 'trait', label: '¿Cómo es?', bank: CHAR_TRAITS }, { k: 'want', label: '¿Qué quiere?', bank: CHAR_WANTS }
+  ], v => `<div class="story-out">🧑‍🎤 <b>${h(v.name)}</b> es ${h(v.type)}. ${h(v.trait)} ${h(v.want)}</div>`);
+});
+
+/* ---------- 21. PROBLEM ---------- */
+tool('problem', 'lang', '😱', 'Problemas', 'Story problem generator', 'Todo buen cuento necesita un problema. ¡Saca uno al azar!', el => {
+  genTool(el, 'prob', [{ k: 'p', label: 'El problema:', bank: PROBLEMS }]);
+});
+
+/* ---------- 22. LOCATION ---------- */
+tool('location', 'lang', '📍', 'Lugares', 'Location generator', 'Lugares de Belice, del mundo hispano, de todos los días… ¡y de fantasía!', el => {
+  genTool(el, 'loc', [{ k: 'l', label: 'La historia pasa…', bank: LOCATIONS }]);
+});
+
+/* ---------- 23. STORY CUBES ---------- */
+tool('cubes', 'lang', '🎲', 'Cubos de historias', 'Story cubes', 'Tira los cubos y cuenta una historia usando todas las imágenes.', el => {
+  const o = ses('cubes', { n: 6, faces: null });
+  if (!o.faces) o.faces = shuffle(CUBE_POOL).slice(0, o.n);
+  el.innerHTML += `<div class="row"><label class="chk">Cubos: <select class="field" id="cN">${[3, 4, 6, 9].map(n => `<option ${o.n === n ? 'selected' : ''}>${n}</option>`).join('')}</select></label></div>
+    <div class="cubes" id="cOut">${o.faces.map(f => `<div class="cube">${f}</div>`).join('')}</div>
+    <div class="row" style="justify-content:center"><button class="btn gold xl" id="cGo" data-primary>🎲 Tirar los cubos</button></div>
+    <p class="center frame" style="margin-top:16px;font-family:Schoolbell;color:var(--bg);font-size:1.3rem">«Había una vez…» → «Un día…» → «Entonces…» → «Al final…»</p>`;
+  el.querySelector('#cN').onchange = e => { o.n = +e.target.value; o.faces = null; render(); };
+  el.querySelector('#cGo').onclick = () => {
+    const cubes = el.querySelectorAll('.cube'), finals = shuffle(CUBE_POOL).slice(0, o.n); o.faces = finals;
+    cubes.forEach(c => c.classList.add('roll'));
+    let k = 0; const iv = setInterval(() => { cubes.forEach(c => c.textContent = pick(CUBE_POOL)); tick(); if (++k > 10) { clearInterval(iv); cubes.forEach((c, i) => { c.classList.remove('roll'); c.textContent = finals[i]; }); ding(); } }, 80);
+  };
+});
+
+/* ---------- 24. QUESTION WORD SPINNER ---------- */
+tool('qwords', 'lang', '❓', 'Rueda de preguntas', 'Question word spinner', 'Gira y haz una pregunta sobre la historia con esa palabra interrogativa.', el => {
+  el.innerHTML += `<div class="wheel-layout"><div>${wheelHTML('qcv')}<div class="row" style="justify-content:center;margin-top:14px"><button class="btn gold xl" id="qSpin" data-primary>❓ ¡Girar!</button></div></div>
+    <div class="side-box"><h4>Ejemplo</h4><div id="qOut" class="muted">Gira la rueda…</div></div></div>`;
+  const w = new Wheel(el.querySelector('#qcv'), QWORDS.map(q => q[0]), (word, i) => {
+    const q = QWORDS[i]; showWinner('Pregunta con…', q[0], true);
+    el.querySelector('#qOut').innerHTML = `<div class="big" style="font-size:2.8rem">${h(q[0])}</div><p style="font-size:1.2rem;font-weight:800;margin-top:8px">${h(q[1])}</p><p class="frame" style="font-family:Schoolbell;color:var(--bg);font-size:1.15rem;margin-top:6px">→ ${h(q[2])}</p>`;
+  });
+  el.querySelector('#qcv').onclick = el.querySelector('#qSpin').onclick = () => w.spin();
+});
+
+/* ---------- 25. VERB PICKER ---------- */
+tool('verbs', 'lang', '🏃', 'Verbos al azar', 'Verb picker', 'Saca un verbo de alta frecuencia con sus formas más útiles para contar historias.', el => {
+  const o = ses('verbs', { set: 'all', cur: null, left: null });
+  const pool = () => VERBS.filter(v => o.set === 'all' || v[6]);
+  if (!o.left) o.left = shuffle(pool());
+  const v = o.cur;
+  el.innerHTML += `<div class="row"><label class="chk">Lista: <select class="field" id="vbSet"><option value="all" ${o.set === 'all' ? 'selected' : ''}>Alta frecuencia (${VERBS.length})</option><option value="s7" ${o.set === 's7' ? 'selected' : ''}>Súper 7</option></select></label></div>
+    <div class="reveal">${v ? `<div style="font-size:4rem">${v[5]}</div><div class="big">${h(v[0])}</div><div class="sub">${h(v[1])}</div>
+      <div class="verb-forms"><div><b>yo (presente)</b><span>${h(v[2])}</span></div><div><b>él / ella (presente)</b><span>${h(v[3])}</span></div><div><b>él / ella (pasado)</b><span>${h(v[4])}</span></div></div>` : '<div class="big">🏃</div>'}</div>
+    <div class="row" style="justify-content:center"><button class="btn gold xl" id="vbGo" data-primary>🏃 Sacar verbo</button></div>`;
+  el.querySelector('#vbSet').onchange = e => { o.set = e.target.value; o.left = null; o.cur = null; render(); };
+  el.querySelector('#vbGo').onclick = () => { if (!o.left.length) o.left = shuffle(pool()); o.cur = o.left.pop(); ding(); render(); };
+});
+
+/* ---------- 26. TENSE PICKER ---------- */
+tool('tenses', 'lang', '⏳', 'Tiempos verbales', 'Tense picker', 'Elige un tiempo verbal al azar y cuenta (o vuelve a contar) la historia en ese tiempo.', el => {
+  const o = ses('tenses', { lv: { Novato: true, Intermedio: true, Avanzado: false }, cur: null });
+  const t = o.cur;
+  el.innerHTML += `<div class="row">${Object.keys(o.lv).map(l => `<label class="chk"><input type="checkbox" data-lv="${l}" ${o.lv[l] ? 'checked' : ''}> ${l}</label>`).join('')}</div>
+    <div class="reveal">${t ? `<div class="sub">${h(t[1])} · <i>${h(t[3])}</i></div><div class="big">${h(t[0])}</div><div class="frame">«${h(t[2])}»</div><div class="sub">Cuenta la historia en este tiempo.</div>` : '<div class="big">⏳</div>'}</div>
+    <div class="row" style="justify-content:center"><button class="btn gold xl" id="tGo" data-primary>⏳ Elegir tiempo</button></div>`;
+  el.querySelectorAll('[data-lv]').forEach(c => c.onchange = () => o.lv[c.dataset.lv] = c.checked);
+  el.querySelector('#tGo').onclick = () => {
+    const pool = TENSES.filter(x => o.lv[x[1]] && x !== o.cur); if (!pool.length) { toast('Marca al menos un nivel'); return; }
+    o.cur = pick(pool); ding(); render();
+  };
+});
+
+/* ---------- 27. CONVERSATION PROMPTS ---------- */
+tool('convo', 'lang', '💬', 'Temas de conversación', 'Conversation prompt generator', 'Una pregunta con su marco de oración para practicar en parejas o con toda la clase.', el => {
+  const o = ses('convo', { lv: 'Novato', cur: null });
+  el.innerHTML += `<div class="row"><label class="chk">Nivel: <select class="field" id="cvLv">${Object.keys(CONVO).map(l => `<option ${o.lv === l ? 'selected' : ''}>${l}</option>`).join('')}</select></label></div>
+    <div class="reveal">${o.cur ? `<div class="big" style="font-size:clamp(2.4rem,5vw,4.2rem)">${h(o.cur[0])}</div><div class="frame">→ ${h(o.cur[1])}</div>` : '<div class="big">💬</div>'}</div>
+    <div class="row" style="justify-content:center"><button class="btn gold xl" id="cvGo" data-primary>💬 Nueva pregunta</button></div>`;
+  el.querySelector('#cvLv').onchange = e => { o.lv = e.target.value; o.cur = null; render(); };
+  el.querySelector('#cvGo').onclick = () => { const pool = CONVO[o.lv].filter(x => x !== o.cur); o.cur = pick(pool); ding(); render(); };
+});
+
+/* ---------- 28. CIRCUMSTANCE ---------- */
+tool('circ', 'lang', '🌀', 'Circunstancias locas', 'Force a circumstance', '¡Cambia la historia de golpe! Saca una circunstancia y sigue contando.', el => {
+  genTool(el, 'circ', [{ k: 'c', label: '¡De repente…!', bank: CIRCUMSTANCES }]);
+});
+
+/* =========================================================
+   NAV + RENDER
+   ========================================================= */
+let cleanup = null;
+function buildNav() {
+  $('#nav').innerHTML = SECTIONS.map(([sid, title]) => `<div class="sec-title">${title}</div>` + TOOLS.filter(t => t.sec === sid).map(t =>
+    `<button class="nav-btn ${S.tool === t.id ? 'on' : ''}" data-tool="${t.id}"><span class="ic">${t.icon}</span><span>${t.es}<span class="en">${t.en}</span></span></button>`).join('')).join('')
+    + `<div class="backup"><button class="tb-btn" id="expBtn">💾 Guardar copia</button><button class="tb-btn" id="impBtn">📂 Cargar copia</button>
+       <p>Los puntos, stickers y niveles se guardan en este navegador. Guarda una copia de vez en cuando por si acaso.</p></div>`;
+  $('#nav').querySelectorAll('[data-tool]').forEach(b => b.onclick = () => go(b.dataset.tool));
+  $('#expBtn').onclick = exportData; $('#impBtn').onclick = () => $('#importFile').click();
+}
+function go(id) { S.tool = id; history.replaceState(null, '', '#' + id); buildNav(); render(); window.scrollTo({ top: 0 }); }
+function render() {
+  if (cleanup) { try { cleanup(); } catch (e) {} cleanup = null; }
+  const t = TOOLS.find(x => x.id === S.tool) || TOOLS[0], p = $('#panel');
+  const placeholder = !S.usingFile || roster().some(n => /^Estudiante \d+$/.test(n));
+  p.innerHTML = `<div class="p-head"><h2>${t.icon} ${t.es}</h2><span class="cls">${h(cname())}</span></div><p class="hint">${t.hint}</p>`
+    + (placeholder ? `<div class="notice">📝 Estos son nombres de ejemplo. Cuando escribas los nombres reales en <b>data/clases.json</b> (en GitHub), aparecerán aquí automáticamente.</div>` : '');
+  const box = document.createElement('div'); p.appendChild(box);
+  const c = t.render(box); if (typeof c === 'function') cleanup = c;
+}
+
+/* ---------- class select + attendance ---------- */
+function buildClassSel() {
+  $('#classSel').innerHTML = S.clases.map((c, i) => `<option value="${i}" ${i === S.cur ? 'selected' : ''}>${h(c.nombre)}</option>`).join('');
+}
+$('#classSel').onchange = e => { S.cur = +e.target.value; S.store.lastClass = cname(); save(); render(); };
+$('#absBtn').onclick = () => {
+  const ab = absentList();
+  $('#mCard').innerHTML = `<h3>🙋 Asistencia de hoy</h3><p class="muted">Marca a los estudiantes <b>ausentes</b>. Las herramientas no los incluirán hoy (se reinicia cada día).</p>
+    <div class="abs-list">${roster().map(n => `<label class="chk"><input type="checkbox" value="${h(n)}" ${ab.includes(n) ? 'checked' : ''}> ${h(n)}</label>`).join('')}</div>
+    <div class="row"><button class="btn gold" id="absOk">Listo</button></div>`;
+  $('#modal').classList.add('show');
+  $('#absOk').onclick = () => {
+    cdata().absent = { date: today(), list: [...$('#mCard').querySelectorAll('input:checked')].map(i => i.value) };
+    save(); $('#modal').classList.remove('show'); render();
+  };
+};
+$('#modal').onclick = e => { if (e.target.id === 'modal') $('#modal').classList.remove('show'); };
+$('#fsBtn').onclick = () => { if (!document.fullscreenElement) document.documentElement.requestFullscreen && document.documentElement.requestFullscreen(); else document.exitFullscreen(); };
+
+/* ---------- backup ---------- */
+function exportData() {
+  const blob = new Blob([JSON.stringify(S.store, null, 2)], { type: 'application/json' }), a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = 'herramientas-copia-' + today() + '.json'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+$('#importFile').onchange = e => {
+  const f = e.target.files[0]; if (!f) return; const r = new FileReader();
+  r.onload = () => { try { const d = JSON.parse(r.result); if (!d.c) throw 0; if (confirm('¿Reemplazar los datos actuales con esta copia?')) { S.store = Object.assign({ c: {}, g: {} }, d); save(); render(); toast('Copia cargada ✔'); } } catch (err) { alert('Ese archivo no es una copia válida.'); } };
+  r.readAsText(f); e.target.value = '';
+};
+
+/* ---------- keyboard: space = main button ---------- */
+document.addEventListener('keydown', e => {
+  if (e.code !== 'Space' || /INPUT|TEXTAREA|SELECT|BUTTON/.test(document.activeElement.tagName)) return;
+  if ($('#overlay').classList.contains('show')) { e.preventDefault(); $('#ovOk').click(); return; }
+  const b = $('#panel [data-primary]'); if (b && !b.disabled) { e.preventDefault(); b.click(); }
+});
+
+/* ---------- start ---------- */
+(async function init() {
+  const fromHash = location.hash.slice(1); if (TOOLS.some(t => t.id === fromHash)) S.tool = fromHash;
+  try {
+    const res = await fetch('data/clases.json', { cache: 'no-store' });
+    if (!res.ok) throw 0; const j = await res.json();
+    if (Array.isArray(j.clases) && j.clases.length) { S.clases = j.clases; S.usingFile = true; }
+  } catch (e) {}
+  const li = S.clases.findIndex(c => c.nombre === S.store.lastClass); S.cur = li >= 0 ? li : 0;
+  buildClassSel(); buildNav(); render();
+})();
+</script>
+</body>
+</html>
