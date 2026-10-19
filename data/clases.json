@@ -1,0 +1,24 @@
+{
+  "clases": [
+    {
+      "nombre": "K-2 · Grupo 1 (A)",
+      "estudiantes": ["Estudiante 1", "Estudiante 2", "Estudiante 3", "Estudiante 4", "Estudiante 5", "Estudiante 6"]
+    },
+    {
+      "nombre": "K-2 · Grupo 2 (B)",
+      "estudiantes": ["Estudiante 1", "Estudiante 2", "Estudiante 3", "Estudiante 4", "Estudiante 5", "Estudiante 6", "Estudiante 7", "Estudiante 8"]
+    },
+    {
+      "nombre": "3-5 · Upper Elementary",
+      "estudiantes": ["Estudiante 1", "Estudiante 2", "Estudiante 3", "Estudiante 4", "Estudiante 5", "Estudiante 6", "Estudiante 7", "Estudiante 8"]
+    },
+    {
+      "nombre": "6-8 · Middle School",
+      "estudiantes": ["Estudiante 1", "Estudiante 2", "Estudiante 3", "Estudiante 4", "Estudiante 5", "Estudiante 6", "Estudiante 7", "Estudiante 8"]
+    },
+    {
+      "nombre": "9-11 · Secondary",
+      "estudiantes": ["Estudiante 1", "Estudiante 2", "Estudiante 3", "Estudiante 4", "Estudiante 5", "Estudiante 6", "Estudiante 7", "Estudiante 8"]
+    }
+  ]
+}
