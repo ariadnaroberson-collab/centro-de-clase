@@ -1,24 +1,64 @@
 {
   "clases": [
     {
-      "nombre": "K-2 · Grupo 1 (A)",
-      "estudiantes": ["Westley", "Zayan", "Archer", "Laith", "Quinn"]
+      "nombre": "Lower Elementary (K-2)",
+      "estudiantes": [
+        "Archer",
+        "Westley",
+        "Zayan",
+        "Laith",
+        "Quinn",
+        "Talia",
+        "James"
+      ]
     },
     {
-      "nombre": "K-2 · Grupo 2 (B)",
-      "estudiantes": ["Talia", "James"] 
+      "nombre": "Upper Elementary (3-5)",
+      "estudiantes": [
+        "Amir",
+        "Logan",
+        "Aria",
+        "Naya",
+        "Zamir",
+        "Jin",
+        "Macy",
+        "Eli",
+        "Sebastian",
+        "Emily"
+      ]
     },
     {
-      "nombre": "3-5 · Upper Elementary",
-      "estudiantes": ["Amir", "Naya", "Logan", "Aria", "Zamir", "Jin", "Macy", "Emily", "Eli"]
+      "nombre": "Middle School 1",
+      "estudiantes": [
+        "Caden",
+        "Elan",
+        "Liam",
+        "Emaya"
+      ]
     },
     {
-      "nombre": "6-8 · Middle School",
-      "estudiantes": ["Emaya", "Caden", "Liam", "Elan", "José", "William", "Johnny", "Isaiah"]
+      "nombre": "Middle School 3",
+      "estudiantes": [
+        "Johnny",
+        "Isaiah",
+        "William",
+        "José"
+      ]
     },
     {
-      "nombre": "9-11 · Secondary",
-      "estudiantes": ["Tucker", "Jeffrey", "Jan", "Morgan", "Olivia"]
+      "nombre": "Secondary 1",
+      "estudiantes": [
+        "Tucker",
+        "Jeffrey"
+      ]
+    },
+    {
+      "nombre": "Secondary 2",
+      "estudiantes": [
+        "Morgan",
+        "Jan",
+        "Olivia"
+      ]
     }
   ]
 }
