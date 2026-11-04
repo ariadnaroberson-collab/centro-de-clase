@@ -519,6 +519,58 @@
   .gm-open { background: none; border: none; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 8px 4px; }
   .gm-ic { font-size: 2.8rem; line-height: 1; } .gm-n { font-weight: 800; color: var(--bg); text-align: center; }
   .gm-act { display: flex; gap: 4px; justify-content: center; }
+  /* ahorcado */
+  .gm-builtin { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 14px; }
+  .hg-box { background: #fff; border-radius: 18px; padding: 18px; margin-top: 14px; border: 2px solid #e1d9c9; }
+  .hg-box:fullscreen { padding: 3vw; border: none; overflow: auto; display: flex; flex-direction: column; justify-content: center; }
+  .hg-top { display: grid; grid-template-columns: minmax(260px, 1.3fr) 1fr; gap: 18px; align-items: center; }
+  @media (max-width: 900px) { .hg-top { grid-template-columns: 1fr; } }
+  .hg-info { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+  .hg-hints { display: flex; flex-direction: column; gap: 6px; }
+  .hg-em { font-size: 4rem; line-height: 1; }
+  .hg-clue { font-size: 1.3rem; font-weight: 800; color: var(--bg); }
+  .hg-en { font-size: 1.05rem; color: var(--text-mid); }
+  .hg-result { font-family: 'Caveat', cursive; font-weight: 700; font-size: 2.2rem; line-height: 1.05; }
+  .hg-result.won { color: #2f7d3a; } .hg-result.lost { color: #c8312f; }
+  .hg-word { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px clamp(20px, 3vw, 44px); margin: 22px 0 14px; }
+  .hg-wd { display: flex; gap: 8px; flex-wrap: nowrap; }
+  .hg-slot { width: clamp(34px, 4.4vw, 60px); height: clamp(46px, 6vw, 78px); border-bottom: 5px solid var(--bg); display: flex; align-items: flex-end; justify-content: center; font-weight: 800; font-size: clamp(1.8rem, 3.6vw, 3.4rem); color: var(--bg); line-height: 1.1; }
+  .hg-slot.ok { animation: pop .35s ease; } .hg-slot.miss { color: #c8312f; }
+  .hg-gap { width: clamp(16px, 2.2vw, 34px); }
+  .hg-punct { font-weight: 800; font-size: clamp(1.8rem, 3.6vw, 3.4rem); color: var(--bg); align-self: flex-end; }
+  .hg-keys { display: grid; grid-template-columns: repeat(14, 1fr); gap: 6px; max-width: 900px; margin: 0 auto; }
+  @media (max-width: 700px) { .hg-keys { grid-template-columns: repeat(7, 1fr); } }
+  .hg-k { background: var(--card); border: 2px solid #d8d0c0; border-radius: 10px; padding: 10px 0; font-weight: 800; font-size: 1.3rem; color: var(--bg); }
+  .hg-k:hover:not(:disabled) { border-color: var(--gold); background: #fff3c4; }
+  .hg-k.hit { background: #2f7d3a; color: #fff; border-color: #2f7d3a; } .hg-k.no { background: #eee; color: #bbb; text-decoration: line-through; }
+  .hg-k:disabled { cursor: default; }
+  .hg-gallows { position: relative; background: var(--card); border-radius: 16px; padding: 10px; text-align: center; }
+  .hg-classic { width: min(100%, 260px); height: auto; stroke: var(--bg); stroke-width: 6; stroke-linecap: round; fill: none; }
+  .hg-gallows.lost .hg-classic { stroke: #c8312f; }
+  .hg-left { position: absolute; left: 12px; top: 10px; font-weight: 800; color: var(--bg); background: rgba(255,255,255,.85); border-radius: 10px; padding: 2px 10px; font-size: .95rem; }
+  .hg-sea { position: relative; height: 230px; border-radius: 16px; overflow: hidden; background: linear-gradient(180deg, #bfe8f5 0 22%, #3ea7cf 22%, #1d6f9c 100%); transition: background 1s; }
+  .hg-sea.d1 { background: linear-gradient(180deg, #bfe8f5 0 22%, #3797bd 22%, #175c84 100%); }
+  .hg-sea.d2 { background: linear-gradient(180deg, #f3d9b0 0 22%, #2f7fa3 22%, #12405e 100%); }
+  .hg-sea.d3 { background: linear-gradient(180deg, #f2b39a 0 22%, #2a5f7c 22%, #0b2638 100%); animation: tremble .25s infinite; }
+  @keyframes tremble { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(2px); } }
+  .hg-wave { position: absolute; left: -10%; right: -10%; height: 16px; border-radius: 50%; border-top: 3px solid rgba(255,255,255,.5); animation: wave 3s ease-in-out infinite; }
+  .hg-wave:nth-child(1) { top: 20%; } .hg-wave:nth-child(2) { top: 45%; animation-delay: -1s; } .hg-wave:nth-child(3) { top: 72%; animation-delay: -2s; }
+  @keyframes wave { 50% { transform: translateX(4%); } }
+  .hg-fin { position: absolute; top: 44%; width: 74px; transition: left .9s cubic-bezier(.4,1.4,.5,1); animation: finbob 1.6s ease-in-out infinite; }
+  .hg-fin svg { width: 100%; display: block; } .hg-fin path { fill: #4a5560; stroke: #2b3238; stroke-width: 2; }
+  .hg-fin.close { animation-duration: .5s; }
+  @keyframes finbob { 50% { transform: translateY(5px); } }
+  .hg-swim { position: absolute; right: 6%; top: 36%; font-size: 3.6rem; animation: finbob 1.2s ease-in-out infinite; }
+  .hg-swim.won { right: 3%; top: 24%; font-size: 3.4rem; }
+  .hg-swim.saved { top: 30%; }
+  .hg-swim.late, .hg-msg.late { animation: appear .5s 1.5s both; }
+  @keyframes appear { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+  .hg-chomp { position: absolute; left: 50%; top: 50%; font-size: 7rem; line-height: 1; transform: translate(-50%, -50%); text-align: center; pointer-events: none; }
+  .hg-chomp b { display: block; font-family: 'Caveat', cursive; font-size: 3rem; color: #fff; text-shadow: 0 3px 0 #c8312f, 0 0 12px rgba(0,0,0,.4); }
+  .hg-chomp.go { animation: chomp 1.5s ease forwards; }
+  .hg-chomp.done { opacity: 0; }
+  @keyframes chomp { 0% { opacity: 0; transform: translate(-50%, 60%) scale(.4); } 25% { opacity: 1; transform: translate(-50%, -60%) scale(1.25) rotate(-8deg); } 45% { transform: translate(-50%, -50%) scale(1.1) rotate(6deg); } 80% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, 40%) scale(.8); } }
+  .hg-msg { position: absolute; left: 0; right: 0; bottom: 10px; text-align: center; color: #fff; font-weight: 800; font-size: 1.2rem; text-shadow: 0 2px 4px rgba(0,0,0,.5); }
   .notice { background: #fff6d6; border: 2px dashed var(--gold); border-radius: 12px; padding: 10px 14px; color: var(--text-dark); font-size: 0.9rem; margin-bottom: 14px; }
 </style>
 </head>
@@ -2427,7 +2479,7 @@ tool('espanol', 'rewards', '🗣️', '¡Solo en español!', 'Spanish-only strea
   el.querySelector('#espPts').onchange = e => { c.pts = Math.max(0, Math.min(20, +e.target.value || 0)); save(); };
 });
 document.addEventListener('keydown', e => {
-  if ((e.key === 'i' || e.key === 'I') && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName) && !document.activeElement.isContentEditable && ESP.run) espSlip();
+  if ((e.key === 'i' || e.key === 'I') && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName) && !document.activeElement.isContentEditable && ESP.run && S.tool !== 'ahorcado') espSlip();
 });
 
 /* ---------- 🕺 TPR / PAUSA ACTIVA ---------- */
@@ -2710,12 +2762,14 @@ tool('practica', 'assess', '🎮', 'Práctica y juegos', 'Practice & games by un
   const u = U[g.unitCur];
   el.innerHTML += `<div class="row"><label class="chk">Unidad: <select class="field" id="unSel" style="font-weight:800">${U.map((x, i) => `<option value="${i}" ${i === g.unitCur ? 'selected' : ''}>${h(x.n)}</option>`).join('')}</select></label>
       <button class="btn sm" id="unNew">＋ Nueva unidad</button>${u ? '<button class="btn sm ghost" id="unRen">✏️ Renombrar</button><button class="btn sm ghost" id="unDel">🗑️ Borrar unidad</button>' : ''}</div>
+    <div class="gm-builtin"><span class="muted">Juegos dentro de Herramientas:</span><button class="btn gold" id="gmHang">🦈 Ahorcado · palabras de cada unidad</button></div>
     ${u ? `<div class="gm-grid">${u.links.map((x, i) => `<div class="gm-card"><button class="gm-open" data-o="${i}"><span class="gm-ic">${gameIcon(x.u)}</span><span class="gm-n">${h(x.n)}</span></button>
         <div class="gm-act"><button class="btn sm ghost" data-t="${i}" title="Abrir en pestaña nueva">↗</button><button class="btn sm ghost" data-q="${i}" title="Código QR para los estudiantes">📱</button><button class="btn sm ghost" data-d="${i}" title="Quitar">✕</button></div></div>`).join('') || '<p class="muted">Esta unidad todavía no tiene enlaces. Añade el primero aquí abajo 👇</p>'}</div>
       <div class="lk-add"><input class="field" id="gmN" placeholder="Nombre, ej. Quizlet · vocabulario" style="max-width:280px"><input class="field" id="gmU" placeholder="Enlace (Quizlet, Wayground, Padlet, Canva, YouTube…)"><button class="btn" id="gmAdd">＋ Añadir</button></div>
       <p class="muted" style="font-size:.85rem;margin-top:8px">Si un juego sale en blanco aquí (Wayground y Google a veces no se dejan), usa ↗ o 📱 para que los estudiantes lo abran en su dispositivo.</p>` : ''}`;
   const $$ = s => el.querySelector(s);
   $$('#unSel').onchange = e => { g.unitCur = +e.target.value; save(); render(); };
+  $$('#gmHang').onclick = () => go('ahorcado');
   $$('#unNew').onclick = () => { const n = prompt('Nombre de la unidad (ej. Unidad 3: Los animales):'); if (!n || !n.trim()) return; U.push({ n: n.trim(), links: [] }); g.unitCur = U.length - 1; save(); render(); };
   if (!u) return;
   $$('#unRen').onclick = () => { const n = prompt('Nuevo nombre:', u.n); if (n && n.trim()) { u.n = n.trim(); save(); render(); } };
@@ -2729,8 +2783,212 @@ tool('practica', 'assess', '🎮', 'Práctica y juegos', 'Practice & games by un
 // exit tickets + quick checks live in this section too
 ['check', 'exit'].forEach(id => { const t = TOOLS.find(x => x.id === id); if (t) t.sec = 'assess'; });
 
+/* ---------- 🦈 AHORCADO — bancos de palabras por nivel y unidad ----------
+   Each entry: "palabra | pista en español | emoji | English"   (entries separated by ";") */
+const HANG_BANKS = {
+  le: { n: '🌳 Elemental K-2 · Chica y sus amigos (fácil)', style: 'shark', units: [
+    ['Saludos y emociones', 'hola|Lo dices cuando llegas.|👋|hello; adiós|Lo dices cuando te vas.|👋|goodbye; feliz|Cuando sonríes, estás…|😊|happy; triste|Cuando lloras, estás…|😢|sad; bien|¿Cómo estás? Muy…|👍|well; gracias|Lo dices cuando alguien te ayuda.|🙏|thank you; amigo|Una persona que juega contigo.|🤝|friend'],
+    ['Los colores y la naturaleza', 'rojo|El color de una fresa.|🔴|red; azul|El color del cielo.|🔵|blue; verde|El color de las hojas.|🟢|green; árbol|Es grande y tiene hojas.|🌳|tree; flor|Es bonita y huele bien.|🌸|flower; sol|Es amarillo y da luz.|☀️|sun; río|Agua que corre en la selva.|🏞️|river; hoja|Es verde y vive en el árbol.|🍃|leaf'],
+    ['Los amigos de Chiquibul', 'chica|Una mona araña muy curiosa.|🐒|Chica; mono|Chica es un…|🐒|monkey; rana|Es verde y salta.|🐸|frog; tucán|Don Pico es un…|🐦|toucan; iguana|Iggy es una…|🦎|iguana; mora|Una mariposa azul.|🦋|Mora; jaguar|Un gato grande con manchas.|🐆|jaguar; pez|Vive en el agua.|🐟|fish'],
+    ['Dar direcciones', 'aquí|No allá…|👇|here; allá|No aquí…|👉|there; arriba|Lo contrario de abajo.|⬆️|up; abajo|Lo contrario de arriba.|⬇️|down; casa|Donde vives.|🏠|house; mapa|Te ayuda a no perderte.|🗺️|map; cerca|Lo contrario de lejos.|📍|near; lejos|Lo contrario de cerca.|🧭|far'],
+    ['La familia y los cumpleaños', 'mamá|Te cuida y te quiere mucho.|👩|mom; papá|El esposo de mamá.|👨|dad; bebé|Es muy pequeño y llora.|👶|baby; abuela|La mamá de tu mamá.|👵|grandma; pastel|Lo comes en tu cumpleaños.|🎂|cake; regalo|Lo abres en tu cumpleaños.|🎁|gift; globo|Lo inflas para la fiesta.|🎈|balloon; fiesta|Hay música, amigos y pastel.|🎉|party'],
+    ['La escuela', 'lápiz|Escribes con él.|✏️|pencil; libro|Lo lees.|📕|book; silla|Te sientas en ella.|🪑|chair; mochila|Llevas tus libros en ella.|🎒|backpack; maestra|Enseña en la clase.|👩‍🏫|teacher; papel|Escribes y dibujas en él.|📄|paper; tijeras|Cortan el papel.|✂️|scissors; escuela|Vas aquí para aprender.|🏫|school'],
+    ['La comida y el mercado', 'plátano|Es amarillo y largo.|🍌|banana; manzana|Es roja y redonda.|🍎|apple; agua|La bebes cuando tienes sed.|💧|water; pan|Lo haces con harina.|🍞|bread; leche|Es blanca y viene de la vaca.|🥛|milk; huevo|La gallina lo pone.|🥚|egg; maíz|Las tortillas son de…|🌽|corn; fruta|La manzana y el mango son…|🍉|fruit'],
+    ['El restaurante', 'menú|Lo lees para pedir comida.|📋|menu; plato|Pones la comida en el…|🍽️|plate; sopa|Es caliente y la comes con cuchara.|🍲|soup; taco|Comida con tortilla.|🌮|taco; pizza|Redonda, con queso y tomate.|🍕|pizza; jugo|Bebida de fruta.|🧃|juice; cuchara|La usas para la sopa.|🥄|spoon; rico|La comida deliciosa está…|😋|tasty'],
+    ['El cuerpo y la salud', 'mano|Tienes cinco dedos en cada…|✋|hand; pie|Caminas con los…|🦶|foot; ojo|Ves con los…|👁️|eye; boca|Comes con la…|👄|mouth; nariz|Hueles con la…|👃|nose; oreja|Escuchas con las…|👂|ear; doctor|Te ayuda cuando estás enfermo.|🧑‍⚕️|doctor; cabeza|Está arriba del cuerpo.|🙆|head'],
+    ['Los bomberos y la seguridad', 'fuego|Es rojo y muy caliente.|🔥|fire; bombero|Apaga el fuego.|🧑‍🚒|firefighter; casco|Lo usas en la cabeza para estar seguro.|⛑️|helmet; ayuda|En una emergencia gritas: ¡…!|🆘|help; camión|El bombero maneja un… rojo.|🚒|truck; alarma|Hace mucho ruido en una emergencia.|🚨|alarm; equipo|Trabajan juntos: son un…|🤝|team; agua|Apaga el fuego.|💧|water'],
+    ['Leyendas y tradiciones', 'luna|Brilla en la noche.|🌙|moon; estrella|Brilla en el cielo de noche.|⭐|star; cuento|Una historia para niños.|📖|story; abuelo|El papá de tu papá.|👴|grandpa; noche|Cuando dormimos.|🌃|night; ceiba|El árbol grande y mágico de Chiquibul.|🌳|ceiba tree; secreto|Algo que no dices a nadie.|🤫|secret; magia|Algo increíble, como en un cuento.|✨|magic'],
+    ['La ropa y el clima', 'lluvia|Agua que cae del cielo.|🌧️|rain; calor|En abril, en Belice, hace mucho…|🥵|heat; frío|Cuando necesitas un suéter.|🥶|cold; gorra|La usas en la cabeza para el sol.|🧢|cap; botas|Zapatos para la lluvia.|🥾|boots; paraguas|Lo usas cuando llueve.|☂️|umbrella; camisa|Ropa para el cuerpo, con botones.|👕|shirt; viento|Mueve las hojas de los árboles.|🌬️|wind'],
+    ['Invitaciones y comunidad', 'carta|La escribes y la mandas.|✉️|letter; invitar|Pedir a alguien que venga a tu fiesta.|💌|to invite; amigos|Personas que juegan contigo.|👫|friends; juntos|No solos.|🤝|together; vecino|La persona que vive al lado.|🏡|neighbor; ayudar|Lo haces cuando alguien tiene un problema.|🙌|to help; compartir|Dar una parte a otra persona.|🍪|to share'],
+    ['Celebraciones y música', 'música|La escuchas y la bailas.|🎵|music; bailar|Mover el cuerpo con la música.|💃|to dance; tambor|Lo tocas con las manos.|🥁|drum; canción|La cantas.|🎤|song; guitarra|Instrumento con seis cuerdas.|🎸|guitar; alegre|Muy, muy feliz.|😄|cheerful; marimba|Instrumento de madera de Centroamérica.|🎶|marimba; fiesta|Una celebración con amigos.|🎉|party']
+  ] },
+  ue: { n: '🌳 Elemental 3-5 · Chica y sus amigos (más difícil)', style: 'shark', units: [
+    ['Saludos y emociones', 'buenos días|Lo dices por la mañana.|🌅|good morning; contento|Muy feliz.|😊|happy; enojado|Cuando algo te molesta mucho.|😠|angry; cansado|Necesitas dormir.|😴|tired; nervioso|Antes de un examen, estás…|😬|nervous; sorprendido|Cuando algo pasa y no lo esperas.|😲|surprised; tranquilo|Calmado, sin estrés.|😌|calm'],
+    ['Los colores y la naturaleza', 'anaranjado|El color de una naranja.|🟠|orange; morado|Mezcla de rojo y azul.|🟣|purple; amarillo|El color del sol.|🟡|yellow; selva|Bosque tropical con muchos animales.|🌴|jungle; montaña|Es muy alta, más que un árbol.|⛰️|mountain; cascada|Agua que cae de una montaña.|💦|waterfall; naturaleza|Árboles, ríos, animales y flores.|🌿|nature; diversidad|La Palabra del Bosque del episodio 2.|🌈|diversity'],
+    ['Los amigos de Chiquibul', 'tepezcuintle|Teo y Nico son de este animal de Belice.|🐹|paca (gibnut); jabalí|Bruno es un…|🐗|peccary; guacamaya|Un pájaro rojo, azul y amarillo.|🦜|macaw; murciélago|Vuela de noche y duerme de día.|🦇|bat; armadillo|Toño, el visitante de Guatemala, es un…|🐾|armadillo; colibrí|Un pájaro muy pequeño y rápido.|🐦|hummingbird; mapache|Arlo es un…|🦝|raccoon; mariposa|Mora es una… morfo.|🦋|butterfly'],
+    ['Dar direcciones', 'derecha|Lo contrario de izquierda.|👉|right; izquierda|Lo contrario de derecha.|👈|left; derecho|Sigue todo…, sin doblar.|⬆️|straight ahead; esquina|Donde se encuentran dos calles.|📐|corner; puente|Pasas por arriba del río.|🌉|bridge; camino|Por donde caminas para llegar.|🛤️|path; confianza|La Palabra del Bosque del episodio 4.|🤝|trust'],
+    ['La familia y los cumpleaños', 'hermano|El hijo de tus papás (no eres tú).|👦|brother; prima|La hija de tu tía.|👧|cousin; sorpresa|Algo que no esperas.|🎉|surprise; celebrar|Hacer una fiesta por algo especial.|🥳|to celebrate; invitación|Tarjeta para invitar a una fiesta.|💌|invitation; velas|Las soplas en el pastel.|🕯️|candles; compartir|La Palabra del Bosque del episodio 5.|🍰|to share'],
+    ['La escuela', 'cuaderno|Escribes en él en clase.|📓|notebook; matemáticas|La clase de los números.|➗|math; ciencias|La clase de las plantas y los experimentos.|🔬|science; borrador|Quita lo que escribiste con lápiz.|🧽|eraser; horario|Te dice a qué hora es cada clase.|🕘|schedule; recreo|Tiempo para jugar en la escuela.|⚽|recess; explorar|La Palabra del Bosque del episodio 6.|🧭|to explore'],
+    ['La comida y el mercado', 'mercado|Lugar donde compras frutas y verduras.|🛒|market; verduras|La zanahoria y el tomate son…|🥕|vegetables; aguacate|Fruta verde para el guacamole.|🥑|avocado; cacao|Con él se hace el chocolate.|🍫|cacao; vender|Lo contrario de comprar.|💵|to sell; precio|Cuánto cuesta algo.|🏷️|price; intercambiar|La Palabra del Bosque del episodio 7.|🔄|to exchange'],
+    ['El restaurante', 'mesero|Trae la comida a tu mesa.|🧑‍🍳|waiter; cuenta|La pagas al final de la comida.|🧾|bill; postre|Lo comes al final: helado, pastel…|🍨|dessert; tenedor|Comes con él y tiene puntas.|🍴|fork; servilleta|Te limpias la boca con ella.|🧻|napkin; delicioso|Muy, muy rico.|😋|delicious; hospitalidad|La Palabra del Bosque del episodio 8.|🏡|hospitality'],
+    ['El cuerpo y la salud', 'estómago|Te duele cuando comes demasiado.|🤢|stomach; rodilla|Está en la mitad de la pierna.|🦵|knee; hombro|Está arriba del brazo.|💪|shoulder; medicina|La tomas cuando estás enfermo.|💊|medicine; fiebre|Cuando tu cuerpo está muy caliente.|🤒|fever; veterinaria|Doctora de animales, como la Doctora Alma.|🩺|vet; cuidar|La Palabra del Bosque del episodio 9.|❤️|to take care of'],
+    ['Los bomberos y la seguridad', 'emergencia|Una situación peligrosa y urgente.|🚨|emergency; extintor|Apaga un fuego pequeño.|🧯|fire extinguisher; manguera|Tubo largo que echa agua.|💦|hose; peligro|Algo que te puede lastimar.|⚠️|danger; rescatar|Salvar a alguien.|🛟|to rescue; humo|Sale del fuego y es gris.|💨|smoke; valentía|La Palabra del Bosque del episodio 10.|🦁|bravery'],
+    ['Leyendas y tradiciones', 'leyenda|Una historia antigua que pasa de abuelos a nietos.|📜|legend; misterio|Algo que nadie entiende todavía.|🔍|mystery; tradición|Algo que una familia hace cada año.|🎎|tradition; símbolo|Un dibujo con un significado especial.|🔣|symbol; antiguo|Muy, muy viejo.|🏺|ancient; raíces|La parte del árbol debajo de la tierra.|🌱|roots; memoria|La Palabra del Bosque del episodio 14.|🧠|memory'],
+    ['La ropa y el clima', 'tormenta|Mucha lluvia, viento y truenos.|⛈️|storm; impermeable|Chaqueta para la lluvia.|🧥|raincoat; trueno|El ruido fuerte de una tormenta.|⚡|thunder; pantalones|Ropa para las piernas.|👖|pants; sombrero|Lo usas en la cabeza contra el sol.|👒|hat; nublado|Cuando hay muchas nubes.|☁️|cloudy; perseverancia|La Palabra del Bosque del episodio 13.|💪|perseverance'],
+    ['Invitaciones y comunidad', 'comunidad|Todas las personas de un lugar.|🏘️|community; mensaje|Lo escribes para decir algo.|💬|message; visitante|Persona que viene de otro lugar.|🧳|visitor; reunión|Cuando muchas personas se juntan.|👥|meeting; bienvenida|Lo que das a alguien que llega.|🤗|welcome; trabajo en equipo|Trabajar todos juntos.|🤝|teamwork'],
+    ['Celebraciones y música', 'celebración|Una fiesta especial.|🎊|celebration; instrumento|La guitarra y el tambor son…|🎻|instrument; desfile|Personas que caminan por la calle en una fiesta.|🎺|parade; disfraz|Ropa especial para parecer otra persona.|🎭|costume; paso doble|El baile de la Gran Fiesta de Chiquibul.|💃|paso doble (dance); alegría|Un sentimiento muy feliz.|😄|joy; comunidad|La Palabra del Bosque del episodio 15.|🏘️|community']
+  ] },
+  ms0: { n: '🏡 Los Vecinos (Middle School 0 · A1)', style: 'classic', units: [
+    ['1 · ¿Has visto a mi amigo?', 'alto|Lo contrario de bajo.|📏|tall; bajo|Lo contrario de alto.|🔽|short; simpático|Una persona amable y agradable.|😊|nice; tímido|Habla poco con personas nuevas, como Nico.|🙈|shy; creativo|Una persona con muchas ideas.|💡|creative; pelo rizado|Pelo con muchas curvas.|👩‍🦱|curly hair; único|La Palabra del Día del episodio 1.|⭐|unique'],
+    ['2 · Adentro y afuera', 'jugar|Lo haces con tus amigos para divertirte.|⚽|to play; leer|Lo haces con un libro.|📖|to read; dibujar|Nico lo hace en su cuaderno.|✏️|to draw; juego de mesa|Un juego como el ajedrez o el dominó.|🎲|board game; afuera|Lo contrario de adentro.|🌳|outside; adentro|Lo contrario de afuera.|🏠|inside; activo|La Palabra del Día del episodio 2.|🏃|active'],
+    ['3 · Cocinamos juntos', 'cocinar|Preparar la comida.|👩‍🍳|to cook; receta|Instrucciones para preparar una comida.|📝|recipe; quesadilla|Tortilla con queso.|🧀|quesadilla; ensalada|Comida fría con frutas o verduras.|🥗|salad; cortar|Lo haces con un cuchillo.|🔪|to cut; mezclar|Combinar todo en un bol.|🥣|to mix; delicioso|La Palabra del Día del episodio 3.|😋|delicious'],
+    ['4 · Planeamos una fiesta', 'decoración|Los globos y las luces son la…|🎈|decoration; invitación|Una tarjeta para invitar.|💌|invitation; cumpleaños|El día que naciste, cada año.|🎂|birthday; regalo|Algo que das a una persona en su fiesta.|🎁|gift; pastel|Lo comes en un cumpleaños.|🍰|cake; celebrar|Hacer una fiesta.|🥳|to celebrate; sorpresa|La Palabra del Día del episodio 4.|🎉|surprise'],
+    ['5 · Un tour por la ciudad', 'ciudad|Lugar grande con muchas calles y edificios.|🏙️|city; mercado|Lugar para comprar frutas y verduras.|🛒|market; plaza|Lugar abierto en el centro, con una fuente.|⛲|town square; iglesia|Un edificio antiguo para rezar.|⛪|church; biblioteca|Un lugar con muchos libros.|📚|library; mapa|Tomás lo leyó al revés.|🗺️|map; antiguo|La Palabra del Día del episodio 5.|🏛️|ancient'],
+    ['6 · La ropa y el clima', 'tienda de campaña|Tu casa en el campamento.|⛺|tent; suéter|Ropa para el frío de la noche.|🧶|sweater; impermeable|Ropa para la lluvia.|🧥|raincoat; linterna|Una luz para la noche.|🔦|flashlight; calor|Durante el día en Belice hace mucho…|🥵|heat; frío|En la noche hace…|🥶|cold; preparado|La Palabra del Día del episodio 6.|🎒|prepared'],
+    ['7 · ¿Cómo viajamos?', 'bicicleta|Tiene dos ruedas y pedales.|🚲|bicycle; autobús|Transporte grande para muchas personas.|🚌|bus; a pie|Caminando, sin transporte.|🚶|on foot; carro|Tiene cuatro ruedas y un motor.|🚗|car; avión|Vuela muy alto.|✈️|airplane; cómodo|Agradable para el cuerpo.|🛋️|comfortable; rápido|La Palabra del Día del episodio 7.|⚡|fast'],
+    ['8 · ¿Qué quieres ser?', 'ingeniero|Emilio quiere ser…|🔧|engineer; artista|Nico quiere ser…|🎨|artist; escritora|Valentina quiere ser…|✍️|writer; entrenador|Tomás quiere ser… deportivo.|🏅|coach; alcaldesa|Renata quiere ser la líder de la ciudad.|🏛️|mayor; maestra|Profe Rivera es…|👩‍🏫|teacher; profesión|La Palabra del Día del episodio 8.|💼|profession'],
+    ['9 · Mi país y el país anfitrión', 'país|Belice y Guatemala son…|🌎|country; capital|Belmopan es la… de Belice.|🏛️|capital; moneda|El dinero de un país.|🪙|currency; bandera|Tiene los colores del país.|🏳️|flag; quetzal|El pájaro y la moneda de Guatemala.|🐦|quetzal; tucán|El pájaro nacional de Belice.|🐦|toucan; bienvenida|La Palabra del Día del episodio 9.|🤗|welcome']
+  ] },
+  ms1: { n: '🧭 El Club del Barrio · Middle School 1 (A2)', style: 'classic', units: [
+    ['1 · Nuevo año escolar', 'el horario|Te dice a qué hora es cada clase.|🕘|schedule; la asignatura|Matemáticas, ciencias o español.|📚|school subject; el casillero|Guardas tus libros en él.|🔐|locker; el uniforme|La ropa que todos usan en la escuela.|👔|uniform; la tarea|Trabajo que haces en casa.|📝|homework; el recreo|Tiempo para jugar.|⚽|recess; el compañero de clase|Estudia en tu clase.|👫|classmate'],
+    ['2 · Deportes y pasatiempos', 'el ajedrez|El juego favorito de Mateo.|♟️|chess; el fútbol|El deporte favorito de Sofía.|⚽|soccer; la natación|El deporte en la piscina.|🏊|swimming; el pasatiempo|Algo que haces en tu tiempo libre.|🎨|hobby; el equipo|Un grupo de jugadores.|👥|team; entrenar|Practicar un deporte.|🏋️|to train; ganar|Lo contrario de perder.|🏆|to win'],
+    ['3 · Comida saludable', 'saludable|Bueno para tu cuerpo.|🥦|healthy; las verduras|El brócoli y la zanahoria.|🥕|vegetables; la proteína|Hay mucha en el pollo y los frijoles.|🍗|protein; el desayuno|La comida de la mañana.|🍳|breakfast; la comida chatarra|Papitas, dulces y refrescos.|🍟|junk food; beber agua|Lo haces cuando tienes sed.|💧|to drink water; la fruta|El mango y la papaya.|🥭|fruit'],
+    ['4 · Celebraciones familiares', 'la tradición|Algo que una familia hace cada año.|🎎|tradition; el Día de los Muertos|Fiesta mexicana con altares y flores.|💀|Day of the Dead; la piñata|La rompes en un cumpleaños.|🪅|piñata; la cena|La comida de la noche.|🍽️|dinner; los parientes|Tus tíos, primos y abuelos.|👨‍👩‍👧|relatives; celebrar|Hacer una fiesta.|🥳|to celebrate; la Nochebuena|La noche del 24 de diciembre.|🎄|Christmas Eve'],
+    ['5 · Lugares naturales', 'el volcán|Una montaña con fuego adentro.|🌋|volcano; la cascada|Agua que cae de muy alto.|💦|waterfall; la cueva|Un hueco grande en la roca.|🕳️|cave; el arrecife|Belice tiene el segundo más grande del mundo.|🪸|reef; la montaña|Es muy alta.|⛰️|mountain; el lago|Mucha agua en un lugar, sin sal.|🏞️|lake; la selva|Bosque tropical con muchos animales.|🌴|jungle'],
+    ['6 · En la tienda', 'la talla|Pequeña, mediana o grande.|📏|size; el probador|Donde te pruebas la ropa.|🚪|fitting room; la camiseta|Ropa con mangas cortas.|👕|T-shirt; los zapatos|Los usas en los pies.|👟|shoes; la caja|Donde pagas.|🧾|checkout; cuánto cuesta|Preguntas esto para saber el precio.|💲|how much does it cost; el descuento|Cuando algo cuesta menos.|🏷️|discount'],
+    ['7 · Día de la Tierra', 'reciclar|Usar otra vez el plástico y el papel.|♻️|to recycle; el planeta|La Tierra es un…|🌍|planet; la basura|Lo que pones en el bote.|🗑️|trash; la contaminación|Cuando el aire o el agua están sucios.|🏭|pollution; proteger|Cuidar algo para que esté seguro.|🛡️|to protect; plantar un árbol|Una buena acción para el Día de la Tierra.|🌱|to plant a tree; el medio ambiente|La naturaleza que nos rodea.|🌳|environment'],
+    ['8 · Personas famosas', 'el cantante|Una persona que canta.|🎤|singer; la científica|Una mujer que hace experimentos.|🔬|scientist; el inventor|Crea cosas nuevas.|💡|inventor; famoso|Todos lo conocen.|⭐|famous; el premio|Lo ganas por hacer algo muy bien.|🏆|award; la biografía|La historia de la vida de una persona.|📘|biography; el atleta|Practica deporte profesionalmente.|🏅|athlete'],
+    ['9 · Países del mundo', 'la bandera|Tiene los colores de un país.|🏳️|flag; el idioma|El español y el inglés son…|🗣️|language; la capital|La ciudad principal de un país.|🏛️|capital; la nacionalidad|Beliceño, mexicano o guatemalteco.|🪪|nationality; el continente|América, Europa o Asia.|🌎|continent; el pasaporte|Lo necesitas para viajar a otro país.|🛂|passport; viajar|Ir a otro lugar.|✈️|to travel']
+  ] },
+  ms2: { n: '🧭 El Club del Barrio · Middle School 2 (A2/B1)', style: 'classic', units: [
+    ['1 · Hábitos de estudio', 'estudiar|Lo haces antes de un examen.|📚|to study; organizar|Poner todo en orden.|🗂️|to organize; el examen|Una prueba en la escuela.|📝|exam; repasar|Estudiar otra vez lo que aprendiste.|🔁|to review; la concentración|Poner toda tu atención en algo.|🎯|concentration; los apuntes|Lo que escribes en clase.|🗒️|notes; hacer un resumen|Escribir las ideas principales.|✍️|to summarize'],
+    ['2 · Vida saludable', 'hacer ejercicio|Correr, nadar o jugar fútbol.|🏃|to exercise; dormir bien|Descansar ocho horas.|😴|to sleep well; el estrés|Cuando tienes muchas preocupaciones.|😫|stress; equilibrado|Con un poco de todo, en balance.|⚖️|balanced; la energía|La necesitas para moverte.|⚡|energy; la rutina|Lo que haces todos los días.|🔄|routine; relajarse|Descansar sin estrés.|🧘|to relax'],
+    ['3 · Comida nacional', 'el arroz con frijoles|El plato típico de Belice.|🍛|rice and beans; los tamales|Masa de maíz envuelta en hoja.|🫔|tamales; las pupusas|El plato típico de El Salvador.|🫓|pupusas; la receta|Instrucciones para cocinar.|📜|recipe; el ingrediente|La harina o el huevo en una receta.|🥚|ingredient; picante|Con mucho chile.|🌶️|spicy; el plato típico|La comida tradicional de un país.|🍽️|typical dish'],
+    ['4 · Festivales tradicionales', 'el desfile|Personas que caminan y bailan en la calle.|🎺|parade; el disfraz|Ropa especial para parecer otra persona.|🎭|costume; la carroza|Un carro decorado en el desfile.|🚚|parade float; los fuegos artificiales|Luces de colores en el cielo de noche.|🎆|fireworks; el festival|Una fiesta grande con música y comida.|🎪|festival; la herencia|Las tradiciones que recibes de tu familia.|🧬|heritage; el carnaval|Fiesta con disfraces y música antes de la Cuaresma.|🎊|carnival'],
+    ['5 · Planear un viaje', 'la maleta|Pones tu ropa en ella para viajar.|🧳|suitcase; el boleto|Lo necesitas para subir al avión.|🎫|ticket; el hotel|Un lugar para dormir en un viaje.|🏨|hotel; la reservación|La haces antes de llegar al hotel.|📅|reservation; el itinerario|El plan de cada día del viaje.|🗓️|itinerary; el aeropuerto|Lugar de donde salen los aviones.|🛫|airport; el pasaporte|Documento para viajar a otro país.|🛂|passport'],
+    ['6 · Moda y estilo', 'la moda|La ropa que todos quieren usar ahora.|👗|fashion; el estilo|Tu forma personal de vestirte.|🕶️|style; la marca|Nike o Adidas son…|🏷️|brand; de moda|Muy popular ahora.|🔥|in style; cómodo|Agradable para el cuerpo.|👟|comfortable; elegante|Ropa bonita para una ocasión especial.|🎩|elegant; los accesorios|Pulseras, collares y lentes.|💍|accessories'],
+    ['7 · La tecnología', 'la computadora|La usas para escribir y buscar en internet.|💻|computer; la contraseña|Palabra secreta para tu cuenta.|🔑|password; la aplicación|Un programa en tu teléfono.|📱|app; la pantalla|La parte del teléfono que miras.|🖥️|screen; descargar|Bajar un archivo de internet.|⬇️|to download; el mensaje|Lo mandas a un amigo.|💬|message; la inteligencia artificial|Una computadora que aprende.|🤖|artificial intelligence'],
+    ['8 · Mi modelo a seguir', 'el modelo a seguir|Una persona que te inspira.|🌟|role model; admirar|Pensar que alguien es excelente.|👏|to admire; inspirar|Dar ganas de hacer algo grande.|💡|to inspire; la huella|La marca que dejas en el mundo.|👣|footprint; el esfuerzo|Trabajar muy duro.|💪|effort; el valor|Coraje para hacer algo difícil.|🦁|courage; el ejemplo|Algo que otros pueden imitar.|🏅|example'],
+    ['9 · Un mundo mejor', 'el voluntario|Ayuda sin recibir dinero.|🙋|volunteer; ayudar a los demás|Hacer algo bueno por otras personas.|🤝|to help others; la comunidad|Las personas de un lugar.|🏘️|community; la donación|Algo que das para ayudar.|🎁|donation; la igualdad|Todos tienen los mismos derechos.|⚖️|equality; el respeto|Tratar bien a todos.|🫶|respect; cambiar el mundo|Hacer que el mundo sea mejor.|🌍|to change the world']
+  ] },
+  sec1: { n: '☕ La Cuadrilla · Secondary 1 (A2/B1)', style: 'classic', units: [
+    ['1 · Saludos y lo básico', 'mucho gusto|Lo dices cuando conoces a alguien.|🤝|nice to meet you; formal|Usted es la forma…|🎩|formal; informal|Tú es la forma…|👋|informal; el apellido|Tu nombre de familia.|🪪|last name; saludar|Decir hola.|👋|to greet; despedirse|Decir adiós.|🚪|to say goodbye; encantado|Muy contento de conocerte.|😊|delighted'],
+    ['2 · Un día de escuela', 'mi clase preferida|La que más me gusta.|❤️|my favorite class; la asignatura|Biología, historia o arte.|📚|subject; el laboratorio|Donde haces experimentos.|🧪|laboratory; la cafetería|Donde comes en la escuela.|🍱|cafeteria; aburrido|Lo contrario de interesante.|🥱|boring; interesante|Lo contrario de aburrido.|🤩|interesting; el descanso|Una pausa entre clases.|☕|break'],
+    ['3 · Por la ciudad', 'la esquina|Donde se encuentran dos calles.|📐|corner; el semáforo|Luz roja, amarilla y verde.|🚦|traffic light; doblar a la derecha|Lo contrario de doblar a la izquierda.|➡️|to turn right; seguir derecho|Continuar sin doblar.|⬆️|to go straight; la cuadra|La distancia entre dos esquinas.|🏘️|block; el centro|La parte principal de la ciudad.|🏙️|downtown; la parada de autobús|Donde esperas el autobús.|🚏|bus stop'],
+    ['4 · Familia y amigos', 'los abuelos|Los papás de tus papás.|👴|grandparents; el primo|El hijo de tu tío.|👦|cousin; cariñoso|Una persona que da muchos abrazos.|🤗|affectionate; el mejor amigo|Tu amigo número uno.|👯|best friend; la familia extendida|Tíos, primos y abuelos.|👨‍👩‍👧‍👦|extended family; el cumpleaños|El abuelo de Andrés cumplió ochenta años.|🎂|birthday; parecerse a|Ser similar a alguien.|🪞|to look like'],
+    ['5 · Días especiales', 'la tradición|La Palabra del Día del episodio 5.|🎎|tradition; el Día del Asentamiento Garífuna|El 19 de noviembre en Belice.|🥁|Garifuna Settlement Day; la Navidad|El 25 de diciembre.|🎄|Christmas; el feriado|Un día sin escuela ni trabajo.|📅|holiday; la Independencia|Belice la celebra el 21 de septiembre.|🇧🇿|Independence; celebrar|Hacer una fiesta.|🥳|to celebrate; los fuegos artificiales|Luces de colores en el cielo.|🎆|fireworks'],
+    ['6 · Mi casa', 'la cocina|Donde preparas la comida.|🍳|kitchen; el dormitorio|Donde duermes.|🛏️|bedroom; la sala|Donde ves la tele con tu familia.|🛋️|living room; el baño|Donde te bañas.|🚿|bathroom; al lado de|Muy cerca, a la derecha o a la izquierda.|↔️|next to; debajo de|Lo contrario de encima de.|⬇️|under; modesta|La Palabra del Día del episodio 6.|🏠|modest'],
+    ['7 · Un deporte para cada temporada', 'el equipo|La Palabra del Día del episodio 7.|👥|team; el entrenamiento|La práctica antes del partido.|🏋️|training; el partido|Un juego entre dos equipos.|⚽|match; el voleibol|El deporte que Vale dejó.|🏐|volleyball; andar en bicicleta|El deporte de Renata.|🚴|to ride a bike; nadar|El deporte de Ximena.|🏊|to swim; el fin de semana|Sábado y domingo.|📆|weekend'],
+    ['8 · Hacer cosas juntos', 'el plan|La Palabra del Día del episodio 8.|🗓️|plan; vamos a estudiar|Una propuesta para estudiar juntos.|📚|let\'s study; vamos al cine|Una propuesta para ver una película.|🎬|let\'s go to the movies; de acuerdo|Lo dices cuando aceptas un plan.|👍|agreed; proponer|Sugerir una idea.|💡|to propose; quedar en|Decidir dónde y cuándo verse.|📍|to agree to meet; la invitación|Cuando invitas a alguien.|💌|invitation'],
+    ['9 · De compras', 'el descuento|La Palabra del Día del episodio 9.|🏷️|discount; el vendedor|Persona que vende.|🧑‍💼|seller; la pulsera|Joya para la muñeca.|📿|bracelet; el llavero|Lo usas para tus llaves.|🔑|keychain; regatear|Pedir un precio más bajo.|🗣️|to haggle; cuánto cuesta|Pregunta para saber el precio.|💲|how much does it cost; barato|Lo contrario de caro.|💰|cheap'],
+    ['10 · Lugares para visitar', 'la reforestación|La Palabra del Día del episodio 10.|🌲|reforestation; la cueva|Limpiaron la de Río Frío.|🕳️|cave; el campamento|Donde duermes en tiendas de campaña.|⛺|camp; la fogata|Fuego para contar historias de noche.|🔥|campfire; sembrar árboles|Poner árboles pequeños en la tierra.|🌱|to plant trees; el mono aullador|Emiliano pensó que era un jaguar.|🐒|howler monkey; el pinar|Un bosque de pinos, como Mountain Pine Ridge.|🌲|pine forest']
+  ] },
+  sec2: { n: '☕ La Cuadrilla · Secondary 2 (B1)', style: 'classic', units: [
+    ['1 · Vacaciones y la rutina', 'la rutina|La Palabra del Día del episodio 1.|🔄|routine; las vacaciones|Tiempo sin escuela.|🏖️|vacation; el trabajo de verano|Emiliano tuvo uno.|💼|summer job; despertarse|Abrir los ojos por la mañana.|⏰|to wake up; viajé a la playa|Pretérito: lo que hice en mis vacaciones.|🏝️|I traveled to the beach; mi rutina diaria|Lo que hago todos los días.|📅|my daily routine; el fin de semana|Sábado y domingo.|📆|weekend'],
+    ['2 · Hábitos saludables', 'cuidarnos|Lo que la cuadrilla quiere hacer un poco más.|💚|to take care of ourselves; el sueño|Necesitas ocho horas de…|😴|sleep; la hidratación|Beber suficiente agua.|💧|hydration; el equilibrio|Balance entre estudio y descanso.|⚖️|balance; sedentario|Sin mucho movimiento.|🛋️|sedentary; la salud mental|Cómo te sientes por dentro.|🧠|mental health; la alimentación|Lo que comes cada día.|🥗|diet'],
+    ['3 · Por el vecindario', 'el vecindario|Las casas y calles alrededor de tu casa.|🏘️|neighborhood; perderse|No saber dónde estás.|🧭|to get lost; a dos cuadras|Muy cerca, después de dos esquinas.|📍|two blocks away; la farmacia|Donde compras medicina.|💊|pharmacy; la gasolinera|Donde compras gasolina.|⛽|gas station; preguntar por direcciones|¿Cómo llego a…?|🗺️|to ask for directions; el camino|Por donde vas para llegar.|🛤️|the way'],
+    ['4 · Animales asombrosos', 'fascinante|La Palabra del Día del episodio 4.|🤩|fascinating; la danta|El animal nacional de Belice.|🐾|tapir; el manatí|Andrés tiene una fascinación por este animal.|🌊|manatee; el perezoso|Emiliano dice que es como este animal.|🦥|sloth; más grande que|Comparativo de tamaño.|📏|bigger than; en peligro de extinción|Quedan muy pocos de estos animales.|⚠️|endangered; el hábitat|El lugar natural donde vive un animal.|🌿|habitat'],
+    ['5 · Otras culturas', 'la leyenda|La Palabra del Día del episodio 5.|📜|legend; El Dorado|La leyenda de oro que contó Santiago.|👑|El Dorado; la costumbre|Algo que las personas hacen siempre.|🎎|custom; el intercambio|Cuando estudias en otro país por un tiempo.|🔄|exchange; la herencia cultural|Lo que recibes de tus antepasados.|🧬|cultural heritage; el voseo|Usar «vos» en lugar de «tú».|🗣️|voseo; Colombia|El país de Santiago.|🇨🇴|Colombia'],
+    ['6 · La vida en casa', 'la responsabilidad|La Palabra del Día del episodio 6.|✅|responsibility; me toca lavar los platos|Es mi turno de limpiar la cocina.|🍽️|it\'s my turn to wash the dishes; los quehaceres|Las tareas de la casa.|🧹|chores; barrer|Limpiar el piso con una escoba.|🧹|to sweep; sacar la basura|Llevar la basura afuera.|🗑️|to take out the trash; a veces|No siempre, no nunca.|🔁|sometimes; nunca|Lo contrario de siempre.|🚫|never'],
+    ['7 · ¿Qué hay de nuevo?', 'el reportero|La Palabra del Día del episodio 7.|🎙️|reporter; la noticia|Información nueva sobre algo que pasó.|📰|news; según las noticias|Así empiezas a contar lo que dijo el periódico.|📺|according to the news; el periódico|Andrés se unió al de la escuela.|🗞️|newspaper; el titular|La frase grande arriba de la noticia.|🔠|headline; la entrevista|Preguntas a una persona para un artículo.|🎤|interview; se dice que|Así cuentas un rumor.|🗣️|it is said that'],
+    ['8 · Planeando el viaje', 'la frontera|La Palabra del Día del episodio 8.|🛂|border; Tikal|Gran sitio maya en Guatemala.|🏛️|Tikal; las ruinas mayas|Templos antiguos de piedra.|🗿|Maya ruins; cruzar la frontera|Pasar de Belice a Guatemala.|🚶|to cross the border; iremos|Futuro: nosotros vamos a ir.|🔜|we will go; el itinerario|El plan de cada día del viaje.|🗓️|itinerary; el permiso|Papel firmado por tus papás para el viaje.|📝|permission slip'],
+    ['9 · Problemas globales y personales', 'la contaminación|La Palabra del Día del episodio 9.|🏭|pollution; el plástico|La basura que encontraron en GG Field.|🥤|plastic; deberíamos reciclar|Una sugerencia con «deberíamos».|♻️|we should recycle; el cambio climático|El planeta está cada vez más caliente.|🌡️|climate change; el medio ambiente|La naturaleza alrededor de nosotros.|🌳|environment; la educación ambiental|Enseñar a cuidar la naturaleza.|📚|environmental education; el valor cívico|Hacer lo correcto por tu comunidad.|🏛️|civic courage'],
+    ['10 · Trabajo y viaje', 'el diplomático|Trabaja para su país en otro país.|🕴️|diplomat; la embajada|La oficina de un país en otro país.|🏢|embassy; la entrevista de trabajo|Cuando quieres un empleo, tienes una…|🤝|job interview; el currículum|El papel con tu experiencia y estudios.|📄|résumé; negociar|Hablar para llegar a un acuerdo.|🗣️|to negotiate; el idioma extranjero|Un idioma de otro país.|🌐|foreign language; trabajar en equipo|Trabajar juntos para una meta.|👥|to work as a team']
+  ] }
+};
+const HANG_CLASS_DEFAULT = n => { n = (n || '').toLowerCase();
+  if (n.includes('lower') || n.includes('k-2')) return 'le'; if (n.includes('upper') || n.includes('3-5')) return 'ue';
+  if (n.includes('middle school 1')) return 'ms0'; if (n.includes('middle school 3') || n.includes('middle school 2')) return 'ms2';
+  if (n.includes('secondary 1')) return 'sec1'; if (n.includes('secondary 2')) return 'sec2'; return 'le'; };
+function hangParse(str) { return str.split(';').map(e => e.split('|').map(x => x.trim())).filter(e => e[0]).map(([w, c, em, en]) => ({ w, c: c || '', em: em || '', en: en || '' })); }
+
+/* ---------- 🦈 AHORCADO (tiburón para Elemental, clásico para MS/Sec) ---------- */
+const HANG_LETTERS = 'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ'.split('');
+const hBase = ch => { const l = ch.toLowerCase(); if (l === 'ñ') return 'ñ'; return l.normalize('NFD').replace(/[̀-ͯ]/g, ''); };
+const hIsLetter = ch => /[a-zñáéíóúü]/i.test(ch);
+function hangUnits(bank) {
+  const B = HANG_BANKS[bank], g = gdata(), mine = ((g.hangMine || {})[bank] || '').split('\n').map(l => l.trim()).filter(Boolean).join('; ');
+  const list = B.units.map(([n, s]) => ({ n, words: hangParse(s) }));
+  if (mine) list.push({ n: '⭐ Mis palabras', words: hangParse(mine) });
+  return list;
+}
+function hangClassicSVG(parts, lost) {
+  const P = [
+    '<line x1="20" y1="210" x2="140" y2="210"/>', '<line x1="50" y1="210" x2="50" y2="20"/>',
+    '<line x1="50" y1="20" x2="140" y2="20"/><line x1="50" y1="50" x2="80" y2="20"/>', '<line x1="140" y1="20" x2="140" y2="50"/>',
+    `<circle cx="140" cy="70" r="20"/>${lost ? '<path d="M131 63l6 6m0-6l-6 6M143 63l6 6m0-6l-6 6"/>' : ''}`, '<line x1="140" y1="90" x2="140" y2="145"/>',
+    '<line x1="140" y1="105" x2="115" y2="128"/><line x1="140" y1="105" x2="165" y2="128"/><line x1="140" y1="145" x2="118" y2="185"/><line x1="140" y1="145" x2="162" y2="185"/>'];
+  return `<svg viewBox="0 0 200 220" class="hg-classic" aria-label="Ahorcado">${P.slice(0, parts).join('')}</svg>`;
+}
+function hangSharkScene(wrong, max, state, fresh) {
+  const k = Math.min(1, wrong / max), x = 4 + k * 66;
+  const danger = k > .7 ? 'd3' : k > .45 ? 'd2' : k > .2 ? 'd1' : '';
+  let inner;
+  if (state === 'lost') inner = `<div class="hg-swim saved ${fresh ? 'late' : ''}">🛟🙂</div><div class="hg-chomp ${fresh ? 'go' : 'done'}">🦈<b>¡ÑAM!</b></div><div class="hg-msg ${fresh ? 'late' : ''}">¡Uf! ¡El salvavidas llegó a tiempo!</div>`;
+  else if (state === 'won') inner = `<div class="hg-fin" style="left:${x}%;opacity:.5"><svg viewBox="0 0 60 40"><path d="M5 38 Q28 -6 52 38Z"/></svg></div><div class="hg-swim won">🏝️🏊</div><div class="hg-msg">¡A salvo en la playa!</div>`;
+  else inner = `<div class="hg-fin ${k > .7 ? 'close' : ''}" style="left:${x}%"><svg viewBox="0 0 60 40"><path d="M5 38 Q28 -6 52 38Z"/></svg></div><div class="hg-swim">🏊</div>`;
+  return `<div class="hg-sea ${danger}">${'<span class="hg-wave"></span>'.repeat(3)}${inner}<div class="hg-left">${state === 'play' ? `🦈 ${max - wrong} ${max - wrong === 1 ? 'oportunidad' : 'oportunidades'}` : ''}</div></div>`;
+}
+tool('ahorcado', 'assess', '🦈', 'Ahorcado', 'Hangman with unit words', 'Adivina la palabra letra por letra. Elemental juega con el tiburón 🦈 (cada error lo acerca al nadador); Middle School y Secondary con el ahorcado clásico. Las palabras vienen de cada unidad y cuento, por nivel.', el => {
+  const d = cdata(); if (!d.hang) d.hang = { bank: HANG_CLASS_DEFAULT(cname()), unit: 0 };
+  const H = d.hang; if (!HANG_BANKS[H.bank]) H.bank = 'le';
+  const B = HANG_BANKS[H.bank], U = hangUnits(H.bank); if (H.unit !== 'all' && (H.unit == null || H.unit >= U.length)) H.unit = 0;
+  const style = H.style || B.style, max = H.max || (H.bank === 'le' ? 8 : 7);
+  const st = ses('hang', () => ({ cur: null, guessed: [], wrong: 0, state: 'idle', used: {}, wins: 0, losses: 0, hint: {}, fresh: false, paid: false }));
+  const pool = H.unit === 'all' ? U.flatMap(u => u.words.map(w => Object.assign({ u: u.n }, w))) : (U[H.unit] || U[0]).words.map(w => Object.assign({ u: (U[H.unit] || U[0]).n }, w));
+  function newWord() {
+    if (!pool.length) { toast('Esta unidad no tiene palabras'); return; }
+    const key = H.bank + '|' + H.unit, used = st.used[key] = st.used[key] || [];
+    let left = pool.filter(w => !used.includes(w.w)); if (!left.length) { used.length = 0; left = pool.slice(); toast('🔁 ¡Ya salieron todas! Empezamos otra vez.'); }
+    const w = pick(left); used.push(w.w);
+    Object.assign(st, { cur: w, guessed: [], wrong: 0, state: 'play', hint: {}, fresh: false, paid: false }); render();
+  }
+  function guess(L) {
+    if (st.state !== 'play') return; const b = hBase(L); if (st.guessed.includes(b)) return;
+    st.guessed.push(b); ac();
+    const letters = [...st.cur.w].filter(hIsLetter);
+    if (letters.some(c => hBase(c) === b)) {
+      tone(880, .12, .08, 'triangle');
+      if (letters.every(c => st.guessed.includes(hBase(c)))) { st.state = 'won'; st.wins++; setTimeout(() => { fanfare(); confetti(['⭐', '🎉', style === 'shark' ? '🏝️' : '🏆', '✨']); }, 150); }
+    } else {
+      st.wrong++; tone(95, .18, .22, 'sine'); tone(80, .2, .18, 'sine', .22);
+      if (st.wrong >= max) { st.state = 'lost'; st.losses++; st.fresh = true; if (style === 'shark') { setTimeout(() => { noiseHit(0, .6, .5, 900, .6); tone(70, .5, .25, 'sawtooth'); }, 350); } else tone(150, .6, .15, 'sawtooth'); }
+    }
+    render();
+  }
+  const w = st.cur, playing = st.state === 'play', ended = st.state === 'won' || st.state === 'lost';
+  const slot = c => !hIsLetter(c) ? `<span class="hg-punct">${h(c)}</span>`
+    : `<span class="hg-slot ${st.guessed.includes(hBase(c)) ? 'ok' : ended ? 'miss' : ''}">${st.guessed.includes(hBase(c)) || ended ? h(c.toUpperCase()) : ''}</span>`;
+  const slots = w ? w.w.split(' ').filter(Boolean).map(wd => `<span class="hg-wd">${[...wd].map(slot).join('')}</span>`).join('') : '';
+  const nLetters = w ? [...w.w].filter(hIsLetter).length : 0, nWords = w ? w.w.trim().split(/\s+/).length : 0;
+  const scene = style === 'shark' ? hangSharkScene(st.wrong, max, st.state === 'idle' ? 'play' : st.state, st.fresh)
+    : `<div class="hg-gallows ${st.state}">${hangClassicSVG(st.state === 'idle' ? 0 : Math.min(7, Math.ceil(st.wrong * 7 / max)), st.state === 'lost')}<div class="hg-left">${playing ? `${max - st.wrong} ${max - st.wrong === 1 ? 'oportunidad' : 'oportunidades'}` : ''}</div></div>`;
+  st.fresh = false;
+  el.innerHTML += `<div class="row">
+      <label class="chk">Nivel: <select class="field" id="hgB">${Object.entries(HANG_BANKS).map(([k, v]) => `<option value="${k}" ${k === H.bank ? 'selected' : ''}>${h(v.n)}</option>`).join('')}</select></label>
+      <label class="chk">Unidad: <select class="field" id="hgU"><option value="all" ${H.unit === 'all' ? 'selected' : ''}>🎲 Todas las unidades</option>${U.map((u, i) => `<option value="${i}" ${H.unit === i ? 'selected' : ''}>${h(u.n)} (${u.words.length})</option>`).join('')}</select></label></div>
+    <div class="row" style="margin-top:8px"><button class="btn sm ${style === 'shark' ? 'gold' : 'ghost'}" data-style="shark">🦈 Tiburón</button><button class="btn sm ${style === 'classic' ? 'gold' : 'ghost'}" data-style="classic">✏️ Clásico</button>
+      <label class="chk">Errores: <select class="field" id="hgM">${[5, 6, 7, 8, 10].map(m => `<option ${m === max ? 'selected' : ''}>${m}</option>`).join('')}</select></label>
+      <span class="chip">✅ ${st.wins} · ❌ ${st.losses}</span><button class="btn sm" id="hgFull">⛶ Pantalla completa</button></div>
+    <div class="hg-box" id="hgBox">
+      <div class="hg-top">${scene}
+        <div class="hg-info">${w ? `<div class="chip">📂 ${h(w.u)} · ${nWords > 1 ? nWords + ' palabras · ' : ''}${nLetters} letras</div>
+          <div class="hg-hints">${st.hint.em || ended ? `<span class="hg-em">${w.em}</span>` : ''}${st.hint.c || ended ? `<div class="hg-clue">💡 ${h(w.c)}</div>` : ''}${st.hint.en || ended ? `<div class="hg-en">🇬🇧 ${h(w.en)}</div>` : ''}</div>
+          <div class="row">${!ended ? `${w.c && !st.hint.c ? '<button class="btn sm ghost" data-hint="c">💡 Pista</button>' : ''}${w.em && !st.hint.em ? '<button class="btn sm ghost" data-hint="em">🖼️ Dibujo</button>' : ''}${w.en && !st.hint.en ? '<button class="btn sm ghost" data-hint="en" title="Para el maestro">🇬🇧 Inglés</button>' : ''}<button class="btn sm ghost" id="hgGive">👀 Mostrar la palabra</button>`
+            : `<button class="btn sm" id="hgSay">🔈 Escuchar</button>${st.state === 'won' && !st.paid ? '<button class="btn sm gold" id="hgPt">+1 💯 Puntos de la clase</button>' : ''}`}</div>`
+          : `<div class="big" style="font-size:clamp(2rem,4vw,3.2rem)">¿Listos?</div><p class="muted">Elige el nivel y la unidad, y presiona «Nueva palabra».</p>`}
+          ${ended ? `<div class="hg-result ${st.state}">${st.state === 'won' ? '🎉 ¡Muy bien! ¡Adivinaron la palabra!' : '😅 ¡Casi! La palabra era…'}</div>` : ''}</div></div>
+      <div class="hg-word">${slots}</div>
+      <div class="hg-keys">${HANG_LETTERS.map(L => { const b = hBase(L), used = st.guessed.includes(b), hit = used && w && [...w.w].some(c => hIsLetter(c) && hBase(c) === b); return `<button class="hg-k ${used ? (hit ? 'hit' : 'no') : ''}" data-k="${L}" ${!playing || used ? 'disabled' : ''}>${L}</button>`; }).join('')}</div>
+      <div class="row" style="justify-content:center;margin-top:12px"><button class="btn gold xl" id="hgNew" data-primary>🎲 ${w ? 'Otra palabra' : 'Nueva palabra'}</button></div>
+    </div>
+    <details class="help" style="margin-top:14px"><summary>⭐ Mis palabras para este nivel</summary>
+      <p style="margin:6px 0">Una por línea: <b>palabra | pista | emoji | inglés</b> (solo la palabra es obligatoria). Aparecen como la unidad «⭐ Mis palabras».</p>
+      <textarea class="field" id="hgMine" placeholder="el cocodrilo | Vive en el río y tiene muchos dientes. | 🐊 | crocodile">${h((gdata().hangMine || {})[H.bank] || '')}</textarea>
+      <button class="btn sm" id="hgMineSave" style="margin-top:6px">💾 Guardar mis palabras</button></details>`;
+  const $$ = s => el.querySelector(s);
+  $$('#hgB').onchange = e => { H.bank = e.target.value; H.unit = 0; H.style = null; H.max = null; save(); Object.assign(st, { cur: null, state: 'idle' }); render(); };
+  $$('#hgU').onchange = e => { H.unit = e.target.value === 'all' ? 'all' : +e.target.value; save(); Object.assign(st, { cur: null, state: 'idle' }); render(); };
+  el.querySelectorAll('[data-style]').forEach(b => b.onclick = () => { H.style = b.dataset.style; save(); render(); });
+  $$('#hgM').onchange = e => { H.max = +e.target.value; save(); render(); };
+  $$('#hgFull').onclick = () => fullBox($$('#hgBox'));
+  $$('#hgNew').onclick = newWord;
+  el.querySelectorAll('[data-k]').forEach(b => b.onclick = () => guess(b.dataset.k));
+  el.querySelectorAll('[data-hint]').forEach(b => b.onclick = () => { st.hint[b.dataset.hint] = true; render(); });
+  const gv = $$('#hgGive'); if (gv) gv.onclick = () => { st.state = 'lost'; st.losses++; st.fresh = style === 'shark'; render(); };
+  const sy = $$('#hgSay'); if (sy) sy.onclick = () => speakEs(w.w);
+  const pt = $$('#hgPt'); if (pt) pt.onclick = () => { const c = cdata(); if (!c.points) c.points = { pts: 0, goal: 50, reward: '🎉 ¡Fiesta de baile!' }; c.points.pts++; st.paid = true; save(); toast('+1 💯 · Total: ' + c.points.pts); render(); };
+  $$('#hgMineSave').onclick = () => { const g = gdata(); g.hangMine = g.hangMine || {}; g.hangMine[H.bank] = $$('#hgMine').value; save(); toast('Palabras guardadas ⭐'); render(); };
+  const onKey = e => {
+    if (/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName) || document.activeElement.isContentEditable || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (/^[a-zñ]$/i.test(e.key)) { e.preventDefault(); guess(e.key.toUpperCase()); }
+  };
+  document.addEventListener('keydown', onKey);
+  return () => document.removeEventListener('keydown', onKey);
+});
+
 /* ---------- tool order in the menu ---------- */
-const TOOL_ORDER = ['links', 'pizarra', 'tareas', 'qr', 'prof', 'rubricas', 'check', 'exit', 'resultados', 'practica', 'timer', 'safari', 'sonidos', 'check', 'wheel', 'picker', 'cold', 'groups', 'pairs', 'seats', 'part', 'dados', 'exit',
+const TOOL_ORDER = ['links', 'pizarra', 'tareas', 'qr', 'prof', 'rubricas', 'check', 'exit', 'resultados', 'practica', 'ahorcado', 'timer', 'safari', 'sonidos', 'check', 'wheel', 'picker', 'cold', 'groups', 'pairs', 'seats', 'part', 'dados', 'exit',
   'espanol', 'points', 'houses', 'semana', 'mystery', 'stickers', 'tokens', 'levels', 'reward',
   'tpr', 'story', 'vocab', 'character', 'problem', 'location', 'cubes', 'qwords', 'verbs', 'tenses', 'convo', 'circ'];
 TOOLS.sort((a, b) => { const ia = TOOL_ORDER.indexOf(a.id), ib = TOOL_ORDER.indexOf(b.id); return (ia < 0 ? 999 : ia) - (ib < 0 ? 999 : ib); });
