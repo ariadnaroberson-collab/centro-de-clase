@@ -59,6 +59,7 @@
     border-radius: 14px; padding: 7px 13px; font-weight: 700; font-size: 0.92rem;
   }
   .tb-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .tb-btn.gold { background: var(--gold); color: var(--bg-dark); border-color: var(--gold); }
   #timerPill {
     display: none; background: var(--red); color: #fff; border: none; border-radius: 14px;
     padding: 7px 13px; font-weight: 800; font-variant-numeric: tabular-nums;
@@ -350,6 +351,54 @@
   .hist { margin-top: 10px; display: grid; gap: 6px; }
   .hist div { background: #fff; border-radius: 10px; padding: 7px 12px; display: flex; gap: 10px; align-items: center; }
   .hist .x { margin-left: auto; background: none; border: none; color: var(--text-mid); font-size: 1rem; }
+  /* ---------- VIEWER + DOCK ---------- */
+  #viewer { position: fixed; inset: 0; z-index: 60; background: #0d1813; display: flex; flex-direction: column; }
+  #viewer.hidden { visibility: hidden; pointer-events: none; }
+  #viewer.hidden * { visibility: hidden !important; }
+  .vbar { display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: var(--bg-dark); border-bottom: 2px dashed var(--dash); flex-wrap: wrap; }
+  .vbar .tb-btn { padding: 5px 11px; }
+  .vbar .tb-btn.gold { background: var(--gold); color: var(--bg-dark); border-color: var(--gold); }
+  #vTabs { display: flex; gap: 6px; flex-wrap: wrap; }
+  .vtab { background: transparent; color: var(--chalk); border: 1.5px solid rgba(232,228,217,.35); border-radius: 12px; padding: 5px 10px; font-weight: 700; max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .vtab.on { background: var(--card); color: var(--bg-dark); border-color: var(--card); }
+  #vFrames { flex: 1; position: relative; background: #fff; }
+  #vFrames iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: #fff; }
+  #vFrames iframe.off { visibility: hidden; }
+  .vhint { position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); background: rgba(26,46,37,.88); color: #fff; font-size: .85rem; padding: 6px 14px; border-radius: 12px; z-index: 2; pointer-events: none; transition: opacity .6s; }
+  #dock { position: fixed; right: 16px; bottom: 16px; z-index: 70; background: rgba(26,46,37,.94); color: var(--chalk); border-radius: 18px; padding: 8px 10px;
+    display: flex; align-items: center; gap: 8px; box-shadow: 0 8px 24px rgba(0,0,0,.4); border: 2px solid rgba(245,200,66,.6); font-family: 'Nunito', sans-serif; }
+  #dock.hidden { display: none; }
+  #dock button, #dock select { background: rgba(255,255,255,.1); color: var(--chalk); border: none; border-radius: 10px; padding: 6px 9px; font-weight: 800; font-size: .95rem; }
+  #dock button:hover { background: rgba(245,200,66,.3); }
+  #dock .dk-t { font-size: 1.5rem; font-weight: 800; font-variant-numeric: tabular-nums; min-width: 64px; text-align: center; }
+  #dock .dk-t.run { color: var(--gold); } #dock .dk-t.done { color: #ff8a8a; animation: alarm 1s infinite; }
+  #dock .dk-s { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+  #dock .dk-lv { width: 56px; height: 10px; background: rgba(255,255,255,.2); border-radius: 5px; overflow: hidden; position: relative; }
+  #dock .dk-lv div { height: 100%; background: linear-gradient(90deg, var(--green), var(--gold) 60%, var(--red)); width: 0; }
+  #dock .sep { width: 1px; align-self: stretch; background: rgba(255,255,255,.2); }
+  #dock.mini > :not(.dk-keep) { display: none; }
+  #dock.drag { cursor: grabbing; }
+  #dock .grip { cursor: grab; opacity: .5; font-size: 1rem; padding: 0 2px; user-select: none; }
+  #lkMenu { position: absolute; top: calc(100% + 8px); right: 0; z-index: 75; background: var(--card); color: var(--text-dark); border-radius: 14px; padding: 8px; width: 330px; box-shadow: 0 12px 30px rgba(0,0,0,.45); }
+  #lkMenu.hidden { display: none; }
+  #lkMenu .mh { font-family: 'Schoolbell', cursive; color: var(--text-mid); font-size: .8rem; padding: 6px 8px 2px; }
+  #lkMenu button { display: flex; gap: 8px; align-items: center; width: 100%; text-align: left; background: none; border: none; padding: 8px; border-radius: 10px; font-weight: 700; color: var(--text-dark); }
+  #lkMenu button:hover { background: var(--card-2); }
+  #lkMenu button.gold { background: #fff3c4; }
+  /* links tool */
+  .lk-box { background: #fff; border-radius: 16px; padding: 16px 18px; margin-bottom: 16px; border: 2px solid #e1d9c9; }
+  .lk-box.today { border: 3px solid var(--gold); }
+  .lk-box h3 { font-family: 'Caveat', cursive; font-size: 1.9rem; color: var(--bg); line-height: 1; margin-bottom: 8px; }
+  .lk-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px dashed #e1d9c9; flex-wrap: wrap; }
+  .lk-row:first-of-type { border-top: none; }
+  .lk-row .ic { font-size: 1.5rem; width: 32px; text-align: center; }
+  .lk-row .nm { font-weight: 800; flex: 1; min-width: 160px; }
+  .lk-row .nm small { display: block; font-weight: 400; color: var(--text-mid); font-size: .78rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 480px; }
+  .lk-add { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .lk-add .field { flex: 1; min-width: 180px; }
+  details.help { margin-top: 10px; color: var(--text-mid); font-size: .92rem; }
+  details.help summary { cursor: pointer; font-weight: 700; color: var(--bg); }
+  details.help ol { margin: 8px 0 0 22px; line-height: 1.6; }
   .notice { background: #fff6d6; border: 2px dashed var(--gold); border-radius: 12px; padding: 10px 14px; color: var(--text-dark); font-size: 0.9rem; margin-bottom: 14px; }
 </style>
 </head>
@@ -361,7 +410,10 @@
   <div class="spacer"></div>
   <button id="timerPill" title="Ir al temporizador"></button>
   <div class="class-pick">Clase: <select id="classSel"></select></div>
-  <button class="tb-btn" id="fsBtn">⛶ Pantalla completa</button>
+  <div style="position:relative"><button class="tb-btn" id="lkBtn">🔗 Enlaces ▾</button><div id="lkMenu" class="hidden"></div></div>
+  <button class="tb-btn gold" id="viewBtn" style="display:none">🖥️ Volver a la presentación</button>
+  <button class="tb-btn" id="pipBtn" title="Ventana flotante: una ventanita que queda encima de todo (Canva, otras pestañas…)">🪟 Flotante</button>
+  <button class="tb-btn" id="fsBtn" title="Pantalla completa">⛶</button>
 </div>
 
 <div class="layout">
@@ -369,6 +421,28 @@
   <main><div class="panel" id="panel"></div></main>
 </div>
 
+<div id="viewer" class="hidden">
+  <div class="vbar">
+    <button class="tb-btn gold" id="vBack">🧰 Herramientas</button>
+    <div id="vTabs"></div><div class="spacer"></div>
+    <button class="tb-btn" id="vNew" title="Si no se ve bien aquí, ábrelo en una pestaña nueva">↗ Abrir en pestaña nueva</button>
+    <button class="tb-btn" id="vFs">⛶ Pantalla completa</button>
+    <button class="tb-btn" id="vClose" title="Cerrar este enlace">✕ Cerrar</button>
+  </div>
+  <div id="vFrames"></div>
+</div>
+<div id="dock" class="hidden">
+  <span class="grip dk-keep" title="Arrastra para mover">⠿</span>
+  <span class="dk-t" id="dkT" title="Temporizador 1">5:00</span>
+  <button id="dkGo" title="Empezar / pausar">▶</button>
+  <select id="dkSet" title="Poner tiempo"><option value="">⏱️</option><option value="60">1 min</option><option value="120">2 min</option><option value="180">3 min</option><option value="300">5 min</option><option value="600">10 min</option><option value="900">15 min</option></select>
+  <span class="sep"></span>
+  <span class="dk-s" id="dkS" title="Safari silencioso: toca para pausar / seguir">🐾 <b id="dkSn">—</b><span class="dk-lv"><div id="dkSl"></div></span></span>
+  <span class="sep"></span>
+  <button id="dkName" title="Estudiante al azar">🎲 Nombre</button>
+  <button id="dkTools" title="Volver a Herramientas">🧰</button>
+  <button id="dkMin" class="dk-keep" title="Minimizar">–</button>
+</div>
 <div id="overlay"><div class="ov-card"><div class="ov-sm" id="ovSm"></div><div class="big" id="ovBig"></div></div>
   <div class="row"><button class="btn gold xl" id="ovOk">¡Listo!</button></div></div>
 <div id="modal"><div class="m-card" id="mCard"></div></div>
@@ -556,7 +630,7 @@ const ding = () => tone(1200, 0.35, 0.12, 'sine');
    STATE + STORAGE
    ========================================================= */
 const LS_KEY = 'cdc-herramientas-v1';
-const S = { clases: DEFAULT_CLASSES, cur: 0, usingFile: false, store: { c: {}, g: {} }, tool: 'timer' };
+const S = { clases: DEFAULT_CLASSES, cur: 0, usingFile: false, store: { c: {}, g: {} }, tool: 'links' };
 try { const raw = localStorage.getItem(LS_KEY); if (raw) S.store = Object.assign({ c: {}, g: {} }, JSON.parse(raw)); } catch (e) {}
 function save() { try { localStorage.setItem(LS_KEY, JSON.stringify(S.store)); } catch (e) {} }
 function cname() { return (S.clases[S.cur] || {}).nombre || '—'; }
@@ -627,7 +701,7 @@ function wheelHTML(id) { return `<div class="wheel-wrap"><div class="pointer"></
 const TIMERS = [{ label: 'Temporizador 1', total: 300, remaining: 300, running: false, endAt: 0, done: false }];
 function fmt(sec) { sec = Math.ceil(sec); const m = Math.floor(sec / 60), s = sec % 60; return m + ':' + String(s).padStart(2, '0'); }
 function tRemain(t) { return t.running ? Math.max(0, (t.endAt - Date.now()) / 1000) : t.remaining; }
-setInterval(() => {
+function timerTick() {
   let pillTxt = '';
   TIMERS.forEach((t, i) => {
     if (t.running && Date.now() >= t.endAt) { t.running = false; t.remaining = 0; t.done = true; alarm(); if (S.tool === 'timer') render(); else toast('⏰ ¡Tiempo! — ' + t.label); }
@@ -638,13 +712,13 @@ setInterval(() => {
   });
   const pill = $('#timerPill');
   if (pillTxt && S.tool !== 'timer') { pill.style.display = 'inline-block'; pill.textContent = pillTxt; } else pill.style.display = 'none';
-}, 200);
+}
 $('#timerPill').onclick = () => go('timer');
 
 /* =========================================================
    TOOLS
    ========================================================= */
-const SECTIONS = [["manage","🧑‍🏫 Manejo de clase"],["rewards","🏆 Premios y conducta"],["lang","🇪🇸 Herramientas CI / TPRS"]];
+const SECTIONS = [["present","🖥️ Presentar"],["manage","🧑‍🏫 Manejo de clase"],["rewards","🏆 Premios y conducta"],["lang","🇪🇸 Herramientas CI / TPRS"]];
 const TOOLS = [];
 function tool(id, sec, icon, es, en, hint, renderFn) { TOOLS.push({ id, sec, icon, es, en, hint, render: renderFn }); }
 function needStudents(el) {
@@ -1120,17 +1194,20 @@ tool('safari', 'manage', '🐾', 'Safari silencioso', 'Quiet-work game (shy anim
   }
   function loop() {
     readLevel();
+    const nowT = Date.now(), dt = Math.min(1, Math.max(0, (nowT - (st.lastT || nowT)) / 1000)); st.lastT = nowT;
     if (st.state !== 'run') return;
     const now = Date.now(), thr = o.thr, nervous = st.level > thr * .75;
     scene.classList.toggle('nervous', nervous);
     if (now < st.cool) { const p = scene.querySelector('#sProg'); if (p) p.style.width = '0%'; return; }
-    if (st.level > thr) { st.over += .1; setMsg('😬 ¡Shhh! Los animales tienen miedo…', 'warn'); if (st.over >= .7) scare(); }
-    else if (nervous) { st.over = Math.max(0, st.over - .1); setMsg('🤫 Un poquito más bajo…', 'warn'); }
-    else { st.over = 0; st.prog += .1; setMsg('🤫 Silencio… alguien viene');
-      if (H().talk && st.shown.length) { st.cheerT = (st.cheerT || 0) + .1; if (st.cheerT >= 20) { st.cheerT = 0; sayBubble(pick(st.shown), pick(CHEERS)); } } if (st.prog >= st.per) { st.prog = 0; reveal(); } }
+    if (st.level > thr) { st.over += dt; setMsg('😬 ¡Shhh! Los animales tienen miedo…', 'warn'); if (st.over >= .7) scare(); }
+    else if (nervous) { st.over = Math.max(0, st.over - dt); setMsg('🤫 Un poquito más bajo…', 'warn'); }
+    else { st.over = 0; st.prog += dt; setMsg('🤫 Silencio… alguien viene');
+      if (H().talk && st.shown.length) { st.cheerT = (st.cheerT || 0) + dt; if (st.cheerT >= 20) { st.cheerT = 0; sayBubble(pick(st.shown), pick(CHEERS)); } } if (st.prog >= st.per) { st.prog = 0; reveal(); } }
     const p = scene.querySelector('#sProg'); if (p) p.style.width = Math.min(100, st.prog / st.per * 100) + '%';
   }
   st.iv = setInterval(loop, 100);
+  window.SAF = { tick: loop, toggle: () => $$('#sGo').click(),
+    info: () => ({ state: st.state, n: st.shown.length, total: st.total || (o.count || H().animals.length), level: st.level, thr: o.thr, e: H().e, msg: ((scene.querySelector('#sMsg') || {}).textContent) || '' }) };
 
   function toggleFull() {
     const on = !wrap.classList.contains('full');
@@ -1159,7 +1236,7 @@ tool('safari', 'manage', '🐾', 'Safari silencioso', 'Quiet-work game (shy anim
   $$('#sSens').oninput = e => { o.sens = +e.target.value; persist(); };
 
   fillCount(); drawScene(); updButtons();
-  return () => { clearInterval(st.iv); micOff(); document.removeEventListener('fullscreenchange', onFs); document.removeEventListener('keydown', onKey); if (wrap.classList.contains('full') && document.fullscreenElement) document.exitFullscreen(); };
+  return () => { window.SAF = null; clearInterval(st.iv); micOff(); document.removeEventListener('fullscreenchange', onFs); document.removeEventListener('keydown', onKey); if (wrap.classList.contains('full') && document.fullscreenElement) document.exitFullscreen(); };
 });
 
 /* ---------- 3. WHEEL OF NAMES ---------- */
@@ -1636,6 +1713,238 @@ tool('convo', 'lang', '💬', 'Temas de conversación', 'Conversation prompt gen
 tool('circ', 'lang', '🌀', 'Circunstancias locas', 'Force a circumstance', '¡Cambia la historia de golpe! Saca una circunstancia y sigue contando.', el => {
   genTool(el, 'circ', [{ k: 'c', label: '¡De repente…!', bank: CIRCUMSTANCES }]);
 });
+
+/* =========================================================
+   MIS ENLACES + VISOR + DOCK + VENTANA FLOTANTE
+   ========================================================= */
+const SITE = 'https://ariadnaroberson-collab.github.io/';
+const DEFAULT_LINKS = [
+  { n: 'Cuentópolis (biblioteca)', u: SITE + 'cuentopolis/' },
+  { n: 'Los Guardianes de Chiquibul', u: SITE + 'cuentopolis/guardianes-de-chiquibul.html' },
+  { n: 'Charlas de Calendario', u: 'charlas_de_calendario_v2.html' },
+  { n: 'Daily Agenda', u: 'Daily_agenda.html' },
+  { n: 'The Passport Game', u: 'passport-game.html' }
+];
+function linkIcon(u) {
+  const x = String(u).toLowerCase();
+  if (x.includes('canva.')) return '🎨'; if (x.includes('cuentopolis')) return '📚';
+  if (x.includes('youtu')) return '▶️'; if (x.includes('docs.google') || x.includes('drive.google')) return '📄';
+  if (x.includes('wayground') || x.includes('quizizz')) return '🎯'; if (x.includes('quizlet')) return '🃏';
+  if (x.includes('charlas')) return '📅'; if (x.includes('agenda')) return '📋'; if (x.includes('passport')) return '🌎';
+  return '🔗';
+}
+function cleanUrl(u) {
+  u = String(u || '').trim(); if (!u) return '';
+  const m = u.match(/src="([^"]+)"/); if (m) u = m[1];            // pasted a whole <iframe> embed code
+  if (!/^https?:\/\//i.test(u) && !/^[\w-]+\.html/i.test(u)) u = 'https://' + u.replace(/^\/+/, '');
+  return u;
+}
+function toEmbed(u) {
+  try {
+    const x = new URL(u, location.href), host = x.hostname.replace(/^www\./, '');
+    if (host.endsWith('canva.com')) {
+      const m = x.pathname.match(/\/design\/([^/]+)(?:\/([^/]+))?\/(view|edit|watch|present)/);
+      if (m) return `https://www.canva.com/design/${m[1]}/${m[2] ? m[2] + '/' : ''}view?embed`;
+    }
+    if (host.endsWith('youtube.com') && x.searchParams.get('v')) return 'https://www.youtube.com/embed/' + x.searchParams.get('v');
+    if (host === 'youtu.be') return 'https://www.youtube.com/embed/' + x.pathname.slice(1);
+    return x.href;
+  } catch (e) { return u; }
+}
+function niceDate(d) { try { return new Date(d).toLocaleDateString('es', { weekday: 'short', day: 'numeric', month: 'short' }); } catch (e) { return ''; } }
+
+tool('links', 'present', '🖥️', 'Mis enlaces', 'Canva, Cuentopolis & links', 'Abre tu Canva o Cuentópolis aquí mismo. Las herramientas siguen funcionando detrás y tienes una barrita flotante con el temporizador, el Safari y la rueda de nombres.', el => {
+  const d = cdata(), g = gdata();
+  if (!d.hoy) d.hoy = [];
+  if (!g.links) { g.links = DEFAULT_LINKS.slice(); save(); }
+  const cur = d.hoy[0], isToday = cur && cur.d === today();
+  const row = (x, kind, i) => `<div class="lk-row"><span class="ic">${linkIcon(x.u)}</span><span class="nm">${h(x.n)}<small>${h(x.u)}</small></span>
+      <button class="btn sm gold" data-open="${kind}:${i}">🖥️ Abrir aquí</button><button class="btn sm ghost" data-tab="${kind}:${i}" title="Abrir en pestaña nueva">↗</button>
+      <button class="btn sm ghost" data-del="${kind}:${i}" title="Quitar">✕</button></div>`;
+  el.innerHTML += `
+    <div class="lk-box today"><h3>🎨 Canva de hoy · ${h(cname())}</h3>
+      ${cur ? `<div class="lk-row"><span class="ic">${linkIcon(cur.u)}</span><span class="nm">${h(cur.n)}<small>${isToday ? 'Hoy' : 'Guardado el ' + h(niceDate(cur.ts || Date.now()))} · ${h(cur.u)}</small></span>
+        <button class="btn gold" data-open="hoy:0">🖥️ Abrir aquí</button><button class="btn sm ghost" data-tab="hoy:0">↗</button></div>` : '<p class="muted">Todavía no hay un enlace para hoy. Pega el enlace de tu Canva aquí abajo 👇</p>'}
+      <div class="lk-add"><input class="field" id="hU" placeholder="Pega aquí el enlace de Canva de hoy (https://www.canva.com/design/…)"><input class="field" id="hN" placeholder="Nombre (opcional), ej. Lección 12" style="max-width:260px"><button class="btn gold" id="hGo">💾 Guardar y abrir</button></div>
+      ${d.hoy.length > 1 ? `<details class="help"><summary>🕘 Enlaces de días anteriores (${d.hoy.length - 1})</summary>${d.hoy.slice(1).map((x, i) => row({ n: x.n + ' · ' + niceDate(x.ts), u: x.u }, 'hoy', i + 1)).join('')}</details>` : ''}
+      <details class="help"><summary>❓ ¿Cómo copio el enlace de Canva para que se vea aquí?</summary><ol>
+        <li>En Canva, abre tu presentación y haz clic en <b>Compartir</b> (arriba a la derecha).</li>
+        <li>En «Acceso por enlace» elige <b>Cualquier persona con el enlace → puede ver</b>.</li>
+        <li>Haz clic en <b>Copiar enlace</b> y pégalo aquí arriba. ¡Listo!</li>
+        <li>Si la escuela no permite «cualquier persona», usa el botón <b>↗</b> para abrirlo en una pestaña y la <b>🪟 Ventana flotante</b> para tener tus herramientas encima.</li></ol></details>
+    </div>
+    <div class="lk-box"><h3>⭐ Mis favoritos (todas las clases)</h3>
+      ${g.links.map((x, i) => row(x, 'fav', i)).join('') || '<p class="muted">No hay favoritos.</p>'}
+      <div class="lk-add"><input class="field" id="fN" placeholder="Nombre, ej. Canva Unidad 3" style="max-width:260px"><input class="field" id="fU" placeholder="Enlace (Canva, Cuentópolis, YouTube, Wayground…)"><button class="btn" id="fGo">＋ Añadir</button></div>
+      <p class="muted" style="font-size:.85rem;margin-top:8px">Algunos sitios (por ejemplo Google o Wayground) no se dejan abrir dentro de otra página. Para esos usa ↗ y la 🪟 Ventana flotante.</p>
+    </div>`;
+  const get = k => { const [kind, i] = k.split(':'); return kind === 'hoy' ? d.hoy[+i] : g.links[+i]; };
+  el.querySelectorAll('[data-open]').forEach(b => b.onclick = () => openLink(get(b.dataset.open)));
+  el.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => window.open(get(b.dataset.tab).u, '_blank'));
+  el.querySelectorAll('[data-del]').forEach(b => b.onclick = () => { const [kind, i] = b.dataset.del.split(':'); const arr = kind === 'hoy' ? d.hoy : g.links; if (confirm('¿Quitar «' + arr[+i].n + '»?')) { arr.splice(+i, 1); save(); render(); } });
+  el.querySelector('#hGo').onclick = () => {
+    const u = cleanUrl(el.querySelector('#hU').value); if (!u) { toast('Pega primero el enlace'); return; }
+    const n = el.querySelector('#hN').value.trim() || ('Canva · ' + niceDate(Date.now()));
+    d.hoy = [{ n, u, d: today(), ts: Date.now() }].concat(d.hoy.filter(x => x.u !== u)).slice(0, 8); save(); render(); openLink(d.hoy[0]);
+  };
+  el.querySelector('#fGo').onclick = () => {
+    const u = cleanUrl(el.querySelector('#fU').value), n = el.querySelector('#fN').value.trim();
+    if (!u || !n) { toast('Escribe el nombre y el enlace'); return; }
+    g.links.push({ n, u }); save(); render(); toast('Añadido a favoritos ⭐');
+  };
+});
+
+/* ---------- viewer ---------- */
+const VIEW = { open: [], cur: -1 };
+function openLink(x) {
+  if (!x) return;
+  const src = toEmbed(x.u);
+  let i = VIEW.open.findIndex(v => v.src === src);
+  if (i < 0) {
+    if (VIEW.open.length >= 5) { const old = VIEW.open.shift(); old.frame.remove(); }
+    const f = document.createElement('iframe');
+    f.src = src; f.allow = 'fullscreen; autoplay; clipboard-write'; f.setAttribute('allowfullscreen', ''); f.referrerPolicy = 'strict-origin-when-cross-origin';
+    $('#vFrames').appendChild(f);
+    VIEW.open.push({ n: x.n, u: x.u, src, frame: f }); i = VIEW.open.length - 1;
+    const hint = document.createElement('div'); hint.className = 'vhint'; hint.textContent = '¿Sale en blanco o con error? Usa «↗ Abrir en pestaña nueva» y la 🪟 Ventana flotante.';
+    $('#vFrames').appendChild(hint); setTimeout(() => hint.style.opacity = 0, 6000); setTimeout(() => hint.remove(), 7000);
+  }
+  showView(i);
+}
+function showView(i) {
+  VIEW.cur = i;
+  VIEW.open.forEach((v, k) => v.frame.classList.toggle('off', k !== i));
+  $('#vTabs').innerHTML = VIEW.open.map((v, k) => `<button class="vtab ${k === i ? 'on' : ''}" data-k="${k}" title="${h(v.u)}">${linkIcon(v.u)} ${h(v.n)}</button>`).join('');
+  $('#vTabs').querySelectorAll('[data-k]').forEach(b => b.onclick = () => showView(+b.dataset.k));
+  $('#viewer').classList.remove('hidden'); $('#dock').classList.remove('hidden');
+  updViewBtn();
+}
+function hideView() { $('#viewer').classList.add('hidden'); $('#dock').classList.add('hidden'); updViewBtn(); }
+function updViewBtn() {
+  const b = $('#viewBtn'), v = VIEW.open[VIEW.cur];
+  if (v && $('#viewer').classList.contains('hidden')) { b.style.display = 'inline-block'; b.textContent = '🖥️ ' + (v.n.length > 18 ? v.n.slice(0, 17) + '…' : v.n); b.title = 'Volver a: ' + v.n; } else b.style.display = 'none';
+}
+$('#viewBtn').onclick = () => showView(Math.max(0, VIEW.cur));
+$('#vBack').onclick = hideView;
+$('#vNew').onclick = () => { const v = VIEW.open[VIEW.cur]; if (v) window.open(v.u, '_blank'); };
+$('#vFs').onclick = () => { if (!document.fullscreenElement) document.documentElement.requestFullscreen && document.documentElement.requestFullscreen(); else document.exitFullscreen(); };
+$('#vClose').onclick = () => {
+  const v = VIEW.open[VIEW.cur]; if (!v) return hideView();
+  v.frame.remove(); VIEW.open.splice(VIEW.cur, 1);
+  if (VIEW.open.length) showView(Math.min(VIEW.cur, VIEW.open.length - 1)); else { VIEW.cur = -1; hideView(); }
+};
+
+/* ---------- shared quick actions (dock + floating window) ---------- */
+function quickTimer(sec) {
+  const t = TIMERS[0]; ac();
+  if (sec) { Object.assign(t, { total: sec, remaining: sec, done: false, running: true, endAt: Date.now() + sec * 1000 }); }
+  else if (t.running) { t.remaining = tRemain(t); t.running = false; }
+  else { if (t.remaining <= 0) { t.remaining = t.total || 60; } t.done = false; t.endAt = Date.now() + t.remaining * 1000; t.running = true; }
+  if (S.tool === 'timer') render();
+}
+function quickName() {
+  const list = present(); if (!list.length) { toast('No hay estudiantes en esta clase'); return null; }
+  let n; const last = SES.__lastName; do { n = pick(list); } while (list.length > 1 && n === last); SES.__lastName = n;
+  return n;
+}
+function timerInfo() { const t = TIMERS[0], r = tRemain(t); return { txt: t.done ? '¡Tiempo!' : fmt(r), running: t.running, done: t.done }; }
+function safInfo() { return window.SAF ? window.SAF.info() : null; }
+
+/* dock */
+$('#dkGo').onclick = () => quickTimer();
+$('#dkSet').onchange = e => { if (e.target.value) quickTimer(+e.target.value); e.target.value = ''; };
+$('#dkName').onclick = () => { const n = quickName(); if (n) showWinner('🎲 ¡Le toca a…!', n); };
+$('#dkTools').onclick = hideView;
+$('#dkS').onclick = () => { if (window.SAF) { const i = SAF.info(); if (i.state === 'run' || i.state === 'pause') SAF.toggle(); else { hideView(); go('safari'); } } else { hideView(); go('safari'); } };
+$('#dkMin').onclick = () => { const d = $('#dock'); d.classList.toggle('mini'); $('#dkMin').textContent = d.classList.contains('mini') ? '⏱️' : '–'; };
+(function dragDock() {
+  const d = $('#dock'), g = d.querySelector('.grip'); let sx, sy, ox, oy, on = false;
+  g.addEventListener('pointerdown', e => { on = true; d.classList.add('drag'); const r = d.getBoundingClientRect(); sx = e.clientX; sy = e.clientY; ox = r.left; oy = r.top; g.setPointerCapture(e.pointerId); });
+  g.addEventListener('pointermove', e => { if (!on) return; d.style.left = Math.max(0, Math.min(innerWidth - 60, ox + e.clientX - sx)) + 'px'; d.style.top = Math.max(0, Math.min(innerHeight - 40, oy + e.clientY - sy)) + 'px'; d.style.right = 'auto'; d.style.bottom = 'auto'; });
+  g.addEventListener('pointerup', () => { on = false; d.classList.remove('drag'); });
+})();
+function updDock() {
+  if ($('#dock').classList.contains('hidden')) return;
+  const t = timerInfo(), e = $('#dkT'); e.textContent = t.txt; e.className = 'dk-t' + (t.running ? ' run' : '') + (t.done ? ' done' : '');
+  $('#dkGo').textContent = t.running ? '⏸' : '▶';
+  const sf = safInfo();
+  $('#dkSn').textContent = sf && sf.state !== 'idle' ? `${sf.n}/${sf.total}${sf.state === 'pause' ? ' ⏸' : sf.state === 'done' ? ' 🎉' : ''}` : '—';
+  $('#dkSl').style.width = (sf ? sf.level : 0) + '%';
+}
+
+/* ---------- floating window (Document Picture-in-Picture, Edge / Chrome) ---------- */
+let PIP = null;
+const PIP_CSS = `body{margin:0;font-family:Nunito,Segoe UI,sans-serif;background:#1a2e25;color:#e8e4d9;display:flex;flex-direction:column;gap:8px;padding:10px;box-sizing:border-box;height:100vh;user-select:none}
+.box{background:rgba(255,255,255,.07);border-radius:12px;padding:8px 10px}
+.t{font-size:clamp(2rem,16vw,5rem);font-weight:800;text-align:center;font-variant-numeric:tabular-nums;line-height:1.05}
+.t.run{color:#f5c842}.t.done{color:#ff8a8a;animation:a 1s infinite}@keyframes a{50%{opacity:.4}}
+.row{display:flex;gap:5px;flex-wrap:wrap;justify-content:center}
+button{background:rgba(255,255,255,.12);color:#e8e4d9;border:none;border-radius:9px;padding:6px 9px;font-weight:800;font-size:.9rem;cursor:pointer;font-family:inherit}
+button:hover{background:rgba(245,200,66,.35)} button.gold{background:#f5c842;color:#1a2e25}
+.s{display:flex;align-items:center;gap:8px;font-weight:800}.lv{flex:1;height:12px;background:rgba(255,255,255,.2);border-radius:6px;overflow:hidden;position:relative}
+.lv div{height:100%;width:0;background:linear-gradient(90deg,#7fae6f,#f5c842 60%,#e84545)} .lv i{position:absolute;top:0;bottom:0;width:2px;background:#fff}
+.msg{font-size:.8rem;opacity:.8;margin-top:4px;min-height:1em}
+.n{font-size:clamp(1.4rem,9vw,3rem);font-weight:800;text-align:center;color:#f5c842;min-height:1.2em}
+.cls{font-size:.75rem;opacity:.6;text-align:center}`;
+async function openPip() {
+  if (PIP) { try { PIP.focus(); } catch (e) {} return; }
+  if (!('documentPictureInPicture' in window)) { alert('Tu navegador no tiene «ventana flotante». Usa Microsoft Edge o Google Chrome actualizados.'); return; }
+  let w;
+  try { w = await documentPictureInPicture.requestWindow({ width: 300, height: 380 }); } catch (e) { toast('No se pudo abrir la ventana flotante'); return; }
+  PIP = w;
+  const st = w.document.createElement('style'); st.textContent = PIP_CSS; w.document.head.appendChild(st);
+  w.document.title = 'Herramientas';
+  w.document.body.innerHTML = `
+    <div class="box"><div class="t" id="pT">5:00</div>
+      <div class="row"><button class="gold" id="pGo">▶ Empezar</button>${[1, 2, 3, 5, 10].map(m => `<button data-m="${m}">${m}′</button>`).join('')}</div></div>
+    <div class="box"><div class="s">🐾 <span id="pSn">Safari: —</span><button id="pSg">⏯</button></div><div class="lv"><div id="pSl"></div><i id="pSt"></i></div><div class="msg" id="pSm"></div></div>
+    <div class="box"><div class="row"><button class="gold" id="pName">🎲 Nombre al azar</button></div><div class="n" id="pN"></div><div class="cls" id="pC"></div></div>`;
+  const q = id => w.document.getElementById(id);
+  q('pGo').onclick = () => { quickTimer(); pipUpd(); };
+  w.document.querySelectorAll('[data-m]').forEach(b => b.onclick = () => { quickTimer(+b.dataset.m * 60); pipUpd(); });
+  q('pName').onclick = () => { const n = quickName(); if (n) { q('pN').textContent = n; fanfare(); } };
+  q('pSg').onclick = () => { if (window.SAF) { const i = SAF.info(); if (i.state === 'run' || i.state === 'pause') SAF.toggle(); else toast('Empieza el Safari en Herramientas'); } };
+  w.setInterval(uiTick, 250);            // this window is visible, so it keeps everything ticking even if the main tab is hidden
+  w.addEventListener('pagehide', () => { PIP = null; $('#pipBtn').textContent = '🪟 Flotante'; });
+  $('#pipBtn').textContent = '🪟 Abierta';
+  pipUpd();
+}
+function pipUpd() {
+  if (!PIP) return; const q = id => PIP.document.getElementById(id); if (!q('pT')) return;
+  const t = timerInfo(); q('pT').textContent = t.txt; q('pT').className = 't' + (t.running ? ' run' : '') + (t.done ? ' done' : '');
+  q('pGo').textContent = t.running ? '⏸ Pausa' : '▶ Empezar';
+  const sf = safInfo();
+  q('pSn').textContent = sf && sf.state !== 'idle' ? `Safari ${sf.e} ${sf.n}/${sf.total}${sf.state === 'pause' ? ' (pausa)' : sf.state === 'done' ? ' 🎉' : ''}` : 'Safari: abre 🐾 en Herramientas';
+  q('pSl').style.width = (sf ? sf.level : 0) + '%'; q('pSt').style.left = (sf ? sf.thr : 0) + '%';
+  q('pSm').textContent = sf && sf.state === 'run' ? sf.msg : '';
+  q('pC').textContent = cname();
+}
+$('#pipBtn').onclick = openPip;
+
+/* top-bar links menu: open a link without leaving the tool you're on (e.g. Safari keeps running) */
+function buildLkMenu() {
+  const d = cdata(), g = gdata(); if (!g.links) g.links = DEFAULT_LINKS.slice();
+  const cur = (d.hoy || [])[0];
+  const m = $('#lkMenu');
+  m.innerHTML = `<div class="mh">${h(cname())}</div>`
+    + (cur ? `<button class="gold" data-u="hoy">${linkIcon(cur.u)} <span>${h(cur.n)}<br><small class="muted">Canva de hoy</small></span></button>` : `<button data-go="1">🎨 <span>Pegar el Canva de hoy…</span></button>`)
+    + `<div class="mh">⭐ Favoritos</div>` + g.links.map((x, i) => `<button data-u="${i}">${linkIcon(x.u)} ${h(x.n)}</button>`).join('')
+    + `<div class="mh"></div><button data-go="1">⚙️ Administrar enlaces</button>`;
+  m.querySelectorAll('[data-u]').forEach(b => b.onclick = () => { m.classList.add('hidden'); openLink(b.dataset.u === 'hoy' ? cur : g.links[+b.dataset.u]); });
+  m.querySelectorAll('[data-go]').forEach(b => b.onclick = () => { m.classList.add('hidden'); hideView(); go('links'); });
+}
+$('#lkBtn').onclick = e => { e.stopPropagation(); const m = $('#lkMenu'); if (m.classList.contains('hidden')) { buildLkMenu(); m.classList.remove('hidden'); } else m.classList.add('hidden'); };
+document.addEventListener('click', e => { if (!e.target.closest('#lkMenu') && !e.target.closest('#lkBtn')) $('#lkMenu').classList.add('hidden'); });
+
+
+/* one heartbeat for everything */
+let lastUi = 0;
+function uiTick() {
+  const now = Date.now(); if (now - lastUi < 150) return; lastUi = now;
+  timerTick(); if (window.SAF) { try { SAF.tick(); } catch (e) {} }
+  updDock(); pipUpd();
+}
+setInterval(uiTick, 200);
 
 /* =========================================================
    NAV + RENDER
