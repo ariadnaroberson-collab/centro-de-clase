@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herramientas Guide</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Nunito:wght@400;600;700;800&family=Schoolbell&display=swap');
+  :root {
+    --bg: #2c4a3e; --bg-dark: #1a2e25; --card: #f7f4ef; --card-2: #ece6da; --chalk: #e8e4d9;
+    --gold: #f5c842; --text: #2c2c2c; --mid: #5a5a5a; --line: #e1d9c9;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Nunito', 'Segoe UI', sans-serif; background: var(--bg-dark); color: var(--text); line-height: 1.55; }
+  a { color: var(--bg); }
+  header { background: var(--bg-dark); color: var(--chalk); padding: 28px 20px 22px; text-align: center; border-bottom: 2px dashed rgba(255,255,255,.25); }
+  header .eyebrow { font-family: 'Schoolbell', cursive; color: var(--gold); letter-spacing: 3px; text-transform: uppercase; font-size: .85rem; }
+  header h1 { font-family: 'Caveat', cursive; font-size: 3.2rem; line-height: 1; margin: 4px 0 8px; }
+  header p { opacity: .75; max-width: 680px; margin: 0 auto; }
+  .hbtns { margin-top: 14px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .hbtns a, .hbtns button { background: var(--gold); color: var(--bg-dark); border: none; text-decoration: none; font-weight: 800; padding: 8px 16px; border-radius: 14px; font-size: .95rem; cursor: pointer; font-family: inherit; }
+  .hbtns .ghost { background: transparent; color: var(--chalk); border: 1.5px solid rgba(232,228,217,.45); }
+  .layout { display: grid; grid-template-columns: 250px minmax(0, 1fr); max-width: 1200px; margin: 0 auto; gap: 24px; padding: 24px 20px 60px; }
+  nav.toc { position: sticky; top: 16px; align-self: start; max-height: calc(100vh - 32px); overflow-y: auto; color: var(--chalk); font-size: .92rem; }
+  nav.toc b { display: block; font-family: 'Schoolbell', cursive; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; font-size: .78rem; margin: 14px 0 4px; }
+  nav.toc a { display: block; color: var(--chalk); text-decoration: none; padding: 4px 8px; border-radius: 8px; opacity: .85; }
+  nav.toc a:hover { background: rgba(255,255,255,.08); opacity: 1; }
+  main { min-width: 0; }
+  section { background: var(--card); border-radius: 18px; padding: 26px 30px; margin-bottom: 20px; box-shadow: 0 6px 0 rgba(0,0,0,.2); scroll-margin-top: 16px; }
+  h2 { font-family: 'Caveat', cursive; font-size: 2.4rem; color: var(--bg); line-height: 1.05; margin-bottom: 10px; }
+  h3 { font-size: 1.15rem; color: var(--bg); margin: 20px 0 6px; }
+  h3:first-of-type { margin-top: 10px; }
+  p { margin: 6px 0; }
+  ol, ul { margin: 6px 0 6px 24px; }
+  li { margin: 4px 0; }
+  .lead { font-size: 1.08rem; }
+  .tip { background: #fff8dc; border-left: 5px solid var(--gold); border-radius: 10px; padding: 10px 14px; margin: 12px 0; }
+  .warn { background: #fdecea; border-left: 5px solid #c8312f; border-radius: 10px; padding: 10px 14px; margin: 12px 0; }
+  .tip b:first-child, .warn b:first-child { display: block; }
+  kbd { font-family: inherit; font-weight: 800; background: #fff; border: 1.5px solid #bbb; border-bottom-width: 3px; border-radius: 6px; padding: 0 7px; font-size: .9em; white-space: nowrap; }
+  .btn { display: inline-block; font-weight: 800; background: #fff; border: 1.5px solid #c9bfa9; border-radius: 8px; padding: 0 7px; font-size: .92em; white-space: nowrap; }
+  table { width: 100%; border-collapse: collapse; margin: 10px 0; background: #fff; border-radius: 10px; overflow: hidden; }
+  th, td { text-align: left; vertical-align: top; padding: 9px 12px; border-bottom: 1px solid var(--line); font-size: .95rem; }
+  th { background: var(--bg); color: var(--chalk); font-weight: 800; }
+  td:first-child { font-weight: 800; white-space: nowrap; }
+  .tool { background: #fff; border: 1.5px solid var(--line); border-radius: 14px; padding: 14px 16px; margin: 10px 0; break-inside: avoid; }
+  .tool h4 { font-size: 1.05rem; color: var(--bg); margin-bottom: 4px; }
+  .tool h4 small { font-weight: 600; color: var(--mid); font-size: .82rem; margin-left: 6px; }
+  .tool p, .tool li { font-size: .95rem; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .steps { counter-reset: s; list-style: none; margin-left: 0; }
+  .steps > li { counter-increment: s; position: relative; padding-left: 42px; margin: 10px 0; }
+  .steps > li::before { content: counter(s); position: absolute; left: 0; top: -1px; width: 30px; height: 30px; border-radius: 50%; background: var(--bg); color: var(--chalk); font-weight: 800; display: flex; align-items: center; justify-content: center; }
+  .print-only { display: none; }
+  footer { text-align: center; color: rgba(232,228,217,.45); font-family: 'Schoolbell', cursive; font-size: .85rem; padding-bottom: 30px; }
+  @media (max-width: 860px) {
+    .layout { grid-template-columns: 1fr; padding: 16px; }
+    nav.toc { position: static; max-height: none; background: rgba(255,255,255,.04); border-radius: 14px; padding: 6px 10px 12px; }
+    section { padding: 20px 16px; }
+    .grid2 { grid-template-columns: 1fr; }
+    td:first-child { white-space: normal; }
+    header h1 { font-size: 2.5rem; }
+  }
+  /* ---------- PRINT: black & white, ink-light ---------- */
+  @media print {
+    @page { margin: 14mm; }
+    body { background: #fff; color: #000; font-size: 11pt; }
+    header { background: #fff; color: #000; border-bottom: 1px solid #000; padding: 0 0 10px; }
+    header .eyebrow, header p { color: #000; opacity: 1; }
+    .hbtns, nav.toc, footer { display: none; }
+    .layout { display: block; padding: 0; }
+    section { background: #fff; box-shadow: none; border: none; border-radius: 0; padding: 0; margin: 0 0 14px; }
+    section + section { border-top: 1px solid #000; padding-top: 10px; }
+    h2, h3, .tool h4, a { color: #000; }
+    .tool, table, th, td, .tip, .warn { background: #fff !important; color: #000 !important; }
+    .tool { border: 1px solid #000; }
+    th { border-bottom: 1px solid #000; font-weight: bold; }
+    td { border-bottom: 1px solid #999; }
+    .tip, .warn { border: 1px solid #000; border-left-width: 3px; }
+    kbd, .btn { background: #fff; border: 1px solid #000; }
+    .steps > li::before { background: #fff; color: #000; border: 1px solid #000; }
+    .print-only { display: block; }
+    .grid2 { display: block; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Centro de Clase</div>
+  <h1>🧰 How to use Herramientas</h1>
+  <p>Your classroom dashboard: presenting, timers, noise game, name pickers, rewards, CI story tools and assessment, all on one page.</p>
+  <div class="hbtns"><a href="herramientas.html">🧰 Open Herramientas</a><button class="ghost" onclick="print()">🖨️ Print this guide</button><a class="ghost" href="index.html">← Centro de Clase</a></div>
+</header>
+
+<div class="layout">
+<nav class="toc" aria-label="Contents">
+  <b>Start here</b>
+  <a href="#setup">1. First-time setup</a>
+  <a href="#daily">2. Your daily routine</a>
+  <a href="#screen">3. Finding your way around</a>
+  <b>Presenting</b>
+  <a href="#present">4. Showing Canva &amp; Cuentópolis</a>
+  <a href="#dock">5. The dock &amp; floating window</a>
+  <b>Tool by tool</b>
+  <a href="#t-present">6. 🖥️ Presentar</a>
+  <a href="#t-assess">7. 📝 Evaluación y práctica</a>
+  <a href="#t-manage">8. 🧑‍🏫 Manejo de clase</a>
+  <a href="#t-rewards">9. 🏆 Premios y conducta</a>
+  <a href="#t-ci">10. 🇪🇸 Herramientas CI / TPRS</a>
+  <b>Good to know</b>
+  <a href="#data">11. Saving, backups &amp; class lists</a>
+  <a href="#keys">12. Keyboard shortcuts</a>
+  <a href="#help">13. Troubleshooting</a>
+</nav>
+
+<main>
+
+<section id="setup">
+  <h2>1. First-time setup</h2>
+  <p class="lead">Do this once, on the <b>classroom PC that's connected to the TV</b>, in <b>Microsoft Edge</b>.</p>
+  <div class="warn"><b>Why the same PC and browser matter</b>Everything Herramientas remembers (your Canva links, points, stickers, rubrics, scores) is saved <b>inside that browser on that computer</b>. If you open Herramientas at home, or in Chrome instead of Edge, you'll see an empty dashboard. Nothing is lost; it's just on the other computer.</div>
+  <ol class="steps">
+    <li><b>Open Herramientas.</b> Go to your Centro de Clase home page and click the <b>🧰 Herramientas</b> tile, or go straight to <b>ariadnaroberson-collab.github.io/centro-de-clase/herramientas.html</b>. Bookmark it (<kbd>Ctrl</kbd> + <kbd>D</kbd>).</li>
+    <li><b>Pick a class.</b> Use the yellow <span class="btn">Clase</span> menu at the top. Every tool uses this class's student list, and points, stickers and scores are saved separately for each class.</li>
+    <li><b>Choose your favorites.</b> In the left menu, click the <b>☆</b> next to any tool you use every day. It turns gold <b>★</b> and appears under <b>⭐ Favoritas</b> at the top of the menu. Click ★ again to remove it.</li>
+    <li><b>Check your links.</b> Open <b>🖥️ Mis enlaces</b>. Cuentópolis, Los Guardianes de Chiquibul, Charlas de Calendario, Daily Agenda and The Passport Game are already saved. Add any others you use often.</li>
+    <li><b>Allow pop-ups and the microphone.</b> The first time you use the floating window, the score sheet window or Safari silencioso, Edge will ask for permission. Click <b>Allow</b>.</li>
+  </ol>
+  <div class="tip"><b>Your TV is a second screen</b>Drag the Edge window with Herramientas onto the TV and press <span class="btn">⛶</span> for full screen. You can keep private things (the score sheet, results) on your own PC monitor.</div>
+</section>
+
+<section id="daily">
+  <h2>2. Your daily routine</h2>
+  <h3>Before class (2 minutes)</h3>
+  <ol>
+    <li>Pick the class in the <span class="btn">Clase</span> menu.</li>
+    <li>Open <b>🖥️ Mis enlaces</b> and paste today's Canva link in <b>🎨 Canva de hoy</b>, then click <span class="btn">💾 Guardar y abrir</span>. (Each class has its own; older links are kept under <b>🕘 Enlaces de días anteriores</b>.)</li>
+    <li>Optional: fill in <b>🎯 Qué hacer ahora</b> for today's independent work.</li>
+  </ol>
+  <h3>During class</h3>
+  <ul>
+    <li><b>Teaching from slides:</b> click <span class="btn">🔗 Enlaces ▾</span> → today's Canva. The small <b>dock</b> in the corner gives you a timer, Safari status, the Español meter and a name picker without leaving the slides.</li>
+    <li><b>Back to the tools:</b> click <span class="btn">🧰 Herramientas</span> (top-left of the slides or on the dock). Your slides stay open on the same slide; the gold <span class="btn">🖥️</span> button in the top bar takes you back to them.</li>
+    <li><b>Independent work:</b> open <b>🐾 Safari silencioso</b> and press <span class="btn">▶ Empezar</span>. Animals come out while the class is quiet, even while your slides are showing.</li>
+  </ul>
+  <h3>After class</h3>
+  <ul>
+    <li>If you scored an oral or written check, open <b>📊 Resultados</b> and click <span class="btn">⬇️ Descargar esta</span> to save the spreadsheet.</li>
+    <li>About once a week, click <span class="btn">💾 Guardar copia</span> at the bottom of the left menu (see <a href="#data">section 11</a>).</li>
+  </ul>
+</section>
+
+<section id="screen">
+  <h2>3. Finding your way around</h2>
+  <h3>The top bar</h3>
+  <table>
+    <tr><th>Button</th><th>What it does</th></tr>
+    <tr><td>← Centro de Clase</td><td>Back to your home page.</td></tr>
+    <tr><td>⏱️ red timer pill</td><td>Appears when a timer is running and you're in another tool. Click it to go to the timers.</td></tr>
+    <tr><td>Clase</td><td>Choose which class you're teaching. Changes the student list everywhere.</td></tr>
+    <tr><td>🔗 Enlaces ▾</td><td>Opens today's Canva, your favorite links, or this unit's games, <b>without leaving the tool you're on</b> (Safari keeps running behind).</td></tr>
+    <tr><td>🖥️ (gold)</td><td>Appears when a presentation is open in the background. Click to go back to it.</td></tr>
+    <tr><td>🪟 Flotante</td><td>Opens the small always-on-top window (see <a href="#dock">section 5</a>).</td></tr>
+    <tr><td>❓ Guía</td><td>Opens this guide.</td></tr>
+    <tr><td>⛶</td><td>Full screen. Press <kbd>Esc</kbd> to leave full screen.</td></tr>
+  </table>
+  <h3>The left menu</h3>
+  <ul>
+    <li><b>🔎 Buscar herramienta…</b> Type part of a tool's name (Spanish or English: "dados", "timer", "música") to find it.</li>
+    <li><b>⭐ Favoritas</b> Your starred tools, always at the top.</li>
+    <li><b>Five sections</b> 🖥️ Presentar · 📝 Evaluación y práctica · 🧑‍🏫 Manejo de clase · 🏆 Premios y conducta · 🇪🇸 Herramientas CI / TPRS.</li>
+    <li><b>Backups</b> 💾 Guardar copia and 📂 Cargar copia are at the very bottom.</li>
+  </ul>
+  <div class="tip"><b>The space bar</b>In almost every tool, pressing <kbd>Space</kbd> clicks the big yellow button (spin, pick, start, roll…). Handy with a wireless presenter or keyboard.</div>
+</section>
+
+<section id="present">
+  <h2>4. Showing Canva &amp; Cuentópolis</h2>
+  <p>Links open <b>inside</b> Herramientas, so your tools keep working behind them.</p>
+  <ol class="steps">
+    <li><b>Open a link.</b> From <span class="btn">🔗 Enlaces ▾</span> in the top bar, or <span class="btn">🖥️ Abrir aquí</span> in Mis enlaces or Práctica y juegos.</li>
+    <li><b>Switch between open links.</b> Each one gets a tab in the bar at the top (up to 5). Canva stays on the slide you were on.</li>
+    <li><b>Go back to your tools.</b> <span class="btn">🧰 Herramientas</span> top-left. Return with the gold <span class="btn">🖥️</span> button.</li>
+    <li><b>Close a link</b> with <span class="btn">✕ Cerrar</span>.</li>
+  </ol>
+  <h3>Making Canva show inside Herramientas</h3>
+  <ol>
+    <li>In Canva, open your presentation and click <b>Compartir</b> (Share), top-right.</li>
+    <li>Under <b>Acceso por enlace</b> (link access), choose <b>Cualquier persona con el enlace → puede ver</b> (anyone with the link can view).</li>
+    <li>Click <b>Copiar enlace</b> and paste it into Mis enlaces. Herramientas converts it to a viewing link automatically, even if you copied the "edit" link.</li>
+  </ol>
+  <div class="warn"><b>If a page shows blank or an error</b>Some sites refuse to open inside another page (Google, sometimes Wayground, or Canva if your school blocks public links). Use <span class="btn">↗ Abrir en pestaña nueva</span> to open it in a normal tab, and the <b>🪟 Flotante</b> window to keep your timer and tools on top.</div>
+</section>
+
+<section id="dock">
+  <h2>5. The dock &amp; the floating window</h2>
+  <div class="grid2">
+    <div class="tool"><h4>The dock <small>bottom-right, while a link is open</small></h4>
+      <ul>
+        <li><b>Timer</b> ▶/⏸ starts and pauses Timer 1; the ⏱️ menu sets 1–15 minutes and starts it.</li>
+        <li><b>🐾 3/8</b> Safari progress and noise bar. Tap to pause or continue Safari.</li>
+        <li><b>🗣️ 4:12</b> Español minutes (only while that meter is on). <b>Tap it when someone speaks English.</b></li>
+        <li><b>🎵 ⏹</b> stops the music (only while music plays).</li>
+        <li><b>🎲 Nombre</b> picks a student and shows the name big.</li>
+        <li><b>🧰</b> back to the tools · <b>–</b> shrink the dock · drag by <b>⠿</b> to move it.</li>
+      </ul></div>
+    <div class="tool"><h4>🪟 Flotante <small>Edge &amp; Chrome only</small></h4>
+      <p>A small window that floats <b>on top of everything</b>, even Canva in its own full-screen present mode or another program.</p>
+      <ul>
+        <li>Timer with 1–10 minute buttons</li>
+        <li>Safari progress, noise level and ⏯</li>
+        <li>Español minutes with ⏯ and 🇬🇧 ¡Inglés!</li>
+        <li>🎲 Nombre al azar and 🎵 ⏹</li>
+      </ul>
+      <p>Drag it onto the TV and resize it from a corner. Close it with its own ✕. Keep the Herramientas tab open while you use it.</p></div>
+  </div>
+</section>
+
+<section id="t-present">
+  <h2>6. 🖥️ Presentar</h2>
+  <div class="tool"><h4>🖥️ Mis enlaces <small>Canva, Cuentópolis &amp; links</small></h4>
+    <ul><li><b>🎨 Canva de hoy</b> One link per class, per day. Paste, name it (optional), <span class="btn">💾 Guardar y abrir</span>. The last 8 are kept.</li>
+      <li><b>⭐ Mis favoritos</b> Links shared by all classes. Add with name + link → <span class="btn">＋ Añadir</span>; remove with ✕.</li>
+      <li><span class="btn">🖥️ Abrir aquí</span> opens inside Herramientas · <span class="btn">↗</span> opens in a new tab.</li></ul></div>
+  <div class="tool"><h4>✍️ Pizarra <small>your board on the TV</small></h4>
+    <ul><li>Click the white board and type. <span class="btn">A−</span> <span class="btn">A+</span> change size; the color dots change the text color.</li>
+      <li><b>💬 Marco de oración</b> adds a sentence frame ("___ quiere ___.").</li>
+      <li><span class="btn">🔈 Leer</span> reads the board aloud; <span class="btn">🐢 Lento</span> reads it slowly.</li>
+      <li><span class="btn">✏️ Dibujar</span> lets you draw or circle on top (the color dots become pen colors). Click again to go back to typing. <span class="btn">🧽 Borrar dibujo</span> / <span class="btn">🗑️ Borrar texto</span> clear each layer.</li>
+      <li>The text is saved per class; drawings are kept until you close the page.</li></ul></div>
+  <div class="tool"><h4>🎯 Qué hacer ahora <small>work-time instructions</small></h4>
+    <ul><li>Shows the <b>"Puedo…"</b> objective, numbered steps and <b>Cuando termines</b>, with a timer beside them.</li>
+      <li>Tap a step to mark it ✅. <span class="btn">↺ Desmarcar pasos</span> clears the checks.</li>
+      <li><span class="btn">✏️ Editar</span> → pick a template (Lectura en silencio, Trabajo en parejas, Diario, Estaciones, Actividad en la computadora) or write your own, one step per line, up to 6. Saved per class.</li></ul></div>
+  <div class="tool"><h4>📱 Código QR</h4>
+    <ul><li>Pick a saved link (or paste any link) → <span class="btn">📱 Crear QR</span>. Students scan it with their device.</li>
+      <li><span class="btn">⛶</span> full screen · <span class="btn">🖨️ Imprimir</span> a black-and-white sheet · <span class="btn">💾 Descargar imagen</span>.</li></ul></div>
+</section>
+
+<section id="t-assess">
+  <h2>7. 📝 Evaluación y práctica</h2>
+  <div class="warn"><b>Keep grades off the TV</b>Students can see anything on the TV. Score students in the <b>separate score-sheet window</b> on your PC monitor, and only open <b>📊 Resultados</b> on your own screen.</div>
+  <div class="tool"><h4>🎤 Evaluación oral y escrita <small>proficiency checks</small></h4>
+    <ol>
+      <li>Choose <span class="btn">🎤 Oral</span> or <span class="btn">✍️ Escrita</span>, the <b>Nivel</b> (Novato bajo → Intermedio), and a <b>Rúbrica</b> (or "solo nivel").</li>
+      <li>Click <span class="btn">＋ Nueva evaluación</span> and give it a name.</li>
+      <li>Click <span class="btn">🪟 Abrir hoja en otra ventana</span> and drag that window to your PC monitor. The TV only shows the question and whose turn it is.</li>
+      <li>In the sheet: <span class="btn">▶ Siguiente estudiante</span> picks someone who hasn't gone yet. Tap their level <b>NL NM NH IL IM IH</b>, score each rubric criterion 1–4 if you chose a rubric, and add a note if you like. Everything saves as you go.</li>
+      <li>On the TV: <span class="btn">🎲 Otra pregunta</span> for a new prompt; the ⏱️ buttons start a timer (30 s–2 min oral, 5–15 min written).</li>
+    </ol>
+    <p>NL / NM / NH = Novato bajo / medio / alto · IL / IM / IH = Intermedio bajo / medio / alto.</p></div>
+  <div class="tool"><h4>📏 Rúbricas</h4>
+    <ul><li>Four example "Puedo…" rubrics: 🗣️ Hablar, ✍️ Escribir, 💬 Conversación, 📖 Leer y escuchar, each from <b>4 · ¡Lo logré!</b> to <b>1 · Estoy empezando</b>.</li>
+      <li>Show one with <span class="btn">⛶ Pantalla completa</span> before a check so students know the target. <span class="btn">🖨️ Imprimir</span> prints a black-and-white copy with a name line.</li>
+      <li><span class="btn">✏️ Editar</span> to type in your own (for example from your Master Assessment Folder Map). Add or remove rows; <span class="btn">＋ Nueva rúbrica</span> for a new one.</li></ul>
+    <div class="tip"><b>School AI rule</b>Type or paste your rubrics directly into Herramientas. They're saved only in your browser and never go through an AI tool.</div></div>
+  <div class="tool"><h4>🙋 Comprobación rápida <small>quick check</small></h4>
+    <ul><li>Choose 👍 Pulgares, 🚦 Semáforo, ✊ Puño a cinco, ✅ Sí / No or 🔤 A B C D. Type your question.</li>
+      <li>Look at the hands and tap each card to count (−1 fixes a mistake). You'll see the bars, "Respuestas: 6 de 7" and a summary like "83% entiende".</li>
+      <li>Tick <b>Esconder resultados mientras cuento</b> to hide the numbers until you're done.</li></ul></div>
+  <div class="tool"><h4>📋 Boleto de salida <small>exit ticket</small></h4>
+    <ul><li>Type today's topic or word, then <span class="btn">📋 Nuevo boleto</span> for a prompt that includes it. Tick <b>Solo para pequeños</b> for K-2-friendly prompts.</li></ul></div>
+  <div class="tool"><h4>📊 Resultados</h4>
+    <ul><li>Choose an evaluation to see each student's level, rubric scores and notes, plus a bar summary of levels.</li>
+      <li><span class="btn">⬇️ Descargar esta</span> or <span class="btn">⬇️ Descargar todas</span> saves a spreadsheet that opens in Excel, ready to copy into your gradebook or OneNote.</li>
+      <li><span class="btn">✏️ Seguir evaluando</span> reopens it; <span class="btn">🗑️ Borrar</span> deletes it (can't be undone).</li></ul></div>
+  <div class="tool"><h4>🎮 Práctica y juegos <small>links by unit</small></h4>
+    <ul><li>Choose the <b>Unidad</b>. "🎮 Juegos de Centro de Clase" already has Descúbrelo, En Orden, Repaso de Dominio, Ronda Rápida, The Passport Game and the two oruga games.</li>
+      <li><span class="btn">＋ Nueva unidad</span> (for example "Unidad 3: Los animales"), then add its Quizlet, Wayground, Padlet or Canva links.</li>
+      <li>Click a card to open it inside Herramientas · <span class="btn">↗</span> new tab · <span class="btn">📱</span> QR code for students' devices.</li>
+      <li>The unit you last chose also appears in the top <span class="btn">🔗 Enlaces ▾</span> menu.</li></ul></div>
+</section>
+
+<section id="t-manage">
+  <h2>8. 🧑‍🏫 Manejo de clase</h2>
+  <div class="tool"><h4>⏱️ Temporizadores <small>up to 4 timers</small></h4>
+    <ul><li>Presets 0:30–15 min, ±10 s and ±1 min, ▶ start / ⏸ pause, ↺ reset. Click the name to rename it.</li>
+      <li><span class="btn">＋ Añadir temporizador</span> for up to 4 at once. They keep running when you change tools; an alarm sounds at 0.</li></ul></div>
+  <div class="tool"><h4>🐾 Safari silencioso <small>quiet-work game</small></h4>
+    <ol>
+      <li>Pick a habitat: <b>🌳 Chiquibul</b> (Chica y sus amigos), la selva de Belice, el arrecife de Belice, la sabana, el desierto, los polos, la granja or el bosque.</li>
+      <li>Choose how many animals (5, 8 or all) and the <b>Tiempo total</b> for the work time.</li>
+      <li>Press <span class="btn">▶ Empezar</span> and allow the microphone. While it's quiet, the gold bar fills and the next animal comes out.</li>
+      <li>When it gets loud, the animals shiver (a warning). If it stays loud, <b>the newest animal hides</b> again.</li>
+      <li>Find them all and the class celebrates, with +5 (or your number) in 💯 Puntos de la clase.</li>
+    </ol>
+    <ul><li><b>Tap an animal</b> to read its card ("Soy el jaguar…") with 🔈. The game pauses while the card is open.</li>
+      <li><b>Límite</b> = how loud is "too loud" (move right if animals hide too easily). <b>Sensibilidad</b> = how much the microphone picks up.</li>
+      <li>No microphone? Untick <b>Usar micrófono</b>: animals come out with time, and you press <span class="btn">📢 ¡Ruido!</span> or <kbd>R</kbd>.</li>
+      <li><span class="btn">⛶ Pantalla grande</span> fills the TV. <span class="btn">🌍 Abrir Shy Safari (original)</span> opens the original website.</li>
+      <li>The microphone only measures volume. Nothing is recorded.</li></ul></div>
+  <div class="tool"><h4>🎵 Sonidos y música</h4>
+    <ul><li><b>🔊 Sonidos:</b> campanita, ¡atención!, ding-dong, correcto, incorrecto, ¡ta-da!, aplausos, redoble, cuenta 3-2-1, timbre.</li>
+      <li><b>🗣️ Frases:</b> 12 phrases read aloud ("Uno, dos, tres, ¡ojos en mí!", "¡A limpiar!"…).</li>
+      <li><b>🎶 Música de fondo:</b> Música tranquila, Lluvia, Selva, ¡A limpiar!. Click again (or ⏹) to stop. It keeps playing when you change tools.</li></ul>
+    <div class="tip"><b>Music + Safari</b>Safari hears the music as noise. Turn the volume down (or off) while Safari is listening.</div></div>
+  <div class="grid2">
+    <div class="tool"><h4>🙋 Comprobación rápida</h4><p>Now in <a href="#t-assess">Evaluación y práctica</a>.</p></div>
+    <div class="tool"><h4>🎡 Rueda de nombres</h4><p>Spin with <span class="btn">🎡 ¡Girar!</span> or by clicking the wheel. <b>Quitar al ganador</b> removes each winner; <span class="btn">↺ Todos de nuevo</span> puts everyone back.</p></div>
+    <div class="tool"><h4>🎲 Estudiante al azar</h4><p>A quick random name (can repeat). For no repeats, use Llamada sin repetir.</p></div>
+    <div class="tool"><h4>✋ Llamada sin repetir</h4><p>Nobody is called twice until everyone has had a turn. Remembered per class until you press ↺.</p></div>
+    <div class="tool"><h4>👥 Grupos al azar</h4><p>Choose "Personas por grupo" or "Número de grupos", then <span class="btn">👥 Hacer grupos</span>.</p></div>
+    <div class="tool"><h4>🃏 Parejas al azar</h4><p>Random pairs; if the class is odd, the last pair becomes a trio.</p></div>
+    <div class="tool"><h4>🔀 Plan de asientos</h4><p>Set the number of columns and <span class="btn">🔀 Mezclar</span>. Click two seats to swap them. Saved per class.</p></div>
+    <div class="tool"><h4>⭐ Participación</h4><p>Tap a student's card each time they participate. Red-bordered cards haven't participated today. Resets every day.</p></div>
+    <div class="tool"><h4>🎲 Dados y números</h4><p>Roll 1–6 dice, or a random number in any range. It appears written in Spanish ("treinta y dos") with 🔈.</p></div>
+  </div>
+</section>
+
+<section id="t-rewards">
+  <h2>9. 🏆 Premios y conducta</h2>
+  <div class="tool"><h4>🗣️ ¡Solo en español!</h4>
+    <ul><li>Press <span class="btn">▶ Empezar</span>. The bar fills while the class speaks only Spanish.</li>
+      <li>When someone speaks English, press <span class="btn">🇬🇧 ¡Inglés!</span> (or <kbd>I</kbd>, or tap 🗣️ on the dock). It takes away 1 minute, or resets to 0 if you choose.</li>
+      <li>Each <b>Meta</b> (3–20 min) adds points to 💯 Puntos de la clase. The class record is saved.</li>
+      <li>It keeps counting while you change tools or show slides.</li></ul></div>
+  <div class="grid2">
+    <div class="tool"><h4>💯 Puntos de la clase</h4><p>The whole class works toward a goal and a prize you choose. +1, +5, +10 or −1. Safari and the Español meter add points here too.</p></div>
+    <div class="tool"><h4>🏠 Puntos por equipos</h4><p>Teams (Jaguares, Tucanes, Monos Aulladores, Tortugas). Click a team's name to rename it. <span class="btn">🎲 Sortear miembros</span> splits the class into the teams. Up to 8 teams.</p></div>
+    <div class="tool"><h4>🏅 Estudiante de la semana</h4><p>Choose the student and the reason, then <span class="btn">📣 ¡Anunciar!</span>. Don Pico announces it full screen with Chica and her friends. ⭐ marks students who have already won; the history is kept per class.</p></div>
+    <div class="tool"><h4>🕵️ Estudiante misterioso</h4><p><span class="btn">🎲 Elegir en secreto</span> at the start of class; <span class="btn">👀 Solo para el maestro</span> shows you the name. At the end, <span class="btn">🎭 Revelar</span>.</p></div>
+    <div class="tool"><h4>🌟 Tablero de stickers</h4><p>Pick a sticker, then tap a student's card to give it. ↩︎ removes their last one.</p></div>
+    <div class="tool"><h4>🪙 Economía de fichas</h4><p>Give tokens (+1, +3). In <b>🛍️ La tienda</b>, choose the student and the prize to spend them. Edit the shop: one line per prize, <i>name = price</i>.</p></div>
+    <div class="tool"><h4>🎮 Sube de nivel</h4><p>Every 10 XP is a new level: 🌱 Novato → 🧭 Explorador → 🎒 Aventurero → ✈️ Viajero → 🦸 Héroe → 👑 Leyenda → 🐉 Maestro Dragón.</p></div>
+    <div class="tool"><h4>🎁 Premio sorpresa</h4><p>A prize wheel. Edit the list on the right (one prize per line) and click Guardar.</p></div>
+  </div>
+</section>
+
+<section id="t-ci">
+  <h2>10. 🇪🇸 Herramientas CI / TPRS</h2>
+  <div class="tool"><h4>🕺 TPR · Pausa activa</h4>
+    <ul><li><b>🙋 Simón dice:</b> students only move when they hear "Simón dice". <b>🗣️ Comandos:</b> every command counts.</li>
+      <li>Choose <b>ustedes</b> (whole class) or <b>tú</b> (one student), a new command every 3–10 s, and 1–5 minutes. With 🔈 Voz on, commands are read aloud.</li>
+      <li>At the end: "¡Muy bien! Siéntense." <span class="btn">⏭ Un comando</span> gives one at a time instead.</li></ul></div>
+  <div class="tool"><h4>Story-asking generators</h4>
+    <p>Each tool shows a random option; press 🎲 to change one part or <span class="btn">🎲 ¡Todo nuevo!</span> for everything.</p>
+    <table>
+      <tr><th>Tool</th><th>Gives you</th></tr>
+      <tr><td>📖 ¡Historia al instante!</td><td>Character + place + problem + twist, written as "Había una vez…"</td></tr>
+      <tr><td>🧑‍🎤 Personajes</td><td>A character with a trait and something they want</td></tr>
+      <tr><td>😱 Problemas</td><td>A story problem</td></tr>
+      <tr><td>📍 Lugares</td><td>Places in Belize, the Spanish-speaking world, everyday life and fantasy</td></tr>
+      <tr><td>🌀 Circunstancias locas</td><td>A twist: "El perro es invisible", "Está nevando en Belice"…</td></tr>
+      <tr><td>🎲 Cubos de historias</td><td>3–9 picture cubes to tell a story with</td></tr>
+      <tr><td>❓ Rueda de preguntas</td><td>A question word (¿Quién? ¿Dónde?…) with an example and an answer frame</td></tr>
+      <tr><td>🔤 Vocabulario al azar</td><td>Words from a theme without repeats; choose <b>⭐ Mi lista</b> to use your own unit words</td></tr>
+      <tr><td>🏃 Verbos al azar</td><td>A high-frequency verb with yo / él·ella / past forms (or only the Súper 7)</td></tr>
+      <tr><td>⏳ Tiempos verbales</td><td>A tense to retell the story in, by level</td></tr>
+      <tr><td>💬 Temas de conversación</td><td>A question with a sentence frame, Novato to Avanzado</td></tr>
+    </table></div>
+</section>
+
+<section id="data">
+  <h2>11. Saving, backups &amp; class lists</h2>
+  <h3>What's saved, and where</h3>
+  <ul>
+    <li>Points, stickers, tokens, levels, seat plans, Canva links, favorites, rubrics, scores and settings save <b>automatically</b>, in Edge on the computer you're using.</li>
+    <li>Clearing Edge's browsing data (cookies / site data) erases them, so keep a backup.</li>
+  </ul>
+  <h3>Backups</h3>
+  <ol>
+    <li>At the bottom of the left menu, click <span class="btn">💾 Guardar copia</span>. A file like <i>herramientas-copia-2026-11-3.json</i> downloads.</li>
+    <li>Save it in your <b>school OneDrive</b>. It contains student names and scores, so don't keep it on a personal drive.</li>
+    <li>To restore (or move to a new computer), click <span class="btn">📂 Cargar copia</span> and choose the file.</li>
+  </ol>
+  <h3>Changing the class lists</h3>
+  <p>The student names come from the file <b>data/clases.json</b> in your centro-de-clase GitHub site. To change them, the easiest way is to ask Claude ("add Maria to Middle School 1"). It updates the file for you.</p>
+  <div class="tip"><b>Renaming a class</b>Points and scores are saved by class name, so a renamed class starts fresh. Ask before renaming a class mid-year.</div>
+</section>
+
+<section id="keys">
+  <h2>12. Keyboard shortcuts</h2>
+  <table>
+    <tr><th>Key</th><th>Where</th><th>What it does</th></tr>
+    <tr><td><kbd>Space</kbd></td><td>Most tools</td><td>Clicks the big yellow button (spin, pick, start, roll, next…)</td></tr>
+    <tr><td><kbd>R</kbd></td><td>Safari silencioso</td><td>"¡Ruido!": the newest animal hides</td></tr>
+    <tr><td><kbd>I</kbd></td><td>¡Solo en español! (while running)</td><td>Someone spoke English</td></tr>
+    <tr><td><kbd>Esc</kbd></td><td>Anywhere</td><td>Leave full screen</td></tr>
+    <tr><td><kbd>Ctrl</kbd> + <kbd>F5</kbd></td><td>Anywhere</td><td>Reload the newest version of the site</td></tr>
+  </table>
+  <p>Shortcuts don't work while you're typing in a box. Click on an empty area first.</p>
+</section>
+
+<section id="help">
+  <h2>13. Troubleshooting</h2>
+  <table>
+    <tr><th>Problem</th><th>Try this</th></tr>
+    <tr><td>I don't see a new tool or change</td><td>Press <kbd>Ctrl</kbd> + <kbd>F5</kbd>. Wait 5 minutes after an update and try again.</td></tr>
+    <tr><td>My points / links / scores are gone</td><td>Check you're in <b>Edge on the classroom PC</b> and the right <b>Clase</b> is selected. If the browser data was cleared, use 📂 Cargar copia.</td></tr>
+    <tr><td>Canva shows blank inside Herramientas</td><td>Set the Canva link to "Cualquier persona con el enlace → puede ver" (<a href="#present">section 4</a>), or use ↗ + 🪟 Flotante.</td></tr>
+    <tr><td>Safari animals hide too easily</td><td>Move <b>Límite</b> to the right or <b>Sensibilidad</b> to the left. Turn background music down.</td></tr>
+    <tr><td>Safari never reacts to noise</td><td>Allow the microphone (click the 🔒 or 🎙️ icon in Edge's address bar → Allow) and check <b>Usar micrófono</b> is ticked.</td></tr>
+    <tr><td>The read-aloud voice sounds English</td><td>Windows needs a Spanish voice: Settings → Time &amp; language → Speech → Add voices → Español (México). Then restart Edge.</td></tr>
+    <tr><td>The score sheet or floating window doesn't open</td><td>Edge blocked a pop-up. Click the blocked pop-up icon at the right of the address bar → <b>Always allow</b>.</td></tr>
+    <tr><td>No sound at all</td><td>Click anywhere on the page once (browsers need a click before playing sound), and check the PC and TV volume.</td></tr>
+    <tr><td>A student's name is missing or misspelled</td><td>Ask Claude to update the class list (<a href="#data">section 11</a>).</td></tr>
+  </table>
+</section>
+
+<p class="print-only">Herramientas guide · Centro de Clase · ariadnaroberson-collab.github.io/centro-de-clase/guia-herramientas.html</p>
+</main>
+</div>
+<footer>made with chalk dust &amp; good vibes</footer>
+</body>
+</html>
