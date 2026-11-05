@@ -165,6 +165,33 @@
   .gcard li { list-style: none; font-weight: 700; font-size: 1.15rem; padding: 2px 0; }
 
   /* timers */
+  /* ---------- ROTACIÓN DE CLASE ---------- */
+  .rt-top { margin-bottom: 12px; }
+  .rt-lbl { font-weight: 800; color: var(--bg); }
+  .rt-stage { background: #fff; border: 3px solid #e1d9c9; border-radius: 18px; padding: 16px 20px; }
+  .rt-stage.fin { border-color: var(--red); }
+  .rt-step { font-size: .85rem; letter-spacing: .08em; text-transform: uppercase; color: var(--text-mid); font-weight: 700; }
+  .rt-phase { font-family: 'Caveat', cursive; font-weight: 700; font-size: clamp(2rem, 4.5vw, 3.2rem); color: var(--bg); line-height: 1.05; }
+  .rt-clock { font-size: clamp(5rem, 15vw, 10rem); }
+  .rt-clock.low { color: var(--red); }
+  .rt-groups { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 14px; }
+  @media (max-width: 700px) { .rt-groups { grid-template-columns: 1fr; } }
+  .rt-g { background: #fff; border-radius: 16px; padding: 12px 16px; border: 3px solid #e1d9c9; border-top-width: 10px; min-width: 0; }
+  .rt-g.teacher { border-top-color: var(--green); } .rt-g.solo { border-top-color: var(--gold); } .rt-g.together { border-top-color: var(--blue); }
+  .rt-gn { font-family: 'Caveat', cursive; font-weight: 700; font-size: 2.1rem; color: var(--bg); line-height: 1; }
+  .rt-chip { display: inline-block; font-weight: 800; font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; padding: 2px 10px; border-radius: 99px; background: var(--card-2); color: var(--bg-dark); margin: 6px 0; }
+  .rt-g.teacher .rt-chip { background: var(--green); color: #fff; } .rt-g.solo .rt-chip { background: var(--gold); } .rt-g.together .rt-chip { background: var(--blue); color: #fff; }
+  .rt-task { font-size: clamp(1.05rem, 1.8vw, 1.4rem); line-height: 1.35; color: var(--text-dark); border-radius: 8px; padding: 2px 4px; outline: 2px dashed transparent; cursor: text; }
+  .rt-task:hover { outline-color: #e1d9c9; } .rt-task:focus { outline: 2px solid var(--gold); }
+  .rt-tl { display: flex; gap: 4px; margin-top: 14px; overflow-x: auto; }
+  .rt-seg { min-width: 72px; background: #fff; border: 2px solid #e1d9c9; border-radius: 10px; padding: 5px 7px; font-size: .78rem; color: var(--text-mid); overflow-wrap: anywhere; }
+  .rt-seg b { display: block; color: var(--bg); font-variant-numeric: tabular-nums; }
+  .rt-seg.now { border-color: var(--bg); box-shadow: inset 0 -4px 0 var(--gold); } .rt-seg.done { opacity: .45; }
+  .rt-edit label { font-weight: 700; color: var(--bg); }
+  .rt-etable { overflow-x: auto; margin: 12px 0; } .rt-etable > div { min-width: 900px; }
+  .rt-er { display: grid; grid-template-columns: 2fr 64px 1.1fr 2fr 1.1fr 2fr 44px; gap: 6px; align-items: center; margin-bottom: 6px; }
+  .rt-er.head { font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; color: var(--text-mid); font-weight: 800; }
+  .rt-er .field { min-width: 0; width: 100%; }
   .tgrid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); margin-top: 8px; }
   .tcard { background: #fff; border-radius: 18px; padding: 16px 18px; border: 3px solid #e1d9c9; position: relative; }
   .tcard.run { border-color: var(--green); }
@@ -885,6 +912,7 @@ const TIMERS = [{ label: 'Temporizador 1', total: 300, remaining: 300, running: 
 function fmt(sec) { sec = Math.ceil(sec); const m = Math.floor(sec / 60), s = sec % 60; return m + ':' + String(s).padStart(2, '0'); }
 function tRemain(t) { return t.running ? Math.max(0, (t.endAt - Date.now()) / 1000) : t.remaining; }
 function timerTick() {
+  rotTick();
   let pillTxt = '';
   TIMERS.forEach((t, i) => {
     if (t.running && Date.now() >= t.endAt) { t.running = false; t.remaining = 0; t.done = true; alarm(); if (S.tool === 'timer') render(); else toast('⏰ ¡Tiempo! — ' + t.label); }
@@ -949,6 +977,158 @@ tool('timer', 'manage', '⏱️', 'Temporizadores', 'Multi timer (up to 4)', 'Ha
   el.querySelectorAll('[data-reset]').forEach(b => b.onclick = () => { const t = TIMERS[b.dataset.reset]; Object.assign(t, { remaining: t.total, running: false, done: false }); render(); });
   el.querySelectorAll('[data-del]').forEach(b => b.onclick = () => { TIMERS.splice(+b.dataset.del, 1); render(); });
   const add = el.querySelector('#tAdd'); if (add) add.onclick = () => { TIMERS.push({ label: 'Temporizador ' + (TIMERS.length + 1), total: 120, remaining: 120, running: false, endAt: 0, done: false }); render(); };
+});
+
+/* ---------- 1b. ROTACIÓN DE CLASE (dinámicas con alarma) ---------- */
+const ROT_BUILTIN = {
+  ms45: { name: 'Middle School · MS1 + MS3 · 45 min', groups: ['MS1', 'MS3'], phases: [
+    { name: 'Juntos: re-entrada / story asking', min: 8, m1: 'together', t1: 'Escucha, contesta y decide.', m2: 'together', t2: 'Escucha, contesta y decide.' },
+    { name: 'MS1 con Profe · MS3 solos', min: 15, m1: 'teacher', t1: 'Trabajo con Profe.', m2: 'solo', t2: 'Tarea independiente (mira el pizarrón).' },
+    { name: 'MS3 con Profe · MS1 solos', min: 15, m1: 'solo', t1: 'Tarea independiente (mira el pizarrón).', m2: 'teacher', t2: 'Trabajo con Profe.' },
+    { name: 'Juntos: compartir + autoevaluación', min: 7, m1: 'together', t1: 'Comparte una oración. ¿Lo logré?', m2: 'together', t2: 'Comparte una oración. ¿Lo logré?' } ] },
+  vie6nov: { name: 'Viernes 6 de noviembre · MS1 + MS3', groups: ['MS1', 'MS3'], phases: [
+    { name: 'Story asking: inventamos 2 personajes', min: 8, m1: 'together', t1: 'Contesta y decide: ¿afuera o adentro? ¿Por qué le gusta?', m2: 'together', t2: 'Decide: ¿cómo estudia cada personaje? ¿Por qué le funciona?' },
+    { name: 'MS1 con Profe · MS3 solos', min: 15, m1: 'teacher', t1: 'Hoja A: La tabla de los vecinos → ¿Qué hace Tomás adentro?', m2: 'solo', t2: 'Hoja B: ¿Qué pasaría si…? Escribe tu historia cómica en el Cuaderno.' },
+    { name: 'MS3 con Profe · MS1 solos', min: 15, m1: 'solo', t1: 'Paquete: Tarea 4 → Tarea 5 → Tarea 6 → Extra', m2: 'teacher', t2: 'Lee tu historia. Subraya tu oración más chistosa.' },
+    { name: 'Compartir + autoevaluación', min: 7, m1: 'together', t1: 'Di tu oración: Creo que Tomás… porque…', m2: 'together', t2: 'Lee tu oración más chistosa.' } ] },
+  sec90: { name: 'Secundaria · Sec1 + Sec2 · 90 min', groups: ['Sec1', 'Sec2'], phases: [
+    { name: 'Parte 1 · Juntos: re-entrada', min: 8, m1: 'together', t1: 'Escucha, contesta y decide.', m2: 'together', t2: 'Escucha, contesta y decide.' },
+    { name: 'Sec1 con Profe · Sec2 solos', min: 15, m1: 'teacher', t1: 'Trabajo con Profe.', m2: 'solo', t2: 'Tarea independiente (Teams o Diario).' },
+    { name: 'Sec2 con Profe · Sec1 solos', min: 15, m1: 'solo', t1: 'Tarea independiente (Teams o Diario).', m2: 'teacher', t2: 'Trabajo con Profe.' },
+    { name: 'Parte 1 · Juntos: compartir', min: 7, m1: 'together', t1: 'Comparte una oración.', m2: 'together', t2: 'Comparte una oración.' },
+    { name: 'Parte 2 · Juntos: arranque', min: 8, m1: 'together', t1: 'Escucha, contesta y decide.', m2: 'together', t2: 'Escucha, contesta y decide.' },
+    { name: 'Sec2 con Profe · Sec1 solos ', min: 15, m1: 'solo', t1: 'Tarea independiente (Teams o Diario).', m2: 'teacher', t2: 'Trabajo con Profe.' },
+    { name: 'Sec1 con Profe · Sec2 solos ', min: 15, m1: 'teacher', t1: 'Trabajo con Profe.', m2: 'solo', t2: 'Tarea independiente (Teams o Diario).' },
+    { name: 'Parte 2 · Juntos: cierre + autoevaluación', min: 7, m1: 'together', t1: 'Comparte una oración. ¿Lo logré?', m2: 'together', t2: 'Comparte una oración. ¿Lo logré?' } ] },
+};
+const ROT_MODE = { teacher: 'Con Profe', solo: 'Solos', together: 'Juntos' };
+const ROT = { id: null, plan: null, idx: 0, active: false, warned: false, fin: false, edit: false };
+const rotClone = o => JSON.parse(JSON.stringify(o));
+function rotStore() { const g = gdata(); if (!g.rot) g.rot = { plans: {}, byClass: {} }; return g.rot; }
+function rotGet(id) { const p = rotStore().plans[id] || ROT_BUILTIN[id]; return p ? rotClone(p) : null; }
+function rotIds() { return [...new Set([...Object.keys(ROT_BUILTIN), ...Object.keys(rotStore().plans)])]; }
+function rotDefault() { return /sec/i.test(cname()) ? 'sec90' : 'ms45'; }
+function rotSet(id) { ROT.id = rotGet(id) ? id : rotDefault(); ROT.plan = rotGet(ROT.id); ROT.idx = 0; ROT.fin = false; }
+function rotEnsure() { if (ROT.active) return; const want = rotStore().byClass[cname()] || rotDefault(); if (ROT.id !== want || !ROT.plan) rotSet(want); }
+function rotSave() { rotStore().plans[ROT.id] = rotClone(ROT.plan); save(); }
+function rotLoad(i, run) {
+  const ph = ROT.plan.phases[i], s = ph.min * 60; ROT.idx = i; ROT.warned = false; ROT.fin = false; ROT.active = true;
+  Object.assign(TIMERS[0], { label: ph.name, total: s, remaining: s, running: !!run, endAt: Date.now() + s * 1000, done: false });
+}
+function rotStop() { if (ROT.active) Object.assign(TIMERS[0], { running: false, done: false, remaining: TIMERS[0].total }); ROT.active = false; }
+function rotTick() {
+  if (!ROT.active) return;
+  const t = TIMERS[0], ph = ROT.plan && ROT.plan.phases[ROT.idx];
+  if (!ph || t.label !== ph.name) { ROT.active = false; return; }      // the timer was taken for something else
+  if (t.running) {
+    const r = (t.endAt - Date.now()) / 1000;
+    if (!ROT.warned && r <= 60 && r > 0) { ROT.warned = true; tone(740, 0.3, 0.12, 'sine'); tone(740, 0.3, 0.12, 'sine', 0.45); }
+    if (r <= 0) {
+      alarm(); const nx = ROT.idx + 1;
+      if (nx < ROT.plan.phases.length) { rotLoad(nx, true); toast('🔔 Cambio: ' + ROT.plan.phases[nx].name); }
+      else { ROT.active = false; ROT.fin = true; Object.assign(t, { running: false, remaining: 0, done: true }); toast('🔔 ¡Fin de la clase!'); }
+      if (S.tool === 'rotacion') render(); return;
+    }
+  }
+  rotPaint();
+}
+function rotPaint() {
+  const d = document.getElementById('rtD'); if (!d || !ROT.plan) return;
+  const ph = ROT.plan.phases[ROT.idx]; if (!ph) return;
+  const r = ROT.fin ? 0 : ROT.active ? tRemain(TIMERS[0]) : ph.min * 60;
+  d.textContent = ROT.fin ? '0:00' : fmt(r); d.classList.toggle('low', ROT.active && r <= 60);
+  const b = document.getElementById('rtB'); if (b) b.style.width = (ROT.fin ? 0 : r / (ph.min * 60) * 100) + '%';
+  const go = document.getElementById('rtGo'); if (go) go.textContent = ROT.active && TIMERS[0].running ? '⏸ Pausa' : '▶ Empezar';
+}
+tool('rotacion', 'manage', '🔁', 'Rotación de clase', 'Class rotation with alarms', 'Las dinámicas de la clase con alarma en cada cambio. Sigue sonando aunque cambies de herramienta o abras tu Canva. Para cambiar lo que hace un grupo hoy, toca su texto, escribe y presiona Enter.', el => {
+  rotEnsure();
+  const P = ROT.plan, G = P.groups || ['Grupo 1', 'Grupo 2'], t = TIMERS[0];
+  const $$ = s => el.querySelector(s);
+  if (ROT.edit) {
+    const opt = v => Object.entries(ROT_MODE).map(([k, l]) => `<option value="${k}"${k === v ? ' selected' : ''}>${l}</option>`).join('');
+    const row = p => `<div class="rt-er"><input class="field" data-k="name" value="${h(p.name.trim())}" aria-label="Dinámica"><input class="field" data-k="min" type="number" min="1" max="90" value="${p.min}" aria-label="Minutos">
+      <select class="field" data-k="m1">${opt(p.m1)}</select><input class="field" data-k="t1" value="${h(p.t1)}" aria-label="Grupo 1 hace">
+      <select class="field" data-k="m2">${opt(p.m2)}</select><input class="field" data-k="t2" value="${h(p.t2)}" aria-label="Grupo 2 hace"><button class="btn sm ghost" data-del title="Quitar">✕</button></div>`;
+    el.innerHTML += `<div class="rt-edit">
+      <div class="row"><label>Nombre del plan <input class="field" id="rtName" value="${h(P.name)}" style="width:300px"></label>
+        <label>Grupo 1 <input class="field" id="rtG1" value="${h(G[0])}" style="width:90px"></label>
+        <label>Grupo 2 <input class="field" id="rtG2" value="${h(G[1])}" style="width:90px"></label></div>
+      <div class="rt-etable"><div><div class="rt-er head"><span>Dinámica</span><span>Min</span><span>Grupo 1</span><span>Grupo 1 hace…</span><span>Grupo 2</span><span>Grupo 2 hace…</span><span></span></div>
+        <div id="rtRows">${P.phases.map(row).join('')}</div></div></div>
+      <div class="row"><button class="btn sm" id="rtAdd">＋ Agregar dinámica</button><span class="muted" id="rtTot"></span></div>
+      <div class="row"><button class="btn gold" id="rtSave">Guardar cambios</button><button class="btn" id="rtNew">Guardar como plan nuevo</button>
+        ${ROT_BUILTIN[ROT.id] ? '<button class="btn ghost" id="rtRestore">Restaurar plan original</button>' : '<button class="btn red" id="rtDel">Borrar este plan</button>'}
+        <button class="btn ghost" id="rtCancel">Cancelar</button></div></div>`;
+    const read = () => [...el.querySelectorAll('#rtRows .rt-er')].map(r => { const o = {}; r.querySelectorAll('[data-k]').forEach(x => o[x.dataset.k] = x.dataset.k === 'min' ? Math.max(1, parseInt(x.value) || 1) : x.value); return o; });
+    const tot = () => { $$('#rtTot').textContent = 'Total: ' + read().reduce((a, p) => a + p.min, 0) + ' minutos'; };
+    const wire = () => { el.querySelectorAll('[data-del]').forEach(b => b.onclick = () => { b.closest('.rt-er').remove(); tot(); }); el.querySelectorAll('[data-k=min]').forEach(i => i.oninput = tot); };
+    wire(); tot();
+    $$('#rtAdd').onclick = () => { $$('#rtRows').insertAdjacentHTML('beforeend', row({ name: 'Nueva dinámica', min: 5, m1: 'together', t1: '', m2: 'together', t2: '' })); wire(); tot(); };
+    const collect = () => ({ name: $$('#rtName').value.trim() || 'Mi plan', groups: [$$('#rtG1').value.trim() || 'Grupo 1', $$('#rtG2').value.trim() || 'Grupo 2'], phases: read() });
+    $$('#rtSave').onclick = () => { const p = collect(); if (!p.phases.length) return; rotStop(); ROT.plan = p; rotSave(); ROT.idx = 0; ROT.fin = false; ROT.edit = false; render(); toast('Plan guardado ✔'); };
+    $$('#rtNew').onclick = () => { const p = collect(); if (!p.phases.length) return; rotStop(); const id = 'u' + Date.now(); rotStore().plans[id] = p; rotStore().byClass[cname()] = id; save(); rotSet(id); ROT.edit = false; render(); toast('Plan nuevo guardado ✔'); };
+    const rs = $$('#rtRestore'); if (rs) rs.onclick = () => { rotStop(); delete rotStore().plans[ROT.id]; save(); rotSet(ROT.id); ROT.edit = false; render(); };
+    const dl = $$('#rtDel'); if (dl) dl.onclick = () => { rotStop(); delete rotStore().plans[ROT.id]; delete rotStore().byClass[cname()]; save(); rotSet(rotDefault()); ROT.edit = false; render(); };
+    $$('#rtCancel').onclick = () => { ROT.edit = false; render(); };
+    return;
+  }
+  const ph = P.phases[ROT.idx], nx = P.phases[ROT.idx + 1];
+  const firstT = (() => { const p = P.phases.find(q => q.m1 === 'teacher' || q.m2 === 'teacher'); return p ? (p.m1 === 'teacher' ? G[0] : G[1]) : null; })();
+  let acc = 0;
+  el.innerHTML += `<div class="row rt-top">
+      <label class="rt-lbl">Plan: <select class="field" id="rtPlan">${rotIds().map(id => `<option value="${id}" ${id === ROT.id ? 'selected' : ''}>${h(rotGet(id).name)}</option>`).join('')}</select></label>
+      ${firstT ? `<button class="btn sm" id="rtSwap">Primero con Profe: ${h(firstT)} ⇄</button>` : ''}
+      <button class="btn sm ghost" id="rtEdit">✎ Editar dinámicas</button></div>
+    <div class="rt-stage ${ROT.fin ? 'fin' : ''}">
+      <div class="rt-step">${ROT.fin ? 'Terminado' : `Ahora · dinámica ${ROT.idx + 1} de ${P.phases.length}`}</div>
+      <div class="rt-phase">${ROT.fin ? '¡Fin de la clase!' : h(ph.name)}</div>
+      <div class="tdisp rt-clock" id="rtD">0:00</div>
+      <div class="tbar"><div id="rtB"></div></div>
+      <div class="muted">${ROT.fin ? '' : nx ? `Después: ${h(nx.name)} (${nx.min} min)` : 'Después: fin de la clase'}</div>
+    </div>
+    ${ROT.fin ? '' : `<div class="rt-groups">${[[0, 'm1', 't1'], [1, 'm2', 't2']].map(([i, m, k]) => `
+      <div class="rt-g ${ph[m]}"><div class="rt-gn">${h(G[i])}</div><span class="rt-chip">${ROT_MODE[ph[m]]}</span>
+        <div class="rt-task" contenteditable="true" data-k="${k}" spellcheck="false">${h(ph[k])}</div></div>`).join('')}</div>`}
+    <div class="row" style="justify-content:center;margin-top:14px">
+      <button class="btn gold xl" id="rtGo" data-primary>▶ Empezar</button>
+      <button class="btn" id="rtNext">⏭ Siguiente dinámica</button>
+      <button class="btn sm" id="rtPlus">+1 min</button>
+      <button class="btn sm ghost" id="rtReset">↺ Reiniciar</button>
+      <button class="btn sm ghost" id="rtTest">🔔 Probar alarma</button></div>
+    <div class="rt-tl">${P.phases.map((p, i) => { const s = `<div class="rt-seg ${i === ROT.idx && !ROT.fin ? 'now' : ''} ${i < ROT.idx || ROT.fin ? 'done' : ''}" style="flex:${p.min} 0 0"><b>${acc}–${acc + p.min} min</b>${h(p.name)}</div>`; acc += p.min; return s; }).join('')}</div>
+    <p class="muted" style="margin-top:10px">Alarma fuerte en cada cambio y aviso suave cuando falta 1 minuto. El tiempo también se ve en la barrita flotante.</p>`;
+  rotPaint();
+  $$('#rtPlan').onchange = e => { rotStop(); rotStore().byClass[cname()] = e.target.value; save(); rotSet(e.target.value); render(); };
+  const sw = $$('#rtSwap'); if (sw) sw.onclick = () => {
+    const ix = P.phases.map((p, i) => (p.m1 === 'teacher' || p.m2 === 'teacher') ? i : -1).filter(i => i >= 0);
+    for (let k = 0; k + 1 < ix.length; k += 2) { const a = ix[k], b = ix[k + 1], ma = P.phases[a].min, mb = P.phases[b].min;
+      [P.phases[a], P.phases[b]] = [P.phases[b], P.phases[a]]; P.phases[a].min = ma; P.phases[b].min = mb; }
+    const running = ROT.active && t.running, left = ROT.active ? tRemain(t) : null;
+    rotSave();
+    if (ROT.active) { const cur = P.phases[ROT.idx]; t.label = cur.name; if (!running) t.remaining = left; }
+    render();
+  };
+  $$('#rtEdit').onclick = () => { ROT.edit = true; render(); };
+  $$('#rtGo').onclick = () => {
+    ac();
+    if (ROT.fin) { ROT.idx = 0; ROT.fin = false; }
+    if (!ROT.active) rotLoad(ROT.idx, true);
+    else if (t.running) { t.remaining = tRemain(t); t.running = false; }
+    else { t.endAt = Date.now() + t.remaining * 1000; t.running = true; }
+    rotPaint();
+  };
+  $$('#rtNext').onclick = () => { ac(); alarm(); const n = ROT.idx + 1;
+    if (n >= P.phases.length) { rotStop(); ROT.fin = true; }
+    else if (ROT.active) rotLoad(n, t.running); else { ROT.idx = n; }
+    render(); };
+  $$('#rtPlus').onclick = () => { if (!ROT.active) rotLoad(ROT.idx, false);
+    if (t.running) t.endAt += 60000; else t.remaining += 60; t.total = Math.max(t.total, tRemain(t)); if (tRemain(t) > 60) ROT.warned = false; rotPaint(); };
+  $$('#rtReset').onclick = () => { rotStop(); ROT.idx = 0; ROT.fin = false; render(); };
+  $$('#rtTest').onclick = () => { ac(); alarm(); };
+  el.querySelectorAll('.rt-task').forEach(d => {
+    d.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); d.blur(); } e.stopPropagation(); };
+    d.onblur = () => { const p = P.phases[ROT.idx]; if (!p) return; p[d.dataset.k] = d.textContent.trim(); rotSave(); };
+  });
 });
 
 /* ---------- 2b. SAFARI SILENCIOSO ---------- */
