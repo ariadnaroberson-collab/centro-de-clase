@@ -1,0 +1,246 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Temporizador de la Clase</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Layout: one projected screen — phase banner, giant clock, two group cards (MS1 | MS3), then the day's timeline strip. */
+:root{
+  --bg:#f3f5f8; --surface:#ffffff; --fg:#14202e; --muted:#5b6878; --line:#d5dce5;
+  --accent:#1f5fbf; --teacher:#0f7a55; --solo:#7a4b0f; --alarm:#c0392b;
+  --display:"Archivo","Arial Black",system-ui,sans-serif;
+  --body:"Atkinson Hyperlegible",Verdana,system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1620; --surface:#18222f; --fg:#eef2f7; --muted:#9aa8b8; --line:#2b3848;
+  --accent:#6ea2f0; --teacher:#4fcf9b; --solo:#e8b061; --alarm:#ff7a6b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1620; --surface:#18222f; --fg:#eef2f7; --muted:#9aa8b8; --line:#2b3848;
+  --accent:#6ea2f0; --teacher:#4fcf9b; --solo:#e8b061; --alarm:#ff7a6b; color-scheme:dark}
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:16px;box-sizing:border-box}
+.wrap{max-width:1200px;margin:0 auto;display:flex;flex-direction:column;gap:16px;min-height:100%}
+header{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+h1{font-family:var(--display);font-weight:900;font-size:1.1rem;letter-spacing:.06em;text-transform:uppercase;margin:0;color:var(--muted)}
+.day{font-size:.95rem;color:var(--muted)}
+.stage{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 24px;display:flex;flex-direction:column;gap:6px;transition:background .2s}
+.stage.flash{background:var(--alarm);color:#fff}
+.phaseLabel{font-size:.9rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.stage.flash .phaseLabel{color:#fff}
+.phase{font-family:var(--display);font-weight:900;font-size:clamp(1.6rem,4.2vw,3.2rem);line-height:1.05;text-wrap:balance;margin:0}
+.clock{font-family:var(--display);font-weight:900;font-size:clamp(5rem,20vw,14rem);line-height:.95;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.clock.low{color:var(--alarm)}
+.stage.flash .clock{color:#fff}
+.bar{height:10px;background:var(--line);border-radius:6px;overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--accent);width:0}
+.groups{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.group{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 20px;min-width:0;border-top:8px solid var(--line)}
+.group.teacher{border-top-color:var(--teacher)} .group.solo{border-top-color:var(--solo)} .group.together{border-top-color:var(--accent)}
+.gname{font-family:var(--display);font-weight:900;font-size:1.6rem}
+.chip{display:inline-block;font-weight:700;font-size:.85rem;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:99px;border:2px solid currentColor;margin:6px 0}
+.teacher .chip{color:var(--teacher)} .solo .chip{color:var(--solo)} .together .chip{color:var(--accent)}
+.gtask{font-size:clamp(1.05rem,2vw,1.5rem);line-height:1.35}
+.controls{display:flex;flex-wrap:wrap;gap:8px}
+button{font-family:var(--body);font-weight:700;font-size:1rem;padding:10px 16px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.timeline{display:flex;gap:4px;overflow-x:auto}
+.seg{flex:var(--m) 0 0;min-width:70px;overflow-wrap:anywhere;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:.8rem;color:var(--muted)}
+.seg b{display:block;color:var(--fg);font-variant-numeric:tabular-nums}
+.seg.now{border-color:var(--accent);box-shadow:inset 0 -4px 0 var(--accent)}
+.seg.done{opacity:.45}
+.next{color:var(--muted);font-size:1.05rem}
+.note{font-size:.85rem;color:var(--muted)}
+.pick{font-weight:700;align-self:center}
+#planSel{font:inherit;font-weight:700;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--fg);max-width:100%}
+.gtask[contenteditable="true"]{cursor:text;border-radius:6px;outline:1px dashed transparent}
+.gtask[contenteditable="true"]:hover{outline-color:var(--line)}
+.gtask[contenteditable="true"]:focus{outline:2px solid var(--accent)}
+#editor{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.erow{display:grid;grid-template-columns:2fr 70px 2fr 2fr 2fr 2fr 40px;gap:6px;align-items:center}
+.erow.head{font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.erow input,.erow select{font:inherit;font-size:.9rem;padding:6px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg);min-width:0}
+.etable{overflow-x:auto} .etable>div{min-width:860px;display:flex;flex-direction:column;gap:6px}
+@media (max-width:700px){.groups{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.stage{transition:none}}
+</style>
+</head><body>
+
+<div class="wrap">
+  <header>
+    <h1>Temporizador de la clase</h1>
+    <span class="day" id="dayName"></span>
+  </header>
+
+  <section class="stage" id="stage" aria-live="polite">
+    <span class="phaseLabel" id="phaseLabel">Ahora</span>
+    <p class="phase" id="phase"></p>
+    <div class="clock" id="clock">0:00</div>
+    <div class="bar"><i id="bar"></i></div>
+    <span class="next" id="next"></span>
+  </section>
+
+  <section class="groups">
+    <div class="group" id="g1"><div class="gname" id="g1name">MS1</div><span class="chip" id="g1chip"></span><div class="gtask" id="g1task"></div></div>
+    <div class="group" id="g2"><div class="gname" id="g2name">MS3</div><span class="chip" id="g2chip"></span><div class="gtask" id="g2task"></div></div>
+  </section>
+
+  <div class="controls">
+    <label class="pick" for="planSel">Plan:</label>
+    <select id="planSel"></select>
+    <button id="swapBtn">Primero con Profe ⇄</button>
+  </div>
+  <div class="controls">
+    <button class="primary" id="startBtn">▶ Empezar</button>
+    <button id="skipBtn">Siguiente dinámica</button>
+    <button id="plusBtn">+1 minuto</button>
+    <button id="resetBtn">Reiniciar</button>
+    <button id="soundBtn">Probar alarma</button>
+    <button id="fsBtn">Pantalla completa</button>
+    <button id="editBtn">Editar dinámicas</button>
+  </div>
+
+  <div class="timeline" id="timeline"></div>
+  <p class="note">Suena una alarma fuerte en cada cambio de dinámica y un aviso suave cuando falta 1 minuto. Haz clic en Empezar para que el sonido funcione. Para cambiar lo que hace un grupo hoy, haz clic en su texto, escribe y presiona Enter.</p>
+
+  <section id="editor" hidden>
+    <strong>Dinámicas de la clase</strong>
+    <label class="note">Nombre del plan: <input id="nameInput" style="font:inherit;padding:4px 6px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg)"></label>
+    <label class="note">Título en pantalla: <input id="dayInput" style="font:inherit;padding:4px 6px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg)"></label>
+    <div class="etable"><div id="erows"></div></div>
+    <div class="controls">
+      <button id="addRow">+ Agregar dinámica</button>
+      <button class="primary" id="saveEdit">Guardar cambios</button>
+      <button id="saveNew">Guardar como plan nuevo</button>
+      <button id="presetBtn">Restaurar plan original</button>
+      <button id="delBtn">Borrar este plan</button>
+    </div>
+    <span class="note" id="total"></span>
+  </section>
+</div>
+
+<script>
+const BUILTIN = {
+  'diaria': { name:'Middle School · MS1 + MS3 · 45 min', groups:['MS1','MS3'], day:'MS1 + MS3 · Rutina diaria', phases:[
+    {name:'Juntos: re-entrada / story asking', min:8, m1:'together', t1:'Escucha, contesta y decide.', m3:'together', t3:'Escucha, contesta y decide.'},
+    {name:'MS1 con Profe · MS3 solos', min:15, m1:'teacher', t1:'Trabajo con Profe.', m3:'solo', t3:'Tarea independiente (mira el pizarrón).'},
+    {name:'MS3 con Profe · MS1 solos', min:15, m1:'solo', t1:'Tarea independiente (mira el pizarrón).', m3:'teacher', t3:'Trabajo con Profe.'},
+    {name:'Juntos: compartir + autoevaluación', min:7, m1:'together', t1:'Comparte una oración. ¿Lo logré?', m3:'together', t3:'Comparte una oración. ¿Lo logré?'},
+  ]},
+  'vie6nov': { name:'Viernes 6 de noviembre', groups:['MS1','MS3'], day:'Viernes 6 de noviembre · MS1 + MS3', phases:[
+    {name:'Story asking: inventamos 2 personajes', min:8, m1:'together', t1:'Contesta y decide: ¿afuera o adentro? ¿Por qué le gusta?', m3:'together', t3:'Decide: ¿cómo estudia cada personaje? ¿Por qué le funciona?'},
+    {name:'MS1 con Profe · MS3 solos', min:15, m1:'teacher', t1:'Hoja A: La tabla de los vecinos → ¿Qué hace Tomás adentro?', m3:'solo', t3:'Hoja B: ¿Qué pasaría si…? Escribe tu historia cómica en el Cuaderno.'},
+    {name:'MS3 con Profe · MS1 solos', min:15, m1:'solo', t1:'Paquete: Tarea 4 → Tarea 5 → Tarea 6 → Extra', m3:'teacher', t3:'Lee tu historia. Subraya tu oración más chistosa.'},
+    {name:'Compartir + autoevaluación', min:7, m1:'together', t1:'Di tu oración: Creo que Tomás… porque…', m3:'together', t3:'Lee tu oración más chistosa.'},
+  ]},
+  'sec90': { name:'Secundaria · Sec1 + Sec2 · 90 min', groups:['Sec1','Sec2'], day:'Secundaria · Sec1 + Sec2 · Bloque de 90 minutos', phases:[
+    {name:'Parte 1 · Juntos: re-entrada', min:8, m1:'together', t1:'Escucha, contesta y decide.', m3:'together', t3:'Escucha, contesta y decide.'},
+    {name:'Sec1 con Profe · Sec2 solos', min:15, m1:'teacher', t1:'Trabajo con Profe.', m3:'solo', t3:'Tarea independiente (Teams o Diario).'},
+    {name:'Sec2 con Profe · Sec1 solos', min:15, m1:'solo', t1:'Tarea independiente (Teams o Diario).', m3:'teacher', t3:'Trabajo con Profe.'},
+    {name:'Parte 1 · Juntos: compartir', min:7, m1:'together', t1:'Comparte una oración.', m3:'together', t3:'Comparte una oración.'},
+    {name:'Parte 2 · Juntos: arranque', min:8, m1:'together', t1:'Escucha, contesta y decide.', m3:'together', t3:'Escucha, contesta y decide.'},
+    {name:'Sec2 con Profe · Sec1 solos', min:15, m1:'solo', t1:'Tarea independiente (Teams o Diario).', m3:'teacher', t3:'Trabajo con Profe.'},
+    {name:'Sec1 con Profe · Sec2 solos', min:15, m1:'teacher', t1:'Trabajo con Profe.', m3:'solo', t3:'Tarea independiente (Teams o Diario).'},
+    {name:'Parte 2 · Juntos: cierre + autoevaluación', min:7, m1:'together', t1:'Comparte una oración. ¿Lo logré?', m3:'together', t3:'Comparte una oración. ¿Lo logré?'},
+  ]},
+};
+const MODE = {teacher:'Con Profe', solo:'Solos', together:'Juntos'};
+const KEY = 'temporizador-clase-v2';
+const clone = o => JSON.parse(JSON.stringify(o));
+let store = loadStore();           // {current, plans:{id:{name,day,phases}}}
+let plan = getPlan(store.current);
+let idx = 0, remaining = 0, running = false, endAt = 0, warned = false, tick = null, actx = null, wake = null;
+
+function loadStore(){ let s=null; try{ s=JSON.parse(localStorage.getItem(KEY)); }catch(e){}
+  if(!s || !s.plans) s={current:'diaria', plans:{}};
+  if(!getPlanFrom(s, s.current)) s.current='diaria'; return s; }
+function getPlanFrom(s,id){ return s.plans[id] || BUILTIN[id] || null; }
+function getPlan(id){ const p=clone(getPlanFrom(store,id) || BUILTIN.diaria); if(!p.groups) p.groups=['MS1','MS3']; return p; }
+function persist(){ try{ localStorage.setItem(KEY, JSON.stringify(store)); }catch(e){} }
+function saveCurrent(){ store.plans[store.current]=clone(plan); persist(); }
+const $ = id => document.getElementById(id);
+const fmt = ms => { const s = Math.max(0, Math.ceil(ms/1000)); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); };
+
+function audio(){ if(!actx){ try{ actx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } if(actx && actx.state==='suspended') actx.resume(); return actx; }
+function beep(freq, start, dur, vol){ const a = audio(); if(!a) return; const o = a.createOscillator(), g = a.createGain();
+  o.type='square'; o.frequency.value=freq; o.connect(g); g.connect(a.destination);
+  const t = a.currentTime+start; g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(vol,t+0.02); g.gain.exponentialRampToValueAtTime(0.0001,t+dur); o.start(t); o.stop(t+dur+0.05); }
+function alarm(){ for(let k=0;k<3;k++){ [660,880,1100].forEach((f,i)=>beep(f, k*0.9+i*0.22, 0.2, 0.35)); } flash(); }
+function warn(){ beep(740,0,0.35,0.15); beep(740,0.5,0.35,0.15); }
+function flash(){ const s=$('stage'); let n=0; const f=setInterval(()=>{ s.classList.toggle('flash'); if(++n>=6){ clearInterval(f); s.classList.remove('flash'); } },300); }
+
+function fillPicker(){ const sel=$('planSel'); sel.innerHTML='';
+  const ids=[...new Set([...Object.keys(BUILTIN), ...Object.keys(store.plans)])];
+  ids.forEach(id=>{ const p=getPlanFrom(store,id); const o=document.createElement('option'); o.value=id; o.textContent=p.name||id; if(id===store.current) o.selected=true; sel.appendChild(o); }); }
+function firstTeacher(){ const ph=plan.phases.find(p=>p.m1==='teacher'||p.m3==='teacher'); return ph ? (ph.m1==='teacher'?plan.groups[0]:plan.groups[1]) : null; }
+
+function render(){
+  const ph = plan.phases[idx];
+  $('dayName').textContent = plan.day; $('g1name').textContent=plan.groups[0]; $('g2name').textContent=plan.groups[1];
+  $('phase').textContent = ph ? ph.name : '¡Fin de la clase!';
+  $('phaseLabel').textContent = ph ? `Ahora · dinámica ${idx+1} de ${plan.phases.length}` : 'Terminado';
+  const ms = running ? endAt-Date.now() : remaining;
+  $('clock').textContent = ph ? fmt(ms) : '0:00';
+  $('clock').classList.toggle('low', !!ph && ms <= 60000);
+  $('bar').style.width = ph ? Math.min(100,100*(1-ms/(ph.min*60000)))+'%' : '100%';
+  const nx = plan.phases[idx+1]; $('next').textContent = nx ? `Después: ${nx.name} (${nx.min} min)` : (ph ? 'Después: fin de la clase' : '');
+  [['g1','m1','t1'],['g2','m3','t3']].forEach(([g,m,t])=>{ const el=$(g); el.className='group '+(ph?ph[m]:'together'); $(g+'chip').textContent = ph?MODE[ph[m]]:'—';
+    const tk=$(g+'task'); if(document.activeElement!==tk) tk.textContent = ph?ph[t]:'¡Gracias! Nos vemos la próxima clase.'; tk.contentEditable = ph ? 'true' : 'false'; });
+  $('startBtn').textContent = running ? '❚❚ Pausa' : '▶ Empezar';
+  const ft=firstTeacher(); $('swapBtn').textContent = ft ? `Primero con Profe: ${ft} ⇄` : 'Primero con Profe ⇄';
+  const tl=$('timeline'); tl.innerHTML=''; let acc=0;
+  plan.phases.forEach((p,i)=>{ const d=document.createElement('div'); d.className='seg'+(i===idx?' now':'')+(i<idx?' done':''); d.style.setProperty('--m',p.min);
+    const b=document.createElement('b'); b.textContent=`${acc}–${acc+p.min} min`; d.appendChild(b); d.appendChild(document.createTextNode(p.name)); tl.appendChild(d); acc+=p.min; });
+}
+function loop(){ if(!running) return; const ms=endAt-Date.now();
+  if(!warned && ms<=60000 && ms>0){ warned=true; warn(); }
+  if(ms<=0){ alarm(); goto(idx+1, true); return; }
+  render(); }
+function goto(i, keepRunning){ idx=i; warned=false;
+  if(idx>=plan.phases.length){ running=false; clearInterval(tick); render(); return; }
+  remaining=plan.phases[idx].min*60000; if(keepRunning){ endAt=Date.now()+remaining; } render(); }
+function stopAll(){ running=false; clearInterval(tick); goto(0,false); }
+async function lockScreen(){ try{ if('wakeLock' in navigator) wake = await navigator.wakeLock.request('screen'); }catch(e){} }
+
+$('startBtn').onclick=()=>{ audio(); if(idx>=plan.phases.length) goto(0,false);
+  if(running){ remaining=endAt-Date.now(); running=false; clearInterval(tick); }
+  else { endAt=Date.now()+remaining; running=true; tick=setInterval(loop,250); lockScreen(); }
+  render(); };
+$('skipBtn').onclick=()=>{ audio(); alarm(); goto(idx+1, running); };
+$('plusBtn').onclick=()=>{ if(idx>=plan.phases.length) return; if(running){ endAt+=60000; } else { remaining+=60000; } if((running?endAt-Date.now():remaining)>60000) warned=false; render(); };
+$('resetBtn').onclick=stopAll;
+$('soundBtn').onclick=()=>{ audio(); alarm(); };
+$('fsBtn').onclick=()=>{ try{ document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen().catch(()=>{}); }catch(e){} };
+$('planSel').onchange=e=>{ store.current=e.target.value; persist(); plan=getPlan(store.current); stopAll(); };
+$('swapBtn').onclick=()=>{ const t=plan.phases.map((p,i)=>(p.m1==='teacher'||p.m3==='teacher')?i:-1).filter(i=>i>=0);
+  if(t.length<2) return;
+  for(let k=0;k+1<t.length;k+=2){ const a=t[k], b=t[k+1]; const keepA=plan.phases[a].min, keepB=plan.phases[b].min;
+    [plan.phases[a],plan.phases[b]]=[plan.phases[b],plan.phases[a]]; plan.phases[a].min=keepA; plan.phases[b].min=keepB; }
+  saveCurrent(); if(!running) goto(idx,false); else render(); };
+[['g1task','t1'],['g2task','t3']].forEach(([id,k])=>{ const el=$(id);
+  el.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); el.blur(); } });
+  el.addEventListener('blur',()=>{ const ph=plan.phases[idx]; if(!ph) return; ph[k]=el.textContent.trim(); saveCurrent(); render(); }); });
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible' && running) lockScreen(); });
+
+// ---- editor ----
+function rowHTML(p){ const opt=v=>Object.entries(MODE).map(([k,l])=>`<option value="${k}"${k===v?' selected':''}>${l}</option>`).join('');
+  const d=document.createElement('div'); d.className='erow';
+  d.innerHTML=`<input data-k="name" aria-label="Dinámica"><input data-k="min" type="number" min="1" max="90" aria-label="Minutos"><select data-k="m1" aria-label="MS1 modo">${opt(p.m1)}</select><input data-k="t1" aria-label="MS1 tarea"><select data-k="m3" aria-label="MS3 modo">${opt(p.m3)}</select><input data-k="t3" aria-label="MS3 tarea"><button title="Quitar" aria-label="Quitar">×</button>`;
+  d.querySelector('[data-k=name]').value=p.name; d.querySelector('[data-k=min]').value=p.min; d.querySelector('[data-k=t1]').value=p.t1; d.querySelector('[data-k=t3]').value=p.t3;
+  d.querySelector('button').onclick=()=>{ d.remove(); total(); }; d.querySelector('[data-k=min]').oninput=total; return d; }
+function fillEditor(){ $('dayInput').value=plan.day; $('nameInput').value=plan.name; const e=$('erows'); e.innerHTML=`<div class="erow head"><span>Dinámica</span><span>Min</span><span>${plan.groups[0]}</span><span>${plan.groups[0]} hace…</span><span>${plan.groups[1]}</span><span>${plan.groups[1]} hace…</span><span></span></div>`;
+  plan.phases.forEach(p=>e.appendChild(rowHTML(p))); total();
+  $('presetBtn').hidden = !BUILTIN[store.current]; $('delBtn').hidden = !!BUILTIN[store.current]; }
+function readEditor(){ return [...$('erows').querySelectorAll('.erow:not(.head)')].map(r=>{ const o={}; r.querySelectorAll('[data-k]').forEach(x=>o[x.dataset.k]= x.dataset.k==='min' ? Math.max(1,parseInt(x.value)||1) : x.value); return o; }); }
+function total(){ const t=readEditor().reduce((a,p)=>a+p.min,0); $('total').textContent=`Total: ${t} minutos`; }
+function fromEditor(){ return {name:$('nameInput').value.trim()||'Mi plan', day:$('dayInput').value.trim()||'Mi clase', groups:plan.groups.slice(), phases:readEditor()}; }
+$('editBtn').onclick=()=>{ const ed=$('editor'); ed.hidden=!ed.hidden; if(!ed.hidden) fillEditor(); };
+$('addRow').onclick=()=>{ $('erows').appendChild(rowHTML({name:'Nueva dinámica',min:5,m1:'together',t1:'',m3:'together',t3:''})); total(); };
+$('saveEdit').onclick=()=>{ const p=fromEditor(); if(!p.phases.length) return; plan=p; saveCurrent(); fillPicker(); stopAll(); $('editor').hidden=true; };
+$('saveNew').onclick=()=>{ const p=fromEditor(); if(!p.phases.length) return; const id='u'+Date.now(); store.plans[id]=p; store.current=id; persist(); plan=getPlan(id); fillPicker(); stopAll(); $('editor').hidden=true; };
+$('presetBtn').onclick=()=>{ delete store.plans[store.current]; persist(); plan=getPlan(store.current); fillPicker(); fillEditor(); stopAll(); };
+$('delBtn').onclick=()=>{ if(BUILTIN[store.current]) return; delete store.plans[store.current]; store.current='diaria'; persist(); plan=getPlan('diaria'); fillPicker(); stopAll(); $('editor').hidden=true; };
+fillPicker(); goto(0,false);
+</script>
+</body></html>
