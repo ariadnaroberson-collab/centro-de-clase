@@ -305,6 +305,8 @@
   .scene .animal .lab { display: inline-block; margin-top: .3cqw; background: rgba(255,255,255,.92); color: #1a2e25; font-weight: 800; font-size: 1.5cqw; padding: .2cqw .8cqw; border-radius: 1cqw; white-space: nowrap; }
   .scene.nolabels .animal .lab { display: none; }
   .scene .animal.in { animation: peek .9s cubic-bezier(.2, 1.6, .4, 1) both; }
+  .scene .animal.in.drop { animation: land 1.3s cubic-bezier(.3,1.25,.5,1) both; }
+  @keyframes land { 0% { opacity: 0; transform: translate(-50%, -320%) scale(.6) rotate(-12deg); } 60% { opacity: 1; transform: translate(-50%, -42%) scale(1.05) rotate(4deg); } 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
   .scene .animal.out { animation: flee .7s ease-in forwards; pointer-events: none; }
   .scene.nervous .animal .em { animation: shiver .18s linear infinite; }
   @keyframes peek { 0% { opacity: 0; transform: translate(-50%, -10%) scale(.2); } 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
@@ -1175,6 +1177,43 @@ const HABITATS = {
       ['🐹<small class="badge">🧺</small>', 'Nico', 'g', 1, 'Soy Nico. Soy un coatí. Siempre llevo mi canasta de frutas.', '¡Hola! ¿Quieren fruta?'],
       ['🦝', 'Arlo', 'g', 1, 'Soy Arlo. Soy un mapache. Me gusta mirar las piedras y las herramientas.', '¡Hola! Soy Arlo.']
     ] },
+  espacio: { t: 'El sistema solar · astronautas', short: 'El espacio', e: '🚀', where: 'el sistema solar', talk: true, drop: true,
+    hidden: '🛰️ Los astronautas esperan el silencio…',
+    intro: '¡Misión espacial! En el espacio no hay ruido… Trabajen en silencio y los astronautas van a aterrizar en la Luna, en Marte… ¡y más!',
+    cheers: ['¡Muy bien, astronautas!', '¡Silencio en la nave!', '¡Misión: silencio!', '¡Sigan así, tripulación!', '¡Qué tranquilo está el espacio!', '¡Excelente trabajo, cadetes!', '¡Houston, todo va muy bien!', '¡Bravo, exploradores!'],
+    finale: '¡Misión cumplida, astronautas!', doneTitle: '¡Misión cumplida!', doneText: 'Todos los astronautas aterrizaron gracias a su silencio.',
+    bg: () => SVG(`<rect width="1600" height="900" fill="url(#gsp)"/>
+      <path d="M-50,520 C300,380 700,300 1100,180 S1600,40 1700,20" stroke="#8f7cff" stroke-width="140" opacity=".08" fill="none" filter="url(#far)"/>
+      <g fill="#fff">${rep(110, i => `<circle cx="${(i * 467) % 1600}" cy="${(i * 211) % 900}" r="${[1, 1.5, 2, 1, 2.6][i % 5]}" opacity="${[.9, .6, .8, .5, 1][i % 5]}"/>`)}</g>
+      <circle cx="110" cy="110" r="230" fill="url(#glow)" opacity=".55"/><circle cx="110" cy="110" r="105" fill="#ffcf3a"/><circle cx="110" cy="110" r="80" fill="#ffe27a"/>
+      <circle cx="330" cy="180" r="14" fill="#a8a29a"/>
+      <circle cx="440" cy="240" r="22" fill="#e8c27a"/>
+      <circle cx="575" cy="345" r="36" fill="#2f6fd6"/><path d="M552,330 q14,-14 30,-6 q-4,16 -20,18Z M580,352 q16,-6 22,8 q-12,12 -24,4Z" fill="#4cae5a"/><circle cx="575" cy="345" r="36" fill="none" stroke="#9fd0ff" stroke-width="4" opacity=".6"/>
+      <circle cx="640" cy="300" r="9" fill="#d8d8d8"/>
+      <g><circle cx="880" cy="240" r="88" fill="#d9a066"/><path d="M795,205 h170 M792,240 h176 M798,272 h164" stroke="#b57a45" stroke-width="12" opacity=".7"/><ellipse cx="910" cy="262" rx="18" ry="11" fill="#c0603a"/></g>
+      <g transform="rotate(-14 1190 175)"><ellipse cx="1190" cy="175" rx="118" ry="28" fill="none" stroke="#e9d6a0" stroke-width="10" opacity=".9"/><circle cx="1190" cy="175" r="54" fill="#e7cf8f"/><path d="M1072,175 a118,28 0 0,0 236,0" fill="none" stroke="#e9d6a0" stroke-width="10"/></g>
+      <circle cx="1390" cy="330" r="30" fill="#9fe3e8"/>
+      <circle cx="1530" cy="200" r="26" fill="#4a6fe3"/>
+      <g fill="#fff" opacity=".75" font-family="Nunito, sans-serif" font-weight="800" font-size="24" text-anchor="middle">
+        <text x="110" y="250">el Sol</text><text x="330" y="222">Mercurio</text><text x="440" y="292">Venus</text><text x="575" y="410">la Tierra</text>
+        <text x="880" y="358">Júpiter</text><text x="1190" y="262">Saturno</text><text x="1390" y="390">Urano</text><text x="1530" y="256">Neptuno</text></g>
+      <circle cx="250" cy="1150" r="520" fill="#b9bcc6"/><g fill="#9a9dab"><ellipse cx="140" cy="700" rx="46" ry="14"/><ellipse cx="330" cy="760" rx="60" ry="18"/><ellipse cx="220" cy="840" rx="40" ry="12"/><ellipse cx="420" cy="690" rx="26" ry="8"/></g>
+      <circle cx="1350" cy="1180" r="520" fill="#c1440e"/><g fill="#9b3209"><ellipse cx="1260" cy="760" rx="60" ry="16"/><ellipse cx="1440" cy="720" rx="40" ry="12"/><ellipse cx="1380" cy="840" rx="70" ry="18"/></g>
+      <g fill="#fff" opacity=".85" font-family="Nunito, sans-serif" font-weight="800" font-size="30" text-anchor="middle"><text x="250" y="880">la Luna</text><text x="1350" y="885">Marte</text></g>`,
+      `<radialGradient id="gsp" cx="50%" cy="40%" r="75%"><stop offset="0" stop-color="#241a5c"/><stop offset=".6" stop-color="#0d1238"/><stop offset="1" stop-color="#050716"/></radialGradient>`),
+    spots: { luna: [[11, 66], [24, 66]], marte: [[78, 68], [91, 68]], saturno: [[64, 31]], tierra: [[42, 29]], a: [[67, 50], [27, 46], [53, 54], [88, 49]] },
+    animals: [
+      ['👩‍🚀', 'la astronauta Sofía', 'luna', 1.15, '¡Hola! Soy Sofía, una astronauta. Aterricé en la Luna. La Luna es gris y no tiene aire.', '¡Hola! ¡Aterricé en la Luna!'],
+      ['👨‍🚀', 'el astronauta Diego', 'marte', 1.15, 'Soy Diego, un astronauta. Estoy en Marte, el planeta rojo. ¡Aquí hace mucho frío!', '¡Hola! ¡Estoy en Marte!'],
+      ['🧑‍🚀', 'la astronauta Ana', 'saturno', 1, 'Soy Ana, una astronauta. Floto cerca de Saturno. Saturno tiene anillos enormes.', '¡Hola! ¡Miren los anillos!'],
+      ['🚀', 'el cohete', 'luna', 1.2, 'Soy el cohete. Llevo a los astronautas al espacio. ¡Tres, dos, uno… despegue!', '¡Tres, dos, uno… despegue!'],
+      ['🤖', 'el robot explorador', 'marte', 1, 'Soy un robot explorador. Busco agua y piedras en Marte.', '¡Bip, bip! ¡Hola!'],
+      ['🛰️', 'el satélite', 'tierra', .9, 'Soy un satélite. Doy vueltas alrededor de la Tierra y tomo fotos.', '¡Hola desde la Tierra!'],
+      ['👽', 'el extraterrestre', 'a', 1, '¡Hola, terrícolas! Soy un extraterrestre. Vivo muy, muy lejos. ¿Somos amigos?', '¿Somos amigos?'],
+      ['🛸', 'el ovni', 'a', 1, 'Soy un ovni: un objeto volador no identificado. ¡Nadie sabe de dónde vengo!', '¡Shhh! ¡Es un secreto!'],
+      ['☄️', 'el cometa', 'a', 1, 'Soy un cometa. Tengo una cola larga y brillante. Viajo alrededor del Sol.', '¡Zum! ¡Qué rápido!'],
+      ['🌠', 'la estrella fugaz', 'a', .9, 'Soy una estrella fugaz. ¡Pide un deseo cuando me ves!', '¡Pide un deseo!']
+    ] },
   selva: { t: 'La selva de Belice', e: '🌴',
     bg: () => SVG(`<rect width="1600" height="900" fill="url(#gs)"/>
       <g fill="#fff" opacity=".09"><polygon points="260,0 380,0 760,720 560,720"/><polygon points="900,0 980,0 1220,720 1080,720"/></g>
@@ -1441,7 +1480,7 @@ tool('safari', 'manage', '🐾', 'Safari silencioso', 'Quiet-work game (shy anim
   function addAnimal(a, anim = true) {
     const p = st.pos.get(a[1]);
     const d = document.createElement('div');
-    d.className = 'animal' + (anim ? ' in' : ''); d.dataset.n = a[1];
+    d.className = 'animal' + (anim ? ' in' + (H().drop ? ' drop' : '') : ''); d.dataset.n = a[1];
     d.style.cssText = `left:${p[0]}%;top:${p[1]}%;--s:${a[3]};--d:${-Math.random() * 3}s`;
     d.innerHTML = `<span class="em">${a[0]}</span><span class="lab">${h(a[1])}</span>`;
     d.onclick = () => openFact(a);
@@ -1522,7 +1561,7 @@ tool('safari', 'manage', '🐾', 'Safari silencioso', 'Quiet-work game (shy anim
     st.shown.push(a); addAnimal(a, true); updCount();
     st.ignoreUntil = Date.now() + 900; tone(1320, .3, .05, 'sine');
     setMsg(`✨ ¡Salió ${a[1]}!`, '', 2600);
-    if (H().talk) setTimeout(() => sayBubble(a, a[5] || pick(CHEERS)), 900);
+    if (H().talk) setTimeout(() => sayBubble(a, a[5] || pick(H().cheers || CHEERS)), H().drop ? 1300 : 900);
     st.cheerT = 0;
     if (!st.queue.length) done();
   }
@@ -1541,15 +1580,15 @@ tool('safari', 'manage', '🐾', 'Safari silencioso', 'Quiet-work game (shy anim
   function done() {
     st.state = 'done'; micOff(); updButtons();
     const hab = H(); let ptsMsg = '';
-    if (hab.talk) { const dp = st.shown.find(a => a[1] === 'Don Pico'); setTimeout(() => sayBubble(dp || st.shown[0], '¡Muy bien, guardianes! ¡Qué orgullo!', 6000), 200); }
+    if (hab.talk) { const dp = st.shown.find(a => a[1] === 'Don Pico'); setTimeout(() => sayBubble(dp || st.shown[0], hab.finale || '¡Muy bien, guardianes! ¡Qué orgullo!', 6000), 200); }
     if (o.pts > 0) { const d = cdata(); if (!d.points) d.points = { pts: 0, goal: 50, reward: '🎉 ¡Fiesta de baile!' }; d.points.pts += o.pts; save(); ptsMsg = `<p style="font-size:2.2cqw;font-weight:800;color:var(--bg)">+${o.pts} puntos para la clase 💯 (total: ${d.points.pts})</p>`; }
     setTimeout(() => {
       if (!scene.isConnected) return;
       fanfare();
       for (let i = 0; i < 36; i++) { const c = document.createElement('div'); c.className = 'saf-confetti'; c.textContent = pick(st.shown.map(a => a[0]).filter(x => !x.includes('<')).concat(['✨', '🎉', '⭐'])); c.style.left = Math.random() * 100 + '%'; c.style.animationDuration = (2.5 + Math.random() * 2) + 's'; c.style.animationDelay = Math.random() * .8 + 's'; scene.appendChild(c); setTimeout(() => c.remove(), 5500); }
       const w = document.createElement('div'); w.className = 'saf-done';
-      w.innerHTML = `<div class="card"><div class="big">${hab.talk ? '¡Encontraron a todos los guardianes!' : '¡Encontraron a todos!'}</div><div class="row2">${st.shown.map(a => a[0]).join(' ')}</div>
-        <p style="font-size:2cqw;color:#5a5a5a">${hab.talk ? `Chica y sus amigos salieron gracias a su silencio.` : `${st.total} animales de ${h(hab.where || lowerFirst(hab.t))} salieron gracias a su silencio.`}</p>${ptsMsg}
+      w.innerHTML = `<div class="card"><div class="big">${hab.doneTitle || (hab.talk ? '¡Encontraron a todos los guardianes!' : '¡Encontraron a todos!')}</div><div class="row2">${st.shown.map(a => a[0]).join(' ')}</div>
+        <p style="font-size:2cqw;color:#5a5a5a">${hab.doneText ? h(hab.doneText) : hab.talk ? `Chica y sus amigos salieron gracias a su silencio.` : `${st.total} animales de ${h(hab.where || lowerFirst(hab.t))} salieron gracias a su silencio.`}</p>${ptsMsg}
         <button class="btn gold" style="font-size:2cqw;padding:1cqw 2.4cqw;margin-top:1cqw">👀 Ver a los animales</button></div>`;
       w.querySelector('button').onclick = () => w.remove();
       scene.appendChild(w);
@@ -1565,7 +1604,7 @@ tool('safari', 'manage', '🐾', 'Safari silencioso', 'Quiet-work game (shy anim
     if (st.level > thr) { st.over += dt; setMsg('😬 ¡Shhh! Los animales tienen miedo…', 'warn'); if (st.over >= .7) scare(); }
     else if (nervous) { st.over = Math.max(0, st.over - dt); setMsg('🤫 Un poquito más bajo…', 'warn'); }
     else { st.over = 0; st.prog += dt; setMsg('🤫 Silencio… alguien viene');
-      if (H().talk && st.shown.length) { st.cheerT = (st.cheerT || 0) + dt; if (st.cheerT >= 20) { st.cheerT = 0; sayBubble(pick(st.shown), pick(CHEERS)); } } if (st.prog >= st.per) { st.prog = 0; reveal(); } }
+      if (H().talk && st.shown.length) { st.cheerT = (st.cheerT || 0) + dt; if (st.cheerT >= 20) { st.cheerT = 0; sayBubble(pick(st.shown), pick(H().cheers || CHEERS)); } } if (st.prog >= st.per) { st.prog = 0; reveal(); } }
     const p = scene.querySelector('#sProg'); if (p) p.style.width = Math.min(100, st.prog / st.per * 100) + '%';
   }
   st.iv = setInterval(loop, 100);
