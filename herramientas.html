@@ -600,6 +600,73 @@
   .hg-chomp.done { opacity: 0; }
   @keyframes chomp { 0% { opacity: 0; transform: translate(-50%, 60%) scale(.4); } 25% { opacity: 1; transform: translate(-50%, -60%) scale(1.25) rotate(-8deg); } 45% { transform: translate(-50%, -50%) scale(1.1) rotate(6deg); } 80% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, 40%) scale(.8); } }
   .hg-msg { position: absolute; left: 0; right: 0; bottom: 10px; text-align: center; color: #fff; font-weight: 800; font-size: 1.2rem; text-shadow: 0 2px 4px rgba(0,0,0,.5); }
+  /* juegos de fluidez */
+  .fl-box, .cx-box, .ot-box { background: #fff; border-radius: 18px; padding: 20px 22px; margin-top: 14px; border: 3px solid #e1d9c9; text-align: center; container-type: inline-size; }
+  .fl-box:fullscreen, .cx-box:fullscreen, .ot-box:fullscreen { border: none; padding: 4vw; display: flex; flex-direction: column; justify-content: center; }
+  .fl-who { font-weight: 800; color: #c8312f; font-size: 1.4rem; min-height: 1.6rem; }
+  .fl-sub { font-family: 'Schoolbell', cursive; color: var(--text-mid); font-size: 1.2rem; }
+  .fl-topic { font-family: 'Caveat', cursive; font-weight: 700; color: var(--bg); font-size: clamp(2.4rem, 6cqw, 5rem); line-height: 1.05; margin: 6px 0; }
+  .fl-guide { font-size: clamp(1.1rem, 2.4cqw, 1.8rem); font-weight: 700; color: var(--text-mid); }
+  .fl-clock { font-size: clamp(4rem, 12cqw, 8rem); margin: 8px 0 4px; } .fl-clock.low { color: var(--red); }
+  .fl-bar { max-width: 700px; margin: 0 auto 12px; }
+  .fl-help { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; align-items: center; margin-top: 8px; font-size: .95rem; }
+  .fl-help span { background: #e6f0ea; border-radius: 10px; padding: 4px 10px; font-weight: 700; color: var(--bg); }
+  .fl-done { font-family: 'Caveat', cursive; font-weight: 700; font-size: 2.4rem; color: #2f7d3a; min-height: 1rem; margin-top: 6px; }
+  .cx-web { position: relative; width: min(100%, 760px); aspect-ratio: 1.45; margin: 0 auto; }
+  .cx-lines { position: absolute; inset: 0; width: 100%; height: 100%; } .cx-lines line { stroke: #e1d9c9; stroke-width: .8; stroke-dasharray: 2 1.5; } .cx-lines line.on { stroke: var(--green); stroke-dasharray: none; }
+  .cx-center { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); background: var(--gold); border-radius: 50%; width: 28%; aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 6px 0 rgba(0,0,0,.12); padding: 8px; }
+  .cx-center span { font-size: clamp(1.8rem, 5cqw, 3.4rem); line-height: 1; } .cx-center b { font-family: 'Caveat', cursive; font-size: clamp(1.6rem, 4.2cqw, 3rem); color: var(--bg-dark); line-height: 1; text-align: center; }
+  .cx-slot { position: absolute; transform: translate(-50%, -50%); width: 26%; text-align: center; font-weight: 800; font-size: clamp(1rem, 2.4cqw, 1.6rem); color: var(--bg); background: #fff; border: 3px dashed #d8d0c0; border-radius: 16px; padding: 10px 6px; font-family: inherit; }
+  .cx-slot.on { border: 3px solid var(--green); background: #e6f0ea; } .cx-slot:focus { outline: none; border-color: var(--gold); }
+  .cx-foot { display: flex; gap: 12px; justify-content: center; align-items: center; flex-wrap: wrap; margin-top: 10px; } .cx-clock { font-size: 2.4rem; margin: 0; }
+  .ot-orig { font-family: 'Caveat', cursive; font-weight: 700; color: var(--bg); font-size: clamp(2.2rem, 5.5cqw, 4.4rem); line-height: 1.1; margin: 8px 0 12px; }
+  .ot-vers { display: grid; gap: 8px; max-width: 900px; margin: 0 auto; text-align: left; }
+  .ot-v { display: flex; gap: 10px; align-items: center; background: #e6f0ea; border-radius: 12px; padding: 8px 12px; font-size: clamp(1.1rem, 2.4cqw, 1.7rem); font-weight: 700; color: var(--bg); animation: pop .3s ease; }
+  .ot-v span { background: var(--bg); color: #fff; border-radius: 50%; width: 1.7em; height: 1.7em; display: flex; align-items: center; justify-content: center; font-size: .75em; flex-shrink: 0; }
+  .ot-v .x { margin-left: auto; background: none; border: none; color: var(--text-mid); }
+  .ot-add { display: flex; gap: 8px; max-width: 900px; margin: 10px auto 0; } .ot-add .field { flex: 1; font-size: 1.1rem; }
+  .ot-ex { margin: 14px auto 0; max-width: 900px; background: #fff3c4; border-radius: 12px; padding: 10px 14px; font-size: 1.15rem; }
+  .ot-tools { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 16px; text-align: left; }
+  @media (max-width: 800px) { .ot-tools { grid-template-columns: 1fr; } }
+  .ot-tools > div { background: var(--card); border-radius: 12px; padding: 10px 12px; } .ot-tools b { display: block; font-family: 'Schoolbell', cursive; color: var(--bg); margin-bottom: 4px; }
+  .ot-tools span { display: block; font-size: .92rem; padding: 2px 0; }
+  /* camino de historias (tablero 3D) */
+  .sp-wrap { background: #fff; border-radius: 18px; overflow: hidden; border: 3px solid #e1d9c9; margin-top: 10px; }
+  .sp-wrap:fullscreen { border: none; display: flex; flex-direction: column; } .sp-wrap:fullscreen .sp-stage { flex: 1; aspect-ratio: auto; }
+  .sp-stage { position: relative; aspect-ratio: 16 / 9; overflow: hidden; perspective: 1500px; background: radial-gradient(ellipse at 50% 30%, #d8f1ff, #9ed6a0 70%, #6fae62); }
+  .sp-scaler { position: absolute; left: 50%; top: 57%; width: 0; height: 0; transform-origin: 0 0; transform-style: preserve-3d; }
+  .sp-board { position: absolute; transform: translate(-50%, -50%) rotateX(56deg) rotateZ(-36deg); transform-style: preserve-3d; background: #5f9e4f; box-shadow: 0 0 0 6px #4c7f3c; }
+  .sp-side { position: absolute; background: linear-gradient(#7a5233, #5b3d24); }
+  .sp-side.s { height: 34px; left: 0; transform-origin: top; transform: rotateX(-90deg); }
+  .sp-side.e { width: 34px; top: 0; transform-origin: left; transform: rotateY(90deg); }
+  .sp-tile { position: absolute; width: 64px; height: 64px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.06); }
+  .sp-tile.grass0 { background: #7fbf5a; } .sp-tile.grass1 { background: #76b653; }
+  .sp-tile.path { background: #e8cf95; box-shadow: inset 0 0 0 2px #d8b978; }
+  .sp-tile.stop { background: #f5c842; box-shadow: inset 0 0 0 4px #e0a91f; }
+  .sp-tile.stop i { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-style: normal; font-weight: 800; color: #7a5a00; font-size: 26px; }
+  .sp-tile.water { background: linear-gradient(135deg, #4aa3c7 25%, #5fb4d6 25% 50%, #4aa3c7 50% 75%, #5fb4d6 75%); background-size: 32px 32px; animation: spwater 3s linear infinite; }
+  @keyframes spwater { to { background-position: 32px 32px; } }
+  .sp-tile.bridge { background: repeating-linear-gradient(0deg, #9b6a3c 0 10px, #845a32 10px 12px); }
+  .sp-sprite { position: absolute; width: 0; height: 0; transform-style: preserve-3d; transition: left .3s ease, top .3s ease; }
+  .sp-up { position: absolute; left: 0; bottom: 0; transform-origin: 50% 100%; transform: translate(-50%, 0) rotateZ(36deg) rotateX(-56deg) translateY(calc(-1 * var(--lift, 0px))); font-size: calc(48px * var(--s, 1)); line-height: 1; text-align: center; white-space: nowrap; display: flex; flex-direction: column; align-items: center; }
+  .sp-art { filter: drop-shadow(0 4px 2px rgba(0,0,0,.25)); }
+  .sp-sprite.char .sp-art { animation: bob 2.6s ease-in-out infinite; }
+  .sp-sprite.fly .sp-art { animation-duration: 1.2s; }
+  .sp-sprite.hop .sp-art { animation: sphop .33s ease; }
+  @keyframes sphop { 50% { transform: translateY(-14px); } }
+  .sp-sprite.talk .sp-art { animation: sptalk .5s ease 2; }
+  @keyframes sptalk { 50% { transform: scale(1.12); } }
+  .sp-name { display: block; font-size: 14px; font-weight: 800; background: rgba(255,255,255,.9); color: #1a2e25; border-radius: 8px; padding: 1px 6px; margin-top: 2px; }
+  .sp-say { order: -1; margin-bottom: 8px; background: #fff; color: #1a2e25; font-weight: 800; font-size: 20px; line-height: 1.2; padding: 8px 12px; border-radius: 14px; box-shadow: 0 4px 12px rgba(0,0,0,.25); white-space: normal; width: max-content; max-width: 280px; position: relative; opacity: 0; transform: scale(.6); transition: opacity .25s, transform .25s; }
+  .sp-say::after { content: ''; position: absolute; left: 50%; top: 100%; margin-left: -8px; border: 8px solid transparent; border-top-color: #fff; }
+  .sp-say.on { opacity: 1; transform: scale(1); }
+  .sp-title { position: absolute; left: 12px; top: 10px; background: rgba(255,255,255,.92); border-radius: 14px; padding: 4px 14px; font-family: 'Caveat', cursive; font-weight: 700; font-size: 1.7rem; color: var(--bg); }
+  .sp-dots { position: absolute; right: 12px; top: 12px; display: flex; gap: 5px; }
+  .sp-dots span { width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,.75); display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--text-mid); font-size: .85rem; }
+  .sp-dots span.on { background: var(--gold); color: var(--bg-dark); }
+  .sp-cap { background: var(--bg); color: var(--chalk); padding: 12px 18px; min-height: 64px; }
+  .sp-line { font-size: clamp(1.2rem, 2.4vw, 2rem); font-weight: 700; } .sp-line b { color: var(--gold); }
+  .sp-q { margin-top: 6px; font-family: 'Schoolbell', cursive; font-size: clamp(1rem, 1.8vw, 1.5rem); color: #fff3c4; } .sp-q.hidden { display: none; }
   .notice { background: #fff6d6; border: 2px dashed var(--gold); border-radius: 12px; padding: 10px 14px; color: var(--text-dark); font-size: 0.9rem; margin-bottom: 14px; }
 </style>
 </head>
@@ -2981,7 +3048,7 @@ tool('practica', 'assess', '🎮', 'Práctica y juegos', 'Practice & games by un
   const u = U[g.unitCur];
   el.innerHTML += `<div class="row"><label class="chk">Unidad: <select class="field" id="unSel" style="font-weight:800">${U.map((x, i) => `<option value="${i}" ${i === g.unitCur ? 'selected' : ''}>${h(x.n)}</option>`).join('')}</select></label>
       <button class="btn sm" id="unNew">＋ Nueva unidad</button>${u ? '<button class="btn sm ghost" id="unRen">✏️ Renombrar</button><button class="btn sm ghost" id="unDel">🗑️ Borrar unidad</button>' : ''}</div>
-    <div class="gm-builtin"><span class="muted">Juegos dentro de Herramientas:</span><button class="btn gold" id="gmHang">🦈 Ahorcado · palabras de cada unidad</button></div>
+    <div class="gm-builtin"><span class="muted">Juegos dentro de Herramientas:</span><button class="btn gold" id="gmHang">🦈 Ahorcado · palabras de cada unidad</button><button class="btn gold" data-gm="camino">🗺️ El camino de Chica (3D)</button><button class="btn gold" data-gm="minuto">🎤 ¡Habla un minuto!</button><button class="btn gold" data-gm="conexiones">🔗 1 palabra, 5 conexiones</button><button class="btn gold" data-gm="otramanera">🔄 Dilo de otra manera</button></div>
     ${u ? `<div class="gm-grid">${u.links.map((x, i) => `<div class="gm-card"><button class="gm-open" data-o="${i}"><span class="gm-ic">${gameIcon(x.u)}</span><span class="gm-n">${h(x.n)}</span></button>
         <div class="gm-act"><button class="btn sm ghost" data-t="${i}" title="Abrir en pestaña nueva">↗</button><button class="btn sm ghost" data-q="${i}" title="Código QR para los estudiantes">📱</button><button class="btn sm ghost" data-d="${i}" title="Quitar">✕</button></div></div>`).join('') || '<p class="muted">Esta unidad todavía no tiene enlaces. Añade el primero aquí abajo 👇</p>'}</div>
       <div class="lk-add"><input class="field" id="gmN" placeholder="Nombre, ej. Quizlet · vocabulario" style="max-width:280px"><input class="field" id="gmU" placeholder="Enlace (Quizlet, Wayground, Padlet, Canva, YouTube…)"><button class="btn" id="gmAdd">＋ Añadir</button></div>
@@ -2989,6 +3056,7 @@ tool('practica', 'assess', '🎮', 'Práctica y juegos', 'Practice & games by un
   const $$ = s => el.querySelector(s);
   $$('#unSel').onchange = e => { g.unitCur = +e.target.value; save(); render(); };
   $$('#gmHang').onclick = () => go('ahorcado');
+  el.querySelectorAll('[data-gm]').forEach(b => b.onclick = () => go(b.dataset.gm));
   $$('#unNew').onclick = () => { const n = prompt('Nombre de la unidad (ej. Unidad 3: Los animales):'); if (!n || !n.trim()) return; U.push({ n: n.trim(), links: [] }); g.unitCur = U.length - 1; save(); render(); };
   if (!u) return;
   $$('#unRen').onclick = () => { const n = prompt('Nuevo nombre:', u.n); if (n && n.trim()) { u.n = n.trim(); save(); render(); } };
@@ -3208,8 +3276,287 @@ tool('ahorcado', 'assess', '🦈', 'Ahorcado', 'Hangman with unit words', 'Adivi
   return () => document.removeEventListener('keydown', onKey);
 });
 
+/* =========================================================
+   🗣️ JUEGOS DE FLUIDEZ (CI, máximo B1)
+   ========================================================= */
+const FL_LEVELS = { na: 'Novato alto (A2)', ib: 'Intermedio bajo (A2/B1)', i: 'Intermedio (B1)' };
+const FL_CLASS_DEFAULT = n => { n = (n || '').toLowerCase(); if (n.includes('secondary 2')) return 'i'; if (n.includes('secondary 1') || n.includes('middle school 3') || n.includes('middle school 2')) return 'ib'; return 'na'; };
+const FL_WORD_BANKS = { na: ['ms0', 'ms1'], ib: ['ms2', 'sec1'], i: ['sec2', 'sec1'] };
+function flLevel() { const d = cdata(); if (!d.fluid) d.fluid = { lvl: FL_CLASS_DEFAULT(cname()) }; return d.fluid; }
+function flLevelSelect(id, cur) { return `<label class="chk">Nivel: <select class="field" id="${id}">${Object.entries(FL_LEVELS).map(([k, v]) => `<option value="${k}" ${k === cur ? 'selected' : ''}>${v}</option>`).join('')}</select></label>`; }
+const CIRCUM = ['Es una cosa que…', 'Es una persona que…', 'Es un lugar donde…', 'Se usa para…', 'Es como… pero…', 'Es lo contrario de…', 'No sé la palabra, pero…', 'Por ejemplo…'];
+/* local countdown used by the three games */
+function flTimer(el, sec, onEnd) {
+  const o = { sec, left: sec, run: false, end: 0, iv: 0 };
+  const paint = () => { const d = el.querySelector('.fl-clock'), b = el.querySelector('.fl-bar div'); if (!d) return; d.textContent = fmt(o.left); d.classList.toggle('low', o.run && o.left <= 10); if (b) b.style.width = (o.left / o.sec * 100) + '%'; };
+  o.start = () => { if (o.run) return; ac(); if (o.left <= 0) o.left = o.sec; o.run = true; o.end = Date.now() + o.left * 1000; o.iv = setInterval(() => { o.left = Math.max(0, (o.end - Date.now()) / 1000); paint(); if (o.left <= 0) { o.stop(); ding(); setTimeout(ding, 250); onEnd && onEnd(); } }, 200); paint(); };
+  o.stop = () => { o.run = false; clearInterval(o.iv); paint(); };
+  o.reset = s => { o.stop(); if (s) o.sec = s; o.left = o.sec; paint(); };
+  o.paint = paint;
+  return o;
+}
+
+/* ---------- 🎤 ¡HABLA UN MINUTO! ---------- */
+const MINUTE_TOPICS = {
+  na: [['Mi comida favorita', '¿Qué es? · ¿Quién la cocina? · ¿Por qué te gusta?'], ['Mi mejor amigo o amiga', '¿Cómo se llama? · ¿Cómo es? · ¿Qué hacen juntos?'], ['Un día normal en la escuela', '¿Qué haces primero? · ¿Qué clase te gusta? · ¿Qué comes?'],
+    ['Mi animal favorito', '¿Cómo es? · ¿Dónde vive? · ¿Qué come?'], ['Mis fines de semana', '¿Qué haces el sábado? · ¿Con quién? · ¿Dónde?'], ['Mi familia', '¿Cuántas personas hay? · ¿Cómo son? · ¿Qué les gusta?'],
+    ['Mi lugar favorito en Belice', '¿Dónde está? · ¿Cómo es? · ¿Qué hay allí?'], ['Mi deporte o pasatiempo', '¿Qué es? · ¿Cuándo lo practicas? · ¿Por qué te gusta?'], ['Mi casa', '¿Cómo es? · ¿Qué hay en tu cuarto? · ¿Cuál es tu lugar favorito?'],
+    ['La ropa que me gusta', '¿Qué ropa usas? · ¿De qué color? · ¿Para qué ocasión?'], ['Mi fiesta favorita', '¿Qué celebran? · ¿Qué comen? · ¿Qué hacen?'], ['Un videojuego o programa que me gusta', '¿Cómo se juega o de qué se trata? · ¿Por qué te gusta?']],
+  ib: [['El mejor día de mi vida', '¿Cuándo fue? · ¿Qué pasó? · ¿Cómo te sentiste?'], ['Un viaje que hice', '¿Adónde fuiste? · ¿Con quién? · ¿Qué hiciste?'], ['Mi rutina de la mañana', 'Primero… · Luego… · Después… · Al final…'],
+    ['Una persona que admiro', '¿Quién es? · ¿Qué hace? · ¿Por qué la admiras?'], ['Mis planes para este fin de semana', 'Voy a… · ¿Con quién? · ¿Por qué?'], ['Una comida típica de Belice', '¿Qué ingredientes tiene? · ¿Cómo se prepara? · ¿Cuándo se come?'],
+    ['Mi celular: ¿lo necesito o no?', '¿Para qué lo usas? · ¿Cuántas horas? · ¿Qué pasa sin él?'], ['Mi escuela ideal', '¿Cómo sería? · ¿Qué clases tendría? · ¿Qué cambiarías?'], ['Un problema en mi comunidad', '¿Cuál es? · ¿Por qué pasa? · ¿Qué podemos hacer?'],
+    ['Cuando era pequeño o pequeña…', '¿Dónde vivías? · ¿Qué te gustaba? · ¿Qué hacías?'], ['Mi película favorita (¡sin decir el título!)', '¿De qué se trata? · ¿Quiénes son los personajes? · ¿Cómo termina?'], ['Un lugar que quiero visitar', '¿Dónde está? · ¿Qué quieres hacer allí? · ¿Por qué?']],
+  i: [['¿Es mejor vivir en la ciudad o en el campo?', 'Ventajas · Desventajas · Tu opinión'], ['Explica cómo funciona algo (una bicicleta, un celular…)', '¿Qué es? · ¿Qué partes tiene? · ¿Cómo se usa?'], ['Las redes sociales', 'Algo bueno · Algo malo · Un consejo'],
+    ['Un error que me enseñó algo', '¿Qué pasó? · ¿Qué aprendiste? · ¿Qué harías diferente?'], ['Si pudiera cambiar una regla de la escuela…', '¿Qué regla? · ¿Por qué? · ¿Cómo sería mejor?'], ['Cómo cuidar el medio ambiente en Belice', 'Un problema · Una solución · ¿Qué haces tú?'],
+    ['Una tradición de mi familia', 'Explícala a alguien que no la conoce: ¿qué, cuándo, por qué?'], ['¿Qué harías con un millón de dólares?', 'Para mí… · Para mi familia… · Para mi comunidad…'], ['El trabajo de mis sueños', '¿Qué es? · ¿Qué necesitas estudiar? · ¿Por qué te gusta?'],
+    ['Un consejo para un estudiante nuevo', '¿Qué debe hacer? · ¿Qué no debe hacer? · ¿Por qué?'], ['¿Deberían los estudiantes tener tarea?', 'Sí, porque… · No, porque… · Tu opinión'], ['Una invención que cambió el mundo', '¿Qué es? · ¿Cómo era la vida antes? · ¿Y ahora?']]
+};
+tool('minuto', 'assess', '🎤', '¡Habla un minuto!', 'Talk for a minute (fluency stamina)', 'Un estudiante habla sin parar sobre el tema hasta que termine el tiempo. Si no sabe una palabra, ¡la explica! (circunloquio). No importan los errores: importa seguir comunicando.', el => {
+  const L = flLevel(), o = ses('minuto', { mode: 'tema', sec: 60, cur: null, word: null, who: null, left: null });
+  const topics = MINUTE_TOPICS[L.lvl];
+  const words = FL_WORD_BANKS[L.lvl].flatMap(b => HANG_BANKS[b].units.flatMap(([, s]) => hangParse(s)));
+  if (o.mode === 'tema' && (!o.cur || !topics.includes(o.cur))) o.cur = pick(topics);
+  if (o.mode === 'palabra' && !o.word) o.word = pick(words);
+  el.innerHTML += `<div class="row">${flLevelSelect('mnL', L.lvl)}
+      <button class="btn sm ${o.mode === 'tema' ? 'gold' : 'ghost'}" data-mode="tema">💬 Habla de un tema</button><button class="btn sm ${o.mode === 'palabra' ? 'gold' : 'ghost'}" data-mode="palabra">🧩 Explica sin decir la palabra</button>
+      <label class="chk">Tiempo: <select class="field" id="mnS">${[30, 45, 60, 90, 120].map(s => `<option value="${s}" ${s === o.sec ? 'selected' : ''}>${s < 60 ? s + ' s' : s / 60 + ' min'}</option>`).join('')}</select></label></div>
+    <div class="fl-box" id="mnBox">
+      <div class="fl-who">${o.who ? '🎤 ' + h(o.who) : ''}</div>
+      ${o.mode === 'tema' ? `<div class="fl-topic">${h(o.cur[0])}</div><div class="fl-guide">${h(o.cur[1])}</div>`
+        : `<div class="fl-sub">Explica esta palabra… ¡sin decirla!</div><div class="fl-topic">${o.word.em ? o.word.em + ' ' : ''}${h(o.word.w)}</div>`}
+      <div class="fl-clock tdisp">${fmt(o.sec)}</div><div class="tbar fl-bar"><div style="width:100%"></div></div>
+      <div class="fl-help"><b>¿No sabes la palabra? Explícala:</b> ${CIRCUM.map(c => `<span>${h(c)}</span>`).join('')}</div>
+      <div class="fl-done" id="mnDone"></div>
+    </div>
+    <div class="row" style="justify-content:center;margin-top:12px"><button class="btn gold xl" id="mnGo" data-primary>▶ ¡A hablar!</button><button class="btn" id="mnNew">🎲 Otro ${o.mode === 'tema' ? 'tema' : 'reto'}</button>
+      <button class="btn" id="mnWho">🙋 ¿Quién habla?</button><button class="btn sm ghost" id="mnFull">⛶</button></div>
+    <p class="muted" style="margin-top:10px;font-size:.88rem">💡 Idea CI: primero modela tú un minuto, luego en parejas (todos hablan a la vez, menos presión) y al final un voluntario frente a la clase.</p>`;
+  const $$ = s => el.querySelector(s);
+  const T = flTimer(el, o.sec, () => { $$('#mnDone').innerHTML = `🎉 ¡Lo lograste${o.who ? ', ' + h(o.who) : ''}! <button class="btn sm gold" id="mnPt">+1 💯</button>`; confetti(['🎤', '⭐', '🎉']); const pt = $$('#mnPt'); if (pt) pt.onclick = () => { const c = cdata(); if (!c.points) c.points = { pts: 0, goal: 50, reward: '🎉 ¡Fiesta de baile!' }; c.points.pts++; save(); toast('+1 💯 · Total: ' + c.points.pts); pt.remove(); }; });
+  T.paint();
+  $$('#mnL').onchange = e => { L.lvl = e.target.value; save(); o.cur = null; o.word = null; render(); };
+  el.querySelectorAll('[data-mode]').forEach(b => b.onclick = () => { o.mode = b.dataset.mode; render(); });
+  $$('#mnS').onchange = e => { o.sec = +e.target.value; render(); };
+  $$('#mnGo').onclick = () => { if (T.run) { T.stop(); $$('#mnGo').textContent = '▶ Seguir'; } else { $$('#mnDone').innerHTML = ''; T.start(); $$('#mnGo').textContent = '⏸ Pausa'; } };
+  $$('#mnNew').onclick = () => { if (o.mode === 'tema') { let n; do { n = pick(topics); } while (n === o.cur); o.cur = n; } else { let n; do { n = pick(words); } while (n === o.word); o.word = n; } ding(); render(); };
+  $$('#mnWho').onclick = () => { const left = ses('minutoLeft', () => []); const names = present(); if (!names.length) { toast('No hay estudiantes en esta clase'); return; } if (!left.length) left.push(...shuffle(names)); o.who = left.pop(); ding(); render(); };
+  $$('#mnFull').onclick = () => fullBox($$('#mnBox'));
+  return () => T.stop();
+});
+
+/* ---------- 🔗 1 PALABRA, 5 CONEXIONES ---------- */
+tool('conexiones', 'assess', '🔗', '1 palabra, 5 conexiones', 'One word, five connections', 'Una palabra en el centro. La clase dice 5 palabras o ideas conectadas y tú las escribes. Para subir el nivel: piden explicar una conexión con «porque».', el => {
+  const d = cdata(); if (!d.cnx) d.cnx = { bank: HANG_CLASS_DEFAULT(cname()), unit: 'all' };
+  const C = d.cnx; if (!HANG_BANKS[C.bank]) C.bank = 'le';
+  const U = hangUnits(C.bank), pool = C.unit === 'all' ? U.flatMap(u => u.words) : (U[C.unit] || U[0]).words;
+  const o = ses('cnx', { w: null, slots: ['', '', '', '', ''], sec: 60 });
+  if (!o.w || !pool.some(x => x.w === o.w.w)) o.w = pick(pool);
+  const filled = o.slots.filter(x => x.trim()).length;
+  el.innerHTML += `<div class="row"><label class="chk">Palabras de: <select class="field" id="cxB">${Object.entries(HANG_BANKS).map(([k, v]) => `<option value="${k}" ${k === C.bank ? 'selected' : ''}>${h(v.n)}</option>`).join('')}</select></label>
+      <label class="chk">Unidad: <select class="field" id="cxU"><option value="all" ${C.unit === 'all' ? 'selected' : ''}>🎲 Todas</option>${U.map((u, i) => `<option value="${i}" ${C.unit === i ? 'selected' : ''}>${h(u.n)}</option>`).join('')}</select></label>
+      <label class="chk">Tiempo: <select class="field" id="cxS">${[0, 30, 60, 90, 120].map(s => `<option value="${s}" ${s === o.sec ? 'selected' : ''}>${s ? (s < 60 ? s + ' s' : s / 60 + ' min') : 'sin tiempo'}</option>`).join('')}</select></label></div>
+    <div class="cx-box" id="cxBox">
+      <div class="cx-web">
+        <svg class="cx-lines" viewBox="0 0 100 100" preserveAspectRatio="none">${[0, 1, 2, 3, 4].map(i => { const a = -Math.PI / 2 + i * 2 * Math.PI / 5; return `<line x1="50" y1="50" x2="${50 + 38 * Math.cos(a)}" y2="${50 + 38 * Math.sin(a)}" class="${o.slots[i].trim() ? 'on' : ''}"/>`; }).join('')}</svg>
+        <div class="cx-center">${o.w.em ? `<span>${o.w.em}</span>` : ''}<b>${h(o.w.w)}</b></div>
+        ${o.slots.map((v, i) => { const a = -Math.PI / 2 + i * 2 * Math.PI / 5; return `<input class="cx-slot ${v.trim() ? 'on' : ''}" data-i="${i}" style="left:${50 + 38 * Math.cos(a)}%;top:${50 + 38 * Math.sin(a)}%" value="${h(v)}" placeholder="${i + 1}">`; }).join('')}
+      </div>
+      <div class="cx-foot"><span class="chip">🔗 ${filled} / 5</span>${o.sec ? `<span class="fl-clock tdisp cx-clock">${fmt(o.sec)}</span>` : ''}
+        <span class="fl-help" style="margin:0"><span>___ me hace pensar en ___.</span><span>___ y ___ están conectados porque ___.</span></span></div>
+    </div>
+    <div class="row" style="justify-content:center;margin-top:12px">${o.sec ? '<button class="btn" id="cxGo">⏱️ Empezar tiempo</button>' : ''}<button class="btn gold xl" id="cxNew" data-primary>🎲 Otra palabra</button><button class="btn sm ghost" id="cxClear">↺ Borrar conexiones</button><button class="btn sm ghost" id="cxFull">⛶</button></div>`;
+  const $$ = s => el.querySelector(s);
+  const T = o.sec ? flTimer($$('#cxBox'), o.sec, () => toast('⏰ ¡Tiempo! ' + o.slots.filter(x => x.trim()).length + ' conexiones')) : null;
+  $$('#cxB').onchange = e => { C.bank = e.target.value; C.unit = 'all'; save(); o.w = null; o.slots = ['', '', '', '', '']; render(); };
+  $$('#cxU').onchange = e => { C.unit = e.target.value === 'all' ? 'all' : +e.target.value; save(); o.w = null; o.slots = ['', '', '', '', '']; render(); };
+  $$('#cxS').onchange = e => { o.sec = +e.target.value; render(); };
+  el.querySelectorAll('.cx-slot').forEach(inp => {
+    inp.onkeydown = e => { e.stopPropagation(); if (e.key === 'Enter') { e.preventDefault(); const nx = el.querySelector(`.cx-slot[data-i="${+inp.dataset.i + 1}"]`); inp.blur(); if (nx) nx.focus(); } };
+    inp.onchange = () => { const was = o.slots.filter(x => x.trim()).length; o.slots[+inp.dataset.i] = inp.value; const now = o.slots.filter(x => x.trim()).length;
+      if (now > was) ding(); if (now === 5 && was < 5) { if (T) T.stop(); confetti(['🔗', '⭐', '🎉']); toast('🎉 ¡5 conexiones!'); } render(); };
+  });
+  const go = $$('#cxGo'); if (go) go.onclick = () => { T.start(); go.disabled = true; };
+  $$('#cxNew').onclick = () => { let n; do { n = pick(pool); } while (pool.length > 1 && n.w === o.w.w); o.w = n; o.slots = ['', '', '', '', '']; ding(); render(); };
+  $$('#cxClear').onclick = () => { o.slots = ['', '', '', '', '']; render(); };
+  $$('#cxFull').onclick = () => fullBox($$('#cxBox'));
+  return () => { if (T) T.stop(); };
+});
+
+/* ---------- 🔄 DILO DE OTRA MANERA ---------- */
+const OTRA = {
+  na: { how: 'Cambia UNA parte de la oración. Usa la caja de herramientas.', list: [
+    ['Estoy muy cansado.', 'Estoy agotado.', 'Tengo mucho sueño.'], ['Me gusta mucho el fútbol.', 'Me encanta el fútbol.', 'El fútbol es mi deporte favorito.'],
+    ['La comida está muy rica.', 'La comida está deliciosa.', '¡Qué rica está la comida!'], ['No tengo hambre.', 'No quiero comer.', 'Estoy lleno.'],
+    ['Hace mucho calor hoy.', '¡Qué calor hace hoy!', 'Hoy hace un calor terrible.'], ['Mi casa es grande.', 'Vivo en una casa enorme.', 'Mi casa no es pequeña.'],
+    ['Estoy feliz.', 'Estoy contento.', 'Estoy muy alegre.'], ['Voy a la escuela a pie.', 'Camino a la escuela.', 'Llego a la escuela caminando.'],
+    ['Mi hermano es muy alto.', 'Mi hermano no es bajo.', 'Mi hermano es altísimo.'], ['Quiero un vaso de agua.', 'Tengo sed.', '¿Me das agua, por favor?'],
+    ['El examen es difícil.', 'El examen no es fácil.', 'El examen es complicado.'], ['Me gustan los perros.', 'Me encantan los perros.', 'Los perros son mis animales favoritos.']] },
+  ib: { how: 'Cambia DOS cosas: una palabra y el conector (porque → pues, pero → sin embargo…).', list: [
+    ['No quiero ir porque estoy cansada.', 'Prefiero quedarme en casa pues estoy agotada.', 'Estoy muy cansada, así que no voy.'],
+    ['Me gusta leer, pero no tengo tiempo.', 'Me encanta leer; sin embargo, estoy muy ocupado.', 'Leer me gusta mucho, aunque casi nunca tengo tiempo.'],
+    ['Fui a la playa con mi familia.', 'Mi familia y yo visitamos la playa.', 'Pasé el día en la playa con mi familia.'],
+    ['Tengo que estudiar para el examen.', 'Necesito prepararme para la prueba.', 'Debo repasar para el examen.'],
+    ['Hoy llueve, entonces no salimos.', 'Como está lloviendo, nos quedamos adentro.', 'No salimos porque hoy hay mucha lluvia.'],
+    ['Mi abuela cocina muy bien.', 'Mi abuela es una cocinera excelente.', 'La comida de mi abuela es deliciosa.'],
+    ['Llegué tarde porque perdí el autobús.', 'Como perdí el autobús, no llegué a tiempo.', 'Perdí el autobús; por eso llegué tarde.'],
+    ['Quiero comprar zapatos nuevos.', 'Me gustaría comprar unos zapatos nuevos.', 'Necesito zapatos nuevos.'],
+    ['El examen fue muy difícil.', 'El examen no fue nada fácil.', 'La prueba fue complicada.'],
+    ['Me levanto temprano todos los días.', 'Cada día me despierto temprano.', 'Siempre me levanto muy temprano.'],
+    ['No me gusta el frío, pero me gusta la lluvia.', 'Odio el frío; sin embargo, la lluvia me encanta.', 'El frío no me gusta, aunque la lluvia sí.'],
+    ['Estoy nervioso porque mañana hay un examen.', 'Mañana tengo una prueba, así que estoy nervioso.', 'Como mañana hay examen, estoy preocupado.']] },
+  i: { how: 'Reformula la oración completa: cambia el orden, usa otra estructura o di lo contrario.', list: [
+    ['No pude dormir porque mi vecino hizo mucho ruido.', 'Mi vecino hizo tanto ruido que no logré dormir.', 'Por el ruido de mi vecino, pasé la noche despierto.'],
+    ['Si estudias, vas a pasar el examen.', 'Para pasar el examen, necesitas estudiar.', 'Sin estudiar, es difícil pasar el examen.'],
+    ['Me gustaría viajar a Guatemala el próximo año.', 'Mi plan es conocer Guatemala el año que viene.', 'El próximo año sueño con visitar Guatemala.'],
+    ['Es importante reciclar para proteger el planeta.', 'Si reciclamos, cuidamos el planeta.', 'Reciclar ayuda a proteger el medio ambiente.'],
+    ['Aunque estaba cansada, terminé mi tarea.', 'Estaba cansada, pero aun así terminé la tarea.', 'Terminé mi tarea a pesar del cansancio.'],
+    ['Cuando era niño, vivía cerca del mar.', 'De pequeño, mi casa estaba cerca del mar.', 'Pasé mi niñez cerca del mar.'],
+    ['Creo que las redes sociales son peligrosas.', 'En mi opinión, las redes sociales pueden ser peligrosas.', 'Para mí, las redes sociales tienen muchos riesgos.'],
+    ['No fui a la fiesta porque estaba enfermo.', 'Como estaba enfermo, me quedé en casa en vez de ir a la fiesta.', 'Estaba enfermo; por eso falté a la fiesta.'],
+    ['Mi hermana es más alta que yo.', 'Yo soy más bajo que mi hermana.', 'Mi hermana me gana en altura.'],
+    ['Deberíamos plantar más árboles en la ciudad.', 'Sería buena idea plantar más árboles en la ciudad.', 'La ciudad necesita más árboles.'],
+    ['Empecé a estudiar español hace dos años.', 'Llevo dos años estudiando español.', 'Hace dos años que estudio español.'],
+    ['Nadie me ayudó con el proyecto.', 'Hice el proyecto completamente solo.', 'Tuve que hacer el proyecto sin ayuda.']] }
+};
+const OTRA_TOOLS = {
+  'Sinónimos': ['cansado → agotado, exhausto', 'feliz → contento, alegre', 'grande → enorme', 'rico → delicioso', 'difícil → complicado', 'bonito → lindo, hermoso', 'mucho → bastante', 'querer → tener ganas de, me gustaría', 'necesitar → tener que, deber', 'empezar → comenzar'],
+  'Conectores': ['porque → pues, ya que, como (al inicio)', 'pero → sin embargo, aunque', 'entonces → por eso, así que', 'también → además', 'cuando → mientras'],
+  'Trucos': ['Negativo ↔ positivo: «no es fácil» = «es difícil»', 'Cambia el orden: «Como…, …»', 'Di lo contrario: «es más alta que yo» = «soy más bajo que ella»', 'Usa una exclamación: «¡Qué…!»', 'Cambia «yo» por «nosotros» o por otra persona']
+};
+tool('otramanera', 'assess', '🔄', 'Dilo de otra manera', 'Say it another way (paraphrasing)', 'Una oración, muchas maneras de decirla. La clase propone versiones nuevas con la caja de herramientas; tú las escribes. Los ejemplos se revelan al final.', el => {
+  const L = flLevel(), lvl = OTRA[L.lvl], o = ses('otra', { cur: null, vers: [], show: false, tools: true });
+  if (!o.cur || !lvl.list.includes(o.cur)) { o.cur = pick(lvl.list); o.vers = []; o.show = false; }
+  el.innerHTML += `<div class="row">${flLevelSelect('otL', L.lvl)}<label class="chk"><input type="checkbox" id="otT" ${o.tools ? 'checked' : ''}> Mostrar la caja de herramientas</label></div>
+    <div class="ot-box" id="otBox">
+      <div class="fl-sub">${h(lvl.how)}</div>
+      <div class="ot-orig">«${h(o.cur[0])}»</div>
+      <div class="ot-vers">${o.vers.map((v, i) => `<div class="ot-v"><span>${i + 1}</span>${h(v)}<button class="x" data-del="${i}" title="Quitar">✕</button></div>`).join('')}</div>
+      <div class="ot-add"><input class="field" id="otIn" placeholder="Escribe la versión de un estudiante y presiona Enter…"><button class="btn gold" id="otAdd">＋</button></div>
+      ${o.show ? `<div class="ot-ex"><b>💡 Otras maneras:</b> «${h(o.cur[1])}» · «${h(o.cur[2])}»</div>` : ''}
+      ${o.tools ? `<div class="ot-tools">${Object.entries(OTRA_TOOLS).map(([k, v]) => `<div><b>${k}</b>${v.map(x => `<span>${h(x)}</span>`).join('')}</div>`).join('')}</div>` : ''}
+    </div>
+    <div class="row" style="justify-content:center;margin-top:12px"><button class="btn gold xl" id="otNew" data-primary>🎲 Otra oración</button><button class="btn" id="otShow">${o.show ? '🙈 Esconder ejemplos' : '👀 Ver ejemplos'}</button><button class="btn sm" id="otSay">🔈 Escuchar</button><button class="btn sm ghost" id="otFull">⛶</button></div>
+    <p class="muted" style="margin-top:10px;font-size:.88rem">💡 Idea CI: modela tú la primera versión en voz alta, pide ideas a toda la clase (no a uno solo), y acepta cualquier versión que comunique lo mismo, aunque tenga errores. Revela los ejemplos solo al final.</p>`;
+  const $$ = s => el.querySelector(s);
+  $$('#otL').onchange = e => { L.lvl = e.target.value; save(); o.cur = null; render(); };
+  $$('#otT').onchange = e => { o.tools = e.target.checked; render(); };
+  const add = () => { const v = $$('#otIn').value.trim(); if (!v) return; o.vers.push(v); ding(); if (o.vers.length % 3 === 0) confetti(['🔄', '⭐', '✨']); render(); setTimeout(() => { const i = document.getElementById('otIn'); if (i) i.focus(); }, 0); };
+  $$('#otIn').onkeydown = e => { e.stopPropagation(); if (e.key === 'Enter') { e.preventDefault(); add(); } };
+  $$('#otAdd').onclick = add;
+  el.querySelectorAll('[data-del]').forEach(b => b.onclick = () => { o.vers.splice(+b.dataset.del, 1); render(); });
+  $$('#otNew').onclick = () => { let n; do { n = pick(lvl.list); } while (n === o.cur); o.cur = n; o.vers = []; o.show = false; ding(); render(); };
+  $$('#otShow').onclick = () => { o.show = !o.show; render(); };
+  $$('#otSay').onclick = () => speakEs(o.cur[0]);
+  $$('#otFull').onclick = () => fullBox($$('#otBox'));
+});
+
+/* =========================================================
+   🗺️ CAMINOS DE HISTORIAS (tablero 3D) — El camino de Chica
+   ========================================================= */
+const SP_CAST = {
+  chica: { n: 'Chica', art: 'img:chica', s: 1.25 }, bruno: { n: 'Bruno', art: '🐗', s: 1 }, teo: { n: 'Teo', art: '🐹', s: .95 },
+  iggy: { n: 'Iggy', art: '🦎', s: .95 }, arlo: { n: 'Arlo', art: '🦝', s: 1 }, mora: { n: 'Mora', art: 'img:mora', s: .7, fly: true },
+  nico: { n: 'Nico', art: '🐹<small class="badge">🧺</small>', s: .95 }, donpico: { n: 'Don Pico', art: 'img:donpico', s: 1.1 }
+};
+const CAMINOS = {
+  ceiba: {
+    t: 'El camino a la Gran Ceiba', lvl: 'Elemental · Nivel A / A1', N: 12,
+    path: [[1, 10], [2, 10], [3, 10], [3, 9], [3, 8], [4, 8], [5, 8], [5, 7], [5, 6], [4, 6], [3, 6], [2, 6], [2, 5], [2, 4], [3, 4], [4, 4], [5, 4], [6, 4], [7, 4], [7, 5], [7, 6], [8, 6], [9, 6], [9, 5], [9, 4], [9, 3], [9, 2], [10, 2], [10, 1]],
+    river: { y: 7, bridge: 5 },
+    decor: [[0, 11, '🌳', 1.5], [0, 9, '🌴', 1.3], [2, 11, '🌿', .8], [1, 8, '🌳', 1.3], [6, 10, '🌴', 1.4], [8, 9, '🌳', 1.4], [10, 9, '🌴', 1.3], [11, 11, '🌳', 1.2], [7, 9, '🌺', .7], [0, 5, '🌳', 1.3], [1, 6, '🌳', 1.5], [1, 6.05, '🥭', .6, 60],
+      [0, 3, '🌴', 1.3], [1, 1, '🌳', 1.4], [3, 3, '🪨', 1.1], [4, 2, '🌴', 1.2], [6, 2.6, '⛰️', 1.9], [8, 1, '🌳', 1.3], [5, 5, '🌿', .8], [8, 5.2, '🌺', .7], [8.4, 4.6, '🌼', .7], [7.6, 5.6, '🌸', .7],
+      [11, 4, '🌴', 1.3], [11, 7.9, '🌳', 1.2], [11, 0.4, '🌳', 3.2], [3, 1, '🦋', .5, 40]],
+    stops: [
+      { at: 0, who: null, place: 'la casa de Chica', lines: [['chica', '¡Hola! Me llamo Chica. Soy una mona araña.'], ['chica', 'Hoy voy a la Gran Ceiba. ¡Vamos!']], q: '¿Cómo se llama la mona? ¿Adónde va Chica?' },
+      { at: 6, who: 'bruno', home: [6, 8.6], place: 'el río', lines: [['bruno', '¡Hola, Chica! ¿Adónde vas?'], ['chica', 'Voy a la Gran Ceiba. ¿Quieres venir?'], ['bruno', '¡Sí! Vamos juntos.']], q: '¿Quién está en el río? ¿Bruno o Teo? ¿Bruno quiere ir?' },
+      { at: 11, who: 'teo', home: [1.4, 5.2], place: 'el árbol de mangos', lines: [['teo', '¡Mmm! Hay mangos. ¡Tengo hambre!'], ['chica', 'Teo, vamos a la Gran Ceiba.'], ['teo', '¡Sí! ¡Y llevo un mango!']], q: '¿Qué hay en el árbol? ¿Quién tiene hambre?' },
+      { at: 14, who: 'iggy', home: [3, 3.1], lift: 26, place: 'la roca', lines: [['iggy', 'Estoy en la roca. ¡Me gusta el sol!'], ['chica', 'Iggy, ¿quieres venir a la Gran Ceiba?'], ['iggy', '¡Claro que sí!']], q: '¿Dónde está Iggy? ¿Iggy es verde o azul?' },
+      { at: 17, who: 'arlo', home: [6.4, 3.3], place: 'la cueva', lines: [['arlo', 'Miren esta piedra. ¡Es muy bonita!'], ['chica', '¡Qué bonita, Arlo! ¿Vienes con nosotros?'], ['arlo', '¡Sí! Llevo mi piedra.']], q: '¿Qué tiene Arlo? ¿Dónde está Arlo?' },
+      { at: 21, who: 'mora', home: [8, 5], lift: 40, place: 'las flores', lines: [['mora', '¡Hola, amigos! Las flores son de muchos colores.'], ['chica', '¡Hola, Mora! Vamos a la Gran Ceiba.'], ['mora', '¡Yo vuelo con ustedes!']], q: '¿De qué color es Mora? ¿De qué color son las flores?' },
+      { at: 24, who: 'nico', home: [10.3, 4.2], place: 'el camino', lines: [['nico', '¿Quieren fruta? Tengo una canasta.'], ['teo', '¡Yo quiero fruta!'], ['nico', '¡Vamos todos a la Gran Ceiba!']], q: '¿Qué tiene Nico? ¿Quién quiere fruta?' },
+      { at: 28, who: 'donpico', home: [11, 1.3], lift: 60, stays: true, place: 'la Gran Ceiba', lines: [['donpico', '¡Bienvenidos, amigos! Esta es la Gran Ceiba.'], ['chica', '¡Llegamos! Estamos todos juntos.'], ['donpico', 'Juntos, ustedes son los guardianes de Chiquibul.']], q: '¿Quién vive en la Gran Ceiba? ¿Cuántos amigos llegaron?' }
+    ]
+  }
+};
+const SP_T = 64;
+const spArt = a => a.startsWith('img:') ? IMG(a.slice(4)) : a;
+tool('camino', 'assess', '🗺️', 'Caminos de historias', '3D story path board', 'Un tablero 3D: tú tocas ▶ y Chica camina por Chiquibul. En cada parada un amigo habla (🔈) y se une al camino. Abajo tienes una pregunta para hacer story asking con la clase.', el => {
+  const C = CAMINOS.ceiba, N = C.N;
+  const o = ses('camino', () => ({ p: 0, stop: 0, line: -1, joined: [], voice: true, showQ: false, busy: false, done: false }));
+  const isRiver = (x, y) => y === C.river.y && x !== C.river.bridge;
+  const onPath = new Map(C.path.map(([x, y], i) => [x + ',' + y, i]));
+  let tiles = '';
+  for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+    const k = x + ',' + y, cls = isRiver(x, y) ? 'water' : (y === C.river.y && x === C.river.bridge) ? 'bridge' : onPath.has(k) ? 'path' : 'grass' + ((x + y) % 2);
+    const stopHere = C.stops.findIndex(s => s.at === onPath.get(k));
+    tiles += `<div class="sp-tile ${cls} ${stopHere >= 0 ? 'stop' : ''}" style="left:${x * SP_T}px;top:${y * SP_T}px">${stopHere > 0 ? `<i>${stopHere}</i>` : ''}</div>`;
+  }
+  const sprite = (id, x, y, html, s, lift = 0, extra = '') => `<div class="sp-sprite ${extra}" data-id="${id}" style="left:${x * SP_T + SP_T / 2}px;top:${y * SP_T + SP_T / 2}px;--s:${s};--lift:${lift}px"><div class="sp-up"><div class="sp-say"></div><div class="sp-art">${html}</div></div></div>`;
+  const decor = C.decor.map(([x, y, e, s, lift], i) => sprite('d' + i, x, y, e, s, lift || 0, 'decor')).join('');
+  const cast = ['chica', ...C.stops.filter(s => s.who).map(s => s.who)].map(id => { const st = C.stops.find(s => s.who === id), c = SP_CAST[id], hm = st ? st.home : C.path[0];
+    return sprite(id, hm[0], hm[1], spArt(c.art) + `<span class="sp-name">${h(c.n)}</span>`, c.s, st && st.lift || 0, 'char' + (c.fly ? ' fly' : '')); }).join('');
+  const cur = C.stops[o.stop], ln = o.line >= 0 && cur ? cur.lines[o.line] : null;
+  el.innerHTML += `<div class="sp-wrap" id="spWrap">
+      <div class="sp-stage" id="spStage"><div class="sp-scaler" id="spScale"><div class="sp-board" style="width:${N * SP_T}px;height:${N * SP_T}px">
+        <div class="sp-side s" style="width:${N * SP_T}px;top:${N * SP_T}px"></div><div class="sp-side e" style="height:${N * SP_T}px;left:${N * SP_T}px"></div>
+        ${tiles}${decor}${cast}</div></div>
+        <div class="sp-title">🗺️ ${h(C.t)}</div><div class="sp-dots">${C.stops.map((s, i) => `<span class="${i < o.stop || (i === o.stop && o.line >= 0) ? 'on' : ''}" title="${h(s.place)}">${i === 0 ? '🏠' : i}</span>`).join('')}</div>
+      </div>
+      <div class="sp-cap"><div class="sp-line" id="spLine">${o.done ? '🎉 ¡Fin! Los guardianes de Chiquibul están juntos.' : ln ? `<b>${h(SP_CAST[ln[0]].n)}:</b> ${h(ln[1])}` : o.stop === 0 && o.line < 0 ? 'Toca ▶ para empezar la historia.' : '…'}</div>
+        <div class="sp-q ${o.showQ ? '' : 'hidden'}" id="spQt">❓ ${cur ? h(cur.q) : ''}</div></div>
+    </div>
+    <div class="row" style="justify-content:center;margin-top:12px"><button class="btn gold xl" id="spGo" data-primary>${o.done ? '↺ Otra vez' : '▶ Siguiente'}</button>
+      <button class="btn" id="spQ">${o.showQ ? '🙈 Esconder pregunta' : '❓ Pregunta para la clase'}</button><button class="btn" id="spSay">🔈 Repetir</button>
+      <label class="chk"><input type="checkbox" id="spV" ${o.voice ? 'checked' : ''}> Voz</label><button class="btn sm ghost" id="spReset">↺ Empezar de nuevo</button><button class="btn sm" id="spFull">⛶ Pantalla completa</button></div>
+    <p class="muted" style="margin-top:8px;font-size:.88rem">${h(C.lvl)} · 💡 En cada parada: pausa, haz la pregunta, recicla («¿Bruno está en el río o en la cueva?») y deja que la clase prediga quién sigue.</p>`;
+  const $$ = s => el.querySelector(s), stage = $$('#spStage'), scaler = $$('#spScale');
+  const fit = () => { const r = stage.getBoundingClientRect(); if (!r.width) return; scaler.style.transform = `scale(${Math.min(r.width / 1160, r.height / 700)})`; };
+  const ro = new ResizeObserver(fit); ro.observe(stage); fit();
+  const spr = id => el.querySelector(`.sp-sprite[data-id="${id}"]`);
+  const place = (id, x, y) => { const s = spr(id); if (s) { s.style.left = (x * SP_T + SP_T / 2) + 'px'; s.style.top = (y * SP_T + SP_T / 2) + 'px'; } };
+  function layout() {
+    const [px, py] = C.path[o.p]; place('chica', px, py);
+    o.joined.forEach((id, k) => { const [x, y] = C.path[Math.max(0, o.p - 1 - k)]; place(id, x + (k % 2 ? .12 : -.12), y + .1); const s = spr(id); if (s) s.style.setProperty('--lift', SP_CAST[id].fly ? '34px' : '0px'); });
+  }
+  function say(id, text) {
+    el.querySelectorAll('.sp-say').forEach(b => { b.classList.remove('on'); b.textContent = ''; });
+    const s = spr(id); if (!s) return; const b = s.querySelector('.sp-say'); b.textContent = text; void b.offsetWidth; b.classList.add('on');
+    s.classList.remove('talk'); void s.offsetWidth; s.classList.add('talk');
+    if (o.voice) speakEs(text, .85);
+  }
+  layout();
+  if (ln) { const b = spr(ln[0]) && spr(ln[0]).querySelector('.sp-say'); if (b) { b.textContent = ln[1]; b.classList.add('on'); } }
+  const wait = ms => new Promise(r => setTimeout(r, ms));
+  async function walkTo(target) {
+    o.busy = true; $$('#spGo').disabled = true;
+    while (o.p < target) { o.p++; layout(); const c = spr('chica'); c.classList.remove('hop'); void c.offsetWidth; c.classList.add('hop'); tick(); await wait(330); if (!el.isConnected) return; }
+    o.busy = false; $$('#spGo').disabled = false;
+  }
+  async function next() {
+    if (o.busy) return; ac();
+    if (o.done) { Object.assign(o, { p: 0, stop: 0, line: -1, joined: [], done: false }); render(); return; }
+    const st = C.stops[o.stop];
+    if (o.line + 1 < st.lines.length) {
+      if (o.line < 0 && o.p < st.at) { el.querySelectorAll('.sp-say').forEach(b => b.classList.remove('on')); $$('#spLine').textContent = '🚶 …'; await walkTo(st.at); if (!el.isConnected) return; }
+      o.line++; const l = st.lines[o.line]; say(l[0], l[1]); $$('#spLine').innerHTML = `<b>${h(SP_CAST[l[0]].n)}:</b> ${h(l[1])}`;
+      el.querySelectorAll('.sp-dots span').forEach((d, i) => d.classList.toggle('on', i <= o.stop));
+      if (o.stop === C.stops.length - 1 && o.line === st.lines.length - 1) { o.done = true; setTimeout(() => { if (!el.isConnected) return; fanfare(); confetti(['🌳', '⭐', '🦋', '🎉']); $$('#spGo').textContent = '↺ Otra vez'; }, 1800); }
+      return;
+    }
+    if (st.who && !st.stays && !o.joined.includes(st.who)) o.joined.push(st.who);
+    o.stop++; o.line = -1; $$('#spQt').textContent = '❓ ' + C.stops[o.stop].q; next();
+  }
+  $$('#spGo').onclick = next;
+  $$('#spQ').onclick = () => { o.showQ = !o.showQ; $$('#spQt').classList.toggle('hidden', !o.showQ); $$('#spQ').textContent = o.showQ ? '🙈 Esconder pregunta' : '❓ Pregunta para la clase'; };
+  $$('#spSay').onclick = () => { const s = C.stops[o.stop], l = s && o.line >= 0 ? s.lines[o.line] : null; if (l) say(l[0], l[1]); };
+  $$('#spV').onchange = e => { o.voice = e.target.checked; };
+  $$('#spReset').onclick = () => { Object.assign(o, { p: 0, stop: 0, line: -1, joined: [], done: false, busy: false }); try { speechSynthesis.cancel(); } catch (e) {} render(); };
+  $$('#spFull').onclick = () => fullBox($$('#spWrap'));
+  return () => { ro.disconnect(); o.busy = false; try { speechSynthesis.cancel(); } catch (e) {} };
+});
+
 /* ---------- tool order in the menu ---------- */
-const TOOL_ORDER = ['links', 'pizarra', 'tareas', 'qr', 'prof', 'rubricas', 'check', 'exit', 'resultados', 'practica', 'ahorcado', 'timer', 'safari', 'sonidos', 'check', 'wheel', 'picker', 'cold', 'groups', 'pairs', 'seats', 'part', 'dados', 'exit',
+const TOOL_ORDER = ['links', 'pizarra', 'tareas', 'qr', 'prof', 'rubricas', 'check', 'exit', 'resultados', 'practica', 'ahorcado', 'camino', 'minuto', 'conexiones', 'otramanera', 'timer', 'safari', 'sonidos', 'check', 'wheel', 'picker', 'cold', 'groups', 'pairs', 'seats', 'part', 'dados', 'exit',
   'espanol', 'points', 'houses', 'semana', 'mystery', 'stickers', 'tokens', 'levels', 'reward',
   'tpr', 'story', 'vocab', 'character', 'problem', 'location', 'cubes', 'qwords', 'verbs', 'tenses', 'convo', 'circ'];
 TOOLS.sort((a, b) => { const ia = TOOL_ORDER.indexOf(a.id), ib = TOOL_ORDER.indexOf(b.id); return (ia < 0 ? 999 : ia) - (ib < 0 ? 999 : ib); });
