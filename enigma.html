@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El enigma de Chiquibul</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --jungle:#0f3d2e; --jungle2:#16543f; --leaf:#2f8f5b; --moss:#5fb36b; --gold:#f2c14e; --gold2:#e09f1f;
+  --cream:#fff8e7; --ink:#1d2b24; --river:#4fb3d9; --wrong:#d9534f; --ok:#2e9e5b;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--jungle);color:var(--ink);font-family:Nunito,system-ui,sans-serif;overflow:hidden;-webkit-tap-highlight-color:transparent}
+button{font:inherit;cursor:pointer}
+.hide{display:none!important}
+h1,h2,h3,.disp{font-family:'Baloo 2',Nunito,sans-serif;line-height:1.05;margin:0}
+
+/* ---------- inicio ---------- */
+#start{position:fixed;inset:0;overflow:auto;display:flex;align-items:center;justify-content:center;padding:20px 16px;
+  background:radial-gradient(circle at 50% 20%,#1f6b4d 0,#0f3d2e 60%,#0a2a20 100%)}
+.st-card{width:min(640px,100%);background:var(--cream);border-radius:28px;padding:26px 24px 22px;text-align:center;box-shadow:0 18px 50px #0007;border:5px solid var(--gold)}
+.st-logo{width:120px;height:120px;margin:-82px auto 4px;background:var(--jungle);border-radius:50%;border:5px solid var(--gold);display:grid;place-items:center;box-shadow:0 8px 24px #0006}
+.st-logo svg{width:84px;height:84px}
+.st-card h1{font-size:clamp(2rem,6vw,2.9rem);color:var(--jungle)}
+.st-sub{margin:6px 0 18px;font-size:1.08rem;color:#3d5a4b}
+.st-lbl{display:block;font-weight:800;margin:14px 0 6px;text-align:left;color:var(--jungle)}
+#team{width:100%;font-size:1.3rem;padding:12px 16px;border-radius:16px;border:3px solid #cfe3d2;background:#fff;font-weight:800;color:var(--jungle)}
+#team:focus{outline:none;border-color:var(--gold2)}
+.lv-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.lv{border:3px solid #cfe3d2;background:#fff;border-radius:20px;padding:14px 10px;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--jungle);transition:.15s}
+.lv b{font-family:'Baloo 2';font-size:1.25rem}
+.lv span{font-size:.92rem;color:#4a6656}
+.lv .big{font-size:2.4rem}
+.lv[aria-pressed=true]{border-color:var(--gold2);background:#fff3cf;transform:translateY(-2px);box-shadow:0 6px 0 var(--gold2)}
+.btn{border:0;border-radius:18px;padding:14px 22px;font-weight:800;font-size:1.15rem;background:var(--gold);color:var(--jungle);box-shadow:0 5px 0 var(--gold2);transition:transform .1s}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 var(--gold2)}
+.btn.green{background:var(--moss);color:#fff;box-shadow:0 5px 0 #3a8a4a}
+.btn.ghost{background:#e9f1ea;box-shadow:0 5px 0 #c5d8c8}
+.btn.wide{width:100%;margin-top:18px;font-size:1.35rem}
+#resume{margin-top:12px}
+.draft{background:#fff1c2;border:2px dashed var(--gold2);border-radius:12px;padding:6px 10px;font-size:.9rem;margin-bottom:10px}
+
+/* ---------- juego ---------- */
+#game{position:fixed;inset:0;display:flex;flex-direction:column}
+.top{display:flex;align-items:center;gap:10px;padding:8px 12px;background:#0a2a20;color:var(--cream);min-height:64px}
+.top .tm{font-family:'Baloo 2';font-size:clamp(1rem,2.6vw,1.45rem);font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1}
+.top .tm small{display:block;font-family:Nunito;font-size:.72em;font-weight:700;color:#a9d3b5}
+.prog{display:flex;align-items:center;gap:8px;background:#ffffff14;border-radius:999px;padding:4px 12px 4px 4px}
+.prog svg{width:52px;height:52px;flex:none}
+.prog b{font-family:'Baloo 2';font-size:1.3rem;color:var(--gold)}
+.ib{width:46px;height:46px;border-radius:14px;border:0;background:#ffffff1c;color:#fff;font-size:1.35rem;flex:none}
+.ib:active{background:#ffffff33}
+
+.clue-bar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--cream);border-bottom:4px solid var(--gold);font-weight:800;font-size:clamp(1rem,2.4vw,1.35rem);color:var(--jungle)}
+.clue-bar .tag{background:var(--jungle);color:var(--gold);border-radius:10px;padding:2px 10px;font-family:'Baloo 2';white-space:nowrap}
+.clue-bar .tx{flex:1}
+.say{border:0;background:var(--gold);color:var(--jungle);border-radius:12px;width:44px;height:44px;font-size:1.3rem;flex:none;box-shadow:0 3px 0 var(--gold2)}
+
+.mapwrap{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:8px;position:relative}
+#map{position:relative;aspect-ratio:1000/620;width:min(100%,calc((100vh - 140px) * 1000 / 620));max-height:100%;border-radius:22px;overflow:hidden;box-shadow:0 10px 40px #0008;border:4px solid #0a2a20}
+#map svg.bg{position:absolute;inset:0;width:100%;height:100%}
+.spot{position:absolute;transform:translate(-50%,-50%);border:0;background:none;padding:0;display:flex;flex-direction:column;align-items:center;gap:2px;z-index:2}
+.spot .ic{width:clamp(44px,7.4vw,78px);height:clamp(44px,7.4vw,78px);border-radius:50%;background:#fff8e7ee;border:4px solid #fff;display:grid;place-items:center;font-size:clamp(1.5rem,3.9vw,2.6rem);box-shadow:0 5px 0 #0004,0 0 0 0 #f2c14e;transition:transform .15s}
+.spot:hover .ic{transform:scale(1.08)}
+.spot .nm{background:#0a2a20d9;color:#fff;border-radius:10px;padding:1px 8px;font-weight:800;font-size:clamp(.62rem,1.45vw,.95rem);white-space:nowrap}
+.spot.done .ic{border-color:var(--gold);background:#fff3cf}
+.spot.done .ic::after{content:'✓';position:absolute;transform:translate(70%,-70%);background:var(--ok);color:#fff;border-radius:50%;width:24px;height:24px;font-size:15px;display:grid;place-items:center;font-weight:900}
+.spot.ceiba .ic{width:clamp(58px,10vw,104px);height:clamp(58px,10vw,104px);font-size:clamp(2rem,5.4vw,3.6rem);background:#e8f5e2ee}
+.spot.shake .ic{animation:shake .45s}
+.spot.target-hint .ic{animation:glow 1.2s infinite}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-9px)}40%{transform:translateX(9px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+@keyframes glow{0%,100%{box-shadow:0 5px 0 #0004,0 0 0 0 #f2c14eaa}50%{box-shadow:0 5px 0 #0004,0 0 0 14px #f2c14e00}}
+.nope{position:absolute;transform:translate(-50%,-140%);background:#fff;border-radius:14px;padding:6px 12px;font-weight:800;color:var(--wrong);white-space:nowrap;z-index:5;box-shadow:0 4px 14px #0005;animation:pop .2s;pointer-events:none;font-size:clamp(.8rem,1.8vw,1.1rem)}
+#token{position:absolute;transform:translate(-8%,-100%);z-index:4;transition:left 1.3s ease-in-out,top 1.3s ease-in-out;pointer-events:none;width:clamp(40px,6.5vw,70px)}
+#token img{width:100%;display:block;filter:drop-shadow(0 4px 3px #0006)}
+#token.walk img{animation:hop .33s infinite alternate}
+@keyframes hop{to{transform:translateY(-14%)}}
+
+/* ---------- tarjeta (diálogo / pregunta / premio) ---------- */
+#sheet{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;padding:14px;background:#0a2a2099;backdrop-filter:blur(2px)}
+.card{width:min(780px,100%);max-height:100%;overflow:auto;background:var(--cream);border-radius:26px;border:5px solid var(--gold);box-shadow:0 20px 60px #0009;padding:20px 22px 22px;animation:pop .25s}
+@keyframes pop{from{transform:scale(.85);opacity:0}}
+.who{display:flex;gap:16px;align-items:flex-end}
+.av{width:clamp(84px,16vw,140px);height:clamp(84px,16vw,140px);flex:none;display:grid;place-items:end center;position:relative}
+.av img{max-width:100%;max-height:100%;filter:drop-shadow(0 6px 4px #0004);animation:bob 2.4s ease-in-out infinite}
+.av .em{font-size:clamp(4rem,12vw,6.6rem);line-height:1;animation:bob 2.4s ease-in-out infinite}
+.av .badge{position:absolute;right:2px;bottom:4px;font-size:2.1rem}
+@keyframes bob{50%{transform:translateY(-6px)}}
+.bub{flex:1;background:#fff;border-radius:22px 22px 22px 4px;padding:14px 16px;border:3px solid #e6dcc2;position:relative}
+.bub .nm{font-family:'Baloo 2';color:var(--leaf);font-size:1.1rem}
+.bub p{margin:4px 0 0;font-size:clamp(1.15rem,2.8vw,1.6rem);font-weight:800;line-height:1.3;color:var(--jungle)}
+.place{display:inline-flex;align-items:center;gap:6px;background:var(--jungle);color:var(--gold);border-radius:999px;padding:3px 12px;font-weight:800;margin-bottom:10px;font-size:.95rem}
+.q{font-size:clamp(1.25rem,3.2vw,1.85rem);font-weight:800;color:var(--jungle);margin:4px 0 14px;display:flex;gap:10px;align-items:flex-start}
+.q span{flex:1}
+.opts{display:grid;gap:10px}
+.opt{border:3px solid #d8e6d9;background:#fff;border-radius:18px;padding:12px 16px;text-align:left;font-weight:800;font-size:clamp(1.05rem,2.6vw,1.4rem);color:var(--jungle);display:flex;align-items:center;gap:12px;box-shadow:0 4px 0 #d8e6d9;transition:transform .1s}
+.opt:active{transform:translateY(2px)}
+.opt .k{width:34px;height:34px;flex:none;border-radius:10px;background:#e9f1ea;display:grid;place-items:center;font-family:'Baloo 2'}
+.opt.no{border-color:var(--wrong);background:#fde8e7;color:#a33;opacity:.6;animation:shake .4s;pointer-events:none}
+.opt.yes{border-color:var(--ok);background:#e2f6e8;box-shadow:0 4px 0 var(--ok)}
+.lvA .opts{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.lvA .opt{flex-direction:column;text-align:center;font-size:clamp(1.05rem,2.5vw,1.35rem);padding:14px 8px}
+.lvA .opt .em{font-size:clamp(2.6rem,7vw,3.8rem);line-height:1}
+.lvA .opt .k{display:none}
+.fb{min-height:1.6em;margin-top:12px;font-weight:800;font-size:1.2rem;text-align:center}
+.fb.bad{color:var(--wrong)} .fb.good{color:var(--ok)}
+.row{display:flex;gap:10px;justify-content:flex-end;align-items:center;margin-top:16px;flex-wrap:wrap}
+.qn{font-weight:800;color:#6b8577;margin-right:auto}
+.reward{text-align:center}
+.reward .bigsp{width:150px;height:150px;margin:0 auto}
+.reward h2{font-size:clamp(1.6rem,4.4vw,2.4rem);color:var(--jungle)}
+.cluebox{margin-top:16px;background:#fff;border:3px dashed var(--gold2);border-radius:20px;padding:14px 16px;text-align:left;display:flex;gap:12px;align-items:center}
+.cluebox .t{font-family:'Baloo 2';color:var(--gold2);font-size:1.1rem}
+.cluebox p{margin:2px 0 0;font-weight:800;font-size:clamp(1.15rem,2.8vw,1.55rem);color:var(--jungle)}
+
+/* final */
+.cert{text-align:center;border:4px double var(--gold2);border-radius:20px;padding:16px;margin-top:16px;background:#fffdf5}
+.cert .team{font-family:'Baloo 2';font-size:clamp(1.6rem,5vw,2.4rem);color:var(--jungle)}
+.code{display:inline-block;margin-top:8px;background:var(--jungle);color:var(--gold);font-family:'Baloo 2';font-size:clamp(1.5rem,4.6vw,2.2rem);letter-spacing:.06em;border-radius:14px;padding:4px 18px}
+.spin{animation:spin 8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.glow{filter:drop-shadow(0 0 10px #f2c14e)}
+.conf{position:fixed;top:-20px;z-index:40;font-size:1.6rem;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+@media (max-width:560px){ .who{flex-direction:column;align-items:center} .bub{border-radius:22px} .top{gap:6px;padding:6px 8px} .prog svg{width:42px;height:42px} .ib{width:40px;height:40px} }
+@media print{ body *{visibility:hidden} .cert,.cert *{visibility:visible} .cert{position:absolute;inset:20px} }
+</style>
+</head>
+<body>
+
+<!-- INICIO -->
+<section id="start">
+  <div class="st-card">
+    <div class="st-logo"><svg viewBox="-50 -50 100 100" id="logoSp"></svg></div>
+    <div id="draftNote"></div>
+    <h1 id="stTitle">El enigma de Chiquibul</h1>
+    <p class="st-sub">Contesten preguntas, sigan las pistas y encuentren los <b>pedazos de la espiral</b>. 🌀</p>
+    <label class="st-lbl" for="team">✏️ Nombre del equipo</label>
+    <input id="team" maxlength="28" placeholder="ej. Los Jaguares" autocomplete="off">
+    <span class="st-lbl">🧭 ¿Quiénes juegan?</span>
+    <div class="lv-row">
+      <button class="lv" data-lv="A" aria-pressed="false"><span class="big">🐣</span><b>Pequeños exploradores</b><span>K–2 · con dibujos y audio</span></button>
+      <button class="lv" data-lv="A1" aria-pressed="false"><span class="big">🧭</span><b>Exploradores</b><span>3.º–5.º · más lectura</span></button>
+    </div>
+    <button class="btn wide" id="go">¡A la selva! 🌿</button>
+    <button class="btn ghost hide" id="resume"></button>
+  </div>
+</section>
+
+<!-- JUEGO -->
+<section id="game" class="hide">
+  <div class="top">
+    <button class="ib" id="home" title="Inicio">🏠</button>
+    <div class="tm" id="tmName"></div>
+    <div class="prog"><svg viewBox="-50 -50 100 100" id="hdSp"></svg><b id="hdN">0/8</b></div>
+    <button class="ib" id="snd" title="Sonido">🔊</button>
+  </div>
+  <div class="clue-bar" id="clueBar"><span class="tag">🔎 Pista</span><span class="tx" id="clueTx"></span><button class="say" id="clueSay" title="Escuchar">🔈</button></div>
+  <div class="mapwrap"><div id="map"></div></div>
+</section>
+
+<div id="sheet" class="hide"><div class="card" id="card"></div></div>
+
+<script src="enigma-contenido.js"></script>
+<script>
+'use strict';
+const $ = s => document.querySelector(s);
+const h = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const PKEY = 'enigma-progreso-v1', DKEY = 'cdc-enigma-draft';
+const CAST = window.ENIGMA_CAST, SPOTS = window.ENIGMA_SPOTS;
+let D = null, P = null, muted = false, usingDraft = false;
+
+/* ---------- contenido: borrador de la maestra > data/enigma.json > por defecto ---------- */
+async function loadContent() {
+  try { const d = JSON.parse(localStorage.getItem(DKEY) || 'null'); if (d && d.data && d.data.stations) { usingDraft = true; return d.data; } } catch (e) {}
+  try { const r = await fetch('data/enigma.json', { cache: 'no-store' }); if (r.ok) { const j = await r.json(); if (j && j.stations && j.stations.length) return j; } } catch (e) {}
+  return window.ENIGMA_DEFAULT;
+}
+function sig(d) { let s = JSON.stringify(d), x = 0; for (let i = 0; i < s.length; i++) x = (x * 31 + s.charCodeAt(i)) | 0; return x; }
+
+/* ---------- sonido y voz ---------- */
+let AC = null;
+function ac() { if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === 'suspended') AC.resume(); return AC; }
+function tone(f, t = 0, d = .18, type = 'sine', v = .18) { if (muted) return; try { const a = ac(), o = a.createOscillator(), g = a.createGain(), s = a.currentTime + t; o.type = type; o.frequency.setValueAtTime(f, s); g.gain.setValueAtTime(0, s); g.gain.linearRampToValueAtTime(v, s + .02); g.gain.exponentialRampToValueAtTime(.001, s + d); o.connect(g).connect(a.destination); o.start(s); o.stop(s + d + .05); } catch (e) {} }
+const sfx = {
+  ok() { tone(660, 0, .15, 'triangle'); tone(880, .1, .22, 'triangle'); },
+  no() { tone(240, 0, .18, 'sine', .14); tone(200, .12, .22, 'sine', .12); },
+  step() { tone(520, 0, .07, 'triangle', .07); },
+  piece() { [523, 659, 784, 1047].forEach((f, i) => tone(f, i * .09, .3, 'triangle', .16)); },
+  win() { [523, 659, 784, 659, 784, 1047, 1319].forEach((f, i) => tone(f, i * .13, .4, 'triangle', .17)); }
+};
+const clean = t => String(t || '').replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}\u{200D}\u{2B00}-\u{2BFF}]/gu, '').replace(/[«»]/g, '').replace(/\s+/g, ' ').trim();
+function speak(t, rate) {
+  if (muted || !('speechSynthesis' in window)) return;
+  try {
+    const u = new SpeechSynthesisUtterance(clean(t)); u.lang = 'es-MX'; u.rate = rate || (P && P.lvl === 'A' ? .82 : .92);
+    const vs = speechSynthesis.getVoices(); const v = vs.find(v => /^es[-_](MX|US|419)/i.test(v.lang)) || vs.find(v => /^es/i.test(v.lang)); if (v) u.voice = v;
+    speechSynthesis.cancel(); speechSynthesis.speak(u);
+  } catch (e) {}
+}
+const autoRead = () => P && P.lvl === 'A';
+
+/* ---------- espiral ---------- */
+function spiralSvg(n, got, opt = {}) {
+  const turns = 3.2, R = 44, segs = [], total = turns * 2 * Math.PI, w = opt.w || 7;
+  for (let k = 0; k < n; k++) {
+    const a0 = total * k / n, a1 = total * (k + 1) / n, pts = [];
+    for (let i = 0; i <= 24; i++) { const a = a0 + (a1 - a0) * i / 24, r = 3 + (R - 3) * a / total; pts.push((r * Math.cos(a - Math.PI / 2)).toFixed(1) + ',' + (r * Math.sin(a - Math.PI / 2)).toFixed(1)); }
+    const on = k < got;
+    segs.push(`<polyline points="${pts.join(' ')}" fill="none" stroke="${on ? '#f2c14e' : '#ffffff'}" stroke-opacity="${on ? 1 : (opt.dim || .22)}" stroke-width="${w}" stroke-linecap="round"${on && k === got - 1 && opt.pulse ? ' class="glow"' : ''}/>`);
+  }
+  return segs.join('');
+}
+
+/* ---------- mapa ---------- */
+function mapBg() {
+  const deco = [[6,10,'🌴',44],[22,12,'🌳',40],[30,40,'🌿',30],[47,8,'🌴',38],[3,58,'🌳',46],[24,92,'🌿',34],[44,88,'🌴',42],[58,92,'🌳',40],[92,90,'🌴',44],[96,34,'🌳',42],[75,40,'🌿',30],[48,42,'🦋',24],[78,6,'⛰️',52],[94,4,'⛰️',40],[34,50,'🌺',24],[67,64,'🌺',22],[8,24,'🦜',26],[52,70,'🍃',26],[80,66,'🌿',30],[38,78,'🌳',36],[62,8,'🌳',34],[70,34,'🍃',22]];
+  return `<svg class="bg" viewBox="0 0 1000 620" preserveAspectRatio="none" aria-hidden="true">
+    <defs>
+      <radialGradient id="gr" cx="50%" cy="45%" r="75%"><stop offset="0" stop-color="#7cc576"/><stop offset=".6" stop-color="#4fa35f"/><stop offset="1" stop-color="#2d7a4a"/></radialGradient>
+      <pattern id="dots" width="34" height="34" patternUnits="userSpaceOnUse"><circle cx="6" cy="8" r="2.2" fill="#ffffff" opacity=".10"/><circle cx="24" cy="22" r="1.6" fill="#0a3" opacity=".12"/></pattern>
+    </defs>
+    <rect width="1000" height="620" fill="url(#gr)"/><rect width="1000" height="620" fill="url(#dots)"/>
+    <ellipse cx="860" cy="105" rx="150" ry="95" fill="#2f7d45" opacity=".55"/>
+    <ellipse cx="150" cy="300" rx="170" ry="120" fill="#3b8f50" opacity=".45"/>
+    <ellipse cx="560" cy="560" rx="260" ry="90" fill="#3b8f50" opacity=".4"/>
+    <path d="M330 -10 C 440 80, 520 175, 680 178 S 900 250, 1010 290" fill="none" stroke="#2c86b0" stroke-width="58" stroke-linecap="round" opacity=".9"/>
+    <path d="M330 -10 C 440 80, 520 175, 680 178 S 900 250, 1010 290" fill="none" stroke="#7fd0ee" stroke-width="40" stroke-linecap="round"/>
+    <path d="M330 -10 C 440 80, 520 175, 680 178 S 900 250, 1010 290" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="14 26" opacity=".7"/>
+    <g id="trail"></g>
+    ${deco.map(([x, y, e, s]) => `<text x="${x * 10}" y="${y * 6.2}" font-size="${s}" text-anchor="middle" dominant-baseline="middle" opacity=".92">${e}</text>`).join('')}
+  </svg>`;
+}
+function stationsInPlay() { return D.stations.filter(s => SPOTS[s.spot]); }
+function drawMap() {
+  const st = stationsInPlay(), lvA = P.lvl === 'A';
+  let html = mapBg();
+  st.forEach((s, i) => {
+    const [x, y] = SPOTS[s.spot];
+    html += `<button class="spot${i < P.i ? ' done' : ''}" data-i="${i}" style="left:${x}%;top:${y}%"><span class="ic">${h(s.e)}</span>${lvA || i < P.i ? `<span class="nm">${h(s.n)}</span>` : ''}</button>`;
+  });
+  const [cx, cy] = SPOTS[0];
+  html += `<button class="spot ceiba" data-i="ceiba" style="left:${cx}%;top:${cy}%"><span class="ic">${h(D.finale.e || '🌳')}</span><span class="nm">${h(D.finale.n || 'La Gran Ceiba')}</span></button>`;
+  html += `<div id="token"><img src="img/chica.webp" alt="Chica"></div>`;
+  $('#map').innerHTML = html;
+  drawTrail();
+  placeToken(false);
+  $('#map').querySelectorAll('.spot').forEach(b => b.onclick = () => tapSpot(b));
+}
+function posOf(i) { const st = stationsInPlay(); if (i === 'start') return [4, 94]; if (i >= st.length) return SPOTS[0]; return SPOTS[st[i].spot]; }
+function drawTrail() {
+  const st = stationsInPlay(), g = document.getElementById('trail'); if (!g) return;
+  const pts = [posOf('start')]; for (let k = 0; k < Math.min(P.i, st.length); k++) pts.push(posOf(k)); if (P.phase === 'done') pts.push(SPOTS[0]);
+  g.innerHTML = pts.length > 1 ? `<polyline points="${pts.map(([x, y]) => x * 10 + ',' + y * 6.2).join(' ')}" fill="none" stroke="#fff3cf" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" opacity=".8"/><polyline points="${pts.map(([x, y]) => x * 10 + ',' + y * 6.2).join(' ')}" fill="none" stroke="#e09f1f" stroke-width="5" stroke-dasharray="2 14" stroke-linecap="round"/>` : '';
+}
+function placeToken(anim) {
+  const t = $('#token'); if (!t) return;
+  const at = P.i === 0 && P.phase === 'find' ? posOf('start') : P.phase === 'done' ? SPOTS[0] : posOf(P.phase === 'find' ? P.i - 1 : P.i);
+  if (!anim) t.style.transition = 'none';
+  t.style.left = at[0] + '%'; t.style.top = at[1] + '%';
+  if (!anim) { t.offsetWidth; t.style.transition = ''; }
+}
+
+/* ---------- partida ---------- */
+function save() { try { localStorage.setItem(PKEY, JSON.stringify(P)); } catch (e) {} }
+function curClue() {
+  const st = stationsInPlay(), lv = P.lvl;
+  const raw = P.i === 0 ? D.first[lv] : st[P.i - 1].clue[lv];
+  return lv === 'A' ? raw : clean(raw) || raw;
+}
+function showClueBar() {
+  const bar = $('#clueBar');
+  if (P.phase !== 'find') { bar.classList.add('hide'); return; }
+  bar.classList.remove('hide'); $('#clueTx').textContent = curClue();
+}
+function updateTop() {
+  const n = stationsInPlay().length;
+  $('#tmName').innerHTML = `${h(P.team)}<small>${P.lvl === 'A' ? '🐣 Pequeños exploradores' : '🧭 Exploradores'}</small>`;
+  $('#hdSp').innerHTML = spiralSvg(n, P.pieces, { w: 8, dim: .28 });
+  $('#hdN').textContent = P.pieces + '/' + n;
+}
+function startGame(team, lvl) {
+  P = { sig: sig(D), team, lvl, i: 0, phase: 'find', pieces: 0, ans: 0, miss: 0, at: Date.now() };
+  save(); enterGame();
+  openIntro();
+}
+function enterGame() {
+  $('#start').classList.add('hide'); $('#game').classList.remove('hide');
+  updateTop(); drawMap(); showClueBar();
+  if (P.phase === 'done') openFinale(false);
+  else if (P.phase !== 'find') arrive(false);
+}
+function tapSpot(b) {
+  if (P.phase !== 'find' || busy) return;
+  ac();
+  const st = stationsInPlay(), idx = b.dataset.i;
+  const want = P.i < st.length ? String(P.i) : 'ceiba';
+  if (idx === want) { walkTo(b); return; }
+  sfx.no();
+  b.classList.remove('shake'); b.offsetWidth; b.classList.add('shake');
+  const msg = idx !== 'ceiba' && +idx < P.i ? '¡Ya visitamos este lugar!' : (P.lvl === 'A' ? '¡Aquí no es! Escucha la pista. 🔈' : 'Aquí no es. Lean la pista otra vez.');
+  const n = document.createElement('div'); n.className = 'nope'; n.textContent = msg; n.style.left = b.style.left; n.style.top = b.style.top;
+  $('#map').appendChild(n); setTimeout(() => n.remove(), 1700);
+  if (P.lvl === 'A') setTimeout(() => speak(curClue()), 300);
+}
+let busy = false;
+function walkTo(b) {
+  busy = true; const t = $('#token'); t.classList.add('walk');
+  t.style.left = b.style.left; t.style.top = b.style.top;
+  let k = 0; const iv = setInterval(() => { sfx.step(); if (++k > 6) clearInterval(iv); }, 190);
+  setTimeout(() => {
+    t.classList.remove('walk'); busy = false;
+    if (b.dataset.i === 'ceiba') { P.phase = 'done'; save(); drawTrail(); openFinale(true); return; }
+    P.phase = 'talk'; P.qs = null; save(); showClueBar(); arrive(true);
+  }, 1350);
+}
+
+/* ---------- llegar a un lugar: saludo → preguntas → premio + pista ---------- */
+function stationQs(s) {
+  const pool = (P.lvl === 'A' ? s.qA : s.qA1) || [];
+  const max = D.maxEp || 99;
+  const ok = pool.map((q, k) => k).filter(k => (pool[k].ep || 1) <= max && pool[k].o && pool[k].o.filter(Boolean).length >= 2);
+  return shuffle(ok).slice(0, P.lvl === 'A' ? 1 : 2);
+}
+function avatar(key) {
+  const c = CAST[key] || custom(key);
+  if (c.img) return `<div class="av"><img src="${c.img}" alt="${h(c.n)}"></div>`;
+  return `<div class="av"><span class="em">${c.e}</span>${c.badge ? `<span class="badge">${c.badge}</span>` : ''}</div>`;
+}
+function custom(key) { const m = String(key || '').match(/^\s*(\p{Extended_Pictographic}(?:\uFE0F|\u200D\p{Extended_Pictographic})*)?\s*(.*)$/u); return { e: (m && m[1]) || '🐾', n: (m && m[2]) || '' }; }
+const whoName = key => (CAST[key] || custom(key)).n;
+function openSheet(html, cls) { const c = $('#card'); c.className = 'card ' + (cls || ''); c.innerHTML = html; $('#sheet').classList.remove('hide'); c.scrollTop = 0; }
+function closeSheet() { $('#sheet').classList.add('hide'); speechSynthesis && speechSynthesis.cancel(); }
+
+function openIntro() {
+  const lv = P.lvl;
+  openSheet(`<div class="who">${avatar('chica')}<div class="bub"><div class="nm">Chica</div><p>${h(D.intro[lv])}</p></div></div>
+    <div class="cluebox"><div style="flex:1"><div class="t">🔎 Primera pista</div><p>${h(curClue())}</p></div><button class="say" data-say="1">🔈</button></div>
+    <div class="row"><button class="say" data-say="0" title="Escuchar">🔈</button><button class="btn green" id="ok">🗺️ ¡Al mapa!</button></div>`);
+  const t = [D.intro[lv], curClue()];
+  $('#card').querySelectorAll('[data-say]').forEach(b => b.onclick = () => speak(t[+b.dataset.say]));
+  $('#ok').onclick = () => { closeSheet(); if (autoRead()) speak(curClue()); };
+  if (autoRead()) speak(D.intro[lv] + ' ' + curClue());
+}
+function arrive(fresh) {
+  const s = stationsInPlay()[P.i], lv = P.lvl;
+  if (!s) return;
+  if (P.phase === 'talk' || !P.qs) {
+    P.phase = 'talk'; save();
+    openSheet(`<div class="place">${h(s.e)} ${h(s.n)}</div><div class="who">${avatar(s.who)}<div class="bub"><div class="nm">${h(whoName(s.who))}</div><p>${h(s.hi[lv])}</p></div></div>
+      <div class="row"><button class="say" id="sy">🔈</button><button class="btn" id="ok">${P.lvl === 'A' ? '❓ ¡Una pregunta!' : '❓ Ver la pregunta'}</button></div>`);
+    $('#sy').onclick = () => speak(s.hi[lv]);
+    $('#ok').onclick = () => { P.qs = stationQs(s); P.qi = 0; P.phase = 'q'; save(); P.qs.length ? askQ() : reward(); };
+    if (autoRead() || fresh) speak(s.hi[lv]);
+    return;
+  }
+  if (P.phase === 'q') askQ(); else reward();
+}
+function askQ() {
+  const s = stationsInPlay()[P.i], lv = P.lvl, pool = lv === 'A' ? s.qA : s.qA1, q = pool[P.qs[P.qi]];
+  if (!q) { reward(); return; }
+  const opts = shuffle(q.o.map((t, k) => ({ t, k })).filter(x => x.t));
+  const emo = t => { const m = String(t).match(/^\s*(\p{Extended_Pictographic}(?:️|‍\p{Extended_Pictographic})*)\s*(.*)$/u); return m ? [m[1], m[2]] : ['', t]; };
+  openSheet(`<div class="place">${h(s.e)} ${h(s.n)}</div>
+    <div class="q"><span>${h(q.q)}</span><button class="say" id="sy">🔈</button></div>
+    <div class="opts">${opts.map((o, i) => { const [e, t] = emo(o.t); return `<button class="opt" data-k="${o.k}"><span class="k">${'ABC'[i] || i + 1}</span>${lv === 'A' && e ? `<span class="em">${e}</span>` : (e ? e + ' ' : '')}<span>${h(t)}</span></button>`; }).join('')}</div>
+    <div class="fb" id="fb"></div>
+    <div class="row"><span class="qn">Pregunta ${P.qi + 1} de ${P.qs.length}</span></div>`, lv === 'A' ? 'lvA' : '');
+  const readQ = () => speak(q.q + '. ' + opts.map(o => clean(o.t)).join('. '));
+  $('#sy').onclick = readQ;
+  if (autoRead()) readQ();
+  $('#card').querySelectorAll('.opt').forEach(b => b.onclick = () => {
+    ac();
+    if (+b.dataset.k === +q.a) {
+      b.classList.add('yes'); sfx.ok(); P.ans++;
+      const praise = ['¡Muy bien!', '¡Excelente!', '¡Correcto!', '¡Eso es!', '¡Bravo!'][Math.floor(Math.random() * 5)];
+      $('#fb').className = 'fb good'; $('#fb').textContent = praise + ' 🎉'; speak(praise);
+      $('#card').querySelectorAll('.opt').forEach(x => x.style.pointerEvents = 'none');
+      setTimeout(() => { P.qi++; save(); P.qi < P.qs.length ? askQ() : reward(); }, 1200);
+    } else {
+      b.classList.add('no'); sfx.no(); P.miss++; save();
+      const t = P.lvl === 'A' ? '¡Casi! Prueba otra vez. 💪' : '¡Casi! Piénsalo otra vez. 💪';
+      $('#fb').className = 'fb bad'; $('#fb').textContent = t; if (autoRead()) speak(t);
+    }
+  });
+}
+function reward() {
+  const st = stationsInPlay(), s = st[P.i], lv = P.lvl, n = st.length;
+  if (P.phase !== 'reward') { P.pieces = Math.min(n, P.pieces + 1); P.phase = 'reward'; save(); sfx.piece(); }
+  updateTop();
+  const nextClue = lv === 'A' ? s.clue[lv] : (clean(s.clue[lv]) || s.clue[lv]);
+  const pc = D.piece || { e: '🌀', n: 'pedazo de la espiral' };
+  openSheet(`<div class="reward"><svg class="bigsp" viewBox="-50 -50 100 100"><circle r="49" fill="#0f3d2e"/>${spiralSvg(n, P.pieces, { w: 7, pulse: true, dim: .25 })}</svg>
+      <h2>¡Un ${h(pc.n)}! ${h(pc.e)}</h2><p style="font-weight:800;color:#3d5a4b;margin:6px 0 0">Tienen ${P.pieces} de ${n}.</p></div>
+    <div class="cluebox"><div style="flex:1"><div class="t">🔎 Nueva pista</div><p>${h(nextClue)}</p></div><button class="say" id="sy">🔈</button></div>
+    <div class="row"><button class="btn green" id="ok">🗺️ ¡Al mapa!</button></div>`);
+  $('#sy').onclick = () => speak(nextClue);
+  if (autoRead()) speak(`¡Un ${pc.n}! ${nextClue}`);
+  $('#ok').onclick = () => {
+    P.i++; P.phase = 'find'; P.qs = null; save();
+    closeSheet(); drawMap(); showClueBar(); if (autoRead()) speak(curClue());
+  };
+}
+
+/* ---------- final ---------- */
+const WORDS = ['TUCÁN', 'JAGUAR', 'TAPIR', 'MONO', 'LORO', 'COATÍ', 'GUACAMAYA', 'MARIPOSA', 'IGUANA', 'HELECHO', 'RÍO', 'SELVA'];
+function teamCode() { let x = 7; for (const ch of (P.team + P.lvl).toUpperCase()) x = (x * 33 + ch.charCodeAt(0)) % 100003; return WORDS[x % WORDS.length] + '-' + (10 + (x % 90)); }
+function openFinale(fresh) {
+  const n = stationsInPlay().length, lv = P.lvl, f = D.finale;
+  showClueBar(); updateTop();
+  const date = new Date(P.at || Date.now()).toLocaleDateString('es', { day: 'numeric', month: 'long', year: 'numeric' });
+  openSheet(`<div class="place">${h(f.e || '🌳')} ${h(f.n || 'La Gran Ceiba')}</div>
+    <div class="who">${avatar(f.who || 'donpico')}<div class="bub"><div class="nm">${h(whoName(f.who || 'donpico'))}</div><p>${h(f[lv])}</p></div></div>
+    <div class="cert">
+      <svg viewBox="-50 -50 100 100" style="width:120px;height:120px"><circle r="49" fill="#0f3d2e"/><g class="spin glow">${spiralSvg(n, n, { w: 7 })}</g></svg>
+      <div style="font-weight:800;color:#6b8577">🏅 Certificado de exploradores</div>
+      <div class="team">${h(P.team)}</div>
+      <div style="font-weight:700;color:#3d5a4b">encontró ${n} ${h((D.piece && D.piece.nn) || 'pedazos de la espiral')} en Chiquibul · ${h(date)}</div>
+      <div style="margin-top:8px;font-weight:800;color:#3d5a4b">Código secreto para la maestra:</div><div class="code">${teamCode()}</div>
+    </div>
+    <div class="row"><button class="say" id="sy">🔈</button><button class="btn ghost" id="pr">🖨️ Imprimir</button><button class="btn ghost" id="again">🔁 Jugar otra vez</button><button class="btn green" id="ok">🗺️ Ver el mapa</button></div>`);
+  $('#sy').onclick = () => speak(f[lv]);
+  $('#pr').onclick = () => print();
+  $('#again').onclick = () => { if (confirm('¿Empezar de nuevo?')) { localStorage.removeItem(PKEY); location.reload(); } };
+  $('#ok').onclick = closeSheet;
+  if (fresh) { sfx.win(); confetti(); setTimeout(() => speak(f[lv]), 600); }
+}
+function confetti() { const em = ['🌀', '✨', '🍃', '🌸', '⭐', '🦋']; for (let i = 0; i < 46; i++) { const c = document.createElement('div'); c.className = 'conf'; c.textContent = em[i % em.length]; c.style.left = Math.random() * 100 + 'vw'; c.style.animationDuration = 2.2 + Math.random() * 2.4 + 's'; c.style.animationDelay = Math.random() * .8 + 's'; document.body.appendChild(c); setTimeout(() => c.remove(), 5600); } }
+
+/* ---------- inicio ---------- */
+(async function init() {
+  D = await loadContent();
+  document.title = D.title || 'El enigma de Chiquibul';
+  $('#stTitle').textContent = D.title || 'El enigma de Chiquibul';
+  $('#logoSp').innerHTML = spiralSvg(8, 8, { w: 8 });
+  if (usingDraft) $('#draftNote').innerHTML = '<div class="draft">👩‍🏫 Estás viendo tu <b>versión editada</b> (solo en esta computadora). Los estudiantes ven la versión publicada.</div>';
+  const qs = new URLSearchParams(location.search);
+  let lvl = qs.get('nivel') === 'k2' ? 'A' : qs.get('nivel') === '35' ? 'A1' : null;
+  const pick = l => { lvl = l; document.querySelectorAll('.lv').forEach(b => b.setAttribute('aria-pressed', b.dataset.lv === l)); };
+  if (lvl) pick(lvl);
+  document.querySelectorAll('.lv').forEach(b => b.onclick = () => { ac(); pick(b.dataset.lv); });
+  try { const p = JSON.parse(localStorage.getItem(PKEY) || 'null'); if (p && p.team && p.sig === sig(D)) { $('#resume').classList.remove('hide'); $('#resume').textContent = `▶ Seguir jugando: ${p.team} (${p.pieces} 🌀)`; $('#resume').onclick = () => { ac(); P = p; enterGame(); }; } } catch (e) {}
+  $('#go').onclick = () => {
+    ac();
+    const team = $('#team').value.trim();
+    if (!team) { $('#team').focus(); $('#team').style.borderColor = '#d9534f'; return; }
+    if (!lvl) { document.querySelector('.lv-row').animate([{ transform: 'translateX(-8px)' }, { transform: 'translateX(8px)' }, { transform: 'none' }], 300); return; }
+    startGame(team, lvl);
+  };
+  $('#team').onkeydown = e => { if (e.key === 'Enter') $('#go').click(); };
+  $('#home').onclick = () => { closeSheet(); $('#game').classList.add('hide'); $('#start').classList.remove('hide'); location.reload(); };
+  $('#snd').onclick = () => { muted = !muted; $('#snd').textContent = muted ? '🔇' : '🔊'; if (muted) speechSynthesis.cancel(); };
+  $('#clueSay').onclick = () => speak(curClue());
+  if ('speechSynthesis' in window) speechSynthesis.getVoices();
+})();
+</script>
+</body>
+</html>

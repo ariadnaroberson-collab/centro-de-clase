@@ -668,7 +668,42 @@
   .sp-line { font-size: clamp(1.2rem, 2.4vw, 2rem); font-weight: 700; } .sp-line b { color: var(--gold); }
   .sp-q { margin-top: 6px; font-family: 'Schoolbell', cursive; font-size: clamp(1rem, 1.8vw, 1.5rem); color: #fff3c4; } .sp-q.hidden { display: none; }
   .notice { background: #fff6d6; border: 2px dashed var(--gold); border-radius: 12px; padding: 10px 14px; color: var(--text-dark); font-size: 0.9rem; margin-bottom: 14px; }
+  /* enigma editor */
+  .en-wrap { display: grid; gap: 16px; }
+  .en-box { background: #fff; color: #1d2b24; border-radius: 18px; padding: 16px 18px; box-shadow: 0 6px 18px rgba(0,0,0,.12); }
+  .en-box h3 { margin: 0 0 10px; }
+  .en-shares { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px; }
+  .en-share { display: flex; gap: 14px; align-items: center; background: #f4f9f2; border-radius: 14px; padding: 10px; }
+  .en-qr { width: 112px; height: 112px; flex: none; background: #fff; border-radius: 10px; padding: 4px; }
+  .en-qr svg { width: 100%; height: 100%; display: block; }
+  .en-pill { display: inline-block; border-radius: 999px; padding: 4px 12px; font-weight: 800; font-size: .85rem; background: #eef2ee; }
+  .en-pill.warn { background: #fff1c2; } .en-pill.ok { background: #dff3e4; }
+  .en-lv { display: inline-flex; gap: 6px; margin-left: auto; }
+  .en-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0; }
+  .en-tab { border: 2px solid #d6e3d6; background: #f7faf6; border-radius: 12px; padding: 6px 12px; font-weight: 800; cursor: pointer; font-size: 1rem; }
+  .en-tab.on { border-color: #e09f1f; background: #fff3cf; }
+  .en-tab.add { border-style: dashed; }
+  .en-ed { background: #fbfdf9; border: 2px solid #e4ede2; border-radius: 14px; padding: 14px; }
+  .en-ed h3 { margin: 0 0 8px; }
+  .en-l { display: block; font-weight: 800; margin: 12px 0 4px; }
+  .en-w { width: 100%; resize: vertical; font: inherit; }
+  .en-q { background: #fff; border: 2px solid #e6ece4; border-radius: 12px; padding: 10px; margin: 8px 0; }
+  .en-n { width: 26px; height: 26px; border-radius: 8px; background: #0f3d2e; color: #f2c14e; display: grid; place-items: center; flex: none; }
+  .en-opts { display: grid; gap: 6px; margin-top: 8px; }
+  .en-opt { display: flex; gap: 8px; align-items: center; border-radius: 10px; padding: 2px 6px; }
+  .en-opt.ok { background: #dff3e4; } .en-opt .field { flex: 1; }
+  .en-opt input[type=radio] { width: 20px; height: 20px; accent-color: #2e9e5b; flex: none; }
+  .en-bank { background: #fffaf0; border: 2px dashed #e09f1f; border-radius: 12px; padding: 10px; margin-top: 10px; max-height: 360px; overflow: auto; }
+  .en-bq { display: flex; gap: 10px; align-items: center; border-bottom: 1px solid #f0e4c8; padding: 8px 0; }
+  .en-pub { margin-top: 14px; }
+  .en-bigqr { position: fixed; inset: 0; z-index: 9999; background: #fff; color: #0f3d2e; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center; }
+  .en-bigqr svg { width: min(62vh, 80vw); height: min(62vh, 80vw); }
+  .en-tab.off { opacity: .45; text-decoration: line-through; }
+  .sp-pick { margin-bottom: 10px; }
+  .sp-ed { background: #fff; color: #1d2b24; border-radius: 18px; padding: 16px; }
+  .sp-edl { margin: 6px 0; gap: 6px; }
 </style>
+<script src="enigma-contenido.js"></script>
 </head>
 <body>
 
@@ -3048,7 +3083,7 @@ tool('practica', 'assess', '🎮', 'Práctica y juegos', 'Practice & games by un
   const u = U[g.unitCur];
   el.innerHTML += `<div class="row"><label class="chk">Unidad: <select class="field" id="unSel" style="font-weight:800">${U.map((x, i) => `<option value="${i}" ${i === g.unitCur ? 'selected' : ''}>${h(x.n)}</option>`).join('')}</select></label>
       <button class="btn sm" id="unNew">＋ Nueva unidad</button>${u ? '<button class="btn sm ghost" id="unRen">✏️ Renombrar</button><button class="btn sm ghost" id="unDel">🗑️ Borrar unidad</button>' : ''}</div>
-    <div class="gm-builtin"><span class="muted">Juegos dentro de Herramientas:</span><button class="btn gold" id="gmHang">🦈 Ahorcado · palabras de cada unidad</button><button class="btn gold" data-gm="camino">🗺️ El camino de Chica (3D)</button><button class="btn gold" data-gm="minuto">🎤 ¡Habla un minuto!</button><button class="btn gold" data-gm="conexiones">🔗 1 palabra, 5 conexiones</button><button class="btn gold" data-gm="otramanera">🔄 Dilo de otra manera</button></div>
+    <div class="gm-builtin"><span class="muted">Juegos dentro de Herramientas:</span><button class="btn gold" id="gmHang">🦈 Ahorcado · palabras de cada unidad</button><button class="btn gold" data-gm="camino">🗺️ El camino de Chica (3D)</button><button class="btn gold" data-gm="enigma">🌀 El enigma de Chiquibul</button><button class="btn gold" data-gm="minuto">🎤 ¡Habla un minuto!</button><button class="btn gold" data-gm="conexiones">🔗 1 palabra, 5 conexiones</button><button class="btn gold" data-gm="otramanera">🔄 Dilo de otra manera</button></div>
     ${u ? `<div class="gm-grid">${u.links.map((x, i) => `<div class="gm-card"><button class="gm-open" data-o="${i}"><span class="gm-ic">${gameIcon(x.u)}</span><span class="gm-n">${h(x.n)}</span></button>
         <div class="gm-act"><button class="btn sm ghost" data-t="${i}" title="Abrir en pestaña nueva">↗</button><button class="btn sm ghost" data-q="${i}" title="Código QR para los estudiantes">📱</button><button class="btn sm ghost" data-d="${i}" title="Quitar">✕</button></div></div>`).join('') || '<p class="muted">Esta unidad todavía no tiene enlaces. Añade el primero aquí abajo 👇</p>'}</div>
       <div class="lk-add"><input class="field" id="gmN" placeholder="Nombre, ej. Quizlet · vocabulario" style="max-width:280px"><input class="field" id="gmU" placeholder="Enlace (Quizlet, Wayground, Padlet, Canva, YouTube…)"><button class="btn" id="gmAdd">＋ Añadir</button></div>
@@ -3382,6 +3417,143 @@ tool('conexiones', 'assess', '🔗', '1 palabra, 5 conexiones', 'One word, five 
   return () => { if (T) T.stop(); };
 });
 
+const ENIGMA_BANK = [{"ep": 1, "l": "A", "q": "¿Quién es nuevo en la selva?", "o": ["🐒 Chica", "🦝 Nico", "🐗 Bruno"], "a": 1}, {"ep": 1, "l": "A", "q": "¿Cómo está Bruno al final?", "o": ["😊 Feliz", "😢 Triste", "😴 Cansado"], "a": 1}, {"ep": 1, "l": "A1", "q": "¿Por qué Don Pico elige a Chica para dar la bienvenida a Nico?", "o": ["Porque es la más rápida de la selva.", "Porque tiene el don de hacer sentir bienvenidos a los demás.", "Porque es la más fuerte de la escuela."], "a": 1}, {"ep": 1, "l": "A1", "q": "¿Cómo se siente Bruno al final del episodio?", "o": ["Muy contento por Nico.", "Un poco triste porque nadie lo recibió así a él.", "No siente nada en particular."], "a": 1}, {"ep": 2, "l": "A", "q": "¿Qué cubre Bruno con barro?", "o": ["🌸 Las flores", "🦜 Los pájaros", "🌳 El árbol grande"], "a": 0}, {"ep": 2, "l": "A", "q": "¿Qué aprende Bruno?", "o": ["🌈 Todos los colores son bonitos", "🟢 Solo el verde es bonito", "😴 Nada"], "a": 0}, {"ep": 2, "l": "A1", "q": "¿Por qué Bruno cubre las flores, piedras y hojas con barro?", "o": ["Porque quiere jugar con barro.", "Porque cree que el bosque sería más bonito si todo fuera de un solo color.", "Porque Don Pico se lo pide."], "a": 1}, {"ep": 2, "l": "A1", "q": "Al final, ¿qué comprende Bruno sobre la selva?", "o": ["Que el verde es el mejor color de todos.", "Que la selva es hermosa porque cada color tiene su propio lugar.", "Que debe esconder mejor el barro la próxima vez."], "a": 1}, {"ep": 3, "l": "A", "q": "¿Cómo se siente Toño al principio?", "o": ["😊 Feliz", "😨 Con miedo", "😴 Cansado"], "a": 1}, {"ep": 3, "l": "A", "q": "¿Qué comparte Bruno con el grupo?", "o": ["🎨 Un dibujo", "💭 Un miedo", "🍎 Una fruta"], "a": 1}, {"ep": 3, "l": "A1", "q": "¿Por qué Toño participa tan poco cuando llega a la selva?", "o": ["Porque piensa que es mejor que los demás.", "Porque tiene miedo de que se burlen de él, como en su antigua escuela.", "Porque no entiende lo que dicen los demás."], "a": 1}, {"ep": 3, "l": "A1", "q": "¿Qué aprende Bruno al final del episodio?", "o": ["Que debe evitar a los animales nuevos.", "Que él también ha tenido miedo de no tener amigos, y que ser sincero ayuda a conectar con otros.", "Que Toño es el animal más fuerte de la selva."], "a": 1}, {"ep": 4, "l": "A", "q": "¿Por qué Mora no llega al festival?", "o": ["😴 Está durmiendo", "🌸 Ayuda a una flor débil", "🏠 Está en casa"], "a": 1}, {"ep": 4, "l": "A", "q": "¿De dónde viene Luna?", "o": ["🇲🇽 México", "🇬🇹 Guatemala", "🇨🇷 Costa Rica"], "a": 0}, {"ep": 4, "l": "A1", "q": "Cuando por fin encuentran a Mora, ¿por qué se había quedado en el jardín escondido?", "o": ["Porque se perdió y no sabía cómo volver.", "Porque encontró una orquídea débil y quiso ayudarla a florecer antes del festival.", "Porque quería explorar sola, sin avisar a nadie."], "a": 1}, {"ep": 4, "l": "A1", "q": "¿Quién es Luna, y qué comparte con el grupo?", "o": ["Una guacamaya que siempre ha vivido en Chiquibul y no conoce otros lugares.", "Una guacamaya que visita a sus abuelos desde Yucatán, México, y comparte historias de cenotes y flamencos.", "Una mariposa que ayuda a Mora a cuidar flores."], "a": 1}, {"ep": 5, "l": "A", "q": "¿Por qué está triste Bruno?", "o": ["🎂 Cree que no está invitado", "🌧️ Está lloviendo", "🍽️ No hay comida"], "a": 0}, {"ep": 5, "l": "A", "q": "¿Quién cumple años?", "o": ["🦝 Nico", "🐒 Chica", "🐗 Bruno"], "a": 0}, {"ep": 5, "l": "A1", "q": "¿Por qué Bruno se va triste sin hablar con nadie?", "o": ["Porque no le gustan las fiestas.", "Porque escucha solo parte de la conversación y cree que nadie lo invitó.", "Porque Don Pico le pide que se vaya."], "a": 1}, {"ep": 5, "l": "A1", "q": "¿Qué le dice Chica a Bruno junto al río?", "o": ["Que la próxima fiesta será solo para él.", "Que la sorpresa era para Nico, pero que todos quieren que él esté allí también.", "Que debió preguntar antes de escuchar a escondidas."], "a": 1}, {"ep": 6, "l": "A", "q": "¿Por qué Bruno se va solo?", "o": ["🎒 Busca su mochila", "💪 Cree que ya sabe todo", "😴 Tiene sueño"], "a": 1}, {"ep": 6, "l": "A", "q": "¿Quién ayuda a Bruno a regresar?", "o": ["🦝 Nico", "🐸 Sofía", "🦜 Don Pico"], "a": 0}, {"ep": 6, "l": "A1", "q": "¿Por qué Bruno decide aprender solo, sin el grupo?", "o": ["Porque Don Pico lo castiga.", "Porque cree que ya sabe todo lo que necesita y no necesita una escuela.", "Porque los demás no lo dejan participar."], "a": 1}, {"ep": 6, "l": "A1", "q": "Al final del día, ¿qué escribe Bruno en el Diario de los Guardianes?", "o": ["Que la escuela es una pérdida de tiempo.", "Que pedir ayuda también es una forma de aprender.", "Que prefiere explorar solo, sin amigos."], "a": 1}, {"ep": 7, "l": "A", "q": "¿Qué compra Bruno por error?", "o": ["🥭 Solo mangos", "🥥 Cocos y una calabaza enorme", "🍯 Solo miel"], "a": 1}, {"ep": 7, "l": "A", "q": "¿Qué vende Valentina?", "o": ["🌶️ Especias", "👕 Ropa", "🐟 Pescado"], "a": 0}, {"ep": 7, "l": "A1", "q": "¿Por qué Bruno regresa con cocos, chile y calabazas en vez de mangos?", "o": ["Porque el mercado ya no tenía mangos.", "Porque leyó \"4 mangos\" como \"4 cosas grandes\" y compró sin pedir ayuda.", "Porque Don Pico cambió la lista a propósito."], "a": 1}, {"ep": 7, "l": "A1", "q": "¿Cómo ayuda Valentina a resolver el problema de las compras?", "o": ["Les da todo lo que necesitan sin pedir nada a cambio.", "Les ayuda a intercambiar productos con otros vendedores, así nadie pierde nada.", "Le dice a Don Pico que castigue a Bruno."], "a": 1}, {"ep": 8, "l": "A", "q": "¿Qué hacen los Guardianes cuando cae la bandeja?", "o": ["😂 Se ríen y se van", "🧹 Ayudan a limpiar", "😴 No hacen nada"], "a": 1}, {"ep": 8, "l": "A", "q": "¿De dónde viene Mateo?", "o": ["🇵🇪 Perú", "🇧🇿 Belice", "🇬🇹 Guatemala"], "a": 0}, {"ep": 8, "l": "A1", "q": "¿Cuál es la misión que Don Pico les da antes de entrar al restaurante?", "o": ["Pedir el plato más caro del menú.", "Pedir con cortesía, hacer una pregunta al mesero, y probar algo nuevo.", "Terminar toda la comida sin dejar nada en el plato."], "a": 1}, {"ep": 8, "l": "A1", "q": "Cuando cae la bandeja en la cocina, ¿cómo reaccionan los Guardianes?", "o": ["Esperan sentados a que alguien más limpie.", "Sin que nadie se lo pida, todos ayudan — hasta Bruno toma una escoba.", "Se van del restaurante sin comer."], "a": 1}, {"ep": 9, "l": "A", "q": "¿Por qué le duele el estómago a Teo?", "o": ["🍊 Comió una fruta sin preguntar", "💧 Bebió mucha agua", "🏃 Corrió mucho"], "a": 0}, {"ep": 9, "l": "A", "q": "¿Quién es la doctora Alma?", "o": ["🐒 Una mona", "🐦 Una colibrí", "🦎 Un lagarto"], "a": 1}, {"ep": 9, "l": "A1", "q": "¿Por qué Teo se enferma durante la caminata?", "o": ["Porque camina demasiado rápido.", "Porque prueba un fruto desconocido sin preguntar primero.", "Porque no lleva suficiente agua."], "a": 1}, {"ep": 9, "l": "A1", "q": "¿Qué siente Bruno mientras Teo está en la clínica, aunque no quiere admitirlo?", "o": ["Está aburrido y quiere irse.", "Está preocupado por Teo, porque le importa como amigo.", "Está enojado con Teo por interrumpir la caminata."], "a": 1}, {"ep": 10, "l": "A", "q": "¿Qué hacen los Guardianes cuando ven el humo?", "o": ["🏃 Corren solos", "🤝 Se quedan juntos y calmados", "😢 Lloran"], "a": 1}, {"ep": 10, "l": "A", "q": "¿Qué rescata Bruno?", "o": ["🐦 Un tucán pequeño", "🐒 Un mono", "🐸 Una rana"], "a": 0}, {"ep": 10, "l": "A1", "q": "Cuando ven el humo, ¿qué instrucción da Don Pico primero?", "o": ["Que todos corran en direcciones diferentes.", "Que nadie corra, que se mantengan juntos, y que Chica cuente a todos los Guardianes.", "Que intenten apagar el fuego ellos mismos."], "a": 1}, {"ep": 10, "l": "A1", "q": "Según Capitana Sofía, ¿por qué colaboran los bomberos forestales de varios países?", "o": ["Porque Belice no tiene suficientes bomberos propios.", "Porque la Selva Maya es un solo ecosistema compartido, y el humo no conoce fronteras.", "Porque es una regla del gobierno."], "a": 1}, {"ep": 11, "l": "A", "q": "¿Qué cae del árbol?", "o": ["🍃 Muchas hojas", "🍎 Frutas", "🐦 Pájaros"], "a": 0}, {"ep": 11, "l": "A", "q": "¿Cómo es la hoja especial?", "o": ["📏 Gruesa, con líneas raras", "🌈 De muchos colores", "🔥 Caliente"], "a": 0}, {"ep": 11, "l": "A1", "q": "¿Qué estación debería estar llegando a Chiquibul?", "o": ["La época de lluvias", "La época seca", "El invierno"], "a": 0}, {"ep": 11, "l": "A1", "q": "¿Qué encuentra Chica entre las hojas?", "o": ["Una hoja diferente con líneas extrañas", "Una flor rara", "Un insecto grande"], "a": 0}, {"ep": 12, "l": "A", "q": "¿Quién llega a Chiquibul?", "o": ["🦜 Luna", "🐒 Un mono nuevo", "🐗 Bruno"], "a": 0}, {"ep": 12, "l": "A", "q": "¿Qué encuentran en la piedra?", "o": ["📏 Líneas como en la hoja", "🌸 Flores", "💧 Agua"], "a": 0}, {"ep": 12, "l": "A1", "q": "¿Quién regresa a Chiquibul en este episodio?", "o": ["Luna, la guacamaya", "Doña Tapir", "La doctora Alma"], "a": 0}, {"ep": 12, "l": "A1", "q": "¿Dónde encuentran la segunda pista?", "o": ["En una piedra con musgo", "En el río", "En la escuela"], "a": 0}, {"ep": 13, "l": "A", "q": "¿Qué pasa de repente?", "o": ["🌧️ Llega una tormenta", "☀️ Sale el sol", "❄️ Nieva"], "a": 0}, {"ep": 13, "l": "A", "q": "¿Cómo salvan la piedra?", "o": ["🤝 Trabajando juntos", "😴 Durmiendo", "🏃 Corriendo solos"], "a": 0}, {"ep": 13, "l": "A1", "q": "¿Qué pasa de repente con el clima?", "o": ["Llega una tormenta fuerte", "Sale mucho sol", "Hace mucho frío"], "a": 0}, {"ep": 13, "l": "A1", "q": "¿Cómo protegen la piedra?", "o": ["Trabajando juntos en equipo", "Cada uno solo", "No la protegen"], "a": 0}, {"ep": 14, "l": "A", "q": "¿Por qué llegan todos los amigos?", "o": ["🤝 Para ayudar a entender el mensaje", "🎂 Para una fiesta", "😴 Para dormir"], "a": 0}, {"ep": 14, "l": "A", "q": "¿Qué es la Gran Ceiba?", "o": ["🌳 Una guardiana de historias", "🏠 Una casa", "🚗 Un camión"], "a": 0}, {"ep": 14, "l": "A1", "q": "¿Por qué el grupo invita a todos sus amigos?", "o": ["Necesitan ayuda para entender el mensaje", "Quieren hacer una fiesta", "Están perdidos"], "a": 0}, {"ep": 14, "l": "A1", "q": "¿Qué es la Gran Ceiba en realidad?", "o": ["Una guardiana de las historias del bosque", "Un árbol común", "Una casa vacía"], "a": 0}, {"ep": 15, "l": "A", "q": "¿Por qué hacen una fiesta?", "o": ["🎉 Para celebrar juntos", "🎂 Es un cumpleaños", "📚 Empiezan las clases"], "a": 0}, {"ep": 15, "l": "A", "q": "¿Qué instrumento suena en la fiesta?", "o": ["🎵 La marimba", "🎸 La guitarra", "🥁 El tambor"], "a": 0}, {"ep": 15, "l": "A1", "q": "¿Por qué organiza Chiquibul una gran fiesta?", "o": ["Para celebrar el misterio resuelto", "Es el cumpleaños de Chica", "Empieza el verano"], "a": 0}, {"ep": 15, "l": "A1", "q": "¿Qué dice Luna al final?", "o": ["Que hay otros árboles como la Gran Ceiba", "Que tiene que irse para siempre", "Que no le gustó la fiesta"], "a": 0}];
+const ENIGMA_EPS = {"1": "¡Hola, Chica!", "2": "El Gran Árbol", "3": "Un amigo nuevo", "4": "¿Dónde está Mora?", "5": "El cumpleaños sorpresa", "6": "Vamos a la Escuela", "7": "El Mercado de San Ignacio", "8": "El Restaurante de Doña Tapir", "9": "La Clínica del Colibrí", "10": "¡Alerta en la Selva!", "11": "El Susurro de las Raíces", "12": "El Regreso de Luna", "13": "La Tormenta de Chiquibul", "14": "La Guardiana del Bosque", "15": "La Gran Fiesta de Chiquibul"};
+/* ---------- 🌀 EL ENIGMA DE CHIQUIBUL (compartir + editor) ---------- */
+const EN_DKEY = 'cdc-enigma-draft';
+let EN_PUB = null, EN_TRIED = false;
+const enClone = x => JSON.parse(JSON.stringify(x));
+function enGetDraft() { try { const d = JSON.parse(localStorage.getItem(EN_DKEY) || 'null'); return d && d.data && d.data.stations ? d.data : null; } catch (e) { return null; } }
+function enSetDraft(d) { try { localStorage.setItem(EN_DKEY, JSON.stringify({ at: Date.now(), data: d })); } catch (e) { toast('No se pudo guardar'); } }
+function enUrl(nivel) { return new URL('enigma.html' + (nivel ? '?nivel=' + nivel : ''), location.href).href; }
+function enQr(u, cell) { try { const q = qrcode(0, 'M'); q.addData(u); q.make(); return q.createSvgTag({ cellSize: cell || 6, margin: 2, scalable: true }); } catch (e) { return ''; } }
+function enWhoOpts(cur) {
+  const C = window.ENIGMA_CAST || {}; const custom = cur && !C[cur];
+  return Object.keys(C).map(k => `<option value="${k}" ${k === cur ? 'selected' : ''}>${C[k].e || '🖼️'} ${h(C[k].n)}</option>`).join('') + `<option value="__otro" ${custom ? 'selected' : ''}>✏️ Otro (emoji + nombre)…</option>`;
+}
+
+tool('enigma', 'assess', '🌀', 'El enigma de Chiquibul', 'Student quest game + editor', 'Un juego para los estudiantes, en parejas con un dispositivo o todos juntos en la TV: contestan preguntas de Chica, reciben pistas y buscan lugares de Chiquibul en el mapa. Aquí lo compartes con QR y cambias lo que quieras.', el => {
+  const o = ses('enigma', () => ({ st: 0, lv: 'A', bank: false, bankEp: 1 }));
+  let D = enGetDraft();
+  if (D && EN_PUB && JSON.stringify(D) === JSON.stringify(EN_PUB)) { localStorage.removeItem(EN_DKEY); D = null; }
+  const isDraft = !!D;
+  if (!D) D = enClone(EN_PUB || window.ENIGMA_DEFAULT);
+  if (!EN_TRIED) { EN_TRIED = true; fetch('data/enigma.json', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(j => { if (j && j.stations) { EN_PUB = j; if (S.tool === 'enigma') render(); } }).catch(() => {}); }
+  const SPOTN = (window.ENIGMA_SPOTS || []).length - 1;
+  if (o.st !== 'fin' && o.st !== 'ini' && (o.st >= D.stations.length || o.st < 0)) o.st = 0;
+  const lv = o.lv, LVN = { A: '🐣 K–2', A1: '🧭 3.º–5.º' };
+  const epOpts = cur => Array.from({ length: 15 }, (_, i) => i + 1).map(n => `<option value="${n}" ${n === +cur ? 'selected' : ''}>Ep. ${n}</option>`).join('');
+  const pubState = isDraft ? '<span class="en-pill warn">✏️ Tienes cambios sin publicar · solo en esta computadora</span>' : (EN_PUB ? '<span class="en-pill ok">✓ Igual a la versión publicada</span>' : '<span class="en-pill">Versión original (Ep. 1–2)</span>');
+
+  /* --- compartir --- */
+  const share = [['k2', '🐣 Pequeños exploradores', 'K–2 · audio y dibujos'], ['35', '🧭 Exploradores', '3.º–5.º · más lectura']].map(([n, t, s]) => `<div class="en-share"><div class="en-qr">${enQr(enUrl(n))}</div><div><b>${t}</b><div class="muted">${s}</div>
+      <div class="row" style="margin-top:8px"><button class="btn sm gold" data-open="${n}">▶ Abrir / jugar en la TV</button><button class="btn sm" data-big="${n}">⛶ QR grande</button><button class="btn sm ghost" data-copy="${n}">📋 Copiar enlace</button></div></div></div>`).join('');
+
+  /* --- editor de una parada --- */
+  function qCard(q, k, key) {
+    const p = `stations.${o.st}.${key}.${k}`;
+    return `<div class="en-q"><div class="row" style="gap:8px"><b class="en-n">${k + 1}</b><input class="field" style="flex:1" data-p="${p}.q" value="${h(q.q)}" placeholder="Pregunta">
+        <select class="field" data-p="${p}.ep" data-num title="Episodio">${epOpts(q.ep || 1)}</select><button class="btn sm ghost" data-qdel="${k}" title="Borrar pregunta">🗑️</button></div>
+      <div class="en-opts">${[0, 1, 2].map(i => `<label class="en-opt ${+q.a === i ? 'ok' : ''}"><input type="radio" name="a${key}${k}" data-p="${p}.a" data-num value="${i}" ${+q.a === i ? 'checked' : ''} title="Respuesta correcta"><input class="field" data-p="${p}.o.${i}" value="${h((q.o || [])[i] || '')}" placeholder="Opción ${'ABC'[i]}${lv === 'A' ? ' (empieza con un emoji 🙂)' : ''}"></label>`).join('')}</div></div>`;
+  }
+  function stationEd() {
+    if (o.st === 'ini') return `<h3>🚩 Inicio del juego</h3>
+      <label class="en-l">Título</label><input class="field en-w" data-p="title" value="${h(D.title)}">
+      <label class="en-l">Lo que dice Chica al empezar · ${LVN[lv]}</label><textarea class="field en-w" rows="3" data-p="intro.${lv}">${h(D.intro[lv])}</textarea>
+      <label class="en-l">Primera pista (lleva al primer lugar) · ${LVN[lv]}</label><textarea class="field en-w" rows="2" data-p="first.${lv}">${h(D.first[lv])}</textarea>
+      <div class="row"><label class="en-l" style="margin:0">Lo que coleccionan:</label><input class="field" style="width:70px;text-align:center" data-p="piece.e" value="${h(D.piece.e)}"><input class="field" style="flex:1" data-p="piece.n" value="${h(D.piece.n)}" placeholder="singular: pedazo de la espiral"><input class="field" style="flex:1" data-p="piece.nn" value="${h(D.piece.nn)}" placeholder="plural: pedazos de la espiral"></div>`;
+    if (o.st === 'fin') { const f = D.finale; return `<h3>${h(f.e)} Final · ${h(f.n)}</h3>
+      <div class="row"><input class="field" style="width:70px;text-align:center" data-p="finale.e" value="${h(f.e)}"><input class="field" style="flex:1" data-p="finale.n" value="${h(f.n)}"><select class="field" data-who="finale">${enWhoOpts(f.who)}</select>${(window.ENIGMA_CAST || {})[f.who] ? '' : `<input class="field" style="width:170px" data-p="finale.who" value="${h(f.who)}" placeholder="🐆 Yaya">`}</div>
+      <label class="en-l">Lo que dice al final · ${LVN[lv]} <span class="muted">(sin revelar el secreto 😉)</span></label><textarea class="field en-w" rows="3" data-p="finale.${lv}">${h(f[lv])}</textarea>`; }
+    const s = D.stations[o.st], key = lv === 'A' ? 'qA' : 'qA1', qs = s[key] || (s[key] = []);
+    const used = D.stations.map(x => x.spot);
+    const last = o.st === D.stations.length - 1;
+    const C = window.ENIGMA_CAST || {};
+    return `<div class="row" style="gap:8px"><input class="field" style="width:70px;text-align:center;font-size:1.4rem" data-p="stations.${o.st}.e" value="${h(s.e)}" title="Emoji del lugar">
+        <input class="field" style="flex:1;min-width:180px;font-weight:800" data-p="stations.${o.st}.n" value="${h(s.n)}" title="Nombre del lugar">
+        <label class="chk">📍 Lugar en el mapa <select class="field" data-p="stations.${o.st}.spot" data-num data-re>${Array.from({ length: SPOTN }, (_, i) => i + 1).map(n => `<option value="${n}" ${n === s.spot ? 'selected' : ''} ${n !== s.spot && used.includes(n) ? 'disabled' : ''}>${n}</option>`).join('')}</select></label>
+        <label class="chk">🐾 Personaje <select class="field" data-who="st">${enWhoOpts(s.who)}</select></label>
+        ${C[s.who] ? '' : `<input class="field" style="width:170px" data-p="stations.${o.st}.who" value="${h(s.who)}" placeholder="🐆 Yaya" title="Emoji y nombre">`}</div>
+      <label class="en-l">👋 Lo que dice al llegar · ${LVN[lv]}</label><textarea class="field en-w" rows="2" data-p="stations.${o.st}.hi.${lv}">${h(s.hi[lv])}</textarea>
+      <label class="en-l">❓ Preguntas · ${LVN[lv]} <span class="muted">— el juego elige ${lv === 'A' ? '1' : '2'} al azar · solo usa episodios hasta el ${D.maxEp}</span></label>
+      ${qs.map((q, k) => qCard(q, k, key)).join('') || '<p class="muted">Sin preguntas: los estudiantes reciben el premio directamente.</p>'}
+      <div class="row"><button class="btn sm" id="enQAdd">＋ Pregunta nueva</button><button class="btn sm gold" id="enBank">📚 ${o.bank ? 'Cerrar el banco' : 'Banco de preguntas de Chica'}</button></div>
+      ${o.bank ? bankEd(key) : ''}
+      <label class="en-l">🔎 Pista para ir ${last ? 'a la Gran Ceiba (final)' : 'al siguiente lugar (' + h(D.stations[o.st + 1].n) + ')'} · ${LVN[lv]}</label><textarea class="field en-w" rows="2" data-p="stations.${o.st}.clue.${lv}">${h(s.clue[lv])}</textarea>
+      <p class="muted" style="font-size:.85rem">💡 Para 3.º–5.º el juego quita los emojis de la pista y no muestra los nombres de los lugares: tienen que leer. Para K–2 sí los muestra.</p>
+      <div class="row en-stact"><button class="btn sm ghost" id="enUp" ${o.st === 0 ? 'disabled' : ''}>⬆️ Antes</button><button class="btn sm ghost" id="enDown" ${last ? 'disabled' : ''}>⬇️ Después</button><button class="btn sm ghost" id="enStDel">🗑️ Quitar este lugar</button></div>`;
+  }
+  function bankEd(key) {
+    const items = ENIGMA_BANK.map((b, i) => ({ b, i })).filter(x => x.b.l === lv && x.b.ep === +o.bankEp);
+    return `<div class="en-bank"><div class="row"><b>📚 Episodio</b><select class="field" id="enBankEp">${Object.keys(ENIGMA_EPS).map(n => `<option value="${n}" ${+n === +o.bankEp ? 'selected' : ''}>${n}. ${h(ENIGMA_EPS[n])}${+n > D.maxEp ? ' 🔒' : ''}</option>`).join('')}</select><span class="muted">Preguntas del lector de Chica · ${LVN[lv]}</span></div>
+      ${+o.bankEp > D.maxEp ? `<p class="muted">🔒 Este episodio está después del ${D.maxEp}: puedes añadir preguntas, pero el juego no las usa hasta que subas «Episodios leídos».</p>` : ''}
+      ${items.map(({ b, i }) => `<div class="en-bq"><div style="flex:1"><b>${h(b.q)}</b><div class="muted">${b.o.map((t, k) => k === b.a ? `<u>✔ ${h(t)}</u>` : h(t)).join(' · ')}</div></div><button class="btn sm" data-bank="${i}">＋ Añadir</button></div>`).join('') || '<p class="muted">No hay preguntas de este episodio para este nivel.</p>'}</div>`;
+  }
+  const tabs = `<button class="en-tab ${o.st === 'ini' ? 'on' : ''}" data-st="ini">🚩 Inicio</button>` + D.stations.map((s, i) => `<button class="en-tab ${o.st === i ? 'on' : ''}" data-st="${i}">${h(s.e)} ${i + 1}</button>`).join('') +
+    `<button class="en-tab ${o.st === 'fin' ? 'on' : ''}" data-st="fin">${h(D.finale.e)} Final</button>` + (D.stations.length < SPOTN ? '<button class="en-tab add" id="enStAdd" title="Añadir un lugar">＋</button>' : '');
+
+  el.innerHTML += `<div class="en-wrap">
+    <div class="en-box"><h3>📱 Compartir con los estudiantes</h3><div class="en-shares">${share}</div>
+      <p class="muted" style="font-size:.88rem;margin:8px 0 0">En parejas: cada pareja escanea el QR, escribe el nombre del equipo y juega. En la TV: ▶ Abrir y juegan todos juntos. Al final cada equipo recibe un <b>código secreto</b> para enseñártelo. El progreso se guarda en cada dispositivo.</p></div>
+    <div class="en-box"><div class="row" style="justify-content:space-between"><h3>✏️ Editar el juego</h3>${pubState}</div>
+      <div class="row"><label class="chk">📖 Episodios que ya leyeron: hasta el <select class="field" data-p="maxEp" data-num data-re>${epOpts(D.maxEp)}</select></label>
+        <span class="en-lv"><button class="btn sm ${lv === 'A' ? 'gold' : 'ghost'}" data-lv="A">🐣 K–2</button><button class="btn sm ${lv === 'A1' ? 'gold' : 'ghost'}" data-lv="A1">🧭 3.º–5.º</button></span></div>
+      <div class="en-tabs">${tabs}</div>
+      <div class="en-ed">${stationEd()}</div>
+      <div class="row en-pub"><button class="btn gold" id="enTry">▶ Probar mis cambios</button><button class="btn" id="enDl">💾 Descargar enigma.json</button><button class="btn ghost" id="enImp">📂 Importar</button>
+        ${isDraft ? '<button class="btn ghost" id="enDiscard">↩︎ Descartar mis cambios</button>' : ''}<button class="btn ghost" id="enOrig">♻️ Volver al original</button><input type="file" id="enFile" accept=".json,application/json" hidden></div>
+      <p class="muted" style="font-size:.86rem">Tus cambios se guardan solos en esta computadora (aquí y en la TV ya se ven). <b>Para que los vean los dispositivos de los estudiantes:</b> 💾 Descargar enigma.json → súbelo a la carpeta <b>data</b> de tu GitHub (centro-de-clase/data), o pídeselo a Claude.</p></div></div>`;
+
+  const $$ = s => el.querySelector(s), $all = s => el.querySelectorAll(s);
+  const commit = re => { enSetDraft(D); if (re) render(); else { const p = el.querySelector('.en-pill'); if (p) { p.className = 'en-pill warn'; p.textContent = '✏️ Tienes cambios sin publicar · solo en esta computadora'; } } };
+  const setP = (path, val) => { const ks = path.split('.'); let x = D; for (let i = 0; i < ks.length - 1; i++) { if (x[ks[i]] == null) x[ks[i]] = /^\d+$/.test(ks[i + 1]) ? [] : {}; x = x[ks[i]]; } x[ks[ks.length - 1]] = val; };
+  $all('[data-p]').forEach(inp => {
+    const ev = inp.tagName === 'SELECT' || inp.type === 'radio' ? 'change' : 'input';
+    inp.addEventListener(ev, () => {
+      let v = inp.value; if (inp.hasAttribute('data-num')) v = +v;
+      setP(inp.dataset.p, v);
+      if (inp.type === 'radio') { inp.closest('.en-opts').querySelectorAll('.en-opt').forEach(l => l.classList.toggle('ok', l.contains(inp))); }
+      commit(inp.hasAttribute('data-re'));
+    });
+  });
+  $all('[data-who]').forEach(sel => sel.onchange = () => {
+    const tgt = sel.dataset.who === 'finale' ? D.finale : D.stations[o.st];
+    tgt.who = sel.value === '__otro' ? '🐆 Yaya' : sel.value; commit(true);
+  });
+  $all('[data-st]').forEach(b => b.onclick = () => { o.st = /^\d+$/.test(b.dataset.st) ? +b.dataset.st : b.dataset.st; render(); });
+  $all('[data-lv]').forEach(b => b.onclick = () => { o.lv = b.dataset.lv; render(); });
+  $all('[data-open]').forEach(b => b.onclick = () => window.open(enUrl(b.dataset.open), '_blank'));
+  $all('[data-copy]').forEach(b => b.onclick = () => { try { navigator.clipboard.writeText(enUrl(b.dataset.copy)); toast('Enlace copiado ✓'); } catch (e) { prompt('Copia el enlace:', enUrl(b.dataset.copy)); } });
+  $all('[data-big]').forEach(b => b.onclick = () => {
+    const n = b.dataset.big, box = document.createElement('div'); box.className = 'en-bigqr';
+    box.innerHTML = `<h2>🌀 ${h(D.title)}</h2><div class="muted" style="font-size:1.4rem">${n === 'k2' ? '🐣 Pequeños exploradores · K–2' : '🧭 Exploradores · 3.º–5.º'}</div>${enQr(enUrl(n), 10)}<div class="muted">${h(enUrl(n))}</div><button class="btn gold">✕ Cerrar</button>`;
+    document.body.appendChild(box); box.querySelector('button').onclick = () => box.remove();
+  });
+  const st = D.stations[o.st];
+  if (st) {
+    const key = lv === 'A' ? 'qA' : 'qA1';
+    $$('#enQAdd').onclick = () => { st[key].push({ q: '', o: ['', '', ''], a: 0, ep: D.maxEp }); commit(true); };
+    $$('#enBank').onclick = () => { o.bank = !o.bank; if (o.bank) o.bankEp = Math.min(D.maxEp, 15); render(); };
+    const be = $$('#enBankEp'); if (be) be.onchange = () => { o.bankEp = +be.value; render(); };
+    $all('[data-bank]').forEach(b => b.onclick = () => { const q = ENIGMA_BANK[+b.dataset.bank]; st[key].push({ q: q.q, o: q.o.slice(0, 3), a: q.a, ep: q.ep }); commit(true); toast('Pregunta añadida ✓'); });
+    $all('[data-qdel]').forEach(b => b.onclick = () => { st[key].splice(+b.dataset.qdel, 1); commit(true); });
+    $$('#enUp').onclick = () => { const S2 = D.stations; [S2[o.st - 1], S2[o.st]] = [S2[o.st], S2[o.st - 1]]; o.st--; commit(true); };
+    $$('#enDown').onclick = () => { const S2 = D.stations; [S2[o.st + 1], S2[o.st]] = [S2[o.st], S2[o.st + 1]]; o.st++; commit(true); };
+    $$('#enStDel').onclick = () => { if (D.stations.length <= 1) { toast('El juego necesita al menos un lugar'); return; } if (!confirm(`¿Quitar «${st.n}» del juego?`)) return; D.stations.splice(o.st, 1); o.st = Math.max(0, o.st - 1); commit(true); };
+  }
+  const add = $$('#enStAdd'); if (add) add.onclick = () => {
+    const used = D.stations.map(x => x.spot); let spot = 1; while (used.includes(spot)) spot++;
+    D.stations.push({ spot, e: '⭐', n: 'Lugar nuevo', who: 'chica', hi: { A: '¡Hola!', A1: '¡Hola, exploradores!' }, qA: [], qA1: [], clue: { A: '', A1: '' } });
+    o.st = D.stations.length - 1; commit(true);
+  };
+  $$('#enTry').onclick = () => { enSetDraft(D); window.open(enUrl(o.lv === 'A' ? 'k2' : '35'), '_blank'); };
+  $$('#enDl').onclick = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(D, null, 1)], { type: 'application/json' })); a.download = 'enigma.json'; a.click(); toast('Ahora súbelo a la carpeta data de tu GitHub 📤'); };
+  $$('#enImp').onclick = () => $$('#enFile').click();
+  $$('#enFile').onchange = e => { const f = e.target.files[0]; if (!f) return; f.text().then(t => { try { const j = JSON.parse(t); if (!j.stations || !j.stations.length) throw 0; D = j; enSetDraft(D); o.st = 0; render(); toast('Juego importado ✓'); } catch (er) { toast('Ese archivo no es un enigma.json'); } }); };
+  const dis = $$('#enDiscard'); if (dis) dis.onclick = () => { if (!confirm('¿Descartar tus cambios y volver a la versión publicada?')) return; localStorage.removeItem(EN_DKEY); render(); };
+  $$('#enOrig').onclick = () => { if (!confirm('¿Volver al juego original (episodios 1–2)? Se reemplazan tus cambios en esta computadora.')) return; D = enClone(window.ENIGMA_DEFAULT); enSetDraft(D); o.st = 0; render(); };
+});
+
 /* ---------- 🔄 DILO DE OTRA MANERA ---------- */
 const OTRA = {
   na: { how: 'Cambia UNA parte de la oración. Usa la caja de herramientas.', list: [
@@ -3478,11 +3650,82 @@ const CAMINOS = {
     ]
   }
 };
+/* --- caminos propios (editor): mismo tablero, otras paradas, personajes y diálogos --- */
+function spWho(id) {
+  if (SP_CAST[id]) return SP_CAST[id];
+  const m = String(id || '').match(/^\s*(\p{Extended_Pictographic}(?:️|‍\p{Extended_Pictographic})*)?\s*(.*)$/u);
+  return { n: (m && m[2]) || '', art: (m && m[1]) || '🐾', s: 1 };
+}
+function spMine() { const g = gdata(); return g.caminos || (g.caminos = []); }
+function spCur() {
+  const g = gdata(), base = CAMINOS.ceiba, u = spMine().find(x => x.id === g.caminoSel);
+  if (!u) return Object.assign({ id: 'ceiba' }, base);
+  const last = base.stops.length - 1;
+  const stops = base.stops.map((b, i) => Object.assign({}, b, u.stops[i] || {}, { at: b.at, home: b.home, lift: b.lift, stays: b.stays }))
+    .filter((s, i) => i === 0 || i === last || !s.off);
+  return Object.assign({}, base, { id: u.id, t: u.t, lvl: u.lvl, fin: u.fin, stops });
+}
+function spNewFrom(src) {
+  const base = CAMINOS.ceiba;
+  return { id: 'c' + Date.now().toString(36), t: (src.t || base.t) + ' (copia)', lvl: src.lvl || base.lvl, fin: src.fin || '🎉 ¡Fin! Los guardianes de Chiquibul están juntos.',
+    stops: base.stops.map((b, i) => { const s = (src.stops && src.stops[i]) || b; return { place: s.place, who: s.who, lines: JSON.parse(JSON.stringify(s.lines)), q: s.q, off: !!s.off }; }) };
+}
+function spEditor(el, o, rerender) {
+  const g = gdata(), u = spMine().find(x => x.id === g.caminoSel);
+  const base = CAMINOS.ceiba, last = base.stops.length - 1;
+  if (o.es == null || o.es > last) o.es = 0;
+  const s = u.stops[o.es];
+  const used = u.stops.map((x, i) => i !== o.es && !x.off ? x.who : null).filter(Boolean);
+  const castOpts = cur => Object.keys(SP_CAST).filter(k => k !== 'chica').map(k => `<option value="${k}" ${k === cur ? 'selected' : ''} ${used.includes(k) ? 'disabled' : ''}>${SP_CAST[k].art.startsWith('img:') ? '🖼️' : SP_CAST[k].art.replace(/<.*$/, '')} ${h(SP_CAST[k].n)}</option>`).join('') + `<option value="__otro" ${cur && !SP_CAST[cur] ? 'selected' : ''}>✏️ Otro (emoji + nombre)…</option>`;
+  const speakers = ['chica'].concat(u.stops.slice(0, o.es + 1).filter(x => (!x.off || x === s) && x.who).map(x => x.who)).filter((v, i, a) => a.indexOf(v) === i);
+  const spkOpts = cur => speakers.map(k => `<option value="${h(k)}" ${k === cur ? 'selected' : ''}>${h(spWho(k).n || k)}</option>`).join('') + (speakers.includes(cur) ? '' : `<option value="${h(cur)}" selected>${h(spWho(cur).n || cur)} ⚠️</option>`);
+  el.innerHTML = `<div class="sp-ed">
+    <div class="row"><input class="field" style="flex:1;font-weight:800;font-size:1.1rem" data-k="t" value="${h(u.t)}" placeholder="Título del camino"><input class="field" style="width:240px" data-k="lvl" value="${h(u.lvl)}" placeholder="Nivel (ej. Nivel A / A1)"></div>
+    <div class="en-tabs">${u.stops.map((x, i) => `<button class="en-tab ${o.es === i ? 'on' : ''} ${x.off ? 'off' : ''}" data-es="${i}">${i === 0 ? '🏠' : i === last ? '🏁' : i} ${h(x.place)}</button>`).join('')}</div>
+    <div class="en-ed">
+      <div class="row" style="gap:8px"><label class="chk">📍 Lugar <input class="field" style="width:220px" data-s="place" value="${h(s.place)}"></label>
+        ${o.es === 0 ? '<span class="muted">Aquí empieza Chica (sola).</span>' : `<label class="chk">🐾 Personaje <select class="field" id="spEdWho">${castOpts(s.who)}</select></label>${SP_CAST[s.who] ? '' : `<input class="field" style="width:160px" data-s="who" value="${h(s.who)}" placeholder="🐆 Yaya">`}`}
+        ${o.es > 0 && o.es < last ? `<label class="chk"><input type="checkbox" id="spEdOff" ${s.off ? 'checked' : ''}> Saltar esta parada</label>` : ''}</div>
+      <label class="en-l">💬 Diálogo <span class="muted">(una burbuja por línea; se lee en voz alta)</span></label>
+      ${s.lines.map((l, k) => `<div class="row sp-edl"><select class="field" data-lw="${k}" style="width:150px">${spkOpts(l[0])}</select><input class="field" style="flex:1" data-lt="${k}" value="${h(l[1])}"><button class="btn sm ghost" data-lu="${k}" ${k ? '' : 'disabled'} title="Subir">⬆️</button><button class="btn sm ghost" data-ld="${k}" title="Borrar">🗑️</button></div>`).join('')}
+      <button class="btn sm" id="spEdAdd">＋ Línea</button>
+      <label class="en-l">❓ Pregunta para la clase</label><input class="field en-w" data-s="q" value="${h(s.q)}">
+      ${o.es === last ? `<label class="en-l">🎉 Mensaje final</label><input class="field en-w" data-k="fin" value="${h(u.fin || '')}">` : ''}
+    </div>
+    <div class="row" style="margin-top:12px"><button class="btn gold" id="spEdDone" data-primary>✓ Listo · ver el tablero</button><button class="btn ghost" id="spEdDel">🗑️ Borrar este camino</button>
+      <span class="muted" style="font-size:.85rem">Se guarda solo. El tablero (el río, los árboles y las 8 paradas) es el mismo; cambias quién aparece y qué dice.</span></div></div>`;
+  const $$ = q => el.querySelector(q), $all = q => el.querySelectorAll(q);
+  const keep = () => save();
+  $all('[data-k]').forEach(i => i.oninput = () => { u[i.dataset.k] = i.value; keep(); });
+  $all('[data-s]').forEach(i => i.oninput = () => { s[i.dataset.s] = i.value; keep(); if (i.dataset.s === 'place') { const t = $$(`[data-es="${o.es}"]`); if (t) t.textContent = (o.es === 0 ? '🏠 ' : o.es === last ? '🏁 ' : o.es + ' ') + i.value; } });
+  $all('[data-lt]').forEach(i => i.oninput = () => { s.lines[+i.dataset.lt][1] = i.value; keep(); });
+  $all('[data-lw]').forEach(i => i.onchange = () => { s.lines[+i.dataset.lw][0] = i.value; keep(); });
+  $all('[data-lu]').forEach(b => b.onclick = () => { const k = +b.dataset.lu; [s.lines[k - 1], s.lines[k]] = [s.lines[k], s.lines[k - 1]]; keep(); rerender(); });
+  $all('[data-ld]').forEach(b => b.onclick = () => { s.lines.splice(+b.dataset.ld, 1); keep(); rerender(); });
+  $all('[data-es]').forEach(b => b.onclick = () => { o.es = +b.dataset.es; rerender(); });
+  $$('#spEdAdd').onclick = () => { s.lines.push([s.who || 'chica', '']); keep(); rerender(); setTimeout(() => { const l = el.querySelectorAll('[data-lt]'); l[l.length - 1] && l[l.length - 1].focus(); }); };
+  const w = $$('#spEdWho'); if (w) w.onchange = () => { const old = s.who, nw = w.value === '__otro' ? '🐆 Yaya' : w.value; s.who = nw; s.lines.forEach(l => { if (l[0] === old) l[0] = nw; }); keep(); rerender(); };
+  const off = $$('#spEdOff'); if (off) off.onchange = () => { s.off = off.checked; keep(); rerender(); };
+  $$('#spEdDone').onclick = () => { o.edit = false; Object.assign(o, { p: 0, stop: 0, line: -1, joined: [], done: false, busy: false }); render(); };
+  $$('#spEdDel').onclick = () => { if (!confirm(`¿Borrar «${u.t}»?`)) return; g.caminos = spMine().filter(x => x !== u); g.caminoSel = 'ceiba'; o.edit = false; save(); render(); };
+}
 const SP_T = 64;
 const spArt = a => a.startsWith('img:') ? IMG(a.slice(4)) : a;
 tool('camino', 'assess', '🗺️', 'Caminos de historias', '3D story path board', 'Un tablero 3D: tú tocas ▶ y Chica camina por Chiquibul. En cada parada un amigo habla (🔈) y se une al camino. Abajo tienes una pregunta para hacer story asking con la clase.', el => {
-  const C = CAMINOS.ceiba, N = C.N;
+  const C = spCur(), N = C.N, g0 = gdata();
   const o = ses('camino', () => ({ p: 0, stop: 0, line: -1, joined: [], voice: true, showQ: false, busy: false, done: false }));
+  if (o.pid !== C.id) Object.assign(o, { pid: C.id, p: 0, stop: 0, line: -1, joined: [], done: false, busy: false, es: 0 });
+  const pick = `<div class="row sp-pick"><label class="chk">🗺️ Camino: <select class="field" id="spPick">${[['ceiba', CAMINOS.ceiba.t + ' (original)']].concat(spMine().map(x => [x.id, x.t])).map(([id, t]) => `<option value="${id}" ${id === C.id ? 'selected' : ''}>${h(t)}</option>`).join('')}</select></label>
+    ${o.edit ? '' : `<button class="btn sm gold" id="spEdit">✏️ ${C.id === 'ceiba' ? 'Hacer mi versión (editar)' : 'Editar este camino'}</button>`}<button class="btn sm ghost" id="spNew">＋ Copiar en un camino nuevo</button></div>`;
+  function wirePick() {
+    const q = x => el.querySelector(x);
+    q('#spPick').onchange = e => { g0.caminoSel = e.target.value; o.edit = false; save(); render(); };
+    const copy = () => { const mine = spMine().find(x => x.id === C.id); const n = spNewFrom(mine || C); if (!mine) n.t = CAMINOS.ceiba.t + ' (mi versión)'; spMine().push(n); g0.caminoSel = n.id; o.edit = true; o.es = 0; save(); render(); };
+    const ed = q('#spEdit'); if (ed) ed.onclick = () => { if (C.id === 'ceiba') copy(); else { o.edit = true; render(); } };
+    q('#spNew').onclick = copy;
+  }
+  if (o.edit && C.id !== 'ceiba') { el.innerHTML += pick + '<div id="spEdBox"></div>'; const box = el.querySelector('#spEdBox'); const rr = () => spEditor(box, o, rr); rr(); wirePick(); return; }
+  o.edit = false;
   const isRiver = (x, y) => y === C.river.y && x !== C.river.bridge;
   const onPath = new Map(C.path.map(([x, y], i) => [x + ',' + y, i]));
   let tiles = '';
@@ -3493,22 +3736,23 @@ tool('camino', 'assess', '🗺️', 'Caminos de historias', '3D story path board
   }
   const sprite = (id, x, y, html, s, lift = 0, extra = '') => `<div class="sp-sprite ${extra}" data-id="${id}" style="left:${x * SP_T + SP_T / 2}px;top:${y * SP_T + SP_T / 2}px;--s:${s};--lift:${lift}px"><div class="sp-up"><div class="sp-say"></div><div class="sp-art">${html}</div></div></div>`;
   const decor = C.decor.map(([x, y, e, s, lift], i) => sprite('d' + i, x, y, e, s, lift || 0, 'decor')).join('');
-  const cast = ['chica', ...C.stops.filter(s => s.who).map(s => s.who)].map(id => { const st = C.stops.find(s => s.who === id), c = SP_CAST[id], hm = st ? st.home : C.path[0];
+  const cast = ['chica', ...C.stops.filter(s => s.who).map(s => s.who)].map(id => { const st = C.stops.find(s => s.who === id), c = spWho(id), hm = st ? st.home : C.path[0];
     return sprite(id, hm[0], hm[1], spArt(c.art) + `<span class="sp-name">${h(c.n)}</span>`, c.s, st && st.lift || 0, 'char' + (c.fly ? ' fly' : '')); }).join('');
   const cur = C.stops[o.stop], ln = o.line >= 0 && cur ? cur.lines[o.line] : null;
-  el.innerHTML += `<div class="sp-wrap" id="spWrap">
+  el.innerHTML += pick + `<div class="sp-wrap" id="spWrap">
       <div class="sp-stage" id="spStage"><div class="sp-scaler" id="spScale"><div class="sp-board" style="width:${N * SP_T}px;height:${N * SP_T}px">
         <div class="sp-side s" style="width:${N * SP_T}px;top:${N * SP_T}px"></div><div class="sp-side e" style="height:${N * SP_T}px;left:${N * SP_T}px"></div>
         ${tiles}${decor}${cast}</div></div>
         <div class="sp-title">🗺️ ${h(C.t)}</div><div class="sp-dots">${C.stops.map((s, i) => `<span class="${i < o.stop || (i === o.stop && o.line >= 0) ? 'on' : ''}" title="${h(s.place)}">${i === 0 ? '🏠' : i}</span>`).join('')}</div>
       </div>
-      <div class="sp-cap"><div class="sp-line" id="spLine">${o.done ? '🎉 ¡Fin! Los guardianes de Chiquibul están juntos.' : ln ? `<b>${h(SP_CAST[ln[0]].n)}:</b> ${h(ln[1])}` : o.stop === 0 && o.line < 0 ? 'Toca ▶ para empezar la historia.' : '…'}</div>
+      <div class="sp-cap"><div class="sp-line" id="spLine">${o.done ? h(C.fin || '🎉 ¡Fin! Los guardianes de Chiquibul están juntos.') : ln ? `<b>${h(spWho(ln[0]).n)}:</b> ${h(ln[1])}` : o.stop === 0 && o.line < 0 ? 'Toca ▶ para empezar la historia.' : '…'}</div>
         <div class="sp-q ${o.showQ ? '' : 'hidden'}" id="spQt">❓ ${cur ? h(cur.q) : ''}</div></div>
     </div>
     <div class="row" style="justify-content:center;margin-top:12px"><button class="btn gold xl" id="spGo" data-primary>${o.done ? '↺ Otra vez' : '▶ Siguiente'}</button>
       <button class="btn" id="spQ">${o.showQ ? '🙈 Esconder pregunta' : '❓ Pregunta para la clase'}</button><button class="btn" id="spSay">🔈 Repetir</button>
       <label class="chk"><input type="checkbox" id="spV" ${o.voice ? 'checked' : ''}> Voz</label><button class="btn sm ghost" id="spReset">↺ Empezar de nuevo</button><button class="btn sm" id="spFull">⛶ Pantalla completa</button></div>
     <p class="muted" style="margin-top:8px;font-size:.88rem">${h(C.lvl)} · 💡 En cada parada: pausa, haz la pregunta, recicla («¿Bruno está en el río o en la cueva?») y deja que la clase prediga quién sigue.</p>`;
+  wirePick();
   const $$ = s => el.querySelector(s), stage = $$('#spStage'), scaler = $$('#spScale');
   const fit = () => { const r = stage.getBoundingClientRect(); if (!r.width) return; scaler.style.transform = `scale(${Math.min(r.width / 1160, r.height / 700)})`; };
   const ro = new ResizeObserver(fit); ro.observe(stage); fit();
@@ -3516,7 +3760,7 @@ tool('camino', 'assess', '🗺️', 'Caminos de historias', '3D story path board
   const place = (id, x, y) => { const s = spr(id); if (s) { s.style.left = (x * SP_T + SP_T / 2) + 'px'; s.style.top = (y * SP_T + SP_T / 2) + 'px'; } };
   function layout() {
     const [px, py] = C.path[o.p]; place('chica', px, py);
-    o.joined.forEach((id, k) => { const [x, y] = C.path[Math.max(0, o.p - 1 - k)]; place(id, x + (k % 2 ? .12 : -.12), y + .1); const s = spr(id); if (s) s.style.setProperty('--lift', SP_CAST[id].fly ? '34px' : '0px'); });
+    o.joined.forEach((id, k) => { const [x, y] = C.path[Math.max(0, o.p - 1 - k)]; place(id, x + (k % 2 ? .12 : -.12), y + .1); const s = spr(id); if (s) s.style.setProperty('--lift', spWho(id).fly ? '34px' : '0px'); });
   }
   function say(id, text) {
     el.querySelectorAll('.sp-say').forEach(b => { b.classList.remove('on'); b.textContent = ''; });
@@ -3538,7 +3782,7 @@ tool('camino', 'assess', '🗺️', 'Caminos de historias', '3D story path board
     const st = C.stops[o.stop];
     if (o.line + 1 < st.lines.length) {
       if (o.line < 0 && o.p < st.at) { el.querySelectorAll('.sp-say').forEach(b => b.classList.remove('on')); $$('#spLine').textContent = '🚶 …'; await walkTo(st.at); if (!el.isConnected) return; }
-      o.line++; const l = st.lines[o.line]; say(l[0], l[1]); $$('#spLine').innerHTML = `<b>${h(SP_CAST[l[0]].n)}:</b> ${h(l[1])}`;
+      o.line++; const l = st.lines[o.line]; say(l[0], l[1]); $$('#spLine').innerHTML = `<b>${h(spWho(l[0]).n)}:</b> ${h(l[1])}`;
       el.querySelectorAll('.sp-dots span').forEach((d, i) => d.classList.toggle('on', i <= o.stop));
       if (o.stop === C.stops.length - 1 && o.line === st.lines.length - 1) { o.done = true; setTimeout(() => { if (!el.isConnected) return; fanfare(); confetti(['🌳', '⭐', '🦋', '🎉']); $$('#spGo').textContent = '↺ Otra vez'; }, 1800); }
       return;
@@ -3556,7 +3800,7 @@ tool('camino', 'assess', '🗺️', 'Caminos de historias', '3D story path board
 });
 
 /* ---------- tool order in the menu ---------- */
-const TOOL_ORDER = ['links', 'pizarra', 'tareas', 'qr', 'prof', 'rubricas', 'check', 'exit', 'resultados', 'practica', 'ahorcado', 'camino', 'minuto', 'conexiones', 'otramanera', 'timer', 'safari', 'sonidos', 'check', 'wheel', 'picker', 'cold', 'groups', 'pairs', 'seats', 'part', 'dados', 'exit',
+const TOOL_ORDER = ['links', 'pizarra', 'tareas', 'qr', 'prof', 'rubricas', 'check', 'exit', 'resultados', 'practica', 'ahorcado', 'camino', 'enigma', 'minuto', 'conexiones', 'otramanera', 'timer', 'safari', 'sonidos', 'check', 'wheel', 'picker', 'cold', 'groups', 'pairs', 'seats', 'part', 'dados', 'exit',
   'espanol', 'points', 'houses', 'semana', 'mystery', 'stickers', 'tokens', 'levels', 'reward',
   'tpr', 'story', 'vocab', 'character', 'problem', 'location', 'cubes', 'qwords', 'verbs', 'tenses', 'convo', 'circ'];
 TOOLS.sort((a, b) => { const ia = TOOL_ORDER.indexOf(a.id), ib = TOOL_ORDER.indexOf(b.id); return (ia < 0 ? 999 : ia) - (ib < 0 ? 999 : ib); });
