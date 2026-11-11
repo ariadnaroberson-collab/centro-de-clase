@@ -35,8 +35,7 @@
      ],
      "a": 0,
      "ep": 1,
-     "sc": "❤️ ❓",
-     "qEn": "What does Chica like?"
+     "sc": "❤️ ❓"
     },
     {
      "q": "¿Qué come Chica?",
@@ -47,8 +46,7 @@
      ],
      "a": 0,
      "ep": 1,
-     "sc": "😋 🍽️ ❓",
-     "qEn": "What does Chica eat?"
+     "sc": "😋 🍽️ ❓"
     }
    ],
    "qA1": [
@@ -107,8 +105,7 @@
      ],
      "a": 1,
      "ep": 1,
-     "sc": "👀 ❓",
-     "qEn": "What animal is Don Pico?"
+     "sc": "👀 ❓"
     },
     {
      "q": "¿Qué toca Don Pico?",
@@ -119,8 +116,7 @@
      ],
      "a": 0,
      "ep": 1,
-     "sc": "👂 🎶 ❓",
-     "qEn": "What does Don Pico play?"
+     "sc": "👂 🎶 ❓"
     }
    ],
    "qA1": [
@@ -179,8 +175,7 @@
      ],
      "a": 1,
      "ep": 1,
-     "sc": "🤲 ❓",
-     "qEn": "What does Nico have?"
+     "sc": "🤲 ❓"
     },
     {
      "q": "¿Quién es nuevo en la selva?",
@@ -191,8 +186,7 @@
      ],
      "a": 1,
      "ep": 1,
-     "sc": "🌳 🆕 ❓",
-     "qEn": "Who is new in the jungle?"
+     "sc": "🌳 🆕 ❓"
     }
    ],
    "qA1": [
@@ -251,8 +245,7 @@
      ],
      "a": 1,
      "ep": 1,
-     "sc": "💭 ❓",
-     "qEn": "How does Bruno feel at the end?"
+     "sc": "💭 ❓"
     },
     {
      "q": "¿Qué animal es Bruno?",
@@ -263,8 +256,7 @@
      ],
      "a": 0,
      "ep": 1,
-     "sc": "👀 ❓",
-     "qEn": "What animal is Bruno?"
+     "sc": "👀 ❓"
     }
    ],
    "qA1": [
@@ -313,8 +305,7 @@
      ],
      "a": 2,
      "ep": 2,
-     "sc": "❤️ 🎨 ❓",
-     "qEn": "What color does Mora like?"
+     "sc": "❤️ 🎨 ❓"
     },
     {
      "q": "Don Pico dice: «No toquen las…»",
@@ -325,8 +316,7 @@
      ],
      "a": 0,
      "ep": 2,
-     "sc": "🚫 ✋ ❓",
-     "qEn": "Don Pico says: “Don't touch the…”"
+     "sc": "🚫 ✋ ❓"
     }
    ],
    "qA1": [
@@ -375,8 +365,7 @@
      ],
      "a": 1,
      "ep": 2,
-     "sc": "👀 🎨 ❓",
-     "qEn": "Iggy sees a lizard. What color is it?"
+     "sc": "👀 🎨 ❓"
     }
    ],
    "qA1": [
@@ -425,8 +414,7 @@
      ],
      "a": 1,
      "ep": 2,
-     "sc": "👀 ❓",
-     "qEn": "What does Teo see?"
+     "sc": "👀 ❓"
     },
     {
      "q": "Después, ¿qué tiene la fruta?",
@@ -437,8 +425,7 @@
      ],
      "a": 0,
      "ep": 2,
-     "sc": "🥭 🔍 ❓",
-     "qEn": "Later, what is on the fruit?"
+     "sc": "🥭 🔍 ❓"
     }
    ],
    "qA1": [
@@ -487,8 +474,7 @@
      ],
      "a": 0,
      "ep": 2,
-     "sc": "🟤 ❓",
-     "qEn": "What does Bruno cover with mud?"
+     "sc": "🟤 ❓"
     },
     {
      "q": "¿Qué aprende Bruno?",
@@ -499,8 +485,7 @@
      ],
      "a": 1,
      "ep": 2,
-     "sc": "💡 ❓",
-     "qEn": "What does Bruno learn?"
+     "sc": "💡 ❓"
     }
    ],
    "qA1": [

@@ -149,7 +149,7 @@ h1,h2,h3,.disp{font-family:'Baloo 2',Nunito,sans-serif;line-height:1.05;margin:0
     <input id="team" maxlength="28" placeholder="ej. Los Jaguares" autocomplete="off">
     <span class="st-lbl">🧭 ¿Quiénes juegan?</span>
     <div class="lv-row">
-      <button class="lv" data-lv="A" aria-pressed="false"><span class="big">🐣</span><b>Pequeños exploradores</b><span>K–2 · con dibujos y audio</span></button>
+      <button class="lv" data-lv="A" aria-pressed="false"><span class="big">🐣</span><b>Pequeños exploradores</b><span>K–2 · con dibujos grandes</span></button>
       <button class="lv" data-lv="A1" aria-pressed="false"><span class="big">🧭</span><b>Exploradores</b><span>3.º–5.º · más lectura</span></button>
     </div>
     <button class="btn wide" id="go">¡A la selva! 🌿</button>
@@ -165,7 +165,7 @@ h1,h2,h3,.disp{font-family:'Baloo 2',Nunito,sans-serif;line-height:1.05;margin:0
     <div class="prog"><svg viewBox="-50 -50 100 100" id="hdSp"></svg><b id="hdN">0/8</b></div>
     <button class="ib" id="snd" title="Sonido">🔊</button>
   </div>
-  <div class="clue-bar" id="clueBar"><span class="tag">🔎 Pista</span><span class="tx" id="clueTx"></span><button class="say" id="clueSay" title="Escuchar">🔈</button></div>
+  <div class="clue-bar" id="clueBar"><span class="tag">🔎 Pista</span><span class="tx" id="clueTx"></span></div>
   <div class="mapwrap"><div id="map"></div></div>
 </section>
 
@@ -202,6 +202,7 @@ const sfx = {
 };
 const clean = t => String(t || '').replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}\u{200D}\u{2B00}-\u{2BFF}]/gu, '').replace(/[«»]/g, '').replace(/\s+/g, ' ').trim();
 function speak(t, rate, lang) {
+  return; /* sin voz: Ari prefiere que un lector juegue con un no lector */
   if (muted || !('speechSynthesis' in window)) return;
   try {
     const en = lang === 'en';
@@ -311,7 +312,7 @@ function tapSpot(b) {
   if (idx === want) { walkTo(b); return; }
   sfx.no();
   b.classList.remove('shake'); b.offsetWidth; b.classList.add('shake');
-  const msg = idx !== 'ceiba' && +idx < P.i ? '¡Ya visitamos este lugar!' : (P.lvl === 'A' ? '¡Aquí no es! Escucha la pista. 🔈' : 'Aquí no es. Lean la pista otra vez.');
+  const msg = idx !== 'ceiba' && +idx < P.i ? '¡Ya visitamos este lugar!' : (P.lvl === 'A' ? '¡Aquí no es! Lean la pista otra vez. 🔎' : 'Aquí no es. Lean la pista otra vez.');
   const n = document.createElement('div'); n.className = 'nope'; n.textContent = msg; n.style.left = b.style.left; n.style.top = b.style.top;
   $('#map').appendChild(n); setTimeout(() => n.remove(), 1700);
   if (P.lvl === 'A') setTimeout(() => speak(curClue()), 300);
@@ -348,10 +349,9 @@ function closeSheet() { $('#sheet').classList.add('hide'); speechSynthesis && sp
 function openIntro() {
   const lv = P.lvl;
   openSheet(`<div class="who">${avatar('chica')}<div class="bub"><div class="nm">Chica</div><p>${h(D.intro[lv])}</p></div></div>
-    <div class="cluebox"><div style="flex:1"><div class="t">🔎 Primera pista</div><p>${h(curClue())}</p></div><button class="say" data-say="1">🔈</button></div>
-    <div class="row"><button class="say" data-say="0" title="Escuchar">🔈</button><button class="btn green" id="ok">🗺️ ¡Al mapa!</button></div>`);
+    <div class="cluebox"><div style="flex:1"><div class="t">🔎 Primera pista</div><p>${h(curClue())}</p></div></div>
+    <div class="row"><button class="btn green" id="ok">🗺️ ¡Al mapa!</button></div>`);
   const t = [D.intro[lv], curClue()];
-  $('#card').querySelectorAll('[data-say]').forEach(b => b.onclick = () => speak(t[+b.dataset.say]));
   $('#ok').onclick = () => { closeSheet(); if (autoRead()) speak(curClue()); };
   if (autoRead()) speak(D.intro[lv] + ' ' + curClue());
 }
@@ -361,8 +361,7 @@ function arrive(fresh) {
   if (P.phase === 'talk' || !P.qs) {
     P.phase = 'talk'; save();
     openSheet(`<div class="place">${h(s.e)} ${h(s.n)}</div><div class="who">${avatar(s.who)}<div class="bub"><div class="nm">${h(whoName(s.who))}</div><p>${h(s.hi[lv])}</p></div></div>
-      <div class="row"><button class="say" id="sy">🔈</button><button class="btn" id="ok">${P.lvl === 'A' ? '❓ ¡Una pregunta!' : '❓ Ver la pregunta'}</button></div>`);
-    $('#sy').onclick = () => speak(s.hi[lv]);
+      <div class="row"><button class="btn" id="ok">${P.lvl === 'A' ? '❓ ¡Una pregunta!' : '❓ Ver la pregunta'}</button></div>`);
     $('#ok').onclick = () => { P.qs = stationQs(s); P.qi = 0; P.phase = 'q'; save(); P.qs.length ? askQ() : reward(); };
     if (autoRead() || fresh) speak(s.hi[lv]);
     return;
@@ -374,16 +373,15 @@ function askQ() {
   if (!q) { reward(); return; }
   const opts = shuffle(q.o.map((t, k) => ({ t, k })).filter(x => x.t));
   const emo = t => { const m = String(t).match(/^\s*(\p{Extended_Pictographic}(?:️|‍\p{Extended_Pictographic})*)\s*(.*)$/u); return m ? [m[1], m[2]] : ['', t]; };
-  const k2 = lv === 'A', hasEn = k2 && String(q.qEn || '').trim();
+  const k2 = lv === 'A';
   const scene = k2 ? `<div class="scene">${avatar(s.who)}${String(q.sc || '').trim() ? `<span class="se">${h(q.sc)}</span>` : `<span class="se">${h(s.e)} ❓</span>`}</div>` : '';
   openSheet(`<div class="place">${h(s.e)} ${h(s.n)}</div>${scene}
-    <div class="q"><span>${h(q.q)}</span><span class="sayrow"><button class="say" id="sy" title="Escuchar en español">🔈${k2 ? ' ES' : ''}</button>${hasEn ? '<button class="say en hide" id="syEn" title="Listen in English">🔈 EN</button>' : ''}</span></div>
+    <div class="q"><span>${h(q.q)}</span></div>
     <div class="opts">${opts.map((o, i) => { const [e, t] = emo(o.t); return `<button class="opt" data-k="${o.k}"><span class="k">${'ABC'[i] || i + 1}</span>${lv === 'A' && e ? `<span class="em">${e}</span>` : (e ? e + ' ' : '')}<span>${h(t)}</span></button>`; }).join('')}</div>
     <div class="fb" id="fb"></div>
     <div class="row"><span class="qn">Pregunta ${P.qi + 1} de ${P.qs.length}</span></div>`, lv === 'A' ? 'lvA' : '');
   const readQ = () => speak(q.q + '. ' + opts.map(o => clean(o.t)).join('. '));
-  $('#sy').onclick = readQ;
-  const enB = $('#syEn'); if (enB) enB.onclick = () => speak(q.qEn, .9, 'en');
+
   if (autoRead()) readQ();
   $('#card').querySelectorAll('.opt').forEach(b => b.onclick = () => {
     ac();
@@ -397,7 +395,6 @@ function askQ() {
       b.classList.add('no'); sfx.no(); P.miss++; save();
       const t = P.lvl === 'A' ? '¡Casi! Prueba otra vez. 💪' : '¡Casi! Piénsalo otra vez. 💪';
       $('#fb').className = 'fb bad'; $('#fb').textContent = t; if (autoRead()) speak(t);
-      if (enB && enB.classList.contains('hide')) { enB.classList.remove('hide'); enB.classList.add('unlock'); }
     }
   });
 }
@@ -409,9 +406,8 @@ function reward() {
   const pc = D.piece || { e: '🌀', n: 'pedazo de la espiral' };
   openSheet(`<div class="reward"><svg class="bigsp" viewBox="-50 -50 100 100"><circle r="49" fill="#0f3d2e"/>${spiralSvg(n, P.pieces, { w: 7, pulse: true, dim: .25 })}</svg>
       <h2>¡Un ${h(pc.n)}! ${h(pc.e)}</h2><p style="font-weight:800;color:#3d5a4b;margin:6px 0 0">Tienen ${P.pieces} de ${n}.</p></div>
-    <div class="cluebox"><div style="flex:1"><div class="t">🔎 Nueva pista</div><p>${h(nextClue)}</p></div><button class="say" id="sy">🔈</button></div>
+    <div class="cluebox"><div style="flex:1"><div class="t">🔎 Nueva pista</div><p>${h(nextClue)}</p></div></div>
     <div class="row"><button class="btn green" id="ok">🗺️ ¡Al mapa!</button></div>`);
-  $('#sy').onclick = () => speak(nextClue);
   if (autoRead()) speak(`¡Un ${pc.n}! ${nextClue}`);
   $('#ok').onclick = () => {
     P.i++; P.phase = 'find'; P.qs = null; save();
@@ -435,8 +431,7 @@ function openFinale(fresh) {
       <div style="font-weight:700;color:#3d5a4b">encontró ${n} ${h((D.piece && D.piece.nn) || 'pedazos de la espiral')} en Chiquibul · ${h(date)}</div>
       <div style="margin-top:8px;font-weight:800;color:#3d5a4b">Código secreto para la maestra:</div><div class="code">${teamCode()}</div>
     </div>
-    <div class="row"><button class="say" id="sy">🔈</button><button class="btn ghost" id="pr">🖨️ Imprimir</button><button class="btn ghost" id="again">🔁 Jugar otra vez</button><button class="btn green" id="ok">🗺️ Ver el mapa</button></div>`);
-  $('#sy').onclick = () => speak(f[lv]);
+    <div class="row"><button class="btn ghost" id="pr">🖨️ Imprimir</button><button class="btn ghost" id="again">🔁 Jugar otra vez</button><button class="btn green" id="ok">🗺️ Ver el mapa</button></div>`);
   $('#pr').onclick = () => print();
   $('#again').onclick = () => { if (confirm('¿Empezar de nuevo?')) { localStorage.removeItem(PKEY); location.reload(); } };
   $('#ok').onclick = closeSheet;
@@ -467,7 +462,6 @@ function confetti() { const em = ['🌀', '✨', '🍃', '🌸', '⭐', '🦋'];
   $('#team').onkeydown = e => { if (e.key === 'Enter') $('#go').click(); };
   $('#home').onclick = () => { closeSheet(); $('#game').classList.add('hide'); $('#start').classList.remove('hide'); location.reload(); };
   $('#snd').onclick = () => { muted = !muted; $('#snd').textContent = muted ? '🔇' : '🔊'; if (muted) speechSynthesis.cancel(); };
-  $('#clueSay').onclick = () => speak(curClue());
   if ('speechSynthesis' in window) speechSynthesis.getVoices();
 })();
 </script>
