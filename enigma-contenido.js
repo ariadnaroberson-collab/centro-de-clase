@@ -19,21 +19,21 @@ window.ENIGMA_DEFAULT = {
     { spot: 1, e: '🏡', n: 'La casa de Chica', who: 'chica',
       hi: { A: '¡Hola! Me llamo Chica. ¡Vamos a jugar!', A1: '¡Hola, exploradores! Soy Chica. Vivo en un árbol grande en Chiquibul. ¿Listos para la aventura?' },
       qA: [
-        { q: '¿Qué le gusta a Chica?', o: ['🤸 Saltar', '😴 Dormir', '🏊 Nadar'], a: 0, ep: 1 },
-        { q: '¿Qué come Chica?', o: ['🍌 Fruta', '🐟 Pescado', '🍕 Pizza'], a: 0, ep: 1 }
+        { q: '¿Qué le gusta a Chica?', o: ['🤸 Saltar', '😴 Dormir', '🏊 Nadar'], a: 0, ep: 1, sc: '❤️ ❓', qEn: 'What does Chica like?' },
+        { q: '¿Qué come Chica?', o: ['🍌 Fruta', '🐟 Pescado', '🍕 Pizza'], a: 0, ep: 1, sc: '😋 🍽️ ❓', qEn: 'What does Chica eat?' }
       ],
       qA1: [
         { q: '¿Qué dice Chica cada mañana?', o: ['«¡Buenos días, selva!»', '«¡Buenas noches, selva!»', '«¡Adiós, escuela!»'], a: 0, ep: 1 },
         { q: '¿Qué le gusta hacer a Chica?', o: ['Saltar, mirar y preguntar', 'Dormir todo el día', 'Nadar en el río'], a: 0, ep: 1 },
         { q: '¿Dónde vive Chica?', o: ['En una cueva', 'En un árbol grande', 'En el río'], a: 1, ep: 1 }
       ],
-      clue: { A: 'Busca al maestro. Es un tucán. Toca una campana. 🔔', A1: 'Ahora busquen la escuela. Allí un tucán viejo y sabio toca una campana. 🔔' } },
+      clue: { A: 'Busca la escuela. El maestro es un tucán. Toca una campana. 🔔', A1: 'Ahora busquen la escuela. Allí un tucán viejo y sabio toca una campana. 🔔' } },
 
-    { spot: 2, e: '🔔', n: 'La Escuela del Tucán', who: 'donpico',
+    { spot: 2, e: '🔔', n: 'La Escuela La Ceiba', who: 'donpico',
       hi: { A: '¡Buenos días! Soy Don Pico. Soy el maestro.', A1: '¡Atención, atención! Soy Don Pico, el maestro. Tengo una pregunta para ustedes.' },
       qA: [
-        { q: '¿Qué animal es Don Pico?', o: ['🐒 Un mono', '🐦 Un tucán', '🐊 Un cocodrilo'], a: 1, ep: 1 },
-        { q: '¿Qué toca Don Pico?', o: ['🔔 Una campana', '🥁 Un tambor', '🎸 Una guitarra'], a: 0, ep: 1 }
+        { q: '¿Qué animal es Don Pico?', o: ['🐒 Un mono', '🐦 Un tucán', '🐊 Un cocodrilo'], a: 1, ep: 1, sc: '👀 ❓', qEn: 'What animal is Don Pico?' },
+        { q: '¿Qué toca Don Pico?', o: ['🔔 Una campana', '🥁 Un tambor', '🎸 Una guitarra'], a: 0, ep: 1, sc: '👂 🎶 ❓', qEn: 'What does Don Pico play?' }
       ],
       qA1: [
         { q: '¿Qué trabajo especial tiene Chica?', o: ['Limpiar la escuela', 'Buscar fruta para todos', 'Saludar al animal nuevo'], a: 2, ep: 1 },
@@ -45,8 +45,8 @@ window.ENIGMA_DEFAULT = {
     { spot: 3, e: '🌿', n: 'El bosque', who: 'nico',
       hi: { A: 'Hola… Me llamo Nico. Soy nuevo.', A1: '¡Hola! Me llamo Nico. Vengo de otra parte de Belice. Estoy un poco nervioso.' },
       qA: [
-        { q: '¿Qué tiene Nico?', o: ['🎈 Un globo', '🎒 Una mochila', '⚽ Una pelota'], a: 1, ep: 1 },
-        { q: '¿Quién es nuevo en la selva?', o: ['🐒 Chica', '🎒 Nico', '🐗 Bruno'], a: 1, ep: 1 }
+        { q: '¿Qué tiene Nico?', o: ['🎈 Un globo', '🎒 Una mochila', '⚽ Una pelota'], a: 1, ep: 1, sc: '🤲 ❓', qEn: 'What does Nico have?' },
+        { q: '¿Quién es nuevo en la selva?', o: ['🐒 Chica', '🎒 Nico', '🐗 Bruno'], a: 1, ep: 1, sc: '🌳 🆕 ❓', qEn: 'Who is new in the jungle?' }
       ],
       qA1: [
         { q: '¿Cómo está Nico cuando llega?', o: ['Muy enojado', 'Nervioso y un poco preocupado', 'Cansado y con sueño'], a: 1, ep: 1 },
@@ -58,8 +58,8 @@ window.ENIGMA_DEFAULT = {
     { spot: 4, e: '🪵', n: 'El tronco viejo', who: 'bruno',
       hi: { A: 'Hola. Soy Bruno. Estoy un poco triste.', A1: 'Mmm… hola. Soy Bruno. A veces miro a los demás desde aquí, de lejos.' },
       qA: [
-        { q: '¿Cómo está Bruno al final?', o: ['😊 Feliz', '😢 Triste', '😴 Cansado'], a: 1, ep: 1 },
-        { q: '¿Qué animal es Bruno?', o: ['🐗 Un jabalí', '🐆 Un jaguar', '🐦 Un tucán'], a: 0, ep: 1 }
+        { q: '¿Cómo está Bruno al final?', o: ['😊 Feliz', '😢 Triste', '😴 Cansado'], a: 1, ep: 1, sc: '💭 ❓', qEn: 'How does Bruno feel at the end?' },
+        { q: '¿Qué animal es Bruno?', o: ['🐗 Un jabalí', '🐆 Un jaguar', '🐦 Un tucán'], a: 0, ep: 1, sc: '👀 ❓', qEn: 'What animal is Bruno?' }
       ],
       qA1: [
         { q: '¿Cómo se siente Bruno al final del episodio 1?', o: ['Muy contento por Nico.', 'Un poco triste porque nadie lo recibió así a él.', 'No siente nada en particular.'], a: 1, ep: 1 },
@@ -70,8 +70,8 @@ window.ENIGMA_DEFAULT = {
     { spot: 5, e: '🌸', n: 'Las flores moradas', who: 'mora',
       hi: { A: '¡Hola! Soy Mora. ¡Me gusta el morado!', A1: '¡Hola! Soy Mora. El morado es mi color favorito.' },
       qA: [
-        { q: '¿Qué color le gusta a Mora?', o: ['💚 Verde', '💛 Amarillo', '💜 Morado'], a: 2, ep: 2 },
-        { q: 'Don Pico dice: «No toquen las…»', o: ['🌸 Flores', '🍌 Frutas', '🪨 Piedras'], a: 0, ep: 2 }
+        { q: '¿Qué color le gusta a Mora?', o: ['💚 Verde', '💛 Amarillo', '💜 Morado'], a: 2, ep: 2, sc: '❤️ 🎨 ❓', qEn: 'What color does Mora like?' },
+        { q: 'Don Pico dice: «No toquen las…»', o: ['🌸 Flores', '🍌 Frutas', '🪨 Piedras'], a: 0, ep: 2, sc: '🚫 ✋ ❓', qEn: 'Don Pico says: “Don\'t touch the…”' }
       ],
       qA1: [
         { q: '¿Qué dice Don Pico en la excursión?', o: ['«Corten muchas flores.»', '«Busquen un color. No arranquen flores. Solo miren.»', '«Hoy hay examen.»'], a: 1, ep: 2 },
@@ -82,7 +82,7 @@ window.ENIGMA_DEFAULT = {
     { spot: 6, e: '🪨', n: 'La roca grande', who: 'iggy',
       hi: { A: '¡Hola! Soy Iggy. ¡Soy verde!', A1: '¡Hola! Soy Iggy. En la excursión vi a alguien muy parecido a mí.' },
       qA: [
-        { q: 'Iggy ve un lagarto. ¿De qué color es?', o: ['❤️ Rojo', '💚 Verde', '💙 Azul'], a: 1, ep: 2 }
+        { q: 'Iggy ve un lagarto. ¿De qué color es?', o: ['❤️ Rojo', '💚 Verde', '💙 Azul'], a: 1, ep: 2, sc: '👀 🎨 ❓', qEn: 'Iggy sees a lizard. What color is it?' }
       ],
       qA1: [
         { q: '¿Por qué Iggy dice «¡Como yo!»?', o: ['Porque ve una fruta amarilla', 'Porque ve un río azul', 'Porque ve un lagarto verde, como él'], a: 2, ep: 2 },
@@ -93,8 +93,8 @@ window.ENIGMA_DEFAULT = {
     { spot: 7, e: '🥭', n: 'El árbol de frutas', who: 'teo',
       hi: { A: '¡Hola! Soy Teo. ¡Me gusta la fruta!', A1: '¡Hola! Soy Teo. ¡Estas frutas amarillas son muy ricas!' },
       qA: [
-        { q: '¿Qué ve Teo?', o: ['🌸 Flores moradas', '💛 Fruta amarilla', '🐦 Un pájaro rojo'], a: 1, ep: 2 },
-        { q: 'Después, ¿qué tiene la fruta?', o: ['🟤 Barro', '🍫 Chocolate', '❄️ Hielo'], a: 0, ep: 2 }
+        { q: '¿Qué ve Teo?', o: ['🌸 Flores moradas', '💛 Fruta amarilla', '🐦 Un pájaro rojo'], a: 1, ep: 2, sc: '👀 ❓', qEn: 'What does Teo see?' },
+        { q: 'Después, ¿qué tiene la fruta?', o: ['🟤 Barro', '🍫 Chocolate', '❄️ Hielo'], a: 0, ep: 2, sc: '🥭 🔍 ❓', qEn: 'Later, what is on the fruit?' }
       ],
       qA1: [
         { q: 'Cuando los amigos regresan, ¿qué pasa con las frutas?', o: ['Desaparecen', 'Tienen barro', 'Son de color azul'], a: 1, ep: 2 },
@@ -105,8 +105,8 @@ window.ENIGMA_DEFAULT = {
     { spot: 8, e: '🏞️', n: 'El río azul', who: 'bruno',
       hi: { A: '¡Hola otra vez! Soy Bruno. Ahora estoy feliz.', A1: '¡Hola otra vez! Soy Bruno. Aprendí algo muy importante.' },
       qA: [
-        { q: '¿Qué cubre Bruno con barro?', o: ['🌸 Las flores', '🦜 Los pájaros', '🌳 El árbol grande'], a: 0, ep: 2 },
-        { q: '¿Qué aprende Bruno?', o: ['🟢 Solo el verde es bonito', '🌈 Todos los colores son bonitos', '😴 Nada'], a: 1, ep: 2 }
+        { q: '¿Qué cubre Bruno con barro?', o: ['🌸 Las flores', '🦜 Los pájaros', '🌳 El árbol grande'], a: 0, ep: 2, sc: '🟤 ❓', qEn: 'What does Bruno cover with mud?' },
+        { q: '¿Qué aprende Bruno?', o: ['🟢 Solo el verde es bonito', '🌈 Todos los colores son bonitos', '😴 Nada'], a: 1, ep: 2, sc: '💡 ❓', qEn: 'What does Bruno learn?' }
       ],
       qA1: [
         { q: '¿Por qué Bruno cubre las flores, piedras y hojas con barro?', o: ['Porque quiere jugar con barro.', 'Porque Don Pico se lo pide.', 'Porque cree que el bosque sería más bonito si todo fuera de un solo color.'], a: 2, ep: 2 },

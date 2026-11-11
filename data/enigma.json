@@ -34,7 +34,9 @@
       "🏊 Nadar"
      ],
      "a": 0,
-     "ep": 1
+     "ep": 1,
+     "sc": "❤️ ❓",
+     "qEn": "What does Chica like?"
     },
     {
      "q": "¿Qué come Chica?",
@@ -44,7 +46,9 @@
       "🍕 Pizza"
      ],
      "a": 0,
-     "ep": 1
+     "ep": 1,
+     "sc": "😋 🍽️ ❓",
+     "qEn": "What does Chica eat?"
     }
    ],
    "qA1": [
@@ -80,14 +84,14 @@
     }
    ],
    "clue": {
-    "A": "Busca al maestro. Es un tucán. Toca una campana. 🔔",
+    "A": "Busca la escuela. El maestro es un tucán. Toca una campana. 🔔",
     "A1": "Ahora busquen la escuela. Allí un tucán viejo y sabio toca una campana. 🔔"
    }
   },
   {
    "spot": 2,
    "e": "🔔",
-   "n": "La Escuela del Tucán",
+   "n": "La Escuela La Ceiba",
    "who": "donpico",
    "hi": {
     "A": "¡Buenos días! Soy Don Pico. Soy el maestro.",
@@ -102,7 +106,9 @@
       "🐊 Un cocodrilo"
      ],
      "a": 1,
-     "ep": 1
+     "ep": 1,
+     "sc": "👀 ❓",
+     "qEn": "What animal is Don Pico?"
     },
     {
      "q": "¿Qué toca Don Pico?",
@@ -112,7 +118,9 @@
       "🎸 Una guitarra"
      ],
      "a": 0,
-     "ep": 1
+     "ep": 1,
+     "sc": "👂 🎶 ❓",
+     "qEn": "What does Don Pico play?"
     }
    ],
    "qA1": [
@@ -170,7 +178,9 @@
       "⚽ Una pelota"
      ],
      "a": 1,
-     "ep": 1
+     "ep": 1,
+     "sc": "🤲 ❓",
+     "qEn": "What does Nico have?"
     },
     {
      "q": "¿Quién es nuevo en la selva?",
@@ -180,7 +190,9 @@
       "🐗 Bruno"
      ],
      "a": 1,
-     "ep": 1
+     "ep": 1,
+     "sc": "🌳 🆕 ❓",
+     "qEn": "Who is new in the jungle?"
     }
    ],
    "qA1": [
@@ -238,7 +250,9 @@
       "😴 Cansado"
      ],
      "a": 1,
-     "ep": 1
+     "ep": 1,
+     "sc": "💭 ❓",
+     "qEn": "How does Bruno feel at the end?"
     },
     {
      "q": "¿Qué animal es Bruno?",
@@ -248,7 +262,9 @@
       "🐦 Un tucán"
      ],
      "a": 0,
-     "ep": 1
+     "ep": 1,
+     "sc": "👀 ❓",
+     "qEn": "What animal is Bruno?"
     }
    ],
    "qA1": [
@@ -296,7 +312,9 @@
       "💜 Morado"
      ],
      "a": 2,
-     "ep": 2
+     "ep": 2,
+     "sc": "❤️ 🎨 ❓",
+     "qEn": "What color does Mora like?"
     },
     {
      "q": "Don Pico dice: «No toquen las…»",
@@ -306,7 +324,9 @@
       "🪨 Piedras"
      ],
      "a": 0,
-     "ep": 2
+     "ep": 2,
+     "sc": "🚫 ✋ ❓",
+     "qEn": "Don Pico says: “Don't touch the…”"
     }
    ],
    "qA1": [
@@ -354,7 +374,9 @@
       "💙 Azul"
      ],
      "a": 1,
-     "ep": 2
+     "ep": 2,
+     "sc": "👀 🎨 ❓",
+     "qEn": "Iggy sees a lizard. What color is it?"
     }
    ],
    "qA1": [
@@ -402,7 +424,9 @@
       "🐦 Un pájaro rojo"
      ],
      "a": 1,
-     "ep": 2
+     "ep": 2,
+     "sc": "👀 ❓",
+     "qEn": "What does Teo see?"
     },
     {
      "q": "Después, ¿qué tiene la fruta?",
@@ -412,7 +436,9 @@
       "❄️ Hielo"
      ],
      "a": 0,
-     "ep": 2
+     "ep": 2,
+     "sc": "🥭 🔍 ❓",
+     "qEn": "Later, what is on the fruit?"
     }
    ],
    "qA1": [
@@ -460,7 +486,9 @@
       "🌳 El árbol grande"
      ],
      "a": 0,
-     "ep": 2
+     "ep": 2,
+     "sc": "🟤 ❓",
+     "qEn": "What does Bruno cover with mud?"
     },
     {
      "q": "¿Qué aprende Bruno?",
@@ -470,7 +498,9 @@
       "😴 Nada"
      ],
      "a": 1,
-     "ep": 2
+     "ep": 2,
+     "sc": "💡 ❓",
+     "qEn": "What does Bruno learn?"
     }
    ],
    "qA1": [

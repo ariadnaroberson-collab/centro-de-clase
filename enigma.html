@@ -104,6 +104,14 @@ h1,h2,h3,.disp{font-family:'Baloo 2',Nunito,sans-serif;line-height:1.05;margin:0
 .lvA .opt{flex-direction:column;text-align:center;font-size:clamp(1.05rem,2.5vw,1.35rem);padding:14px 8px}
 .lvA .opt .em{font-size:clamp(2.6rem,7vw,3.8rem);line-height:1}
 .lvA .opt .k{display:none}
+.scene{display:flex;align-items:center;justify-content:center;gap:clamp(8px,3vw,26px);background:linear-gradient(#e6f6ff,#eaf7e4 70%,#d5ecc8);border:3px solid #cfe3d2;border-radius:22px;padding:10px 14px;margin:0 0 12px;min-height:clamp(110px,22vw,170px)}
+.scene .av{width:clamp(80px,15vw,130px);height:clamp(80px,15vw,130px)}
+.scene .se{font-size:clamp(2.2rem,9vw,5rem);line-height:1;letter-spacing:.06em;white-space:nowrap;animation:bob 2.6s ease-in-out infinite}
+.sayrow{display:flex;gap:8px;flex:none}
+.lvA .sayrow .say{width:auto;padding:0 10px;font-size:1.05rem;font-weight:800}
+.say.en{background:#e8eefc;box-shadow:0 3px 0 #a9b9e6;width:auto;padding:0 10px;font-size:1rem;font-weight:800;color:#28407a}
+.say.en.unlock{animation:glowEn 1.1s 3}
+@keyframes glowEn{50%{transform:scale(1.15);box-shadow:0 3px 0 #a9b9e6,0 0 0 10px #a9b9e655}}
 .fb{min-height:1.6em;margin-top:12px;font-weight:800;font-size:1.2rem;text-align:center}
 .fb.bad{color:var(--wrong)} .fb.good{color:var(--ok)}
 .row{display:flex;gap:10px;justify-content:flex-end;align-items:center;margin-top:16px;flex-wrap:wrap}
@@ -193,11 +201,13 @@ const sfx = {
   win() { [523, 659, 784, 659, 784, 1047, 1319].forEach((f, i) => tone(f, i * .13, .4, 'triangle', .17)); }
 };
 const clean = t => String(t || '').replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}\u{200D}\u{2B00}-\u{2BFF}]/gu, '').replace(/[«»]/g, '').replace(/\s+/g, ' ').trim();
-function speak(t, rate) {
+function speak(t, rate, lang) {
   if (muted || !('speechSynthesis' in window)) return;
   try {
-    const u = new SpeechSynthesisUtterance(clean(t)); u.lang = 'es-MX'; u.rate = rate || (P && P.lvl === 'A' ? .82 : .92);
-    const vs = speechSynthesis.getVoices(); const v = vs.find(v => /^es[-_](MX|US|419)/i.test(v.lang)) || vs.find(v => /^es/i.test(v.lang)); if (v) u.voice = v;
+    const en = lang === 'en';
+    const u = new SpeechSynthesisUtterance(clean(t)); u.lang = en ? 'en-US' : 'es-MX'; u.rate = rate || (P && P.lvl === 'A' ? .82 : .92);
+    const vs = speechSynthesis.getVoices();
+    const v = en ? (vs.find(v => /^en[-_]US/i.test(v.lang)) || vs.find(v => /^en/i.test(v.lang))) : (vs.find(v => /^es[-_](MX|US|419)/i.test(v.lang)) || vs.find(v => /^es/i.test(v.lang))); if (v) u.voice = v;
     speechSynthesis.cancel(); speechSynthesis.speak(u);
   } catch (e) {}
 }
@@ -364,13 +374,16 @@ function askQ() {
   if (!q) { reward(); return; }
   const opts = shuffle(q.o.map((t, k) => ({ t, k })).filter(x => x.t));
   const emo = t => { const m = String(t).match(/^\s*(\p{Extended_Pictographic}(?:️|‍\p{Extended_Pictographic})*)\s*(.*)$/u); return m ? [m[1], m[2]] : ['', t]; };
-  openSheet(`<div class="place">${h(s.e)} ${h(s.n)}</div>
-    <div class="q"><span>${h(q.q)}</span><button class="say" id="sy">🔈</button></div>
+  const k2 = lv === 'A', hasEn = k2 && String(q.qEn || '').trim();
+  const scene = k2 ? `<div class="scene">${avatar(s.who)}${String(q.sc || '').trim() ? `<span class="se">${h(q.sc)}</span>` : `<span class="se">${h(s.e)} ❓</span>`}</div>` : '';
+  openSheet(`<div class="place">${h(s.e)} ${h(s.n)}</div>${scene}
+    <div class="q"><span>${h(q.q)}</span><span class="sayrow"><button class="say" id="sy" title="Escuchar en español">🔈${k2 ? ' ES' : ''}</button>${hasEn ? '<button class="say en hide" id="syEn" title="Listen in English">🔈 EN</button>' : ''}</span></div>
     <div class="opts">${opts.map((o, i) => { const [e, t] = emo(o.t); return `<button class="opt" data-k="${o.k}"><span class="k">${'ABC'[i] || i + 1}</span>${lv === 'A' && e ? `<span class="em">${e}</span>` : (e ? e + ' ' : '')}<span>${h(t)}</span></button>`; }).join('')}</div>
     <div class="fb" id="fb"></div>
     <div class="row"><span class="qn">Pregunta ${P.qi + 1} de ${P.qs.length}</span></div>`, lv === 'A' ? 'lvA' : '');
   const readQ = () => speak(q.q + '. ' + opts.map(o => clean(o.t)).join('. '));
   $('#sy').onclick = readQ;
+  const enB = $('#syEn'); if (enB) enB.onclick = () => speak(q.qEn, .9, 'en');
   if (autoRead()) readQ();
   $('#card').querySelectorAll('.opt').forEach(b => b.onclick = () => {
     ac();
@@ -384,6 +397,7 @@ function askQ() {
       b.classList.add('no'); sfx.no(); P.miss++; save();
       const t = P.lvl === 'A' ? '¡Casi! Prueba otra vez. 💪' : '¡Casi! Piénsalo otra vez. 💪';
       $('#fb').className = 'fb bad'; $('#fb').textContent = t; if (autoRead()) speak(t);
+      if (enB && enB.classList.contains('hide')) { enB.classList.remove('hide'); enB.classList.add('unlock'); }
     }
   });
 }

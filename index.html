@@ -147,6 +147,11 @@
     border-radius: 14px;
   }
 
+  /* tile with two level buttons (El enigma) */
+  .tile-go.lvl { text-decoration: none; margin-right: 8px; transition: transform .12s; }
+  .tile-go.lvl:hover { transform: translateY(-2px); }
+  .tile-go.lvl:focus-visible { outline: 3px solid var(--bg); outline-offset: 2px; }
+
   /* COMING SOON */
   .tile.soon {
     background: transparent;
@@ -218,6 +223,13 @@
       <p class="tile-desc">Rueda de países + rueda de preguntas + Rank It — un viaje cultural en cada giro.</p>
       <span class="tile-go">Abrir →</span>
     </a>
+    <div class="tile active">
+      <span class="tile-icon">🌀</span>
+      <div class="tile-title">El enigma de Chiquibul</div>
+      <p class="tile-desc">Aventura con Chica: contesten preguntas, sigan las pistas y junten los pedazos de la espiral en el mapa. Elijan su nivel:</p>
+      <a class="tile-go lvl" href="enigma.html?nivel=k2">🐣 K–2 →</a><a class="tile-go lvl" href="enigma.html?nivel=35">🧭 3.º–5.º →</a>
+    </div>
+
 <a class="tile active" href="cuentopolis-spot-it.html">
       <span class="tile-icon">🔍</span>
       <div class="tile-title">Descúbrelo</div>
