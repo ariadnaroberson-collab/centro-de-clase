@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>¡Encerrados en el museo! · Escape room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,900&family=Nunito+Sans:opsz,wght@6..12,600;6..12,700;6..12,800;6..12,900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --night:#121a2b; --night2:#1b2740; --night3:#24345a; --paper:#fbf6ea; --paper2:#f3ead3; --ink:#1c2233;
+  --mari:#f29f05; --mari2:#c97f00; --mag:#c2185b; --teal:#0f766e; --ok:#1f8a4c; --bad:#c0392b; --muted:#6c6f7d;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--night);color:var(--ink);font-family:'Nunito Sans',system-ui,sans-serif;-webkit-tap-highlight-color:transparent}
+body{background:radial-gradient(circle at 50% -10%,#2a3c66 0,var(--night) 55%) fixed}
+button{font:inherit;cursor:pointer}
+.hide{display:none!important}
+h1,h2,h3,.disp{font-family:Fraunces,Georgia,serif;margin:0;line-height:1.05}
+
+/* papel picado */
+.picado{display:flex;justify-content:center;gap:6px;height:44px;overflow:hidden;pointer-events:none}
+.picado i{display:block;width:46px;height:40px;flex:none;clip-path:polygon(0 0,100% 0,100% 70%,50% 100%,0 70%);opacity:.92;
+  -webkit-mask:radial-gradient(circle at 30% 30%,transparent 4px,#000 5px),radial-gradient(circle at 70% 45%,transparent 4px,#000 5px);mask-composite:intersect;-webkit-mask-composite:source-in;animation:sway 3s ease-in-out infinite alternate}
+.picado i:nth-child(4n+1){background:var(--mari)} .picado i:nth-child(4n+2){background:var(--mag)} .picado i:nth-child(4n+3){background:#3ba7a0} .picado i:nth-child(4n){background:#8e5bd6}
+.picado i:nth-child(odd){animation-delay:-1.5s}
+@keyframes sway{to{transform:rotate(3deg) translateY(2px)}}
+
+.wrap{max-width:980px;margin:0 auto;padding:10px 14px 30px}
+.card{background:var(--paper);border-radius:22px;padding:22px 22px 20px;box-shadow:0 18px 50px #0008;border:2px solid #e9dcb8}
+.btn{border:0;border-radius:14px;padding:13px 20px;font-weight:900;font-size:1.08rem;background:var(--mari);color:#2a1b00;box-shadow:0 4px 0 var(--mari2);transition:transform .1s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--mari2)}
+.btn.dark{background:var(--night3);color:#fff;box-shadow:0 4px 0 #0c1324}
+.btn.ghost{background:#ece3cb;color:var(--ink);box-shadow:0 4px 0 #d3c59f}
+.btn.teal{background:var(--teal);color:#fff;box-shadow:0 4px 0 #0a4f4a}
+.btn:disabled{opacity:.45;pointer-events:none}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.muted{color:var(--muted)}
+
+/* inicio */
+#start .card{max-width:620px;margin:30px auto 0;text-align:center}
+.lock-ic{font-size:3.4rem;line-height:1}
+#start h1{font-size:clamp(2rem,6vw,3rem);color:var(--night);margin-top:6px}
+.sub{margin:8px 0 18px;font-size:1.06rem;color:#4a4f60}
+.lbl{display:block;text-align:left;font-weight:900;margin:14px 0 6px;color:var(--night)}
+#team{width:100%;font-size:1.25rem;padding:12px 14px;border-radius:14px;border:2px solid #d9cba5;background:#fff;font-weight:800}
+#team:focus{outline:3px solid var(--mari);border-color:transparent}
+.lv-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.lv{border:2px solid #d9cba5;background:#fff;border-radius:16px;padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.lv b{font-family:Fraunces;font-size:1.15rem} .lv span{font-size:.9rem;color:#5d6170}
+.lv[aria-pressed=true]{border-color:var(--mari);background:#fff4d6;box-shadow:0 4px 0 var(--mari2)}
+.wide{width:100%;margin-top:16px;font-size:1.25rem}
+
+/* barra superior */
+.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:10px;padding:8px 12px;background:#0d1424ee;color:#fff;backdrop-filter:blur(4px)}
+.top .tm{flex:1;min-width:0;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top .tm small{display:block;font-weight:700;color:#9fb0d6;font-size:.78rem}
+.clock{font-family:Fraunces;font-size:1.35rem;background:#ffffff14;border-radius:12px;padding:4px 12px;font-variant-numeric:tabular-nums}
+.ib{width:44px;height:44px;border-radius:12px;border:0;background:#ffffff1c;color:#fff;font-size:1.25rem}
+.slots{display:flex;gap:6px}
+.slot{width:38px;height:44px;border-radius:10px;border:2px dashed #ffffff55;display:grid;place-items:center;font-family:Fraunces;font-size:1.4rem;color:var(--mari)}
+.slot.got{border:2px solid var(--mari);background:#f29f0522}
+
+/* historia / nota */
+.guide{display:flex;gap:14px;align-items:flex-start;margin-bottom:14px}
+.av{width:64px;height:64px;flex:none;border-radius:18px;background:var(--night);display:grid;place-items:center;font-size:2.1rem;box-shadow:0 4px 0 #0005}
+.bub{flex:1;background:#fff;border:2px solid #e9dcb8;border-radius:4px 18px 18px 18px;padding:12px 14px}
+.bub .nm{font-weight:900;color:var(--mag);font-size:.95rem}
+.bub p{margin:4px 0 0;font-size:clamp(1.05rem,2.4vw,1.25rem);font-weight:700;line-height:1.4}
+.story p{font-size:clamp(1.08rem,2.4vw,1.3rem);line-height:1.5;margin:0 0 10px;font-weight:700}
+.note{margin-top:14px;background:#fffdf6;border:2px dashed var(--mari2);border-radius:14px;padding:14px 16px;transform:rotate(-.6deg);font-size:clamp(1.05rem,2.4vw,1.22rem);font-weight:800;line-height:1.45}
+.note b{display:block;font-family:Fraunces;color:var(--mag);font-size:1.15rem;margin-bottom:4px}
+
+/* plano del museo */
+.hub-h{color:#fff;text-align:center;margin:8px 0 14px}
+.hub-h h2{font-size:clamp(1.5rem,4vw,2.1rem)} .hub-h p{margin:6px 0 0;color:#c6d0ea;font-weight:700}
+.plan{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.door{position:relative;text-align:left;border:0;border-radius:20px;padding:16px;background:var(--paper);box-shadow:0 6px 0 #0006;display:flex;gap:14px;align-items:center;min-height:118px;transition:transform .12s}
+.door:hover{transform:translateY(-2px)}
+.door .de{font-size:2.6rem;width:64px;height:64px;flex:none;border-radius:16px;background:var(--night);display:grid;place-items:center}
+.door b{font-family:Fraunces;font-size:1.2rem;display:block}
+.door small{display:block;color:#5d6170;font-weight:800;margin-top:3px}
+.tag{display:inline-block;margin-top:6px;background:#efe4c6;border-radius:999px;padding:2px 10px;font-weight:900;font-size:.82rem}
+.door.done{background:#e6f4ea}
+.door.done::after{content:attr(data-l);position:absolute;right:14px;top:12px;font-family:Fraunces;font-size:1.6rem;color:var(--ok);background:#fff;border:2px solid var(--ok);border-radius:12px;width:44px;height:44px;display:grid;place-items:center}
+.door.final{grid-column:1/-1;background:linear-gradient(135deg,#3a2a12,#5c3b0a);color:#fff;justify-content:center;text-align:center}
+.door.final b{font-size:1.45rem} .door.final small{color:#f7d79a}
+.door.final .de{background:#00000033}
+.door.final.locked{filter:grayscale(.5);opacity:.75}
+
+/* reto */
+.salah{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.salah .pill{background:var(--night);color:#fff;border-radius:999px;padding:4px 12px;font-weight:900}
+.salah .pill.c{background:var(--mari);color:#2a1b00}
+.dots{display:flex;gap:6px;margin-left:auto}
+.dots i{width:14px;height:14px;border-radius:50%;background:#d9cba5}
+.dots i.on{background:var(--mari)} .dots i.ok{background:var(--ok)}
+.kind{display:inline-block;font-weight:900;color:var(--teal);text-transform:uppercase;letter-spacing:.05em;font-size:.85rem;margin-bottom:4px}
+.q{font-size:clamp(1.2rem,3vw,1.6rem);font-weight:900;line-height:1.35;margin:0 0 14px;color:var(--night)}
+.opts{display:grid;gap:10px}
+.opt{border:2px solid #e2d5b1;background:#fff;border-radius:14px;padding:13px 16px;text-align:left;font-weight:800;font-size:clamp(1.02rem,2.4vw,1.2rem);box-shadow:0 3px 0 #e2d5b1;display:flex;gap:12px;align-items:center}
+.opt .k{width:30px;height:30px;border-radius:9px;background:#f1e8cf;display:grid;place-items:center;font-family:Fraunces;flex:none}
+.opt.no{border-color:var(--bad);background:#fbe9e7;opacity:.6;pointer-events:none;animation:shake .4s}
+.opt.yes{border-color:var(--ok);background:#e3f5e9}
+@keyframes shake{20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+.sent{display:flex;flex-wrap:wrap;gap:8px;font-size:clamp(1.15rem,2.8vw,1.45rem);font-weight:800;background:#fff;border:2px solid #e2d5b1;border-radius:14px;padding:14px}
+.w{border:2px solid transparent;background:#f6efdc;border-radius:10px;padding:4px 9px;font-weight:800}
+.w:hover{border-color:var(--mari)}
+.w.no{background:#fbe9e7;color:var(--bad);text-decoration:line-through;pointer-events:none}
+.w.yes{background:#fff1c9;border-color:var(--mari2);text-decoration:line-through wavy var(--bad)}
+.inrow{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+.inp{flex:1;min-width:200px;font-size:1.25rem;padding:12px 14px;border-radius:12px;border:2px solid #d9cba5;font-weight:800;background:#fff}
+.inp:focus{outline:3px solid var(--mari);border-color:transparent}
+.spellbox{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:6px 0 14px;min-height:58px}
+.sb{width:46px;height:54px;border-radius:12px;border:2px solid #d9cba5;background:#fff;display:grid;place-items:center;font-family:Fraunces;font-size:1.6rem}
+.sb.f{border-color:var(--night);background:#fffaf0}
+.tiles{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.tile{width:52px;height:56px;border-radius:12px;border:0;background:var(--night);color:#fff;font-family:Fraunces;font-size:1.6rem;box-shadow:0 4px 0 #0a1020}
+.tile.used{opacity:.2;pointer-events:none}
+.codebox{display:flex;gap:10px;justify-content:center;margin:4px 0 14px}
+.cd{width:60px;height:72px;border-radius:14px;background:var(--night);color:var(--mari);display:grid;place-items:center;font-family:Fraunces;font-size:2.4rem;border:3px solid #33456f}
+.pad{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;max-width:420px;margin:0 auto}
+.pad button{height:54px;border-radius:12px;border:0;background:#fff;border:2px solid #e2d5b1;font-family:Fraunces;font-size:1.5rem;box-shadow:0 3px 0 #e2d5b1}
+.fb{min-height:1.6em;margin-top:12px;font-weight:900;font-size:1.12rem;text-align:center}
+.fb.bad{color:var(--bad)} .fb.good{color:var(--ok)}
+.hint{margin-top:12px;background:#eef7f6;border:2px solid #b6dcd8;border-radius:12px;padding:10px 14px;font-weight:800;color:#0b4e48}
+.acts{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-top:14px;flex-wrap:wrap}
+
+/* premio y final */
+.prize{text-align:center}
+.bigl{width:120px;height:130px;margin:6px auto 10px;border-radius:22px;background:var(--night);color:var(--mari);display:grid;place-items:center;font-family:Fraunces;font-size:4.6rem;box-shadow:0 8px 0 #0a1020;animation:pop .5s}
+@keyframes pop{from{transform:scale(.3) rotate(-20deg);opacity:0}}
+.prize h2{font-size:clamp(1.5rem,4vw,2.1rem);color:var(--night)}
+.cert{margin-top:16px;border:3px double var(--mari2);border-radius:18px;padding:16px;background:#fffdf6;text-align:center}
+.cert .tn{font-family:Fraunces;font-size:clamp(1.6rem,5vw,2.3rem);color:var(--night)}
+.stats{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:10px}
+.stats span{background:#f1e8cf;border-radius:999px;padding:4px 12px;font-weight:900}
+.code{display:inline-block;margin-top:10px;background:var(--night);color:var(--mari);font-family:Fraunces;font-size:clamp(1.4rem,4.5vw,2rem);letter-spacing:.06em;border-radius:12px;padding:4px 16px}
+.conf{position:fixed;top:-30px;z-index:50;font-size:1.7rem;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+@media (max-width:620px){ .plan{grid-template-columns:1fr} .slot{width:24px;height:34px;font-size:1rem;border-radius:7px} .slots{gap:3px} .top .tm small{display:none} .top{gap:6px} .clock{font-size:1.1rem;padding:3px 8px} .av{width:52px;height:52px;font-size:1.7rem} .tile{width:44px;height:50px} }
+@media print{ body{background:#fff} .top,.picado,.noprint{display:none!important} .card{box-shadow:none;border:0} }
+</style>
+</head>
+<body>
+<div class="picado" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+
+<!-- INICIO -->
+<section id="start" class="wrap">
+  <div class="card">
+    <div class="lock-ic">🔒</div>
+    <h1 id="stTitle">¡Encerrados en el museo!</h1>
+    <p class="sub">Escape room · lean, busquen los carteles y encuentren la <b>palabra secreta</b> para salir.</p>
+    <label class="lbl" for="team">✏️ Nombre del equipo</label>
+    <input id="team" maxlength="28" placeholder="ej. Los Detectives" autocomplete="off">
+    <span class="lbl">🧭 ¿Qué grupo son?</span>
+    <div class="lv-row">
+      <button class="lv" data-lv="ms1" aria-pressed="false"><b>Middle School 1</b><span>con Los Vecinos</span></button>
+      <button class="lv" data-lv="ms3" aria-pressed="false"><b>Middle School 3</b><span>con El Club del Barrio</span></button>
+    </div>
+    <button class="btn wide" id="go">🔑 ¡Entrar al museo!</button>
+    <button class="btn ghost wide hide" id="resume"></button>
+  </div>
+</section>
+
+<!-- JUEGO -->
+<section id="game" class="hide">
+  <div class="top">
+    <button class="ib" id="home" title="Inicio">🏠</button>
+    <div class="tm" id="tmName"></div>
+    <div class="slots" id="slots"></div>
+    <div class="clock" id="clock">00:00</div>
+    <button class="ib" id="snd" title="Sonido">🔊</button>
+  </div>
+  <div class="wrap" id="view"></div>
+</section>
+
+<script src="escape-contenido.js"></script>
+<script>
+'use strict';
+const $ = s => document.querySelector(s);
+const h = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const norm = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-zñ0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
+const E = window.ESCAPE, PKEY = 'escape-museo-v1';
+const SIG = (() => { const s = JSON.stringify(E); let x = 0; for (let i = 0; i < s.length; i++) x = (x * 31 + s.charCodeAt(i)) | 0; return x; })();
+let P = null, L = null, muted = false, tick = null;
+
+/* ---------- sonidos cortos (sin voz) ---------- */
+let AC = null;
+function ac() { if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === 'suspended') AC.resume(); return AC; }
+function tone(f, t = 0, d = .18, type = 'sine', v = .16) { if (muted) return; try { const a = ac(), o = a.createOscillator(), g = a.createGain(), s = a.currentTime + t; o.type = type; o.frequency.setValueAtTime(f, s); g.gain.setValueAtTime(0, s); g.gain.linearRampToValueAtTime(v, s + .02); g.gain.exponentialRampToValueAtTime(.001, s + d); o.connect(g).connect(a.destination); o.start(s); o.stop(s + d + .05); } catch (e) {} }
+const sfx = { ok() { tone(660, 0, .14, 'triangle'); tone(880, .1, .2, 'triangle'); }, no() { tone(230, 0, .2, 'sine', .13); tone(190, .12, .24, 'sine', .11); },
+  click() { tone(520, 0, .05, 'square', .04); }, unlock() { [392, 523, 659, 784].forEach((f, i) => tone(f, i * .09, .28, 'triangle')); },
+  win() { [523, 659, 784, 659, 784, 1047, 1319].forEach((f, i) => tone(f, i * .13, .4, 'triangle', .15)); } };
+
+/* ---------- estado ---------- */
+function save() { try { localStorage.setItem(PKEY, JSON.stringify(P)); } catch (e) {} }
+function load() { try { const p = JSON.parse(localStorage.getItem(PKEY) || 'null'); return p && p.sig === SIG && E.levels[p.lvl] ? p : null; } catch (e) { return null; } }
+const fmt = ms => { const s = Math.max(0, Math.floor(ms / 1000)); return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); };
+const elapsed = () => (P.end || Date.now()) - P.start;
+function startClock() { clearInterval(tick); const up = () => { $('#clock').textContent = fmt(elapsed()); }; up(); tick = setInterval(up, 1000); }
+function drawTop() {
+  $('#tmName').innerHTML = `${h(P.team)}<small>${h(L.name)} · ${h(L.crew)}</small>`;
+  $('#slots').innerHTML = L.salas.map(s => `<div class="slot ${P.done[s.id] ? 'got' : ''}" title="${h(s.n)}">${P.done[s.id] ? h(s.letter) : '?'}</div>`).join('');
+}
+const view = html => { $('#view').innerHTML = html; window.scrollTo(0, 0); };
+const guide = (who, txt) => `<div class="guide"><div class="av">${h(who.e)}</div><div class="bub"><div class="nm">${h(who.n)}</div><p>${h(txt)}</p></div></div>`;
+
+/* ---------- pantallas ---------- */
+function intro() {
+  const I = L.intro;
+  view(`<div class="card"><div class="guide"><div class="av">${h(I.who.e)}</div><div class="bub"><div class="nm">${h(I.who.n)} · ${h(L.crew)}</div><div class="story">${I.t.map(p => `<p>${h(p)}</p>`).join('')}</div></div></div>
+    <div class="note"><b>📝 Nota de Profe Rivera</b>${h(I.note)}</div>
+    <div class="acts"><span class="muted">⏱️ El reloj empieza ahora.</span><button class="btn" id="ok">🗺️ Ver el plano del museo</button></div></div>`);
+  $('#ok').onclick = () => { P.seenIntro = true; save(); hub(); };
+}
+function hub() {
+  P.cur = null; save(); drawTop();
+  const n = Object.keys(P.done).length, all = n === L.salas.length;
+  view(`<div class="hub-h"><h2>🏛️ Plano del museo</h2><p>${all ? '¡Tienen las cuatro letras! Vayan a la puerta.' : `Elijan una sala. Pueden ir en cualquier orden. Letras: ${n} de ${L.salas.length}.`}</p></div>
+    <div class="plan">${L.salas.map(s => `<button class="door ${P.done[s.id] ? 'done' : ''}" data-s="${s.id}" data-l="${h(s.letter)}"><span class="de">${h(s.e)}</span><span><b>${h(s.n)}</b><small>Guía: ${h(s.who.n)} ${h(s.who.e)}</small>${s.cartel ? `<span class="tag">📜 Cartel ${s.cartel}</span>` : '<span class="tag">📖 Sin cartel: ¡de memoria!</span>'}</span></button>`).join('')}
+    <button class="door final ${all ? '' : 'locked'}" id="fin"><span class="de">🚪</span><span><b>La puerta del museo</b><small>${all ? '¡Escriban la palabra secreta!' : '🔒 Necesitan las cuatro letras'}</small></span></button></div>`);
+  document.querySelectorAll('[data-s]').forEach(b => b.onclick = () => { sfx.click(); const id = +b.dataset.s; if (P.done[id]) { revisit(id); return; } P.cur = id; P.prog = P.prog || {}; P.ri = P.prog[id] || 0; save(); openSala(); });
+  $('#fin').onclick = () => { if (!all) { sfx.no(); return; } finalDoor(); };
+}
+function revisit(id) {
+  const s = L.salas.find(x => x.id === id);
+  view(`<div class="card prize">${guide(s.who, `¡Ya terminaron esta sala! Su letra es la ${s.letter}.`)}<div class="bigl">${h(s.letter)}</div><button class="btn" id="back">🗺️ Volver al plano</button></div>`);
+  $('#back').onclick = hub;
+}
+const sala = () => L.salas.find(x => x.id === P.cur);
+function openSala() {
+  const s = sala();
+  if (P.ri >= s.retos.length) { reward(); return; }
+  if (P.ri === 0 && !P.greeted) { P.greeted = s.id; save();
+    view(`<div class="card"><div class="salah"><span class="pill">${h(s.e)} ${h(s.n)}</span>${s.cartel ? `<span class="pill c">📜 Cartel ${s.cartel}</span>` : ''}</div>${guide(s.who, s.hi)}
+      <div class="acts"><button class="btn ghost" id="back">← Plano</button><button class="btn" id="ok">💪 ¡Empezar los retos!</button></div></div>`);
+    $('#back').onclick = () => { P.greeted = 0; hub(); }; $('#ok').onclick = () => { P.greeted = 0; reto(); };
+    return;
+  }
+  reto();
+}
+const KIND = { mc: '❓ Pregunta', text: '✏️ ¿Qué le falta?', tiles: '🔤 Deletrea', error: '🔍 Encuentra el error', code: '🔐 Candado' };
+function reto() {
+  const s = sala(), r = s.retos[P.ri];
+  let wrong = 0, solved = false, body = '';
+  const kind = r.lock ? (r.t === 'code' ? '🔐 Candado de la sala' : '🔤 Candado: deletreen') : (r.t === 'text' && r.spell ? '🔤 Deletrea' : (r.t === 'text' && !/____/.test(r.q) ? '✏️ Escriban la respuesta' : KIND[r.t]));
+  if (r.t === 'mc') { const ops = shuffle(r.o.map((t, k) => ({ t, k }))); body = `<div class="opts">${ops.map((o, i) => `<button class="opt" data-k="${o.k}"><span class="k">${'ABCD'[i]}</span><span>${h(o.t)}</span></button>`).join('')}</div>`; }
+  if (r.t === 'text') body = `<div class="inrow"><input class="inp" id="ans" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${r.spell ? 'Escriban la palabra…' : 'Escriban aquí…'}"><button class="btn teal" id="chk">✓ Revisar</button></div>`;
+  if (r.t === 'error') body = `<div class="sent">${r.s.split(' ').map((w, i) => `<button class="w" data-i="${i}">${h(w)}</button>`).join('')}</div><div id="fixrow"></div>`;
+  if (r.t === 'tiles') { const letters = shuffle((r.word + (r.extra || '')).split('')); body = `<div class="spellbox" id="sbox">${r.word.split('').map(() => '<div class="sb"></div>').join('')}</div><div class="tiles">${letters.map((c, i) => `<button class="tile" data-c="${h(c)}" data-i="${i}">${h(c)}</button>`).join('')}</div><div class="inrow" style="justify-content:center"><button class="btn ghost" id="bk">⌫ Borrar</button></div>`; }
+  if (r.t === 'code') body = `<div class="codebox">${r.code.split('').map(() => '<div class="cd"></div>').join('')}</div><div class="pad">${[1, 2, 3, 4, 5, 6, 7, 8, 9, 0].map(n => `<button data-n="${n}">${n}</button>`).join('')}</div><div class="inrow" style="justify-content:center"><button class="btn ghost" id="bk">⌫ Borrar</button></div>`;
+  view(`<div class="card"><div class="salah"><span class="pill">${h(s.e)} ${h(s.n)}</span>${s.cartel ? `<span class="pill c">📜 Cartel ${s.cartel}</span>` : ''}<div class="dots">${s.retos.map((_, i) => `<i class="${i < P.ri ? 'ok' : i === P.ri ? 'on' : ''}"></i>`).join('')}</div></div>
+    <div class="kind">${kind}</div><p class="q">${h(r.q)}</p>${body}
+    <div class="fb" id="fb"></div><div id="hintBox"></div>
+    <div class="acts"><button class="btn ghost" id="back">← Plano</button><button class="btn dark hide" id="hintB">💡 Pista</button></div></div>`);
+  $('#back').onclick = hub;
+  const fb = (cls, t) => { $('#fb').className = 'fb ' + cls; $('#fb').textContent = t; };
+  const miss = msg => { wrong++; P.miss = (P.miss || 0) + 1; save(); sfx.no(); fb('bad', msg || '¡Casi! Lean otra vez. 💪'); if (r.p) $('#hintB').classList.remove('hide'); };
+  const win = () => { if (solved) return; solved = true; sfx.ok(); fb('good', ['¡Correcto!', '¡Excelente!', '¡Eso es!', '¡Muy bien!'][Math.floor(Math.random() * 4)] + (r.lock ? ' 🔓' : ' ✨'));
+    setTimeout(() => { P.ri++; (P.prog = P.prog || {})[s.id] = P.ri; save(); P.ri >= s.retos.length ? reward() : reto(); }, 1100); };
+  $('#hintB').onclick = () => { if (!$('#hintBox').innerHTML) { P.hints = (P.hints || 0) + 1; save(); } $('#hintBox').innerHTML = `<div class="hint">💡 ${h(r.p)}</div>`; $('#hintB').classList.add('hide'); };
+
+  if (r.t === 'mc') document.querySelectorAll('.opt').forEach(b => b.onclick = () => { if (solved) return; if (+b.dataset.k === r.a) { b.classList.add('yes'); win(); } else { b.classList.add('no'); miss(); } });
+  if (r.t === 'text') { const go = () => { const v = norm($('#ans').value); if (!v) return; if (r.ans.map(norm).includes(v)) win(); else miss(r.spell ? '¡Casi! Revisen cada letra. 🔍' : '¡Casi! Piénsenlo otra vez. 💪'); };
+    $('#chk').onclick = go; $('#ans').onkeydown = e => { if (e.key === 'Enter') go(); }; setTimeout(() => $('#ans').focus(), 50); }
+  if (r.t === 'error') document.querySelectorAll('.w').forEach(b => b.onclick = () => {
+    if (solved || document.querySelector('.w.yes')) return;
+    if (norm(b.textContent) === norm(r.w)) { b.classList.add('yes'); sfx.ok();
+      if (!r.fix) { win(); return; }
+      fb('good', '¡Sí, ese es el error! Ahora escriban la palabra correcta.');
+      $('#fixrow').innerHTML = `<div class="inrow"><input class="inp" id="ans" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="La palabra correcta…"><button class="btn teal" id="chk">✓ Revisar</button></div>`;
+      const go = () => { const v = norm($('#ans').value); if (!v) return; if (r.fix.map(norm).includes(v)) win(); else miss('Esa no es. Lean el cartel o piensen en la historia. 💪'); };
+      $('#chk').onclick = go; $('#ans').onkeydown = e => { if (e.key === 'Enter') go(); }; $('#ans').focus();
+    } else { b.classList.add('no'); miss('Esa palabra está bien. ¡Busquen otra! 🔍'); }
+  });
+  if (r.t === 'tiles') { const typed = [];
+    const draw = () => { document.querySelectorAll('#sbox .sb').forEach((x, i) => { x.textContent = typed[i] ? typed[i].c : ''; x.classList.toggle('f', !!typed[i]); }); };
+    document.querySelectorAll('.tile').forEach(b => b.onclick = () => { if (solved || typed.length >= r.word.length) return; sfx.click(); typed.push({ c: b.dataset.c, b }); b.classList.add('used'); draw();
+      if (typed.length === r.word.length) { if (typed.map(x => x.c).join('') === r.word) win(); else { miss('¡Casi! Revisen el orden de las letras. 🔍'); setTimeout(() => { if (solved) return; typed.splice(0).forEach(x => x.b.classList.remove('used')); draw(); }, 900); } } });
+    $('#bk').onclick = () => { const x = typed.pop(); if (x) { x.b.classList.remove('used'); draw(); } }; }
+  if (r.t === 'code') { let d = '';
+    const draw = () => document.querySelectorAll('.cd').forEach((x, i) => x.textContent = d[i] || '');
+    document.querySelectorAll('[data-n]').forEach(b => b.onclick = () => { if (solved || d.length >= r.code.length) return; sfx.click(); d += b.dataset.n; draw();
+      if (d.length === r.code.length) { if (d === r.code) win(); else { miss('El candado no abre. Revisen el cartel. 🔍'); setTimeout(() => { if (!solved) { d = ''; draw(); } }, 900); } } });
+    $('#bk').onclick = () => { d = d.slice(0, -1); draw(); }; }
+}
+function reward() {
+  const s = sala(); P.done[s.id] = true; P.ri = 0; save(); drawTop(); sfx.unlock();
+  const n = Object.keys(P.done).length, all = n === L.salas.length;
+  view(`<div class="card prize">${guide(s.who, all ? '¡Es la última letra! Ahora vamos a la puerta del museo.' : '¡Lo logramos! Esta sala nos da una letra. Guárdenla bien.')}
+    <div class="bigl">${h(s.letter)}</div><h2>¡Letra ${n} de ${L.salas.length}!</h2>
+    <p class="muted" style="font-weight:800">Busquen la letra en la barra de arriba.</p>
+    <button class="btn" id="ok" style="margin-top:8px">${all ? '🚪 Ir a la puerta' : '🗺️ Volver al plano'}</button></div>`);
+  $('#ok').onclick = () => all ? finalDoor() : hub();
+}
+function finalDoor() {
+  const F = L.final, word = E.word, letters = shuffle(L.salas.map(s => s.letter));
+  let wrong = 0, solved = false;
+  view(`<div class="card"><div class="salah"><span class="pill">🚪 La puerta del museo</span></div>${guide(F.who, F.q)}
+    <p class="q" style="text-align:center;margin-top:6px">Sus letras: ${letters.map(c => `<b style="font-family:Fraunces;color:var(--mag);font-size:1.6em;margin:0 6px">${h(c)}</b>`).join('')}</p>
+    ${F.tiles ? `<div class="spellbox" id="sbox">${word.split('').map(() => '<div class="sb"></div>').join('')}</div><div class="tiles">${letters.map((c, i) => `<button class="tile" data-c="${h(c)}">${h(c)}</button>`).join('')}</div><div class="inrow" style="justify-content:center"><button class="btn ghost" id="bk">⌫ Borrar</button></div>`
+      : `<div class="inrow"><input class="inp" id="ans" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="La palabra secreta…"><button class="btn teal" id="chk">🔑 Abrir</button></div>`}
+    <div class="fb" id="fb"></div><div id="hintBox"></div>
+    <div class="acts"><button class="btn ghost" id="back">← Plano</button><button class="btn dark hide" id="hintB">💡 Pista</button></div></div>`);
+  $('#back').onclick = hub;
+  const miss = () => { wrong++; P.miss = (P.miss || 0) + 1; save(); sfx.no(); $('#fb').className = 'fb bad'; $('#fb').textContent = 'La puerta no abre. ¡Prueben otro orden! 🔍'; $('#hintB').classList.remove('hide'); };
+  $('#hintB').onclick = () => { if (!$('#hintBox').innerHTML) { P.hints = (P.hints || 0) + 1; save(); } $('#hintBox').innerHTML = `<div class="hint">💡 ${h(F.p)}</div>`; $('#hintB').classList.add('hide'); };
+  const done = () => { if (solved) return; solved = true; P.end = Date.now(); save(); clearInterval(tick); $('#clock').textContent = fmt(elapsed()); finale(true); };
+  if (F.tiles) { const typed = [];
+    const draw = () => document.querySelectorAll('#sbox .sb').forEach((x, i) => { x.textContent = typed[i] ? typed[i].c : ''; x.classList.toggle('f', !!typed[i]); });
+    document.querySelectorAll('.tile').forEach(b => b.onclick = () => { if (solved || typed.length >= word.length) return; sfx.click(); typed.push({ c: b.dataset.c, b }); b.classList.add('used'); draw();
+      if (typed.length === word.length) { if (typed.map(x => x.c).join('') === word) done(); else { miss(); setTimeout(() => { if (solved) return; typed.splice(0).forEach(x => x.b.classList.remove('used')); draw(); }, 900); } } });
+    $('#bk').onclick = () => { const x = typed.pop(); if (x) { x.b.classList.remove('used'); draw(); } };
+  } else { const go = () => { const v = norm($('#ans').value); if (!v) return; if (v === norm(word)) done(); else miss(); };
+    $('#chk').onclick = go; $('#ans').onkeydown = e => { if (e.key === 'Enter') go(); }; setTimeout(() => $('#ans').focus(), 50); }
+}
+const WORDS = ['QUETZAL', 'ALEBRIJE', 'CATRINA', 'COPAL', 'LEMPIRA', 'MARIMBA', 'REBOZO', 'TAMAL', 'SALSA', 'CÓNDOR', 'COLÓN', 'MURAL'];
+function teamCode() { let x = 11; for (const ch of (P.team + P.lvl).toUpperCase()) x = (x * 37 + ch.charCodeAt(0)) % 100003; return WORDS[x % WORDS.length] + '-' + (10 + (x % 90)); }
+function finale(fresh) {
+  const F = L.final;
+  view(`<div class="card prize"><div class="lock-ic" style="font-size:4rem">🔓</div>${guide(F.who, F.win[0])}
+    <div class="story" style="text-align:left">${F.win.slice(1).map(p => `<p>${h(p)}</p>`).join('')}</div>
+    <div class="cert"><div class="muted" style="font-weight:900">¡ESCAPARON DEL MUSEO!</div><div class="tn">${h(P.team)}</div><div style="font-weight:800">${h(L.name)} · ${h(E.title)}</div>
+      <div class="stats"><span>⏱️ ${fmt(elapsed())}</span><span>💡 Pistas: ${P.hints || 0}</span><span>🔤 RAÍZ</span></div>
+      <div class="muted" style="margin-top:10px;font-weight:800">Código secreto para la maestra:</div><div class="code">${teamCode()}</div></div>
+    <div class="row noprint" style="justify-content:center;margin-top:14px"><button class="btn ghost" id="again">🔁 Jugar otra vez</button><button class="btn" id="plan">🗺️ Ver el plano</button></div></div>`);
+  $('#again').onclick = () => { if (confirm('¿Empezar de nuevo? Se borra el progreso de este equipo en este dispositivo.')) { localStorage.removeItem(PKEY); location.reload(); } };
+  $('#plan').onclick = hub;
+  if (fresh) { sfx.win(); confetti(); }
+}
+function confetti() { const em = ['🌼', '✨', '🔑', '🕯️', '⭐', '🎉']; for (let i = 0; i < 44; i++) { const c = document.createElement('div'); c.className = 'conf'; c.textContent = em[i % em.length]; c.style.left = Math.random() * 100 + 'vw'; c.style.animationDuration = 2.2 + Math.random() * 2.4 + 's'; c.style.animationDelay = Math.random() * .8 + 's'; document.body.appendChild(c); setTimeout(() => c.remove(), 5600); } }
+
+function enter() {
+  L = E.levels[P.lvl]; $('#start').classList.add('hide'); $('#game').classList.remove('hide'); drawTop(); startClock();
+  if (P.end) finale(false); else if (!P.seenIntro) intro(); else if (P.cur && !P.done[P.cur]) openSala(); else hub();
+}
+(function init() {
+  const qs = new URLSearchParams(location.search);
+  let lvl = qs.get('nivel') === 'ms1' ? 'ms1' : qs.get('nivel') === 'ms3' ? 'ms3' : null;
+  const mark = () => document.querySelectorAll('.lv').forEach(b => b.setAttribute('aria-pressed', b.dataset.lv === lvl));
+  document.querySelectorAll('.lv').forEach(b => b.onclick = () => { lvl = b.dataset.lv; mark(); });
+  mark();
+  const old = load();
+  if (old) { $('#resume').classList.remove('hide'); $('#resume').textContent = `↩︎ Seguir con «${old.team}» (${E.levels[old.lvl].name})`; $('#resume').onclick = () => { P = old; enter(); }; }
+  $('#go').onclick = () => {
+    const team = $('#team').value.trim();
+    if (!team) { $('#team').focus(); $('#team').placeholder = '¡Escriban el nombre del equipo!'; return; }
+    if (!lvl) { alert('Elijan su grupo: Middle School 1 o Middle School 3.'); return; }
+    if (old && !confirm('Hay un juego guardado en este dispositivo. ¿Empezar uno nuevo?')) return;
+    ac(); P = { sig: SIG, team, lvl, start: Date.now(), end: 0, done: {}, prog: {}, cur: null, ri: 0, hints: 0, miss: 0, seenIntro: false }; save(); enter();
+  };
+  $('#team').onkeydown = e => { if (e.key === 'Enter') $('#go').click(); };
+  $('#home').onclick = () => { location.href = location.pathname + location.search; };
+  $('#snd').onclick = () => { muted = !muted; $('#snd').textContent = muted ? '🔇' : '🔊'; };
+})();
+</script>
+</body>
+</html>

@@ -3085,7 +3085,7 @@ tool('practica', 'assess', '🎮', 'Práctica y juegos', 'Practice & games by un
   const u = U[g.unitCur];
   el.innerHTML += `<div class="row"><label class="chk">Unidad: <select class="field" id="unSel" style="font-weight:800">${U.map((x, i) => `<option value="${i}" ${i === g.unitCur ? 'selected' : ''}>${h(x.n)}</option>`).join('')}</select></label>
       <button class="btn sm" id="unNew">＋ Nueva unidad</button>${u ? '<button class="btn sm ghost" id="unRen">✏️ Renombrar</button><button class="btn sm ghost" id="unDel">🗑️ Borrar unidad</button>' : ''}</div>
-    <div class="gm-builtin"><span class="muted">Juegos dentro de Herramientas:</span><button class="btn gold" id="gmHang">🦈 Ahorcado · palabras de cada unidad</button><button class="btn gold" data-gm="camino">🗺️ El camino de Chica (3D)</button><button class="btn gold" data-gm="enigma">🌀 El enigma de Chiquibul</button><button class="btn gold" data-gm="minuto">🎤 ¡Habla un minuto!</button><button class="btn gold" data-gm="conexiones">🔗 1 palabra, 5 conexiones</button><button class="btn gold" data-gm="otramanera">🔄 Dilo de otra manera</button></div>
+    <div class="gm-builtin"><span class="muted">Juegos dentro de Herramientas:</span><button class="btn gold" id="gmHang">🦈 Ahorcado · palabras de cada unidad</button><button class="btn gold" data-gm="camino">🗺️ El camino de Chica (3D)</button><button class="btn gold" data-gm="enigma">🌀 El enigma de Chiquibul</button><button class="btn gold" data-gm="escape">🔐 Escape room (MS)</button><button class="btn gold" data-gm="minuto">🎤 ¡Habla un minuto!</button><button class="btn gold" data-gm="conexiones">🔗 1 palabra, 5 conexiones</button><button class="btn gold" data-gm="otramanera">🔄 Dilo de otra manera</button></div>
     ${u ? `<div class="gm-grid">${u.links.map((x, i) => `<div class="gm-card"><button class="gm-open" data-o="${i}"><span class="gm-ic">${gameIcon(x.u)}</span><span class="gm-n">${h(x.n)}</span></button>
         <div class="gm-act"><button class="btn sm ghost" data-t="${i}" title="Abrir en pestaña nueva">↗</button><button class="btn sm ghost" data-q="${i}" title="Código QR para los estudiantes">📱</button><button class="btn sm ghost" data-d="${i}" title="Quitar">✕</button></div></div>`).join('') || '<p class="muted">Esta unidad todavía no tiene enlaces. Añade el primero aquí abajo 👇</p>'}</div>
       <div class="lk-add"><input class="field" id="gmN" placeholder="Nombre, ej. Quizlet · vocabulario" style="max-width:280px"><input class="field" id="gmU" placeholder="Enlace (Quizlet, Wayground, Padlet, Canva, YouTube…)"><button class="btn" id="gmAdd">＋ Añadir</button></div>
@@ -3558,6 +3558,29 @@ tool('enigma', 'assess', '🌀', 'El enigma de Chiquibul', 'Student quest game +
   $$('#enOrig').onclick = () => { if (!confirm('¿Volver al juego original (episodios 1–2)? Se reemplazan tus cambios en esta computadora.')) return; D = enClone(window.ENIGMA_DEFAULT); enSetDraft(D); o.st = 0; render(); };
 });
 
+/* ---------- 🔐 ESCAPE ROOM: ¡ENCERRADOS EN EL MUSEO! (Middle School) ---------- */
+function esUrl(n) { return new URL('escape.html?nivel=' + n, location.href).href; }
+tool('escape', 'assess', '🔐', 'Escape room: ¡Encerrados en el museo!', 'Middle School escape room (tablets + paper)', 'Escape room de unos 30 minutos para Middle School: los equipos leen, buscan los carteles impresos y resuelven retos (deletrear, ¿qué le falta?, encuentra el error, candados) para salir del Museo de la Herencia. MS1 con Los Vecinos, MS3 con El Club del Barrio.', el => {
+  const share = [['ms1', 'Middle School 1', 'con Los Vecinos · episodios 1–2'], ['ms3', 'Middle School 3', 'con El Club del Barrio MS2 · episodios 1–2']].map(([n, t, s]) => `<div class="en-share"><div class="en-qr">${enQr(esUrl(n))}</div><div><b>🔐 ${t}</b><div class="muted">${s}</div>
+      <div class="row" style="margin-top:8px"><button class="btn sm gold" data-esopen="${n}">▶ Abrir</button><button class="btn sm" data-esbig="${n}">⛶ QR grande</button><button class="btn sm ghost" data-escopy="${n}">📋 Copiar enlace</button></div></div></div>`).join('');
+  el.innerHTML += `<div class="en-wrap">
+    <div class="en-box"><h3>📱 Compartir con los equipos</h3><div class="en-shares">${share}</div>
+      <p class="muted" style="font-size:.88rem;margin:8px 0 0">Una tableta por equipo (2–3 estudiantes). Las 4 salas se pueden hacer en cualquier orden, así los equipos no van todos al mismo cartel. Sin voz. El progreso y el tiempo se guardan solo en cada tableta; al final cada equipo te enseña su código secreto.</p></div>
+    <div class="en-box"><h3>🖨 Antes de la clase</h3>
+      <ol style="margin:0 0 10px;padding-left:20px;line-height:1.6"><li>Imprime los <b>3 carteles</b> (una copia de cada uno) y pégalos en tres lugares del salón.</li><li>Imprime la <b>hoja de la maestra</b> (respuestas). ¡No la pongas en la TV!</li><li>Comparte el QR de cada grupo.</li></ol>
+      <div class="row"><button class="btn gold" id="esCart">🖨 Carteles para imprimir</button><button class="btn" id="esKey">🔑 Hoja de la maestra (respuestas)</button></div>
+      <p class="muted" style="font-size:.86rem;margin:10px 0 0">Palabra secreta: se ve en la hoja de la maestra. Salas: 🗺️ Países (cartel 1) · ⭐ Personas especiales (cartel 2) · 🕯️ Altar (cartel 3) · 🏘️ Historias (de memoria).</p></div></div>`;
+  el.querySelectorAll('[data-esopen]').forEach(b => b.onclick = () => window.open(esUrl(b.dataset.esopen), '_blank'));
+  el.querySelectorAll('[data-escopy]').forEach(b => b.onclick = () => { try { navigator.clipboard.writeText(esUrl(b.dataset.escopy)); toast('Enlace copiado ✓'); } catch (e) { prompt('Copia el enlace:', esUrl(b.dataset.escopy)); } });
+  el.querySelectorAll('[data-esbig]').forEach(b => b.onclick = () => {
+    const n = b.dataset.esbig, box = document.createElement('div'); box.className = 'en-bigqr';
+    box.innerHTML = `<h2>🔐 ¡Encerrados en el museo!</h2><div class="muted" style="font-size:1.4rem">${n === 'ms1' ? 'Middle School 1' : 'Middle School 3'}</div>${enQr(esUrl(n), 10)}<div class="muted">${h(esUrl(n))}</div><button class="btn gold">✕ Cerrar</button>`;
+    document.body.appendChild(box); box.querySelector('button').onclick = () => box.remove();
+  });
+  el.querySelector('#esCart').onclick = () => window.open('escape-carteles.html', '_blank');
+  el.querySelector('#esKey').onclick = () => window.open('escape-respuestas.html', '_blank');
+});
+
 /* ---------- 🔄 DILO DE OTRA MANERA ---------- */
 const OTRA = {
   na: { how: 'Cambia UNA parte de la oración. Usa la caja de herramientas.', list: [
@@ -3804,7 +3827,7 @@ tool('camino', 'assess', '🗺️', 'Caminos de historias', '3D story path board
 });
 
 /* ---------- tool order in the menu ---------- */
-const TOOL_ORDER = ['links', 'pizarra', 'tareas', 'qr', 'prof', 'rubricas', 'check', 'exit', 'resultados', 'practica', 'ahorcado', 'camino', 'enigma', 'minuto', 'conexiones', 'otramanera', 'timer', 'safari', 'sonidos', 'check', 'wheel', 'picker', 'cold', 'groups', 'pairs', 'seats', 'part', 'dados', 'exit',
+const TOOL_ORDER = ['links', 'pizarra', 'tareas', 'qr', 'prof', 'rubricas', 'check', 'exit', 'resultados', 'practica', 'ahorcado', 'camino', 'enigma', 'escape', 'minuto', 'conexiones', 'otramanera', 'timer', 'safari', 'sonidos', 'check', 'wheel', 'picker', 'cold', 'groups', 'pairs', 'seats', 'part', 'dados', 'exit',
   'espanol', 'points', 'houses', 'semana', 'mystery', 'stickers', 'tokens', 'levels', 'reward',
   'tpr', 'story', 'vocab', 'character', 'problem', 'location', 'cubes', 'qwords', 'verbs', 'tenses', 'convo', 'circ'];
 TOOLS.sort((a, b) => { const ia = TOOL_ORDER.indexOf(a.id), ib = TOOL_ORDER.indexOf(b.id); return (ia < 0 ? 999 : ia) - (ib < 0 ? 999 : ib); });
