@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>¿Cuál es el intruso?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff7e8;--ink:#20243a;--pri:#6a3fd1;--pri2:#4d2aa3;--yel:#ffc93c;--yel2:#d9a21a;--ok:#1f9d55;--bad:#d64545;--card:#fff;--line:#eadfc7;--muted:#6b6f80}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Nunito,system-ui,sans-serif;color:var(--ink);background:var(--bg);-webkit-tap-highlight-color:transparent}
+body{background:radial-gradient(circle at 15% 10%,#ffe6b3 0,transparent 35%),radial-gradient(circle at 90% 85%,#e4dbff 0,transparent 40%),var(--bg) fixed}
+button{font:inherit;cursor:pointer}
+.hide{display:none!important}
+h1,h2,.disp{font-family:'Baloo 2',system-ui,sans-serif;margin:0;line-height:1.05}
+.wrap{max-width:980px;margin:0 auto;padding:14px 14px 30px}
+.card{background:var(--card);border-radius:24px;padding:22px;box-shadow:0 10px 30px #6a3fd122;border:2px solid var(--line)}
+.btn{border:0;border-radius:16px;padding:13px 22px;font-weight:900;font-size:1.1rem;background:var(--yel);color:#3a2a00;box-shadow:0 4px 0 var(--yel2);transition:transform .1s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--yel2)}
+.btn.pri{background:var(--pri);color:#fff;box-shadow:0 4px 0 var(--pri2)}
+.btn.ghost{background:#f1ead9;color:var(--ink);box-shadow:0 4px 0 #dccfae}
+.muted{color:var(--muted)}
+/* inicio */
+#start .card{max-width:680px;margin:20px auto 0;text-align:center}
+.mag{font-size:4rem;line-height:1;display:inline-block;animation:wig 2.4s ease-in-out infinite}
+@keyframes wig{50%{transform:rotate(-12deg) scale(1.08)}}
+#start h1{font-size:clamp(2.2rem,7vw,3.3rem);color:var(--pri)}
+.sub{margin:6px 0 16px;font-size:1.08rem;color:#4b4f62;font-weight:800}
+.lbl{display:block;text-align:left;font-weight:900;margin:14px 0 8px;color:var(--pri2)}
+.lv-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.lv{border:2px solid var(--line);background:#fff;border-radius:16px;padding:12px 8px;display:flex;flex-direction:column;gap:2px;align-items:center}
+.lv b{font-family:'Baloo 2';font-size:1.3rem} .lv span{font-size:.86rem;color:var(--muted);font-weight:800}
+.lv[aria-pressed=true]{border-color:var(--pri);background:#f1ebff;box-shadow:0 4px 0 var(--pri2)}
+select{width:100%;font:inherit;font-weight:800;font-size:1.1rem;padding:11px 12px;border-radius:14px;border:2px solid var(--line);background:#fff}
+.wide{width:100%;margin-top:18px;font-size:1.3rem}
+/* barra */
+.top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.ib{width:46px;height:46px;border-radius:14px;border:2px solid var(--line);background:#fff;font-size:1.3rem}
+.prog{flex:1;height:14px;background:#efe6d2;border-radius:99px;overflow:hidden}
+.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--pri),#9c7bf0);border-radius:99px;transition:width .4s}
+.score{font-family:'Baloo 2';font-size:1.5rem;background:#fff;border:2px solid var(--line);border-radius:14px;padding:2px 14px;white-space:nowrap}
+/* ronda */
+.th{display:inline-block;background:var(--pri);color:#fff;border-radius:99px;padding:4px 14px;font-weight:900;font-size:.95rem}
+.ask{font-family:'Baloo 2';font-size:clamp(1.7rem,4.6vw,2.5rem);margin:10px 0 14px;color:var(--ink)}
+.items{display:grid;gap:clamp(8px,2vw,16px)}
+.items.n3{grid-template-columns:repeat(3,1fr)} .items.n4{grid-template-columns:repeat(4,1fr)}
+.it{position:relative;border:3px solid var(--line);background:#fff;border-radius:22px;padding:clamp(10px,2vw,18px) 8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:clamp(120px,22vw,200px);box-shadow:0 5px 0 var(--line);transition:transform .12s}
+.it:hover{transform:translateY(-3px)}
+.it .em{font-size:clamp(3rem,10vw,5.6rem);line-height:1}
+.it .wd{font-weight:900;font-size:clamp(1.05rem,2.6vw,1.5rem);text-align:center;line-height:1.15}
+.items.words .it .wd{font-family:'Baloo 2';font-size:clamp(1.3rem,3.4vw,2.1rem)}
+.it.no{border-color:var(--bad);background:#fde9e9;opacity:.55;pointer-events:none;animation:shake .4s}
+.it.yes{border-color:var(--ok);background:#e5f7ec;box-shadow:0 5px 0 #9fd9b6;animation:pop .4s}
+.it.yes::after{content:'🔎';position:absolute;top:-14px;right:-8px;font-size:2rem}
+.it.dim{opacity:.4;pointer-events:none}
+@keyframes shake{20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+@keyframes pop{50%{transform:scale(1.07)}}
+.why{margin-top:18px}
+.why h3{font-family:'Baloo 2';font-size:clamp(1.4rem,3.6vw,1.9rem);margin:0 0 10px}
+.rs{display:grid;gap:10px}
+.r{border:2px solid var(--line);background:#fff;border-radius:16px;padding:12px 16px;text-align:left;font-weight:900;font-size:clamp(1.05rem,2.6vw,1.3rem);box-shadow:0 3px 0 var(--line)}
+.r small{color:var(--muted);font-weight:800}
+.r.no{border-color:var(--bad);background:#fde9e9;opacity:.55;pointer-events:none;animation:shake .4s}
+.r.yes{border-color:var(--ok);background:#e5f7ec}
+.frame{margin-top:16px;background:#fffbea;border:3px dashed var(--yel2);border-radius:18px;padding:16px;text-align:center}
+.frame .say{font-weight:900;color:var(--pri2);font-size:1rem}
+.frame p{margin:6px 0 0;font-family:'Baloo 2';font-size:clamp(1.4rem,4vw,2.1rem);line-height:1.2}
+.fb{min-height:1.5em;margin-top:12px;font-weight:900;font-size:1.15rem;text-align:center}
+.fb.bad{color:var(--bad)} .fb.good{color:var(--ok)}
+.acts{display:flex;justify-content:flex-end;margin-top:14px}
+/* fin */
+.end{text-align:center}
+.stars{font-size:3.4rem;letter-spacing:.1em;margin:6px 0}
+.end h2{font-size:clamp(2rem,6vw,3rem);color:var(--pri)}
+.big{font-family:'Baloo 2';font-size:clamp(2.4rem,8vw,4rem)}
+.conf{position:fixed;top:-30px;z-index:50;font-size:1.8rem;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+@media (max-width:640px){ .items.n4{grid-template-columns:repeat(2,1fr)} .lv-grid{grid-template-columns:1fr 1fr} }
+</style>
+</head>
+<body>
+<section id="start" class="wrap">
+  <div class="card">
+    <div class="mag">🔎</div>
+    <h1>¿Cuál es el intruso?</h1>
+    <p class="sub">Uno no pertenece al grupo. ¡Encuéntrenlo y digan por qué!</p>
+    <span class="lbl">1. ¿Qué nivel?</span>
+    <div class="lv-grid" id="lvs"></div>
+    <label class="lbl" for="th">2. ¿Qué tema?</label>
+    <select id="th"></select>
+    <button class="btn pri wide" id="go">🔎 ¡A jugar!</button>
+  </div>
+</section>
+
+<section id="game" class="wrap hide">
+  <div class="top"><button class="ib" id="home" title="Inicio">🏠</button><div class="prog"><i id="bar"></i></div><div class="score" id="sc">⭐ 0</div><button class="ib" id="snd" title="Sonido">🔊</button></div>
+  <div class="card" id="view"></div>
+</section>
+
+<script src="intruso-contenido.js"></script>
+<script>
+'use strict';
+const $ = s => document.querySelector(s);
+const h = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+const LV = window.INTRUSO_LEVELS, ROUND = 8;
+let D = window.INTRUSO_DEFAULT, lvl = null, G = null, muted = false;
+
+/* sonidos cortos, sin voz */
+let AC = null;
+function tone(f, t = 0, d = .18, type = 'triangle', v = .15) { if (muted) return; try { if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)(); const a = AC, o = a.createOscillator(), g = a.createGain(), s = a.currentTime + t; o.type = type; o.frequency.setValueAtTime(f, s); g.gain.setValueAtTime(0, s); g.gain.linearRampToValueAtTime(v, s + .02); g.gain.exponentialRampToValueAtTime(.001, s + d); o.connect(g).connect(a.destination); o.start(s); o.stop(s + d + .05); } catch (e) {} }
+const sfx = { ok() { tone(660); tone(880, .1, .2); }, no() { tone(240, 0, .2, 'sine', .12); tone(190, .12, .24, 'sine', .1); }, win() { [523, 659, 784, 1047, 784, 1047, 1319].forEach((f, i) => tone(f, i * .12, .35)); } };
+
+function validSets(arr) { return (arr || []).filter(s => s && s.it && s.it.length >= 3 && s.it.every(x => String(x[1] || '').trim()) && s.odd >= 0 && s.odd < s.it.length); }
+function themes(k) { return [...new Set(validSets(D[k]).map(s => s.th || 'Varios'))]; }
+function drawStart() {
+  $('#lvs').innerHTML = window.INTRUSO_ORDER.map(k => `<button class="lv" data-k="${k}" aria-pressed="${k === lvl}"><b>${h(LV[k].n)}</b><span>${h(LV[k].d)}</span></button>`).join('');
+  document.querySelectorAll('.lv').forEach(b => b.onclick = () => { lvl = b.dataset.k; drawStart(); });
+  const ts = lvl ? themes(lvl) : [];
+  $('#th').innerHTML = `<option value="">🎲 Todos los temas (mezclados)</option>` + ts.map(t => `<option>${h(t)}</option>`).join('');
+  $('#th').disabled = !lvl;
+}
+function start() {
+  if (!lvl) { alert('Elijan un nivel primero.'); return; }
+  const th = $('#th').value;
+  let pool = validSets(D[lvl]).filter(s => !th || (s.th || 'Varios') === th);
+  if (!pool.length) { alert('Este tema no tiene grupos todavía.'); return; }
+  pool = shuffle(pool).slice(0, ROUND);
+  G = { sets: pool, i: 0, pts: 0, max: pool.length * 3, lvl };
+  $('#start').classList.add('hide'); $('#game').classList.remove('hide'); round();
+}
+function round() {
+  const s = G.sets[G.i], words = lvl === 'ms' || lvl === 'sec';
+  const order = shuffle(s.it.map((x, k) => k));
+  let missI = 0, phase = 'find';
+  $('#bar').style.width = (G.i / G.sets.length * 100) + '%'; $('#sc').textContent = '⭐ ' + G.pts;
+  $('#view').innerHTML = `<span class="th">${h(s.th || 'Varios')} · ${G.i + 1}/${G.sets.length}</span>
+    <div class="ask">¿Cuál es el intruso?</div>
+    <div class="items n${Math.min(s.it.length, 4)} ${words ? 'words' : ''}">${order.map(k => { const [e, w] = s.it[k]; return `<button class="it" data-k="${k}">${e && !words ? `<span class="em">${h(e)}</span>` : (e ? `<span class="em" style="font-size:2.2rem">${h(e)}</span>` : '')}<span class="wd">${h(w)}</span></button>`; }).join('')}</div>
+    <div class="fb" id="fb"></div><div id="why"></div><div class="acts hide" id="nx"><button class="btn pri" id="next">${G.i + 1 < G.sets.length ? 'Siguiente ➜' : '🏁 Ver resultado'}</button></div>`;
+  const fb = (c, t) => { $('#fb').className = 'fb ' + c; $('#fb').textContent = t; };
+  document.querySelectorAll('.it').forEach(b => b.onclick = () => {
+    if (phase !== 'find') return;
+    const k = +b.dataset.k;
+    if (k === s.odd) {
+      phase = 'why'; b.classList.add('yes'); sfx.ok(); G.pts += missI ? 1 : 2; $('#sc').textContent = '⭐ ' + G.pts;
+      document.querySelectorAll('.it').forEach(x => { if (x !== b) x.classList.add('dim'); });
+      fb('good', missI ? '¡Sí! Ese es el intruso. 🔎' : '¡Excelente! A la primera. 🔎');
+      askWhy();
+    } else { missI++; b.classList.add('no'); sfx.no(); fb('bad', 'Ese sí pertenece al grupo. ¡Busquen otro!'); }
+  });
+  function askWhy() {
+    const odd = s.it[s.odd][1], reasons = (s.why || []).filter(x => String(x || '').trim());
+    if (reasons.length < 2) { showFrame(odd, reasons[0] || '…'); return; }
+    const ops = shuffle(reasons.map((t, k) => ({ t, k })));
+    $('#why').innerHTML = `<div class="why"><h3>¿Por qué? 🤔</h3><div class="rs">${ops.map(o => `<button class="r" data-k="${o.k}"><small>porque</small> ${h(o.t)}</button>`).join('')}</div></div>`;
+    let missR = 0;
+    document.querySelectorAll('.r').forEach(b => b.onclick = () => {
+      if (+b.dataset.k === 0) { b.classList.add('yes'); sfx.ok(); if (!missR) { G.pts += 1; $('#sc').textContent = '⭐ ' + G.pts; } $('#why').querySelector('.rs').style.pointerEvents = 'none'; fb('good', missR ? '¡Eso es!' : '¡Perfecto! +1 ⭐'); showFrame(odd, reasons[0]); }
+      else { missR++; b.classList.add('no'); sfx.no(); fb('bad', '¡Casi! Piénsenlo otra vez.'); }
+    });
+  }
+  function showFrame(odd, reason) {
+    const fr = document.createElement('div'); fr.className = 'frame';
+    fr.innerHTML = `<div class="say">🗣️ ¡Díganlo en voz alta!</div><p>«${h(cap(odd))}» es el intruso porque ${h(reason)}.</p>`;
+    $('#why').appendChild(fr); $('#nx').classList.remove('hide'); $('#next').focus();
+    fr.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  $('#next').onclick = () => { G.i++; G.i < G.sets.length ? round() : end(); };
+}
+function end() {
+  $('#bar').style.width = '100%'; $('#sc').textContent = '⭐ ' + G.pts;
+  const r = G.pts / G.max, stars = r >= .85 ? 3 : r >= .6 ? 2 : 1;
+  $('#view').innerHTML = `<div class="end"><div class="mag">🔎</div><h2>${stars === 3 ? '¡Detectives expertos!' : stars === 2 ? '¡Muy buen trabajo!' : '¡Buen intento!'}</h2>
+    <div class="stars">${'⭐'.repeat(stars)}${'☆'.repeat(3 - stars)}</div><div class="big">${G.pts} / ${G.max}</div>
+    <p class="muted" style="font-weight:800">2 ⭐ si encuentran el intruso a la primera · 1 ⭐ por la razón correcta</p>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px"><button class="btn" id="again">🔁 Otra ronda</button><button class="btn ghost" id="menu">🏠 Cambiar tema</button></div></div>`;
+  $('#again').onclick = () => { $('#game').classList.add('hide'); $('#start').classList.remove('hide'); start(); };
+  $('#menu').onclick = home;
+  sfx.win(); if (stars >= 2) confetti();
+}
+function confetti() { const em = ['🔎', '⭐', '🎉', '✨']; for (let i = 0; i < 36; i++) { const c = document.createElement('div'); c.className = 'conf'; c.textContent = em[i % em.length]; c.style.left = Math.random() * 100 + 'vw'; c.style.animationDuration = 2 + Math.random() * 2.4 + 's'; c.style.animationDelay = Math.random() * .7 + 's'; document.body.appendChild(c); setTimeout(() => c.remove(), 5400); } }
+function home() { $('#game').classList.add('hide'); $('#start').classList.remove('hide'); drawStart(); }
+
+(function init() {
+  const qs = new URLSearchParams(location.search), n = qs.get('nivel');
+  if (n && LV[n]) lvl = n;
+  // 1) borrador de la maestra en este dispositivo, 2) data/intruso.json publicado, 3) contenido original
+  let draft = null; try { const d = JSON.parse(localStorage.getItem('cdc-intruso-draft') || 'null'); if (d && d.data && d.data.k2) draft = d.data; } catch (e) {}
+  if (draft) { D = draft; drawStart(); }
+  else { drawStart(); fetch('data/intruso.json', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(j => { if (j && j.k2) { D = j; if (!G) drawStart(); } }).catch(() => {}); }
+  $('#go').onclick = start;
+  $('#home').onclick = () => { if (confirm('¿Salir de esta ronda?')) home(); };
+  $('#snd').onclick = () => { muted = !muted; $('#snd').textContent = muted ? '🔇' : '🔊'; };
+})();
+</script>
+</body>
+</html>

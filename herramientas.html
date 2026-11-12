@@ -669,6 +669,24 @@
   .sp-q { margin-top: 6px; font-family: 'Schoolbell', cursive; font-size: clamp(1rem, 1.8vw, 1.5rem); color: #fff3c4; } .sp-q.hidden { display: none; }
   .notice { background: #fff6d6; border: 2px dashed var(--gold); border-radius: 12px; padding: 10px 14px; color: var(--text-dark); font-size: 0.9rem; margin-bottom: 14px; }
   /* enigma editor */
+    .in-stage { background: #fffaf0; border-radius: 22px; padding: 18px; margin-top: 14px; color: #20243a; box-shadow: 0 8px 22px rgba(0,0,0,.15); }
+  .in-q { font-family: 'Baloo 2', system-ui, sans-serif; font-weight: 800; font-size: clamp(1.6rem, 4cqw, 3rem); text-align: center; margin-bottom: 12px; }
+  .in-ct { display: block; font-size: .45em; font-family: inherit; color: #6b6f80; }
+  .in-items { display: grid; gap: 2cqw; }
+  .in-items.n3 { grid-template-columns: repeat(3, 1fr); } .in-items.n4 { grid-template-columns: repeat(4, 1fr); }
+  .in-it { border: 4px solid #eadfc7; background: #fff; border-radius: 24px; padding: 2cqw 1cqw; min-height: 18cqw; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; cursor: pointer; box-shadow: 0 6px 0 #eadfc7; }
+  .in-it .em { font-size: 9cqw; line-height: 1; } .in-items.n4 .in-it .em { font-size: 7cqw; }
+  .in-it .wd { font-weight: 900; font-size: 2.6cqw; text-align: center; line-height: 1.15; }
+  .in-items.words .in-it .wd { font-size: 3.4cqw; font-family: 'Baloo 2', system-ui, sans-serif; }
+  .in-items.words .in-it .em { font-size: 4cqw; }
+  .in-it.no { border-color: #d64545; background: #fde9e9; opacity: .55; }
+  .in-it.yes { border-color: #1f9d55; background: #e5f7ec; box-shadow: 0 6px 0 #9fd9b6; transform: scale(1.04); }
+  .in-it.dim { opacity: .35; }
+  .in-frame { margin-top: 14px; background: #fffbea; border: 3px dashed #d9a21a; border-radius: 18px; padding: 12px 16px; text-align: center; font-family: 'Baloo 2', system-ui, sans-serif; font-weight: 800; font-size: clamp(1.3rem, 3.2cqw, 2.4rem); }
+  .in-frame.plain { border-style: solid; border-color: #eadfc7; background: #fff; }
+  .in-rs { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; margin-top: 10px; }
+  .in-r { border: 3px solid #eadfc7; background: #fff; border-radius: 16px; padding: 12px; font-weight: 900; font-size: clamp(1.05rem, 2.2cqw, 1.6rem); cursor: pointer; }
+  .in-r.no { border-color: #d64545; background: #fde9e9; opacity: .55; } .in-r.yes { border-color: #1f9d55; background: #e5f7ec; }
   .en-wrap { display: grid; gap: 16px; }
   .en-box { background: #fff; color: #1d2b24; border-radius: 18px; padding: 16px 18px; box-shadow: 0 6px 18px rgba(0,0,0,.12); }
   .en-box h3 { margin: 0 0 10px; }
@@ -706,6 +724,7 @@
   .sp-edl { margin: 6px 0; gap: 6px; }
 </style>
 <script src="enigma-contenido.js"></script>
+<script src="intruso-contenido.js"></script>
 </head>
 <body>
 
@@ -3085,7 +3104,7 @@ tool('practica', 'assess', '🎮', 'Práctica y juegos', 'Practice & games by un
   const u = U[g.unitCur];
   el.innerHTML += `<div class="row"><label class="chk">Unidad: <select class="field" id="unSel" style="font-weight:800">${U.map((x, i) => `<option value="${i}" ${i === g.unitCur ? 'selected' : ''}>${h(x.n)}</option>`).join('')}</select></label>
       <button class="btn sm" id="unNew">＋ Nueva unidad</button>${u ? '<button class="btn sm ghost" id="unRen">✏️ Renombrar</button><button class="btn sm ghost" id="unDel">🗑️ Borrar unidad</button>' : ''}</div>
-    <div class="gm-builtin"><span class="muted">Juegos dentro de Herramientas:</span><button class="btn gold" id="gmHang">🦈 Ahorcado · palabras de cada unidad</button><button class="btn gold" data-gm="camino">🗺️ El camino de Chica (3D)</button><button class="btn gold" data-gm="enigma">🌀 El enigma de Chiquibul</button><button class="btn gold" data-gm="escape">🔐 Escape room (MS)</button><button class="btn gold" data-gm="minuto">🎤 ¡Habla un minuto!</button><button class="btn gold" data-gm="conexiones">🔗 1 palabra, 5 conexiones</button><button class="btn gold" data-gm="otramanera">🔄 Dilo de otra manera</button></div>
+    <div class="gm-builtin"><span class="muted">Juegos dentro de Herramientas:</span><button class="btn gold" id="gmHang">🦈 Ahorcado · palabras de cada unidad</button><button class="btn gold" data-gm="camino">🗺️ El camino de Chica (3D)</button><button class="btn gold" data-gm="enigma">🌀 El enigma de Chiquibul</button><button class="btn gold" data-gm="escape">🔐 Escape room (MS)</button><button class="btn gold" data-gm="intruso">🔎 ¿Cuál es el intruso?</button><button class="btn gold" data-gm="minuto">🎤 ¡Habla un minuto!</button><button class="btn gold" data-gm="conexiones">🔗 1 palabra, 5 conexiones</button><button class="btn gold" data-gm="otramanera">🔄 Dilo de otra manera</button></div>
     ${u ? `<div class="gm-grid">${u.links.map((x, i) => `<div class="gm-card"><button class="gm-open" data-o="${i}"><span class="gm-ic">${gameIcon(x.u)}</span><span class="gm-n">${h(x.n)}</span></button>
         <div class="gm-act"><button class="btn sm ghost" data-t="${i}" title="Abrir en pestaña nueva">↗</button><button class="btn sm ghost" data-q="${i}" title="Código QR para los estudiantes">📱</button><button class="btn sm ghost" data-d="${i}" title="Quitar">✕</button></div></div>`).join('') || '<p class="muted">Esta unidad todavía no tiene enlaces. Añade el primero aquí abajo 👇</p>'}</div>
       <div class="lk-add"><input class="field" id="gmN" placeholder="Nombre, ej. Quizlet · vocabulario" style="max-width:280px"><input class="field" id="gmU" placeholder="Enlace (Quizlet, Wayground, Padlet, Canva, YouTube…)"><button class="btn" id="gmAdd">＋ Añadir</button></div>
@@ -3581,6 +3600,120 @@ tool('escape', 'assess', '🔐', 'Escape room: ¡Encerrados en el museo!', 'Midd
   el.querySelector('#esKey').onclick = () => window.open('escape-respuestas.html', '_blank');
 });
 
+/* ---------- 🔎 ¿CUÁL ES EL INTRUSO? (odd one out) ---------- */
+const IN_DKEY = 'cdc-intruso-draft';
+let IN_PUB = null, IN_TRIED = false;
+function inGetDraft() { try { const d = JSON.parse(localStorage.getItem(IN_DKEY) || 'null'); return d && d.data && d.data.k2 ? d.data : null; } catch (e) { return null; } }
+function inSetDraft(d) { try { localStorage.setItem(IN_DKEY, JSON.stringify({ at: Date.now(), data: d })); } catch (e) { toast('No se pudo guardar'); } }
+function inUrl(n) { return new URL('intruso.html' + (n ? '?nivel=' + n : ''), location.href).href; }
+function inLvFromClass() { const n = cname(); return /K-?2|Lower/i.test(n) ? 'k2' : /3-?5|Upper/i.test(n) ? '35' : /Secondary|Sec/i.test(n) ? 'sec' : /Middle|MS/i.test(n) ? 'ms' : 'k2'; }
+const inShuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+tool('intruso', 'assess', '🔎', '¿Cuál es el intruso?', 'Odd one out vocabulary game', 'Juego de vocabulario: uno no pertenece al grupo. Encuéntrenlo y expliquen por qué con la frase «___ es el intruso porque…». En la TV con toda la clase o en las tabletas. Agrega tus propios grupos en ✏️ Editar.', el => {
+  const LV = window.INTRUSO_LEVELS;
+  const o = ses('intruso', () => ({ mode: 'play', lv: inLvFromClass(), th: '', i: 0, order: null, editLv: null, edit: -1 }));
+  let D = inGetDraft();
+  if (D && IN_PUB && JSON.stringify(D) === JSON.stringify(IN_PUB)) { localStorage.removeItem(IN_DKEY); D = null; }
+  const isDraft = !!D;
+  if (!D) D = JSON.parse(JSON.stringify(IN_PUB || window.INTRUSO_DEFAULT));
+  if (!IN_TRIED) { IN_TRIED = true; fetch('data/intruso.json', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(j => { if (j && j.k2) { IN_PUB = j; if (S.tool === 'intruso') render(); } }).catch(() => {}); }
+  Object.keys(LV).forEach(k => { if (!Array.isArray(D[k])) D[k] = []; });
+  const valid = s => s && s.it && s.it.length >= 3 && s.it.every(x => String(x[1] || '').trim()) && s.odd >= 0 && s.odd < s.it.length;
+  const lvBtns = (cur, attr) => window.INTRUSO_ORDER.map(k => `<button class="btn sm ${k === cur ? 'gold' : 'ghost'}" data-${attr}="${k}">${LV[k].n}</button>`).join('');
+  const tabs = `<div class="row" style="margin-bottom:12px"><button class="btn ${o.mode === 'play' ? 'gold' : 'ghost'}" data-inmode="play">📺 Jugar en la TV</button><button class="btn ${o.mode === 'share' ? 'gold' : 'ghost'}" data-inmode="share">📱 Estudiantes</button><button class="btn ${o.mode === 'edit' ? 'gold' : 'ghost'}" data-inmode="edit">✏️ Editar grupos</button></div>`;
+  const wire = () => el.querySelectorAll('[data-inmode]').forEach(b => b.onclick = () => { o.mode = b.dataset.inmode; render(); });
+
+  if (o.mode === 'share') {
+    el.innerHTML += tabs + `<div class="en-box"><h3>📱 Enlaces para las tabletas</h3><div class="en-shares">${window.INTRUSO_ORDER.map(k => `<div class="en-share"><div class="en-qr">${enQr(inUrl(k))}</div><div><b>🔎 ${LV[k].n}</b><div class="muted">${LV[k].d}</div><div class="row" style="margin-top:8px"><button class="btn sm gold" data-inopen="${k}">▶ Abrir</button><button class="btn sm" data-inbig="${k}">⛶ QR grande</button></div></div></div>`).join('')}</div>
+      <p class="muted" style="font-size:.88rem;margin:10px 0 0">En parejas: eligen el tema y juegan rondas de 8 grupos. Ganan 2 ⭐ si encuentran el intruso a la primera y 1 ⭐ por la razón. Sin voz. Cada grupo termina con la frase para decir en voz alta.</p></div>`;
+    wire();
+    el.querySelectorAll('[data-inopen]').forEach(b => b.onclick = () => window.open(inUrl(b.dataset.inopen), '_blank'));
+    el.querySelectorAll('[data-inbig]').forEach(b => b.onclick = () => { const k = b.dataset.inbig, box = document.createElement('div'); box.className = 'en-bigqr'; box.innerHTML = `<h2>🔎 ¿Cuál es el intruso?</h2><div class="muted" style="font-size:1.4rem">${LV[k].n}</div>${enQr(inUrl(k), 10)}<div class="muted">${h(inUrl(k))}</div><button class="btn gold">✕ Cerrar</button>`; document.body.appendChild(box); box.querySelector('button').onclick = () => box.remove(); });
+    return;
+  }
+
+  if (o.mode === 'edit') {
+    const lv = o.editLv || o.lv, sets = D[lv], n = lv === 'k2' ? 3 : 4, words = lv === 'ms' || lv === 'sec';
+    const pub = isDraft ? '<span class="en-pill warn">✏️ Tienes cambios sin publicar · solo en esta computadora</span>' : (IN_PUB ? '<span class="en-pill ok">✓ Igual a la versión publicada</span>' : '<span class="en-pill">Grupos originales</span>');
+    const ths = [...new Set(sets.map(s => s.th || 'Varios'))];
+    const form = idx => { const s = idx >= 0 ? sets[idx] : { th: o.th || '', it: Array.from({ length: n }, () => ['', '']), odd: n - 1, why: ['', '', ''] };
+      while (s.it.length < n) s.it.push(['', '']);
+      return `<div class="en-ed" style="margin-top:12px"><h3>${idx >= 0 ? '✏️ Editar grupo' : '＋ Grupo nuevo'} · ${LV[lv].n}</h3>
+      <label style="font-weight:800">Tema <input class="field" id="inTh" list="inThs" value="${h(s.th || '')}" placeholder="ej. Los animales"><datalist id="inThs">${ths.map(t => `<option value="${h(t)}">`).join('')}</datalist></label>
+      <div style="display:grid;gap:8px;margin-top:10px">${s.it.slice(0, n).map((x, i) => `<div class="row" style="flex-wrap:nowrap"><label title="Este es el intruso" style="font-weight:800;white-space:nowrap"><input type="radio" name="inOdd" value="${i}" ${i === s.odd ? 'checked' : ''}> intruso</label>
+        <input class="field" data-ie="${i}" value="${h(x[0] || '')}" placeholder="${words ? 'emoji (opcional)' : 'emoji'}" style="width:110px;font-size:1.3rem"><input class="field" data-iw="${i}" value="${h(x[1] || '')}" placeholder="palabra con artículo: el perro" style="flex:1"></div>`).join('')}</div>
+      <p class="muted" style="font-size:.86rem;margin:10px 0 4px">Razones: completan «___ es el intruso porque…». La primera es la correcta; las otras dos deben ser <b>falsas</b> para el intruso. Si dejas las falsas vacías, el juego solo muestra la frase.</p>
+      <div style="display:grid;gap:6px"><input class="field" id="inW0" value="${h((s.why || [])[0] || '')}" placeholder="✅ razón correcta: no es un animal"><input class="field" id="inW1" value="${h((s.why || [])[1] || '')}" placeholder="❌ razón falsa 1 (opcional)"><input class="field" id="inW2" value="${h((s.why || [])[2] || '')}" placeholder="❌ razón falsa 2 (opcional)"></div>
+      <div class="row" style="margin-top:10px"><button class="btn gold" id="inSave">💾 Guardar grupo</button><button class="btn ghost" id="inCancel">Cancelar</button></div></div>`; };
+    el.innerHTML += tabs + `<div class="en-box"><div class="row" style="justify-content:space-between"><div class="row">${lvBtns(lv, 'inelv')}</div>${pub}</div>
+      ${o.edit !== -1 ? form(o.edit) : `<div class="row" style="margin-top:10px"><button class="btn gold" id="inNew">＋ Grupo nuevo</button></div>`}
+      ${ths.map(t => `<h3 style="margin:16px 0 6px">${h(t)}</h3>${sets.map((s, i) => (s.th || 'Varios') !== t ? '' : `<div class="row" style="background:#f6f8f4;border-radius:10px;padding:6px 10px;margin-bottom:5px;justify-content:space-between;flex-wrap:nowrap"><span>${s.it.map((x, k) => k === s.odd ? `<b style="text-decoration:underline wavy #d64545">${h((x[0] ? x[0] + ' ' : '') + x[1])}</b>` : h((x[0] ? x[0] + ' ' : '') + x[1])).join(' · ')} <span class="muted">— porque ${h((s.why || [])[0] || '…')}</span></span><span class="row" style="flex-wrap:nowrap"><button class="btn sm ghost" data-ined="${i}">✏️</button><button class="btn sm ghost" data-indel="${i}">🗑️</button></span></div>`).join('')}`).join('') || '<p class="muted">Este nivel no tiene grupos todavía.</p>'}
+      <div class="row en-pub" style="margin-top:14px"><button class="btn gold" id="inTry">▶ Probar en la tableta</button><button class="btn" id="inDl">💾 Descargar intruso.json</button><button class="btn ghost" id="inImp">📂 Importar</button><button class="btn ghost" id="inReset">♻️ Volver al original</button><input type="file" id="inFile" accept=".json" class="hide"></div>
+      <p class="muted" style="font-size:.86rem">Tus cambios se guardan solos en esta computadora (aquí y en la TV ya se ven). <b>Para que los vean las tabletas:</b> 💾 Descargar intruso.json → súbelo a la carpeta <b>data</b> de tu GitHub (centro-de-clase/data), o pídeselo a Claude.</p></div>`;
+    wire();
+    const commit = () => { inSetDraft(D); render(); };
+    el.querySelectorAll('[data-inelv]').forEach(b => b.onclick = () => { o.editLv = b.dataset.inelv; o.edit = -1; render(); });
+    const nb = el.querySelector('#inNew'); if (nb) nb.onclick = () => { o.edit = -2; render(); };
+    el.querySelectorAll('[data-ined]').forEach(b => b.onclick = () => { o.edit = +b.dataset.ined; render(); });
+    el.querySelectorAll('[data-indel]').forEach(b => b.onclick = () => { if (confirm('¿Borrar este grupo?')) { sets.splice(+b.dataset.indel, 1); commit(); } });
+    const sv = el.querySelector('#inSave'); if (sv) {
+      el.querySelector('#inCancel').onclick = () => { o.edit = -1; render(); };
+      sv.onclick = () => {
+        const it = Array.from({ length: n }, (_, i) => [el.querySelector(`[data-ie="${i}"]`).value.trim(), el.querySelector(`[data-iw="${i}"]`).value.trim()]);
+        if (it.some(x => !x[1])) { toast('Escribe las ' + n + ' palabras'); return; }
+        if (!words && it.some(x => !x[0])) { toast('En Elementary cada palabra necesita un emoji 🙂'); return; }
+        const odd = +(el.querySelector('[name=inOdd]:checked') || { value: n - 1 }).value;
+        const why = [0, 1, 2].map(i => el.querySelector('#inW' + i).value.trim().replace(/^porque\s+/i, '').replace(/\.$/, ''));
+        if (!why[0]) { toast('Escribe la razón correcta'); return; }
+        const s = { th: el.querySelector('#inTh').value.trim() || 'Varios', it, odd, why: why.filter((x, i) => i === 0 || x) };
+        if (o.edit >= 0) sets[o.edit] = s; else sets.push(s);
+        o.edit = -1; commit(); toast('Grupo guardado ✓');
+      };
+    }
+    el.querySelector('#inTry').onclick = () => window.open(inUrl(lv), '_blank');
+    el.querySelector('#inDl').onclick = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(D, null, 1)], { type: 'application/json' })); a.download = 'intruso.json'; a.click(); toast('Ahora súbelo a la carpeta data de tu GitHub 📤'); };
+    el.querySelector('#inImp').onclick = () => el.querySelector('#inFile').click();
+    el.querySelector('#inFile').onchange = e => { const f = e.target.files[0]; if (!f) return; f.text().then(t => { try { const j = JSON.parse(t); if (!j.k2) throw 0; D = j; inSetDraft(D); render(); toast('Grupos importados ✓'); } catch (er) { toast('Ese archivo no es un intruso.json'); } }); };
+    el.querySelector('#inReset').onclick = () => { if (confirm('¿Volver a los grupos publicados/originales? Se borran tus cambios de esta computadora.')) { localStorage.removeItem(IN_DKEY); render(); } };
+    return;
+  }
+
+  /* --- jugar en la TV --- */
+  const lv = o.lv, all = D[lv].map((s, i) => ({ s, i })).filter(x => valid(x.s)), ths = [...new Set(all.map(x => x.s.th || 'Varios'))];
+  let pool = all.filter(x => !o.th || (x.s.th || 'Varios') === o.th);
+  if (!o.order || o.order.lv !== lv || o.order.th !== o.th || o.order.len !== pool.length) { o.order = { lv, th: o.th, len: pool.length, ids: inShuffle(pool.map(x => x.i)) }; o.i = 0; }
+  if (o.i >= o.order.ids.length) o.i = 0;
+  const s = D[lv][o.order.ids[o.i]], words = lv === 'ms' || lv === 'sec';
+  el.innerHTML += tabs + `<div class="en-box"><div class="row" style="justify-content:space-between"><div class="row">${lvBtns(lv, 'inlv')}</div>
+      <select class="field" id="inThSel" style="max-width:280px"><option value="">🎲 Todos los temas</option>${ths.map(t => `<option ${t === o.th ? 'selected' : ''}>${h(t)}</option>`).join('')}</select></div></div>
+    ${!s ? '<div class="reveal"><div class="sub">No hay grupos para este nivel o tema. Agrega uno en ✏️ Editar grupos.</div></div>' : `
+    <div class="in-stage" style="container-type:inline-size">
+      <div class="in-q">¿Cuál es el intruso? <span class="in-ct">${o.i + 1}/${o.order.ids.length} · ${h(s.th || 'Varios')}</span></div>
+      <div class="in-items n${s.it.length} ${words ? 'words' : ''}">${inShuffle(s.it.map((x, k) => k)).map(k => `<button class="in-it" data-k="${k}">${s.it[k][0] ? `<span class="em">${h(s.it[k][0])}</span>` : ''}<span class="wd">${h(s.it[k][1])}</span></button>`).join('')}</div>
+      <div id="inWhy"></div>
+      <div class="row" style="justify-content:space-between;margin-top:14px"><button class="btn ghost" id="inPrev">← Anterior</button>
+        <span class="row"><button class="btn" id="inShow">👀 Mostrar el intruso</button><button class="btn" id="inWhyB">🤔 ¿Por qué?</button></span>
+        <button class="btn gold" id="inNext">Siguiente →</button></div></div>`}`;
+  wire();
+  el.querySelectorAll('[data-inlv]').forEach(b => b.onclick = () => { o.lv = b.dataset.inlv; o.th = ''; render(); });
+  el.querySelector('#inThSel').onchange = e => { o.th = e.target.value; render(); };
+  if (!s) return;
+  const cap = t => t.charAt(0).toUpperCase() + t.slice(1);
+  let found = false;
+  const markOdd = () => { found = true; el.querySelectorAll('.in-it').forEach(b => { if (+b.dataset.k === s.odd) b.classList.add('yes'); else b.classList.add('dim'); }); };
+  el.querySelectorAll('.in-it').forEach(b => b.onclick = () => { if (found) return; if (+b.dataset.k === s.odd) { markOdd(); if (typeof sfxDing === 'function') sfxDing(); } else b.classList.add('no'); });
+  const frame = () => `<div class="in-frame">🗣️ «${h(cap(s.it[s.odd][1]))}» es el intruso porque ${h((s.why || [])[0] || '…')}.</div>`;
+  el.querySelector('#inShow').onclick = () => markOdd();
+  el.querySelector('#inWhyB').onclick = () => {
+    if (!found) markOdd();
+    const rs = (s.why || []).filter(Boolean);
+    if (rs.length < 2) { el.querySelector('#inWhy').innerHTML = frame(); return; }
+    el.querySelector('#inWhy').innerHTML = `<div class="in-frame plain">«${h(cap(s.it[s.odd][1]))}» es el intruso porque…</div><div class="in-rs">${inShuffle(rs.map((t, k) => ({ t, k }))).map(r => `<button class="in-r" data-k="${r.k}">${h(r.t)}</button>`).join('')}</div>`;
+    el.querySelectorAll('.in-r').forEach(b => b.onclick = () => { if (+b.dataset.k === 0) { b.classList.add('yes'); el.querySelector('#inWhy').insertAdjacentHTML('beforeend', frame()); el.querySelector('.in-rs').style.pointerEvents = 'none'; } else b.classList.add('no'); });
+  };
+  el.querySelector('#inPrev').onclick = () => { o.i = (o.i - 1 + o.order.ids.length) % o.order.ids.length; render(); };
+  el.querySelector('#inNext').onclick = () => { o.i = (o.i + 1) % o.order.ids.length; render(); };
+});
+
 /* ---------- 🔄 DILO DE OTRA MANERA ---------- */
 const OTRA = {
   na: { how: 'Cambia UNA parte de la oración. Usa la caja de herramientas.', list: [
@@ -3827,7 +3960,7 @@ tool('camino', 'assess', '🗺️', 'Caminos de historias', '3D story path board
 });
 
 /* ---------- tool order in the menu ---------- */
-const TOOL_ORDER = ['links', 'pizarra', 'tareas', 'qr', 'prof', 'rubricas', 'check', 'exit', 'resultados', 'practica', 'ahorcado', 'camino', 'enigma', 'escape', 'minuto', 'conexiones', 'otramanera', 'timer', 'safari', 'sonidos', 'check', 'wheel', 'picker', 'cold', 'groups', 'pairs', 'seats', 'part', 'dados', 'exit',
+const TOOL_ORDER = ['links', 'pizarra', 'tareas', 'qr', 'prof', 'rubricas', 'check', 'exit', 'resultados', 'practica', 'ahorcado', 'camino', 'enigma', 'escape', 'intruso', 'minuto', 'conexiones', 'otramanera', 'timer', 'safari', 'sonidos', 'check', 'wheel', 'picker', 'cold', 'groups', 'pairs', 'seats', 'part', 'dados', 'exit',
   'espanol', 'points', 'houses', 'semana', 'mystery', 'stickers', 'tokens', 'levels', 'reward',
   'tpr', 'story', 'vocab', 'character', 'problem', 'location', 'cubes', 'qwords', 'verbs', 'tenses', 'convo', 'circ'];
 TOOLS.sort((a, b) => { const ia = TOOL_ORDER.indexOf(a.id), ib = TOOL_ORDER.indexOf(b.id); return (ia < 0 ? 999 : ia) - (ib < 0 ? 999 : ib); });
