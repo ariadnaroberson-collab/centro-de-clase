@@ -28,33 +28,40 @@ th{font-weight:800}
 <body>
 <div class="bar"><button onclick="print()">🖨 Imprimir hoja de la maestra</button><span>Solo para ti: tiene todas las respuestas. No la muestres en la TV.</span></div>
 <div class="page" id="out"></div>
-<script src="escape-contenido.js"></script>
+<script>
+window.ESCAPE_GAMES = { museo: 'escape-contenido.js', biblioteca: 'escape-biblioteca.js' };
+window.ESCAPE_JUEGO = (function () { const j = new URLSearchParams(location.search).get('juego'); return window.ESCAPE_GAMES[j] ? j : 'museo'; })();
+document.write('<script src="' + window.ESCAPE_GAMES[window.ESCAPE_JUEGO] + '"><\/script>');
+</script>
 <script>
 const h = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const E = window.ESCAPE;
 const KIND = { mc: 'Opción', text: 'Escriben', tiles: 'Deletrean (fichas)', error: 'Error', code: 'Candado' };
 const ans = r => r.t === 'mc' ? r.o[r.a] : r.t === 'text' ? r.ans[0] + (r.ans.length > 1 ? ' (también: ' + r.ans.slice(1).join(', ') + ')' : '') : r.t === 'tiles' ? r.word : r.t === 'code' ? r.code : (r.w + (r.fix ? ' → ' + r.fix.join(' / ') : ''));
+document.title = 'Hoja de la maestra · ' + E.title;
+const NC = Object.keys(window.ESCAPE_CARTELES).length;
 const lvl = k => { const L = E.levels[k]; return `<section class="lvl"><h2>${h(L.name)} · guías: ${h(L.crew)}</h2>${L.salas.map(s => `<h3>${h(s.n)} ${s.cartel ? '· Cartel ' + s.cartel : '· sin cartel'} · letra <b>${h(s.letter)}</b></h3>
   <table><tr><th style="width:24%">Tipo</th><th>Reto</th><th style="width:28%">Respuesta</th></tr>${s.retos.map(r => `<tr><td>${KIND[r.t]}${r.lock ? ' 🔒' : ''}</td><td>${h(r.t === 'error' ? r.s : r.q)}</td><td><b>${h(ans(r))}</b></td></tr>`).join('')}</table>`).join('')}
-  <h3>Puerta final</h3><p>Ordenan las letras R · A · Í · Z → <b>RAÍZ</b> ${L.final.tiles ? '(con fichas)' : '(la escriben; acepta RAIZ sin acento)'}.</p></section>`; };
-document.getElementById('out').innerHTML = `<h1>¡Encerrados en el museo! · Hoja de la maestra</h1>
-<p>Escape room de unos 30 minutos para Middle School. MS1 juega con Los Vecinos (episodios 1–2); MS3 con El Club del Barrio MS2 (episodios 1–2). Repasa Día de Muertos (El altar de Mamá Toña, la Catrina, los alebrijes), personas especiales y países y capitales. El juego no tiene voz.</p>
+  <h3>Puerta final</h3><p>Ordenan las letras ${L.salas.map(s => h(s.letter)).join(' · ')} → <b>${h(E.word)}</b> ${L.final.tiles ? '(con fichas)' : '(la escriben; acepta sin acentos)'}.</p></section>`; };
+const MUSEO_INTRO = 'Escape room de unos 30 minutos para Middle School. MS1 juega con Los Vecinos (episodios 1–2); MS3 con El Club del Barrio MS2 (episodios 1–2). Repasa Día de Muertos (El altar de Mamá Toña, la Catrina, los alebrijes), personas especiales y países y capitales. El juego no tiene voz.';
+const MUSEO_NOTES = ['Cartel 3 (altar): 1 papel picado · 2 sal · 3 cempasúchil · 4 foto · 5 pan de muerto · 6 agua · 7 velas · 8 calaverita de azúcar. Candado MS1 = agua, foto, velas → <b>647</b>. Candado MS3 = sal (purifica), cempasúchil (guía con su color y su olor), calaverita (tiene el nombre) → <b>238</b>.', 'Cartel 2: A Messi · B Lamine Yamal · C Lin-Manuel Miranda · D Diego Rivera · E José Guadalupe Posada · F Pedro Linares.', 'Cierre sugerido (5 min): «¿Por qué la palabra secreta es RAÍZ? ¿Cuáles son tus raíces?»'];
+const nSalas = Object.values(E.levels)[0].salas.length, word = E.word;
+document.getElementById('out').innerHTML = `<h1>${h(E.title)} · Hoja de la maestra</h1>
+<p>${h(E.teacherIntro || MUSEO_INTRO)}</p>
 <h2>Antes de la clase</h2>
-<ol><li>Imprime los 3 carteles (una copia de cada uno) y pégalos en tres lugares del salón, separados.</li>
-<li>Prepara una tableta por equipo (2–3 estudiantes). Abre el enlace o escanea el QR de su grupo (MS1 o MS3) desde Herramientas → 🔐 Escape room.</li>
+<ol><li>Imprime los ${NC} carteles (una copia de cada uno) y pégalos en lugares separados del salón.</li>
+<li>Prepara una tableta por equipo (2–3 estudiantes). Abre el enlace o escanea el QR de su grupo (${Object.values(E.levels).map(x => h(x.name)).join(' o ')}) desde Herramientas → 🔐 Escape room.</li>
 <li>Opcional: pon el plano o el reloj de un equipo en la TV.</li></ol>
 <h2>Cómo se juega</h2>
-<ol><li>Escriben el nombre del equipo. El reloj empieza con la historia: el grupo queda encerrado en el Museo de la Herencia.</li>
-<li>Hay 4 salas y pueden ir en cualquier orden (así no van todos al mismo cartel). Cada sala tiene 4 retos: el último es el candado de la sala. Al terminar, ganan una letra.</li>
-<li>Tres salas usan un cartel; la Sala de las Historias es de memoria (los episodios que leyeron).</li>
+<ol><li>Escriben el nombre del equipo. El reloj empieza con la historia: el grupo queda encerrado.</li>
+<li>Hay ${nSalas} salas y pueden ir en cualquier orden (así no van todos al mismo cartel). Cada sala tiene 4 retos: el último es el candado de la sala. Al terminar, ganan una letra.</li>
+<li>${NC} salas usan un cartel; las otras son de memoria (la unidad y los episodios que leyeron).</li>
 <li>Si fallan, aparece el botón 💡 Pista. El juego cuenta las pistas y el tiempo, pero no guarda notas ni manda datos a ningún lado.</li>
-<li>Con las 4 letras abren la puerta: <b>RAÍZ</b>. Al final ven un certificado con su tiempo, sus pistas y un código secreto para enseñártelo.</li></ol>
-<p><b>Tipos de reto:</b> pregunta de opción, ¿qué le falta a esta oración?, encuentra el error (en MS3 además escriben la palabra correcta), deletrea la palabra (MS1 con fichas de letras, MS3 escribiendo) y candado de números con el cartel.</p>
-<p><b>Cierre sugerido (5 min):</b> «¿Por qué la palabra secreta es RAÍZ? ¿Cuáles son tus raíces?»</p>
-<div class="two">${lvl('ms1')}${lvl('ms3')}</div>
+<li>Con las ${nSalas} letras abren la puerta: <b>${h(word)}</b>. Al final ven un certificado con su tiempo, sus pistas y un código secreto para enseñártelo.</li></ol>
+<p><b>Tipos de reto:</b> pregunta de opción, ¿qué le falta a esta oración?, encuentra el error (y escriben la palabra correcta), deletrea la palabra y candado de números con el cartel.</p>
+<div class="two">${Object.keys(E.levels).map(lvl).join('')}</div>
 <h2>Datos que usan los carteles</h2>
-<p>Cartel 3 (altar): 1 papel picado · 2 sal · 3 cempasúchil · 4 foto · 5 pan de muerto · 6 agua · 7 velas · 8 calaverita de azúcar. Candado MS1 = agua, foto, velas → <b>647</b>. Candado MS3 = sal (purifica), cempasúchil (guía con su color y su olor), calaverita (tiene el nombre) → <b>238</b>.</p>
-<p>Cartel 2: A Messi · B Lamine Yamal · C Lin-Manuel Miranda · D Diego Rivera · E José Guadalupe Posada · F Pedro Linares.</p>`;
+${(E.keyNotes || MUSEO_NOTES).map(x => `<p>${x}</p>`).join('')}`;
 </script>
 </body>
 </html>

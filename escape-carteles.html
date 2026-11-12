@@ -34,20 +34,27 @@ body{margin:0;background:#eee;color:#000;font-family:Georgia,'Times New Roman',s
 </style>
 </head>
 <body>
-<div class="bar"><button onclick="print()">🖨 Imprimir los 3 carteles</button><span>Una copia de cada cartel. Pégalos en tres lugares del salón: los equipos caminan hasta el cartel para leerlo. Las respuestas NO están en los carteles.</span></div>
+<div class="bar"><button id="prBtn" onclick="print()">🖨 Imprimir los carteles</button><span>Una copia de cada cartel. Pégalos en lugares separados del salón: los equipos caminan hasta el cartel para leerlo. Las respuestas NO están en los carteles.</span></div>
 <div id="out"></div>
-<script src="escape-contenido.js"></script>
+<script>
+window.ESCAPE_GAMES = { museo: 'escape-contenido.js', biblioteca: 'escape-biblioteca.js' };
+window.ESCAPE_JUEGO = (function () { const j = new URLSearchParams(location.search).get('juego'); return window.ESCAPE_GAMES[j] ? j : 'museo'; })();
+document.write('<script src="' + window.ESCAPE_GAMES[window.ESCAPE_JUEGO] + '"><\/script>');
+</script>
 <script>
 const h = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const C = window.ESCAPE_CARTELES, T = window.ESCAPE.title;
+const C = window.ESCAPE_CARTELES, T = window.ESCAPE.title, nums = Object.keys(C);
+const FOOT = { 1: 'Sala de los Países', 2: 'Sala de las Personas Especiales', 3: 'Sala del Altar' };
+document.title = 'Carteles · ' + T;
+document.getElementById('prBtn').textContent = '🖨 Imprimir los ' + nums.length + ' carteles';
 const head = (c, n) => `<div class="head"><h1>${h(c.title.replace(/^CARTEL \d+ · /, ''))}</h1><div class="k">${h(T)}<br><b style="font-size:20pt;letter-spacing:.04em">CARTEL ${n}</b></div></div><p class="lead">${h(c.lead)}</p>`;
-let html = '';
-html += `<section class="page">${head(C[1], 1)}<div class="grid">${C[1].items.map(([t, p]) => `<div class="box"><h2>✉ ${h(t)}</h2><p>${h(p)}</p></div>`).join('')}</div><div class="foot">Sala de los Países</div></section>`;
-html += `<section class="page">${head(C[2], 2)}<div class="grid">${C[2].items.map(([t, p]) => `<div class="box"><h2>${h(t)}</h2><p>${h(p)}</p></div>`).join('')}</div>
-  <div class="names"><b>Nombres</b>${C[2].names.map(h).join(' · ')}</div><div class="foot">Sala de las Personas Especiales</div></section>`;
-html += `<section class="page">${head(C[3], 3)}<div class="obj">${C[3].objects.map(([n, t, d]) => `<div class="box"><div class="num">${n}</div><div><b>${h(t)}</b><span>${h(d)}</span></div></div>`).join('')}</div>
-  <div class="extra">${C[3].extra.map(([t, p]) => `<div class="box"><h2>${h(t)}</h2><p>${h(p)}</p></div>`).join('')}</div><div class="foot">Sala del Altar</div></section>`;
-document.getElementById('out').innerHTML = html;
+document.getElementById('out').innerHTML = nums.map(n => { const c = C[n];
+  return `<section class="page">${head(c, n)}
+    ${c.items ? `<div class="grid">${c.items.map(([t, p]) => `<div class="box"><h2>${n === '1' && window.ESCAPE_JUEGO === 'museo' ? '✉ ' : ''}${h(t)}</h2><p>${h(p)}</p></div>`).join('')}</div>` : ''}
+    ${c.objects ? `<div class="obj">${c.objects.map(([k, t, d]) => `<div class="box"><div class="num">${k}</div><div><b>${h(t)}</b><span>${h(d)}</span></div></div>`).join('')}</div>` : ''}
+    ${c.names ? `<div class="names"><b>${h(c.namesLabel || 'Nombres')}</b>${c.names.map(h).join(' · ')}</div>` : ''}
+    ${c.extra ? `<div class="extra">${c.extra.map(([t, p]) => `<div class="box"><h2>${h(t)}</h2><p>${h(p)}</p></div>`).join('')}</div>` : ''}
+    <div class="foot">${h(c.foot || FOOT[n] || '')}</div></section>`; }).join('');
 </script>
 </body>
 </html>
