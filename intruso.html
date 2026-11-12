@@ -99,6 +99,7 @@ select{width:100%;font:inherit;font-weight:800;font-size:1.1rem;padding:11px 12p
 </section>
 
 <script src="intruso-contenido.js"></script>
+<script src="compartir-qr.js"></script>
 <script>
 'use strict';
 const $ = s => document.querySelector(s);
@@ -187,14 +188,26 @@ function home() { $('#game').classList.add('hide'); $('#start').classList.remove
 (function init() {
   const qs = new URLSearchParams(location.search), n = qs.get('nivel');
   if (n && LV[n]) lvl = n;
+  // 0) grupos que vienen dentro del QR de la maestra
+  const shared = window.QRPACK ? QRPACK.fromHash('g') : null;
+  if (shared && LV[shared.l] && Array.isArray(shared.s)) {
+    D = {}; window.INTRUSO_ORDER.forEach(k => D[k] = []);
+    D[shared.l] = shared.s.map(([th, it, odd, why]) => ({ th, it, odd, why }));
+    lvl = shared.l; $('#lvs').insertAdjacentHTML('beforebegin', '<div style="background:#efe8ff;border-radius:12px;padding:8px 12px;font-weight:900;color:#4d2aa3;margin-bottom:6px">📌 Grupos de tu maestra</div>');
+    drawStart(); preTema(); wire(); return;
+  }
   // 1) borrador de la maestra en este dispositivo, 2) data/intruso.json publicado, 3) contenido original
   let draft = null; try { const d = JSON.parse(localStorage.getItem('cdc-intruso-draft') || 'null'); if (d && d.data && d.data.k2) draft = d.data; } catch (e) {}
-  if (draft) { D = draft; drawStart(); }
-  else { drawStart(); fetch('data/intruso.json', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(j => { if (j && j.k2) { D = j; if (!G) drawStart(); } }).catch(() => {}); }
+  if (draft) { D = draft; drawStart(); preTema(); }
+  else { drawStart(); preTema(); fetch('data/intruso.json', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(j => { if (j && j.k2) { D = j; if (!G) { drawStart(); preTema(); } } }).catch(() => {}); }
+  wire();
+  function preTema() { const t0 = qs.get('tema'); if (t0 && [...$('#th').options].some(x => x.value === t0)) $('#th').value = t0; }
+})();
+function wire() {
   $('#go').onclick = start;
   $('#home').onclick = () => { if (confirm('¿Salir de esta ronda?')) home(); };
   $('#snd').onclick = () => { muted = !muted; $('#snd').textContent = muted ? '🔇' : '🔊'; };
-})();
+}
 </script>
 </body>
 </html>

@@ -725,6 +725,7 @@
 </style>
 <script src="enigma-contenido.js"></script>
 <script src="intruso-contenido.js"></script>
+<script src="compartir-qr.js"></script>
 </head>
 <body>
 
@@ -3447,7 +3448,7 @@ const enClone = x => JSON.parse(JSON.stringify(x));
 function enGetDraft() { try { const d = JSON.parse(localStorage.getItem(EN_DKEY) || 'null'); return d && d.data && d.data.stations ? d.data : null; } catch (e) { return null; } }
 function enSetDraft(d) { try { localStorage.setItem(EN_DKEY, JSON.stringify({ at: Date.now(), data: d })); } catch (e) { toast('No se pudo guardar'); } }
 function enUrl(nivel) { return new URL('enigma.html' + (nivel ? '?nivel=' + nivel : ''), location.href).href; }
-function enQr(u, cell) { try { const q = qrcode(0, 'M'); q.addData(u); q.make(); return q.createSvgTag({ cellSize: cell || 6, margin: 2, scalable: true }); } catch (e) { return ''; } }
+function enQr(u, cell) { try { const q = qrcode(0, u.length > 600 ? 'L' : 'M'); q.addData(u); q.make(); return q.createSvgTag({ cellSize: cell || 6, margin: 2, scalable: true }); } catch (e) { return ''; } }
 function enWhoOpts(cur) {
   const C = window.ENIGMA_CAST || {}; const custom = cur && !C[cur];
   return Object.keys(C).map(k => `<option value="${k}" ${k === cur ? 'selected' : ''}>${C[k].e || '🖼️'} ${h(C[k].n)}</option>`).join('') + `<option value="__otro" ${custom ? 'selected' : ''}>✏️ Otro (emoji + nombre)…</option>`;
@@ -3466,8 +3467,14 @@ tool('enigma', 'assess', '🌀', 'El enigma de Chiquibul', 'Student quest game +
   const epOpts = cur => Array.from({ length: 15 }, (_, i) => i + 1).map(n => `<option value="${n}" ${n === +cur ? 'selected' : ''}>Ep. ${n}</option>`).join('');
   const pubState = isDraft ? '<span class="en-pill warn">✏️ Tienes cambios sin publicar · solo en esta computadora</span>' : (EN_PUB ? '<span class="en-pill ok">✓ Igual a la versión publicada</span>' : '<span class="en-pill">Versión original (Ep. 1–2)</span>');
 
-  /* --- compartir --- */
-  const share = [['k2', '🐣 Pequeños exploradores', 'K–2 · con dibujos grandes'], ['35', '🧭 Exploradores', '3.º–5.º · más lectura']].map(([n, t, s]) => `<div class="en-share"><div class="en-qr">${enQr(enUrl(n))}</div><div><b>${t}</b><div class="muted">${s}</div>
+  /* --- compartir: si hay cambios, el QR los lleva dentro del enlace (sin GitHub) --- */
+  const enPatch = isDraft && window.QRPACK ? QRPACK.enigmaPatch(window.ENIGMA_DEFAULT, D) : null;
+  const enPacked = enPatch ? QRPACK.pack(enPatch) : '';
+  const enFits = enPacked && (enUrl('k2').length + enPacked.length + 3) <= QRPACK.MAX;
+  const shareUrl = n => enUrl(n) + (enFits ? '#c=' + enPacked : '');
+  const enShareNote = !isDraft ? '' : enFits ? '<div class="en-pill ok" style="margin-top:10px">📌 Estos QR ya llevan tus cambios. Los estudiantes los ven al escanear: no hace falta subir nada a GitHub.</div>'
+    : '<div class="en-pill warn" style="margin-top:10px">⚠️ Tus cambios son demasiados para caber en un QR. Para las tabletas: 💾 Descargar enigma.json y súbelo a GitHub, o pídeselo a Claude.</div>';
+  const share = [['k2', '🐣 Pequeños exploradores', 'K–2 · con dibujos grandes'], ['35', '🧭 Exploradores', '3.º–5.º · más lectura']].map(([n, t, s]) => `<div class="en-share"><div class="en-qr">${enQr(shareUrl(n))}</div><div><b>${t}</b><div class="muted">${s}</div>
       <div class="row" style="margin-top:8px"><button class="btn sm gold" data-open="${n}">▶ Abrir / jugar en la TV</button><button class="btn sm" data-big="${n}">⛶ QR grande</button><button class="btn sm ghost" data-copy="${n}">📋 Copiar enlace</button></div></div></div>`).join('');
 
   /* --- editor de una parada --- */
@@ -3516,8 +3523,8 @@ tool('enigma', 'assess', '🌀', 'El enigma de Chiquibul', 'Student quest game +
     `<button class="en-tab ${o.st === 'fin' ? 'on' : ''}" data-st="fin">${h(D.finale.e)} Final</button>` + (D.stations.length < SPOTN ? '<button class="en-tab add" id="enStAdd" title="Añadir un lugar">＋</button>' : '');
 
   el.innerHTML += `<div class="en-wrap">
-    <div class="en-box"><h3>📱 Compartir con los estudiantes</h3><div class="en-shares">${share}</div>
-      <p class="muted" style="font-size:.88rem;margin:8px 0 0">En parejas: cada pareja escanea el QR, escribe el nombre del equipo y juega. En la TV: ▶ Abrir y juegan todos juntos. Al final cada equipo recibe un <b>código secreto</b> para enseñártelo. El progreso se guarda en cada dispositivo.</p></div>
+    <div class="en-box"><h3>📱 Compartir con los estudiantes</h3><div class="en-shares">${share}</div>${enShareNote}
+      <p class="muted" style="font-size:.88rem;margin:8px 0 0">En parejas: cada pareja escanea el QR, escribe el nombre del equipo y juega. En la TV: ▶ Abrir y juegan todos juntos. Al final cada equipo recibe un <b>código secreto</b> para enseñártelo. El progreso se guarda en cada dispositivo. Si cambias el juego, vuelve a mostrar el QR nuevo.</p></div>
     <div class="en-box"><div class="row" style="justify-content:space-between"><h3>✏️ Editar el juego</h3>${pubState}</div>
       <div class="row"><label class="chk">📖 Episodios que ya leyeron: hasta el <select class="field" data-p="maxEp" data-num data-re>${epOpts(D.maxEp)}</select></label>
         <span class="en-lv"><button class="btn sm ${lv === 'A' ? 'gold' : 'ghost'}" data-lv="A">🐣 K–2</button><button class="btn sm ${lv === 'A1' ? 'gold' : 'ghost'}" data-lv="A1">🧭 3.º–5.º</button></span></div>
@@ -3525,7 +3532,7 @@ tool('enigma', 'assess', '🌀', 'El enigma de Chiquibul', 'Student quest game +
       <div class="en-ed">${stationEd()}</div>
       <div class="row en-pub"><button class="btn gold" id="enTry">▶ Probar mis cambios</button><button class="btn" id="enDl">💾 Descargar enigma.json</button><button class="btn ghost" id="enImp">📂 Importar</button>
         ${isDraft ? '<button class="btn ghost" id="enDiscard">↩︎ Descartar mis cambios</button>' : ''}<button class="btn ghost" id="enOrig">♻️ Volver al original</button><input type="file" id="enFile" accept=".json,application/json" hidden></div>
-      <p class="muted" style="font-size:.86rem">Tus cambios se guardan solos en esta computadora (aquí y en la TV ya se ven). <b>Para que los vean los dispositivos de los estudiantes:</b> 💾 Descargar enigma.json → súbelo a la carpeta <b>data</b> de tu GitHub (centro-de-clase/data), o pídeselo a Claude.</p></div></div>`;
+      <p class="muted" style="font-size:.86rem">Tus cambios se guardan solos en esta computadora (aquí y en la TV ya se ven). <b>Para las tabletas:</b> usa los QR de arriba: ya llevan tus cambios. (Si son demasiados cambios, 💾 Descargar enigma.json → súbelo a la carpeta <b>data</b> de tu GitHub, o pídeselo a Claude.)</p></div></div>`;
 
   const $$ = s => el.querySelector(s), $all = s => el.querySelectorAll(s);
   const commit = re => { enSetDraft(D); if (re) render(); else { const p = el.querySelector('.en-pill'); if (p) { p.className = 'en-pill warn'; p.textContent = '✏️ Tienes cambios sin publicar · solo en esta computadora'; } } };
@@ -3545,11 +3552,11 @@ tool('enigma', 'assess', '🌀', 'El enigma de Chiquibul', 'Student quest game +
   });
   $all('[data-st]').forEach(b => b.onclick = () => { o.st = /^\d+$/.test(b.dataset.st) ? +b.dataset.st : b.dataset.st; render(); });
   $all('[data-lv]').forEach(b => b.onclick = () => { o.lv = b.dataset.lv; render(); });
-  $all('[data-open]').forEach(b => b.onclick = () => window.open(enUrl(b.dataset.open), '_blank'));
-  $all('[data-copy]').forEach(b => b.onclick = () => { try { navigator.clipboard.writeText(enUrl(b.dataset.copy)); toast('Enlace copiado ✓'); } catch (e) { prompt('Copia el enlace:', enUrl(b.dataset.copy)); } });
+  $all('[data-open]').forEach(b => b.onclick = () => window.open(shareUrl(b.dataset.open), '_blank'));
+  $all('[data-copy]').forEach(b => b.onclick = () => { try { navigator.clipboard.writeText(shareUrl(b.dataset.copy)); toast('Enlace copiado ✓'); } catch (e) { prompt('Copia el enlace:', shareUrl(b.dataset.copy)); } });
   $all('[data-big]').forEach(b => b.onclick = () => {
     const n = b.dataset.big, box = document.createElement('div'); box.className = 'en-bigqr';
-    box.innerHTML = `<h2>🌀 ${h(D.title)}</h2><div class="muted" style="font-size:1.4rem">${n === 'k2' ? '🐣 Pequeños exploradores · K–2' : '🧭 Exploradores · 3.º–5.º'}</div>${enQr(enUrl(n), 10)}<div class="muted">${h(enUrl(n))}</div><button class="btn gold">✕ Cerrar</button>`;
+    box.innerHTML = `<h2>🌀 ${h(D.title)}</h2><div class="muted" style="font-size:1.4rem">${n === 'k2' ? '🐣 Pequeños exploradores · K–2' : '🧭 Exploradores · 3.º–5.º'}</div>${enQr(shareUrl(n), 10)}<div class="muted">${enFits ? '📌 Con tus cambios' : h(enUrl(n))}</div><button class="btn gold">✕ Cerrar</button>`;
     document.body.appendChild(box); box.querySelector('button').onclick = () => box.remove();
   });
   const st = D.stations[o.st];
@@ -3623,11 +3630,27 @@ tool('intruso', 'assess', '🔎', '¿Cuál es el intruso?', 'Odd one out vocabul
   const wire = () => el.querySelectorAll('[data-inmode]').forEach(b => b.onclick = () => { o.mode = b.dataset.inmode; render(); });
 
   if (o.mode === 'share') {
-    el.innerHTML += tabs + `<div class="en-box"><h3>📱 Enlaces para las tabletas</h3><div class="en-shares">${window.INTRUSO_ORDER.map(k => `<div class="en-share"><div class="en-qr">${enQr(inUrl(k))}</div><div><b>🔎 ${LV[k].n}</b><div class="muted">${LV[k].d}</div><div class="row" style="margin-top:8px"><button class="btn sm gold" data-inopen="${k}">▶ Abrir</button><button class="btn sm" data-inbig="${k}">⛶ QR grande</button></div></div></div>`).join('')}</div>
+    const base = IN_PUB || window.INTRUSO_DEFAULT, shTh = o.shTh || {};
+    const link = k => { const th = shTh[k] || '', sets = D[k].filter(s => valid(s) && (!th || (s.th || 'Varios') === th));
+      let u = inUrl(k) + (th ? '&tema=' + encodeURIComponent(th) : '');
+      const changed = JSON.stringify(D[k]) !== JSON.stringify(base[k] || []);
+      if (!changed || !window.QRPACK) return { u, carry: false, fits: true, n: sets.length };
+      const packed = QRPACK.pack({ l: k, s: sets.map(s => [s.th || 'Varios', s.it, s.odd, s.why || []]) });
+      const fits = (inUrl(k).length + packed.length + 3) <= QRPACK.MAX;
+      return { u: fits ? inUrl(k) + '#g=' + packed : u, carry: fits, fits, n: sets.length };
+    };
+    const card = k => { const L2 = link(k), ths2 = [...new Set(D[k].filter(valid).map(s => s.th || 'Varios'))];
+      return `<div class="en-share"><div class="en-qr">${enQr(L2.u)}</div><div><b>🔎 ${LV[k].n}</b><div class="muted">${LV[k].d}</div>
+        <select class="field" data-inshth="${k}" style="margin-top:6px;max-width:240px"><option value="">🎲 Todos los temas</option>${ths2.map(t => `<option ${t === shTh[k] ? 'selected' : ''}>${h(t)}</option>`).join('')}</select>
+        ${L2.carry ? `<div class="en-pill ok" style="margin-top:6px">📌 Lleva ${L2.n === 1 ? 'tu grupo' : 'tus ' + L2.n + ' grupos'}</div>` : !L2.fits ? '<div class="en-pill warn" style="margin-top:6px">⚠️ Demasiados grupos para un QR: elige un tema</div>' : ''}
+        <div class="row" style="margin-top:8px"><button class="btn sm gold" data-inopen="${k}">▶ Abrir</button><button class="btn sm" data-inbig="${k}">⛶ QR grande</button></div></div></div>`; };
+    el.innerHTML += tabs + `<div class="en-box"><h3>📱 Enlaces para las tabletas</h3><div class="en-shares">${window.INTRUSO_ORDER.map(card).join('')}</div>
+      <p class="muted" style="font-size:.88rem;margin:10px 0 0">📌 <b>Sin GitHub:</b> si agregas o cambias grupos en ✏️ Editar, estos QR los llevan dentro del enlace. Muestra el QR nuevo después de cada cambio. Si son demasiados, elige un tema.</p>
       <p class="muted" style="font-size:.88rem;margin:10px 0 0">En parejas: eligen el tema y juegan rondas de 8 grupos. Ganan 2 ⭐ si encuentran el intruso a la primera y 1 ⭐ por la razón. Sin voz. Cada grupo termina con la frase para decir en voz alta.</p></div>`;
     wire();
-    el.querySelectorAll('[data-inopen]').forEach(b => b.onclick = () => window.open(inUrl(b.dataset.inopen), '_blank'));
-    el.querySelectorAll('[data-inbig]').forEach(b => b.onclick = () => { const k = b.dataset.inbig, box = document.createElement('div'); box.className = 'en-bigqr'; box.innerHTML = `<h2>🔎 ¿Cuál es el intruso?</h2><div class="muted" style="font-size:1.4rem">${LV[k].n}</div>${enQr(inUrl(k), 10)}<div class="muted">${h(inUrl(k))}</div><button class="btn gold">✕ Cerrar</button>`; document.body.appendChild(box); box.querySelector('button').onclick = () => box.remove(); });
+    el.querySelectorAll('[data-inshth]').forEach(s => s.onchange = () => { o.shTh = Object.assign({}, o.shTh, { [s.dataset.inshth]: s.value }); render(); });
+    el.querySelectorAll('[data-inopen]').forEach(b => b.onclick = () => window.open(link(b.dataset.inopen).u, '_blank'));
+    el.querySelectorAll('[data-inbig]').forEach(b => b.onclick = () => { const k = b.dataset.inbig, L2 = link(k), box = document.createElement('div'); box.className = 'en-bigqr'; box.innerHTML = `<h2>🔎 ¿Cuál es el intruso?</h2><div class="muted" style="font-size:1.4rem">${LV[k].n}${shTh[k] ? ' · ' + h(shTh[k]) : ''}${L2.carry ? ' · 📌 tus grupos' : ''}</div>${enQr(L2.u, 10)}<button class="btn gold">✕ Cerrar</button>`; document.body.appendChild(box); box.querySelector('button').onclick = () => box.remove(); });
     return;
   }
 
@@ -3648,7 +3671,7 @@ tool('intruso', 'assess', '🔎', '¿Cuál es el intruso?', 'Odd one out vocabul
       ${o.edit !== -1 ? form(o.edit) : `<div class="row" style="margin-top:10px"><button class="btn gold" id="inNew">＋ Grupo nuevo</button></div>`}
       ${ths.map(t => `<h3 style="margin:16px 0 6px">${h(t)}</h3>${sets.map((s, i) => (s.th || 'Varios') !== t ? '' : `<div class="row" style="background:#f6f8f4;border-radius:10px;padding:6px 10px;margin-bottom:5px;justify-content:space-between;flex-wrap:nowrap"><span>${s.it.map((x, k) => k === s.odd ? `<b style="text-decoration:underline wavy #d64545">${h((x[0] ? x[0] + ' ' : '') + x[1])}</b>` : h((x[0] ? x[0] + ' ' : '') + x[1])).join(' · ')} <span class="muted">— porque ${h((s.why || [])[0] || '…')}</span></span><span class="row" style="flex-wrap:nowrap"><button class="btn sm ghost" data-ined="${i}">✏️</button><button class="btn sm ghost" data-indel="${i}">🗑️</button></span></div>`).join('')}`).join('') || '<p class="muted">Este nivel no tiene grupos todavía.</p>'}
       <div class="row en-pub" style="margin-top:14px"><button class="btn gold" id="inTry">▶ Probar en la tableta</button><button class="btn" id="inDl">💾 Descargar intruso.json</button><button class="btn ghost" id="inImp">📂 Importar</button><button class="btn ghost" id="inReset">♻️ Volver al original</button><input type="file" id="inFile" accept=".json" class="hide"></div>
-      <p class="muted" style="font-size:.86rem">Tus cambios se guardan solos en esta computadora (aquí y en la TV ya se ven). <b>Para que los vean las tabletas:</b> 💾 Descargar intruso.json → súbelo a la carpeta <b>data</b> de tu GitHub (centro-de-clase/data), o pídeselo a Claude.</p></div>`;
+      <p class="muted" style="font-size:.86rem">Tus cambios se guardan solos en esta computadora (aquí y en la TV ya se ven). <b>Para las tabletas:</b> ve a 📱 Estudiantes: el QR ya lleva tus grupos (sin GitHub). Para dejarlos publicados para siempre: 💾 Descargar intruso.json → carpeta <b>data</b> de tu GitHub, o pídeselo a Claude.</p></div>`;
     wire();
     const commit = () => { inSetDraft(D); render(); };
     el.querySelectorAll('[data-inelv]').forEach(b => b.onclick = () => { o.editLv = b.dataset.inelv; o.edit = -1; render(); });

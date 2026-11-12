@@ -172,6 +172,7 @@ h1,h2,h3,.disp{font-family:'Baloo 2',Nunito,sans-serif;line-height:1.05;margin:0
 <div id="sheet" class="hide"><div class="card" id="card"></div></div>
 
 <script src="enigma-contenido.js"></script>
+<script src="compartir-qr.js"></script>
 <script>
 'use strict';
 const $ = s => document.querySelector(s);
@@ -179,10 +180,11 @@ const h = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp
 const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 const PKEY = 'enigma-progreso-v1', DKEY = 'cdc-enigma-draft';
 const CAST = window.ENIGMA_CAST, SPOTS = window.ENIGMA_SPOTS;
-let D = null, P = null, muted = false, usingDraft = false;
+let D = null, P = null, muted = false, usingDraft = false, fromQr = false;
 
 /* ---------- contenido: borrador de la maestra > data/enigma.json > por defecto ---------- */
 async function loadContent() {
+  try { const p = window.QRPACK && QRPACK.fromHash('c'); if (p) { fromQr = true; return QRPACK.enigmaApply(window.ENIGMA_DEFAULT, p); } } catch (e) {}
   try { const d = JSON.parse(localStorage.getItem(DKEY) || 'null'); if (d && d.data && d.data.stations) { usingDraft = true; return d.data; } } catch (e) {}
   try { const r = await fetch('data/enigma.json', { cache: 'no-store' }); if (r.ok) { const j = await r.json(); if (j && j.stations && j.stations.length) return j; } } catch (e) {}
   return window.ENIGMA_DEFAULT;
@@ -445,7 +447,8 @@ function confetti() { const em = ['🌀', '✨', '🍃', '🌸', '⭐', '🦋'];
   document.title = D.title || 'El enigma de Chiquibul';
   $('#stTitle').textContent = D.title || 'El enigma de Chiquibul';
   $('#logoSp').innerHTML = spiralSvg(8, 8, { w: 8 });
-  if (usingDraft) $('#draftNote').innerHTML = '<div class="draft">👩‍🏫 Estás viendo tu <b>versión editada</b> (solo en esta computadora). Los estudiantes ven la versión publicada.</div>';
+  if (fromQr) $('#draftNote').innerHTML = '<div class="draft">📌 Versión de tu maestra</div>';
+  else if (usingDraft) $('#draftNote').innerHTML = '<div class="draft">👩‍🏫 Estás viendo tu <b>versión editada</b> (solo en esta computadora). Los estudiantes ven la versión publicada.</div>';
   const qs = new URLSearchParams(location.search);
   let lvl = qs.get('nivel') === 'k2' ? 'A' : qs.get('nivel') === '35' ? 'A1' : null;
   const pick = l => { lvl = l; document.querySelectorAll('.lv').forEach(b => b.setAttribute('aria-pressed', b.dataset.lv === l)); };
