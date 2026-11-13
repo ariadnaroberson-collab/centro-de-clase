@@ -3105,7 +3105,7 @@ tool('practica', 'assess', '🎮', 'Práctica y juegos', 'Practice & games by un
   const u = U[g.unitCur];
   el.innerHTML += `<div class="row"><label class="chk">Unidad: <select class="field" id="unSel" style="font-weight:800">${U.map((x, i) => `<option value="${i}" ${i === g.unitCur ? 'selected' : ''}>${h(x.n)}</option>`).join('')}</select></label>
       <button class="btn sm" id="unNew">＋ Nueva unidad</button>${u ? '<button class="btn sm ghost" id="unRen">✏️ Renombrar</button><button class="btn sm ghost" id="unDel">🗑️ Borrar unidad</button>' : ''}</div>
-    <div class="gm-builtin"><span class="muted">Juegos dentro de Herramientas:</span><button class="btn gold" id="gmHang">🦈 Ahorcado · palabras de cada unidad</button><button class="btn gold" data-gm="camino">🗺️ El camino de Chica (3D)</button><button class="btn gold" data-gm="enigma">🌀 El enigma de Chiquibul</button><button class="btn gold" data-gm="escape">🔐 Escape rooms (MS · Sec)</button><button class="btn gold" data-gm="intruso">🔎 ¿Cuál es el intruso?</button><button class="btn gold" data-gm="minuto">🎤 ¡Habla un minuto!</button><button class="btn gold" data-gm="conexiones">🔗 1 palabra, 5 conexiones</button><button class="btn gold" data-gm="otramanera">🔄 Dilo de otra manera</button></div>
+    <div class="gm-builtin"><span class="muted">Juegos dentro de Herramientas:</span><button class="btn gold" id="gmHang">🦈 Ahorcado · palabras de cada unidad</button><button class="btn gold" data-gm="camino">🗺️ El camino de Chica (3D)</button><button class="btn gold" data-gm="enigma">🌀 El enigma de Chiquibul</button><button class="btn gold" data-gm="escape">🔐 Escape rooms (MS · Sec)</button><button class="btn gold" data-gm="intruso">🔎 ¿Cuál es el intruso?</button><button class="btn gold" data-gm="minuto">🎤 ¡Habla un minuto!</button><button class="btn gold" data-gm="conexiones">🔗 1 palabra, 5 conexiones</button><button class="btn gold" data-gm="otramanera">🔄 Dilo de otra manera</button><button class="btn gold" data-gm="dibujo">✏️ Quick Draw (brain break)</button><button class="btn gold" data-gm="letras">🔤 Ruleta de letras · ¡Basta!</button></div>
     ${u ? `<div class="gm-grid">${u.links.map((x, i) => `<div class="gm-card"><button class="gm-open" data-o="${i}"><span class="gm-ic">${gameIcon(x.u)}</span><span class="gm-n">${h(x.n)}</span></button>
         <div class="gm-act"><button class="btn sm ghost" data-t="${i}" title="Abrir en pestaña nueva">↗</button><button class="btn sm ghost" data-q="${i}" title="Código QR para los estudiantes">📱</button><button class="btn sm ghost" data-d="${i}" title="Quitar">✕</button></div></div>`).join('') || '<p class="muted">Esta unidad todavía no tiene enlaces. Añade el primero aquí abajo 👇</p>'}</div>
       <div class="lk-add"><input class="field" id="gmN" placeholder="Nombre, ej. Quizlet · vocabulario" style="max-width:280px"><input class="field" id="gmU" placeholder="Enlace (Quizlet, Wayground, Padlet, Canva, YouTube…)"><button class="btn" id="gmAdd">＋ Añadir</button></div>
@@ -3993,10 +3993,34 @@ tool('camino', 'assess', '🗺️', 'Caminos de historias', '3D story path board
   return () => { ro.disconnect(); o.busy = false; try { speechSynthesis.cancel(); } catch (e) {} };
 });
 
+/* ---------- ✏️ QUICK DRAW + 🔤 RUEDA DE LETRAS (brain breaks, pages shown inside Herramientas) ---------- */
+function bbFrame(el, src, h0) {
+  const f = document.createElement('iframe');
+  f.src = src; f.title = 'juego'; f.setAttribute('allow', 'fullscreen');
+  f.style.cssText = `width:100%;height:max(${h0}px, calc(100vh - 260px));border:3px solid #1d2433;border-radius:16px;background:#fffdf7;display:block;margin-top:10px`;
+  el.appendChild(f); return f;
+}
+tool('dibujo', 'lang', '✏️', 'Quick Draw (dibujo rápido)', 'Quick Draw Dictation · brain break', 'Pausa activa en inglés: tú dices 12 palabras rápido y el estudiante las dibuja en 12 cuadros (en la pizarra o en la hoja impresa). Después adivina qué dibujó. La tele solo muestra los números; las palabras las ves en la 🪟 ventana de la maestra, en la pantalla de tu computadora.', el => {
+  el.innerHTML += `<div class="row"><button class="btn gold" id="qdWin">🪟 Ventana de la maestra (palabras)</button><button class="btn" id="qdPrint">🖨 Hoja para dibujar (PDF)</button><button class="btn ghost" id="qdNew">↗ Abrir en pestaña nueva</button></div>
+    <p class="muted" style="font-size:.86rem;margin:6px 0 0">💡 Abre la ventana de la maestra y déjala en la pantalla de tu computadora: ves la palabra de ahora, la siguiente y la lista, y puedes empezar, pausar y parar desde ahí. Sin voz: las palabras las dices tú.</p>`;
+  bbFrame(el, 'dibujo-rapido.html', 620);
+  el.querySelector('#qdWin').onclick = () => { const w = window.open('dibujo-rapido.html?vista=maestra', 'qdMaestra', 'width=520,height=760'); if (!w) alert('El navegador bloqueó la ventana. Permite las ventanas emergentes (pop-ups) para este sitio e inténtalo otra vez.'); };
+  el.querySelector('#qdPrint').onclick = () => window.open('imprimibles/Quick-Draw-Dictation-Sheet.pdf', '_blank');
+  el.querySelector('#qdNew').onclick = () => window.open('dibujo-rapido.html', '_blank');
+});
+tool('letras', 'lang', '🔤', 'Ruleta de letras · ¡Basta!', 'Letter wheel · STOP! categories game', 'Gira la ruleta: sale una letra y todos escriben una palabra con esa letra en cada categoría de la hoja. El primero que termina grita «¡BASTA!». En español o en inglés, con temporizador y sin repetir letras.', el => {
+  const o = ses('letras', { lang: 'es' });
+  el.innerHTML += `<div class="row"><button class="btn ${o.lang === 'es' ? 'gold' : 'ghost'}" data-lt="es">🇪🇸 ¡Basta! en español</button><button class="btn ${o.lang === 'en' ? 'gold' : 'ghost'}" data-lt="en">🇬🇧 STOP! in English</button>
+      <button class="btn" data-lp="es">🖨 Hoja ¡BASTA! (PDF)</button><button class="btn" data-lp="en">🖨 STOP! sheet (PDF)</button></div>`;
+  bbFrame(el, 'ruleta-letras.html' + (o.lang === 'en' ? '?lang=en' : ''), 640);
+  el.querySelectorAll('[data-lt]').forEach(b => b.onclick = () => { o.lang = b.dataset.lt; render(); });
+  el.querySelectorAll('[data-lp]').forEach(b => b.onclick = () => window.open(b.dataset.lp === 'es' ? 'imprimibles/Basta-Juego-de-Categorias-ES.pdf' : 'imprimibles/STOP-Categories-Game-EN.pdf', '_blank'));
+});
+
 /* ---------- tool order in the menu ---------- */
 const TOOL_ORDER = ['links', 'pizarra', 'tareas', 'qr', 'prof', 'rubricas', 'check', 'exit', 'resultados', 'practica', 'ahorcado', 'camino', 'enigma', 'escape', 'intruso', 'minuto', 'conexiones', 'otramanera', 'timer', 'safari', 'sonidos', 'check', 'wheel', 'picker', 'cold', 'groups', 'pairs', 'seats', 'part', 'dados', 'exit',
   'espanol', 'points', 'houses', 'semana', 'mystery', 'stickers', 'tokens', 'levels', 'reward',
-  'tpr', 'story', 'vocab', 'character', 'problem', 'location', 'cubes', 'qwords', 'verbs', 'tenses', 'convo', 'circ'];
+  'tpr', 'dibujo', 'letras', 'story', 'vocab', 'character', 'problem', 'location', 'cubes', 'qwords', 'verbs', 'tenses', 'convo', 'circ'];
 TOOLS.sort((a, b) => { const ia = TOOL_ORDER.indexOf(a.id), ib = TOOL_ORDER.indexOf(b.id); return (ia < 0 ? 999 : ia) - (ib < 0 ? 999 : ib); });
 
 /* =========================================================

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quick Draw Dictation</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#1d2433;--paper:#fffdf7;--line:#d9d4c7;--accent:#ff6b35;--accent2:#2a9d8f;--gold:#f4b400;--soft:#f3efe4;--good:#2e9e5b;--muted:#6b6f7a}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Fredoka',system-ui,sans-serif;background:var(--paper);color:var(--ink);min-height:100vh}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 18px;border-bottom:3px dashed var(--line)}
+  h1{margin:0;font-size:clamp(22px,3.4vw,34px)} h1 span{color:var(--accent)}
+  .tag{font-size:14px;color:var(--muted)}
+  main{max-width:1100px;margin:0 auto;padding:16px}
+  .screen{display:none}.screen.active{display:block}
+  .rounds{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:12px}
+  .round{border:2px solid var(--ink);border-radius:16px;padding:12px 14px;background:#fff;cursor:pointer;text-align:left;font-family:inherit;color:inherit;transition:transform .1s,box-shadow .1s}
+  .round:hover{transform:translateY(-2px);box-shadow:4px 4px 0 var(--ink)}
+  .round.sel{background:var(--soft);box-shadow:4px 4px 0 var(--accent)}
+  .round b{display:block;font-size:19px}.round small{color:var(--muted);font-size:13px}
+  .settings{display:flex;flex-wrap:wrap;gap:18px;margin:18px 0 6px;padding:14px;border:2px dashed var(--line);border-radius:16px;background:#fff;align-items:flex-end}
+  .settings label{font-weight:600;font-size:15px;display:block;margin-bottom:6px}
+  .seg{display:flex;border:2px solid var(--ink);border-radius:12px;overflow:hidden}
+  .seg button{border:0;background:#fff;padding:8px 14px;font-family:inherit;font-size:15px;cursor:pointer;color:var(--ink)}
+  .seg button+button{border-left:2px solid var(--ink)}.seg button.on{background:var(--ink);color:#fff}
+  .big{font-family:inherit;font-size:21px;font-weight:700;padding:13px 26px;border-radius:16px;border:3px solid var(--ink);background:var(--accent);color:#fff;cursor:pointer;box-shadow:4px 4px 0 var(--ink)}
+  .big:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--ink)}
+  .big.alt{background:var(--accent2)}.big.ghost{background:#fff;color:var(--ink)}.big.sm{font-size:16px;padding:9px 16px}
+  .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:center;margin-top:16px}
+  .how{font-size:15px;color:var(--muted);line-height:1.5;margin:4px 0 0}
+  .teacherbox{margin-top:12px;padding:12px 14px;border:2px solid var(--accent2);border-radius:14px;background:#fff;font-size:15px}
+  .teacherbox b{color:var(--accent2)}
+  .toggle{display:inline-flex;gap:8px;align-items:center;cursor:pointer;font-weight:600}
+  .toggle input{width:20px;height:20px}
+  .stage{text-align:center}
+  .counter{font-size:22px;color:var(--muted);margin-top:6px}
+  .bigword{font-size:clamp(48px,11vw,130px);font-weight:700;line-height:1.05;min-height:1.2em;margin:14px 0 4px}
+  .bigword.num{color:var(--accent)}
+  .bar{height:12px;border-radius:8px;background:var(--soft);overflow:hidden;max-width:560px;margin:8px auto 0;border:2px solid var(--ink)}
+  .bar i{display:block;height:100%;width:0;background:var(--gold)}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px auto 0;max-width:900px}
+  .cell{position:relative;aspect-ratio:4/3;border:3px solid var(--ink);border-radius:14px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:clamp(16px,2.6vw,28px);font-weight:600;padding:6px;text-align:center;user-select:none}
+  .cell .n{position:absolute;top:6px;left:10px;font-size:15px;color:var(--muted);font-weight:600}
+  .cell.now{background:var(--gold);transform:scale(1.04);transition:transform .15s}
+  .cell.done{background:var(--soft)}
+  .cell.hidden-word .w{visibility:hidden}
+  .cell.clickable{cursor:pointer}.cell.clickable:hover{box-shadow:4px 4px 0 var(--accent2)}
+  .cell.correct{background:#e6f6ec;border-color:var(--good)}
+  .cell.correct::after{content:"✓";position:absolute;top:4px;right:10px;color:var(--good);font-size:24px}
+  .cell.wrong{background:#fdecec;border-color:#c0392b}
+  .cell.wrong::after{content:"✗";position:absolute;top:4px;right:10px;color:#c0392b;font-size:24px}
+  .score{font-size:30px;font-weight:700;margin-top:16px}.score span{color:var(--accent)}
+  .note{font-size:14px;color:var(--muted);margin-top:6px}
+  @media (max-width:640px){.grid{grid-template-columns:repeat(3,1fr)}}
+  /* teacher window */
+  body.maestra header .tag{display:none}
+  .tv{max-width:560px;margin:0 auto;text-align:center}
+  .tv .now{font-size:clamp(44px,13vw,92px);font-weight:700;line-height:1.05;margin:10px 0}
+  .tv .nxt{font-size:24px;color:var(--muted)}
+  .tv .boxn{font-size:20px;color:var(--accent);font-weight:700}
+  .tv ol{text-align:left;columns:2;font-size:17px;margin:16px auto 0;max-width:420px;padding-left:28px}
+  .tv ol li.cur{font-weight:700;color:var(--accent)} .tv ol li.past{color:var(--muted);text-decoration:line-through}
+</style>
+</head>
+<body>
+<header>
+  <h1>✏️ Quick Draw <span>Dictation</span></h1>
+  <div class="tag">12 words · draw fast · then guess!</div>
+</header>
+<main id="app">
+
+<section id="setup" class="screen active">
+  <p class="how"><b>How to play:</b> Draw 12 boxes on the whiteboard (or use the printed sheet). Pick a round and press Start. You say the words — one right after the next. The player draws each word in the next box. Then the player guesses every drawing, you reveal the answers and score.</p>
+  <div class="rounds" id="rounds"></div>
+  <div class="settings">
+    <div>
+      <label>Speed (seconds per word)</label>
+      <div class="seg" id="speedSeg">
+        <button data-v="2">⚡ Fast 2s</button>
+        <button data-v="3" class="on">Medium 3s</button>
+        <button data-v="4">Easy 4s</button>
+        <button data-v="6">Beginner 6s</button>
+      </div>
+    </div>
+  </div>
+  <div class="teacherbox">
+    <b>🙈 The class can't see the words on this screen.</b> The TV only shows box numbers.<br>
+    To read the words: <button class="big alt sm" id="winBtn">🪟 Open teacher window</button> and drag it to your computer screen (it follows the game and has Start / Pause / Stop).
+    <div style="margin-top:8px"><label class="toggle"><input type="checkbox" id="showHere"> Show the words on this screen (only if you're playing on your phone or laptop, not the TV)</label></div>
+  </div>
+  <div class="row">
+    <button class="big" id="startBtn">▶ Start Round</button>
+    <a class="big ghost sm" href="imprimibles/Quick-Draw-Dictation-Sheet.pdf" target="_blank" rel="noopener" style="text-decoration:none">🖨 Printable sheet</a>
+  </div>
+</section>
+
+<section id="play" class="screen">
+  <div class="stage">
+    <div class="counter" id="counter">Get ready…</div>
+    <div class="bigword num" id="bigword">3</div>
+    <div class="counter" id="nextword" style="font-size:20px"></div>
+    <div class="bar"><i id="barFill"></i></div>
+    <div class="grid" id="playGrid"></div>
+    <div class="row">
+      <button class="big ghost" id="pauseBtn">⏸ Pause</button>
+      <button class="big ghost" id="quitBtn">✖ Stop</button>
+    </div>
+  </div>
+</section>
+
+<section id="guess" class="screen">
+  <div class="stage">
+    <div class="bigword" style="font-size:clamp(40px,8vw,90px)">✋ Pencils down!</div>
+    <div class="counter">Now guess what you drew in each box. Click a box to reveal the word, click again to mark ✓ or ✗.</div>
+    <div class="grid" id="guessGrid"></div>
+    <div class="score">Score: <span id="scoreNum">0</span> / 12</div>
+    <div class="row">
+      <button class="big alt" id="revealAll">👀 Reveal all</button>
+      <button class="big" id="againBtn">🔄 Same round again</button>
+      <button class="big ghost" id="menuBtn">🏠 New round</button>
+    </div>
+  </div>
+</section>
+</main>
+
+<script>
+const ROUNDS = [
+  {name:"Warm-Up Mix", emoji:"🍄", words:["mushroom","house","hula hoop","football","French fries","sun","umbrella","snowman","rocket","cat","ladder","glasses"]},
+  {name:"Yummy Food", emoji:"🍕", words:["pizza","banana","ice cream cone","hamburger","carrot","cupcake","watermelon","donut","apple","hot dog","taco","egg"]},
+  {name:"Sports & Games", emoji:"🏀", words:["basketball","tennis racket","soccer goal","skateboard","bowling pin","trophy","baseball bat","kite","dice","whistle","medal","boxing glove"]},
+  {name:"Around the House", emoji:"🏠", words:["bed","lamp","chair","door","window","clock","toothbrush","bathtub","key","cup","fork","television"]},
+  {name:"Animals", emoji:"🐢", words:["snake","fish","spider","turtle","giraffe","snail","butterfly","elephant","bird","octopus","rabbit","pig"]},
+  {name:"Nature & Weather", emoji:"🌈", words:["tree","cloud","rainbow","flower","mountain","moon","lightning","leaf","volcano","star","cactus","wave"]},
+  {name:"On the Move", emoji:"🚲", words:["car","bicycle","airplane","boat","bus","train","helicopter","truck","sailboat","hot air balloon","wheel","traffic light"]},
+  {name:"Clothes & Stuff", emoji:"👑", words:["hat","shoe","sock","T-shirt","crown","sunglasses","scarf","glove","backpack","ring","tie","boots"]},
+  {name:"School & Tech", emoji:"💡", words:["pencil","book","scissors","ruler","computer","phone","light bulb","robot","headphones","camera","envelope","eraser"]},
+  {name:"Beach Day", emoji:"🏖️", words:["shell","crab","palm tree","sandcastle","anchor","whale","shark","starfish","bucket","beach ball","island","flip-flops"]},
+  {name:"Party Time", emoji:"🎈", words:["balloon","birthday cake","gift","candle","guitar","drum","party hat","magic wand","ghost","pumpkin","music note","popcorn"]},
+  {name:"Challenge Round", emoji:"🔥", words:["lighthouse","castle","spaceship","skeleton","treasure chest","tent","igloo","windmill","bridge","campfire","alien","dragon"]},
+];
+const ALL = [...new Set(ROUNDS.flatMap(r=>r.words))];
+ROUNDS.push({name:"Surprise Mix", emoji:"🎲", random:true, words:[]});
+
+const $ = id => document.getElementById(id);
+const IS_T = new URLSearchParams(location.search).get('vista') === 'maestra';
+let chan = null; try { chan = new BroadcastChannel('cdc-quickdraw'); } catch(e) {}
+
+/* ================= TEACHER WINDOW ================= */
+if (IS_T) {
+  document.body.classList.add('maestra');
+  document.title = '🪟 Quick Draw · teacher';
+  $('app').innerHTML = `<div class="tv" id="tv"><p class="counter">Waiting for the game… Press ▶ Start Round (here or on the TV).</p></div>
+    <div class="row"><button class="big" data-cmd="start">▶ Start</button><button class="big ghost" data-cmd="pause">⏸ Pause</button><button class="big ghost" data-cmd="stop">✖ Stop</button></div>
+    <div class="bar" style="margin-top:14px"><i id="tBar"></i></div>`;
+  document.querySelectorAll('[data-cmd]').forEach(b => b.onclick = () => chan && chan.postMessage({t:'cmd', c:b.dataset.cmd}));
+  let st = null;
+  const paint = () => {
+    if (!st) return;
+    const w = st.words || [];
+    let top = '';
+    if (st.phase === 'setup') top = `<p class="counter">Round: <b>${st.round}</b> · ${st.speed}s per word</p><p class="counter">Press ▶ Start when the class is ready.</p>`;
+    else if (st.phase === 'count') top = `<div class="boxn">Get ready…</div><div class="now">${st.cd}</div><div class="nxt">First word: <b>${w[0]}</b></div>`;
+    else if (st.phase === 'play') top = `<div class="boxn">Box ${st.idx+1} of 12${st.paused?' · ⏸ paused':''}</div><div class="now">${w[st.idx]}</div><div class="nxt">${st.idx+1<w.length?'Next: <b>'+w[st.idx+1]+'</b>':'Last one!'}</div>`;
+    else if (st.phase === 'guess') top = `<div class="now" style="font-size:44px">✋ Pencils down!</div><div class="nxt">Guessing time. Answers:</div>`;
+    const list = (st.phase !== 'setup' && w.length) ? `<ol>${w.map((x,i)=>`<li class="${st.phase==='play'&&i===st.idx?'cur':(st.phase==='play'&&i<st.idx?'past':'')}">${x}</li>`).join('')}</ol>` : '';
+    $('tv').innerHTML = top + list;
+  };
+  const tick = () => {
+    const f = $('tBar');
+    if (st && st.phase === 'play' && st.endsAt && !st.paused) {
+      const pct = 100 - Math.max(0, (st.endsAt - Date.now()) / (st.speed*1000)) * 100;
+      f.style.width = Math.min(100, pct) + '%';
+    } else if (!st || st.phase !== 'play') f.style.width = '0';
+    requestAnimationFrame(tick);
+  };
+  tick();
+  if (chan) { chan.onmessage = e => { if (e.data && e.data.t === 'state') { st = e.data; paint(); } }; chan.postMessage({t:'hello'}); }
+  else $('tv').innerHTML = '<p class="counter">This browser can’t link the two windows. Use “Show the words on this screen” instead.</p>';
+} else {
+
+/* ================= MAIN GAME ================= */
+let sel = 0, speed = 3, showHere = false;
+let words = [], idx = -1, timer = null, paused = false, tStart = 0, remaining = 0, phase = 'setup', cd = '';
+try { showHere = localStorage.getItem('cdc-qd-show') === '1'; } catch(e) {}
+$('showHere').checked = showHere;
+$('showHere').onchange = e => { showHere = e.target.checked; try { localStorage.setItem('cdc-qd-show', showHere ? '1' : '0'); } catch(err) {} };
+
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(id).classList.add('active');window.scrollTo(0,0)}
+function bc(){ if(!chan) return; chan.postMessage({t:'state', phase, words, idx, cd, paused, speed, round: ROUNDS[sel].name, endsAt: phase==='play' && !paused ? Date.now() + (remaining - (performance.now()-tStart)) : null}); }
+if (chan) chan.onmessage = e => {
+  const d = e.data || {};
+  if (d.t === 'hello') bc();
+  if (d.t === 'cmd') {
+    if (d.c === 'start' && phase !== 'count' && phase !== 'play') start();
+    if (d.c === 'pause') $('pauseBtn').click();
+    if (d.c === 'stop' && (phase === 'count' || phase === 'play')) $('quitBtn').click();
+  }
+};
+
+function renderRounds(){
+  $('rounds').innerHTML = ROUNDS.map((r,i)=>`<button class="round ${i===sel?'sel':''}" data-i="${i}">
+    <b>${r.emoji} ${i+1}. ${r.name}</b>
+    <small>${r.random? '12 random words from all rounds — new every time!' : (showHere ? r.words.slice(0,4).join(', ')+'…' : '12 words')}</small></button>`).join('');
+  document.querySelectorAll('.round').forEach(b=>b.onclick=()=>{sel=+b.dataset.i;renderRounds();bc()});
+}
+renderRounds();
+$('showHere').addEventListener('change', renderRounds);
+document.querySelectorAll('#speedSeg button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#speedSeg button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on'); speed=+b.dataset.v; bc();
+});
+let TWIN = null;
+$('winBtn').onclick = () => {
+  if (TWIN && !TWIN.closed) { TWIN.focus(); return; }
+  TWIN = window.open(location.pathname + '?vista=maestra', 'qdMaestra', 'width=520,height=760');
+  if (!TWIN) { $('showHere').checked = true; showHere = true; renderRounds(); }
+};
+
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function buildGrid(el, cls){ el.innerHTML = words.map((w,i)=>`<div class="cell ${cls}" data-i="${i}"><span class="n">${i+1}</span><span class="w">${w}</span></div>`).join(''); }
+function stopAll(){ clearTimeout(timer); cancelAnimationFrame(timer); }
+
+function start(){
+  stopAll();
+  const r = ROUNDS[sel];
+  words = r.random ? shuffle(ALL).slice(0,12) : shuffle(r.words);
+  idx = -1; paused=false; $('pauseBtn').textContent='⏸ Pause';
+  buildGrid($('playGrid'), 'hidden-word');
+  show('play'); phase = 'count';
+  const seq = ['3','2','1','Draw!']; let k=0;
+  $('bigword').classList.add('num'); $('counter').textContent='Get ready…'; $('barFill').style.width='0';
+  $('nextword').textContent = showHere ? `First word: ${words[0]}` : '';
+  const step = ()=>{ cd = seq[k]; $('bigword').textContent = seq[k]; bc(); k++; timer = setTimeout(k<seq.length?step:next, 900); };
+  step();
+}
+function next(){
+  idx++; phase = 'play';
+  document.querySelectorAll('#playGrid .cell').forEach((c,i)=>{c.classList.toggle('now',i===idx);c.classList.toggle('done',i<idx)});
+  if(idx>=words.length){ finish(); return; }
+  $('counter').textContent = `Word ${idx+1} of 12 — draw in box ${idx+1}`;
+  if(showHere){ $('bigword').textContent = words[idx]; $('bigword').classList.remove('num');
+    $('nextword').textContent = idx+1<words.length ? `Next: ${words[idx+1]}` : 'Last one!'; }
+  else { $('bigword').textContent = idx+1; $('bigword').classList.add('num'); $('nextword').textContent=''; }
+  remaining = speed*1000; tStart = performance.now(); bc(); loop();
+}
+function loop(){
+  cancelAnimationFrame(timer);
+  const tick = ()=>{
+    if(paused) return;
+    const el = performance.now()-tStart;
+    $('barFill').style.width = Math.min(100, ((speed*1000-(remaining-el))/(speed*1000))*100)+'%';
+    if(el>=remaining){ next(); return; }
+    timer = requestAnimationFrame(tick);
+  };
+  timer = requestAnimationFrame(tick);
+}
+$('pauseBtn').onclick = ()=>{
+  if(phase!=='play') return;
+  if(!paused){ paused=true; remaining -= (performance.now()-tStart); cancelAnimationFrame(timer); $('pauseBtn').textContent='▶ Resume'; }
+  else { paused=false; tStart=performance.now(); $('pauseBtn').textContent='⏸ Pause'; loop(); }
+  bc();
+};
+$('quitBtn').onclick = ()=>{ stopAll(); phase='setup'; show('setup'); bc(); };
+
+let marks = [];
+function finish(){
+  stopAll(); phase = 'guess';
+  marks = Array(12).fill(0);
+  buildGrid($('guessGrid'), 'hidden-word clickable'); updateScore();
+  document.querySelectorAll('#guessGrid .cell').forEach(c=>c.onclick=()=>{
+    const i=+c.dataset.i; marks[i] = marks[i]===0?1: marks[i]===1?2: marks[i]===2?3:2; paint(c,i); updateScore();
+  });
+  show('guess'); bc();
+}
+function paint(c,i){ c.classList.toggle('hidden-word', marks[i]===0); c.classList.toggle('correct', marks[i]===2); c.classList.toggle('wrong', marks[i]===3); }
+function updateScore(){ $('scoreNum').textContent = marks.filter(m=>m===2).length; }
+$('revealAll').onclick = ()=>{ document.querySelectorAll('#guessGrid .cell').forEach(c=>{const i=+c.dataset.i; if(marks[i]===0){marks[i]=1; paint(c,i);} }); };
+$('againBtn').onclick = start;
+$('menuBtn').onclick = ()=>{ phase='setup'; show('setup'); bc(); };
+$('startBtn').onclick = start;
+bc();
+}
+</script>
+</body>
+</html>
