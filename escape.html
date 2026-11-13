@@ -209,7 +209,9 @@ const elapsed = () => (P.end || Date.now()) - P.start;
 function startClock() { clearInterval(tick); const up = () => { $('#clock').textContent = fmt(elapsed()); }; up(); tick = setInterval(up, 1000); }
 function drawTop() {
   $('#tmName').innerHTML = `${h(P.team)}<small>${h(L.name)} · ${h(L.crew)}</small>`;
-  $('#slots').innerHTML = L.salas.map(s => `<div class="slot ${P.done[s.id] ? 'got' : ''}" title="${h(s.n)}">${P.done[s.id] ? h(s.letter) : '?'}</div>`).join('');
+  if (!P.perm || P.perm.length !== L.salas.length) { // orden mezclado de las cajitas: así las letras no forman la palabra secreta en orden
+    let pm; do { pm = shuffle(L.salas.map((_, i) => i)); } while (L.salas.length > 1 && pm.every((v, i) => v === i)); P.perm = pm; save(); }
+  $('#slots').innerHTML = P.perm.map(i => L.salas[i]).map(s => `<div class="slot ${P.done[s.id] ? 'got' : ''}" title="${h(s.n)}">${P.done[s.id] ? h(s.letter) : '?'}</div>`).join('');
 }
 const view = html => { $('#view').innerHTML = html; window.scrollTo(0, 0); };
 const avHtml = who => who.img ? `<img src="${h(who.img)}" alt="${h(who.n)}">` : h(who.e);
