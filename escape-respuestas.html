@@ -29,7 +29,7 @@ th{font-weight:800}
 <div class="bar"><button onclick="print()">🖨 Imprimir hoja de la maestra</button><span>Solo para ti: tiene todas las respuestas. No la muestres en la TV.</span></div>
 <div class="page" id="out"></div>
 <script>
-window.ESCAPE_GAMES = { museo: 'escape-contenido.js', biblioteca: 'escape-biblioteca.js' };
+window.ESCAPE_GAMES = { museo: 'escape-contenido.js', biblioteca: 'escape-biblioteca.js', tienda: 'escape-tienda.js' };
 window.ESCAPE_JUEGO = (function () { const j = new URLSearchParams(location.search).get('juego'); return window.ESCAPE_GAMES[j] ? j : 'museo'; })();
 document.write('<script src="' + window.ESCAPE_GAMES[window.ESCAPE_JUEGO] + '"><\/script>');
 </script>

@@ -27,6 +27,11 @@ body{margin:0;background:#eee;color:#000;font-family:Georgia,'Times New Roman',s
 .obj .box{display:flex;gap:12px;align-items:center}
 .num{width:52px;height:52px;flex:none;border:1.5px solid #000;border-radius:50%;display:grid;place-items:center;font-size:24pt;font-weight:700}
 .obj b{font-size:15pt;display:block}
+.pic{font-size:44pt;line-height:1;width:70px;text-align:center;flex:none}
+.obj.big{gap:14px}
+.obj.big .box{min-height:1.55in;padding:14px 16px}
+.obj.big .pic{font-size:66pt;width:100px}
+.obj.big b{font-size:19pt}
 .obj span{font-size:12.5pt}
 .extra{margin-top:14px;display:grid;gap:10px}
 .foot{margin-top:18px;font-family:system-ui,sans-serif;font-size:9pt;text-align:center}
@@ -37,7 +42,7 @@ body{margin:0;background:#eee;color:#000;font-family:Georgia,'Times New Roman',s
 <div class="bar"><button id="prBtn" onclick="print()">🖨 Imprimir los carteles</button><span>Una copia de cada cartel. Pégalos en lugares separados del salón: los equipos caminan hasta el cartel para leerlo. Las respuestas NO están en los carteles.</span></div>
 <div id="out"></div>
 <script>
-window.ESCAPE_GAMES = { museo: 'escape-contenido.js', biblioteca: 'escape-biblioteca.js' };
+window.ESCAPE_GAMES = { museo: 'escape-contenido.js', biblioteca: 'escape-biblioteca.js', tienda: 'escape-tienda.js' };
 window.ESCAPE_JUEGO = (function () { const j = new URLSearchParams(location.search).get('juego'); return window.ESCAPE_GAMES[j] ? j : 'museo'; })();
 document.write('<script src="' + window.ESCAPE_GAMES[window.ESCAPE_JUEGO] + '"><\/script>');
 </script>
@@ -51,7 +56,7 @@ const head = (c, n) => `<div class="head"><h1>${h(c.title.replace(/^CARTEL \d+ �
 document.getElementById('out').innerHTML = nums.map(n => { const c = C[n];
   return `<section class="page">${head(c, n)}
     ${c.items ? `<div class="grid">${c.items.map(([t, p]) => `<div class="box"><h2>${n === '1' && window.ESCAPE_JUEGO === 'museo' ? '✉ ' : ''}${h(t)}</h2><p>${h(p)}</p></div>`).join('')}</div>` : ''}
-    ${c.objects ? `<div class="obj">${c.objects.map(([k, t, d]) => `<div class="box"><div class="num">${k}</div><div><b>${h(t)}</b><span>${h(d)}</span></div></div>`).join('')}</div>` : ''}
+    ${c.objects ? `<div class="obj${c.objects.some(x => x[3]) ? ' big' : ''}">${c.objects.map(([k, t, d, e]) => `<div class="box"><div class="num">${k}</div>${e ? `<div class="pic">${e}</div>` : ''}<div><b>${h(t)}</b><span>${h(d || '')}</span></div></div>`).join('')}</div>` : ''}
     ${c.names ? `<div class="names"><b>${h(c.namesLabel || 'Nombres')}</b>${c.names.map(h).join(' · ')}</div>` : ''}
     ${c.extra ? `<div class="extra">${c.extra.map(([t, p]) => `<div class="box"><h2>${h(t)}</h2><p>${h(p)}</p></div>`).join('')}</div>` : ''}
     <div class="foot">${h(c.foot || FOOT[n] || '')}</div></section>`; }).join('');

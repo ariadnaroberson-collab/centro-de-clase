@@ -63,7 +63,8 @@ h1,h2,h3,.disp{font-family:Fraunces,Georgia,serif;margin:0;line-height:1.05}
 
 /* historia / nota */
 .guide{display:flex;gap:14px;align-items:flex-start;margin-bottom:14px}
-.av{width:64px;height:64px;flex:none;border-radius:18px;background:var(--night);display:grid;place-items:center;font-size:2.1rem;box-shadow:0 4px 0 #0005}
+.av{width:64px;height:64px;flex:none;border-radius:18px;background:var(--night);display:grid;place-items:center;font-size:2.1rem;box-shadow:0 4px 0 #0005;overflow:hidden}
+.av img{width:92%;height:92%;object-fit:contain}
 .bub{flex:1;background:#fff;border:2px solid #e9dcb8;border-radius:4px 18px 18px 18px;padding:12px 14px}
 .bub .nm{font-weight:900;color:var(--mag);font-size:.95rem}
 .bub p{margin:4px 0 0;font-size:clamp(1.05rem,2.4vw,1.25rem);font-weight:700;line-height:1.4}
@@ -176,7 +177,7 @@ h1,h2,h3,.disp{font-family:Fraunces,Georgia,serif;margin:0;line-height:1.05}
 
 <script>
 /* Qué escape room cargar: escape.html (museo, MS) o escape.html?juego=biblioteca (Secondary) */
-window.ESCAPE_GAMES = { museo: 'escape-contenido.js', biblioteca: 'escape-biblioteca.js' };
+window.ESCAPE_GAMES = { museo: 'escape-contenido.js', biblioteca: 'escape-biblioteca.js', tienda: 'escape-tienda.js' };
 window.ESCAPE_JUEGO = (function () { const j = new URLSearchParams(location.search).get('juego'); return window.ESCAPE_GAMES[j] ? j : 'museo'; })();
 document.write('<script src="' + window.ESCAPE_GAMES[window.ESCAPE_JUEGO] + '"><\/script>');
 </script>
@@ -211,13 +212,14 @@ function drawTop() {
   $('#slots').innerHTML = L.salas.map(s => `<div class="slot ${P.done[s.id] ? 'got' : ''}" title="${h(s.n)}">${P.done[s.id] ? h(s.letter) : '?'}</div>`).join('');
 }
 const view = html => { $('#view').innerHTML = html; window.scrollTo(0, 0); };
-const guide = (who, txt) => `<div class="guide"><div class="av">${h(who.e)}</div><div class="bub"><div class="nm">${h(who.n)}</div><p>${h(txt)}</p></div></div>`;
+const avHtml = who => who.img ? `<img src="${h(who.img)}" alt="${h(who.n)}">` : h(who.e);
+const guide = (who, txt) => `<div class="guide"><div class="av">${avHtml(who)}</div><div class="bub"><div class="nm">${h(who.n)}</div><p>${h(txt)}</p></div></div>`;
 
 /* ---------- pantallas ---------- */
 function intro() {
   const I = L.intro;
-  view(`<div class="card"><div class="guide"><div class="av">${h(I.who.e)}</div><div class="bub"><div class="nm">${h(I.who.n)} · ${h(L.crew)}</div><div class="story">${I.t.map(p => `<p>${h(p)}</p>`).join('')}</div></div></div>
-    <div class="note"><b>📝 Nota de Profe Rivera</b>${h(I.note)}</div>
+  view(`<div class="card"><div class="guide"><div class="av">${avHtml(I.who)}</div><div class="bub"><div class="nm">${h(I.who.n)} · ${h(L.crew)}</div><div class="story">${I.t.map(p => `<p>${h(p)}</p>`).join('')}</div></div></div>
+    <div class="note"><b>📝 ${h(I.noteTitle || 'Nota de Profe Rivera')}</b>${h(I.note)}</div>
     <div class="acts"><span class="muted">⏱️ El reloj empieza ahora.</span><button class="btn" id="ok">${UI.planBtn}</button></div></div>`);
   $('#ok').onclick = () => { P.seenIntro = true; save(); hub(); };
 }
@@ -225,7 +227,7 @@ function hub() {
   P.cur = null; save(); drawTop();
   const n = Object.keys(P.done).length, all = n === L.salas.length;
   view(`<div class="hub-h"><h2>${UI.plan}</h2><p>${all ? `¡Tienen las ${NUMS[L.salas.length] || L.salas.length} letras! Vayan a la puerta.` : `Elijan una sala. Pueden ir en cualquier orden. Letras: ${n} de ${L.salas.length}.`}</p></div>
-    <div class="plan">${L.salas.map(s => `<button class="door ${P.done[s.id] ? 'done' : ''}" data-s="${s.id}" data-l="${h(s.letter)}"><span class="de">${h(s.e)}</span><span><b>${h(s.n)}</b><small>Guía: ${h(s.who.n)} ${h(s.who.e)}</small>${s.cartel ? `<span class="tag">📜 Cartel ${s.cartel}</span>` : '<span class="tag">📖 Sin cartel: ¡de memoria!</span>'}</span></button>`).join('')}
+    <div class="plan">${L.salas.map(s => `<button class="door ${P.done[s.id] ? 'done' : ''}" data-s="${s.id}" data-l="${h(s.letter)}"><span class="de">${h(s.e)}</span><span><b>${h(s.n)}</b><small>Guía: ${h(s.who.n)} ${s.who.img ? '' : h(s.who.e)}</small>${s.cartel ? `<span class="tag">📜 Cartel ${s.cartel}</span>` : '<span class="tag">📖 Sin cartel: ¡de memoria!</span>'}</span></button>`).join('')}
     <button class="door final ${all ? '' : 'locked'}" id="fin"><span class="de">🚪</span><span><b>${UI.door}</b><small>${all ? '¡Escriban la palabra secreta!' : `🔒 Necesitan las ${NUMS[L.salas.length] || L.salas.length} letras`}</small></span></button></div>`);
   document.querySelectorAll('[data-s]').forEach(b => b.onclick = () => { sfx.click(); const id = +b.dataset.s; if (P.done[id]) { revisit(id); return; } P.cur = id; P.prog = P.prog || {}; P.ri = P.prog[id] || 0; save(); openSala(); });
   $('#fin').onclick = () => { if (!all) { sfx.no(); return; } finalDoor(); };
@@ -347,7 +349,7 @@ function enter() {
   document.title = E.title + ' · Escape room'; $('#stTitle').textContent = E.title; if (E.sub) $('#stSub').innerHTML = E.sub;
   $('.lock-ic').textContent = '🔒';
   document.querySelector('.lv-row').innerHTML = Object.keys(E.levels).map(k => `<button class="lv" data-lv="${k}" aria-pressed="false"><b>${h(E.levels[k].name)}</b><span>con ${h(E.levels[k].crew)}</span></button>`).join('');
-  let lvl = E.levels[qs.get('nivel')] ? qs.get('nivel') : null;
+  let lvl = E.levels[qs.get('nivel')] ? qs.get('nivel') : (Object.keys(E.levels).length === 1 ? Object.keys(E.levels)[0] : null);
   const mark = () => document.querySelectorAll('.lv').forEach(b => b.setAttribute('aria-pressed', b.dataset.lv === lvl));
   document.querySelectorAll('.lv').forEach(b => b.onclick = () => { lvl = b.dataset.lv; mark(); });
   mark();
