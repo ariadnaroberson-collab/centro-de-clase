@@ -4094,7 +4094,7 @@ tool('cambia', 'lang', '🔁', 'Cambia una letra', 'Change one letter · word ga
     <div class="row" style="margin-bottom:8px"><button class="btn sm ghost" id="clPrev">◀</button><span class="chip">${unit} ${o.i + 1} / ${list.length}</span><button class="btn sm ghost" id="clNext">▶</button><button class="btn sm ghost" id="clRnd">🎲</button>
       <span style="width:12px"></span>${o.mode !== 'syl' && o.mode !== 'reto' ? `<button class="btn sm ${o.pistas ? 'gold' : 'ghost'}" id="clPis">💡 Pistas: ${o.pistas ? 'sí' : 'no'}</button>` : ''}
       ${o.mode === 'ladder' ? `<button class="btn sm ${o.ayuda ? 'gold' : 'ghost'}" id="clAyu">🎯 Ayuda: ${o.ayuda ? 'muestra la letra que cambia' : 'no'}</button>` : ''}
-      <button class="btn sm" data-clpdf="${PDF[o.lv]}">🖨 Hoja ${LV[o.lv].n}</button>${hasReto ? `<button class="btn sm" data-clpdf="${PDFR[o.lv]}">🖨 Hoja Reto</button>` : ''}</div>`;
+      <button class="btn sm gold" id="clBoard">🧑‍🏫 En la pizarra (tu teléfono)</button><button class="btn sm ghost" data-clpdf="${PDF[o.lv]}">🖨 Hoja ${LV[o.lv].n}</button>${hasReto ? `<button class="btn sm" data-clpdf="${PDFR[o.lv]}">🖨 Hoja Reto</button>` : ''}</div>`;
   const timers = `<button class="btn" data-clt="60">⏱️ 1 min</button><button class="btn" data-clt="120">⏱️ 2 min</button>`;
   let body = '';
   if (o.mode === 'many') {
@@ -4139,8 +4139,14 @@ tool('cambia', 'lang', '🔁', 'Cambia una letra', 'Change one letter · word ga
         ${cd.cambiaBanco.length ? '<div class="row" style="margin-top:8px"><button class="btn sm" id="clCopy">📋 Copiar el banco</button></div>' : ''}
         ${bankHere.length ? `<div class="muted" style="margin-top:6px">Con ${h(m.w.toUpperCase())} ya encontraron: ${bankHere.map(b => h(b.w)).join(', ')}</div>` : ''}</div></div>`;
   }
-  el.innerHTML += top + body;
+  const bUrl = new URL('cambia-maestra.html?nivel=' + o.lv + '&modo=' + o.mode, location.href).href;
+  const board = o.board ? `<div class="en-box" style="margin:0 0 12px;display:flex;gap:16px;align-items:center;flex-wrap:wrap"><div style="width:150px">${enQr(bUrl)}</div>
+      <div style="flex:1;min-width:240px"><b>🧑‍🏫 Juego en la pizarra, sin hojas</b><div class="muted" style="margin:4px 0 8px">Escanea con tu teléfono: tienes las palabras, las frases para decir en voz alta y los pasos para jugar en la pizarra. Tú dices la frase (input), un/a estudiante pasa y cambia la letra.</div>
+      <div class="row"><button class="btn sm" id="clBoardOpen">↗ Abrir aquí</button><button class="btn sm ghost" id="clBoardClose">✖ Cerrar</button></div></div></div>` : '';
+  el.innerHTML += top + board + body;
   const q = s => el.querySelector(s);
+  q('#clBoard').onclick = () => { o.board = !o.board; render(); };
+  if (o.board) { q('#clBoardOpen').onclick = () => window.open(bUrl, '_blank'); q('#clBoardClose').onclick = () => { o.board = false; render(); }; }
   el.querySelectorAll('[data-cllv]').forEach(b => b.onclick = () => { o.lv = b.dataset.cllv; o.i = 0; o.ayuda = o.lv === 'k2'; render(); });
   el.querySelectorAll('[data-clmode]').forEach(b => b.onclick = () => { o.mode = b.dataset.clmode; o.i = 0; render(); });
   q('#clPrev').onclick = () => { o.i = (o.i - 1 + list.length) % list.length; render(); };

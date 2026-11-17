@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cambia una letra · en la pizarra (maestra)</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#1d2433;--paper:#fffdf7;--line:#d9d4c7;--accent:#e76f51;--teal:#2a9d8f;--gold:#f4b400;--soft:#f3efe4;--muted:#6b6f7a}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Fredoka',system-ui,sans-serif;background:var(--paper);color:var(--ink);font-size:17px}
+  header{background:var(--paper);border-bottom:3px dashed var(--line);padding:10px 12px;z-index:2}
+  h1{margin:0 0 8px;font-size:22px}
+  .row{display:flex;gap:6px;flex-wrap:wrap}
+  .row button{font:inherit;font-size:15px;border:2px solid var(--ink);background:#fff;border-radius:10px;padding:5px 10px;cursor:pointer;color:var(--ink)}
+  .row button.on{background:var(--ink);color:#fff}
+  main{padding:10px 12px 40px;max-width:760px;margin:0 auto}
+  details{border:2px solid var(--teal);border-radius:14px;background:#fff;padding:8px 12px;margin-bottom:12px}
+  summary{font-weight:700;cursor:pointer;color:var(--teal)}
+  details ol{padding-left:22px;margin:8px 0}
+  details li{margin:6px 0;line-height:1.4}
+  .card{border:2px solid var(--ink);border-radius:14px;background:#fff;padding:10px 12px;margin:10px 0}
+  .head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .big{font-size:30px;font-weight:700;letter-spacing:4px;text-transform:uppercase}
+  .src{font-size:13px;color:var(--muted);background:var(--soft);border-radius:999px;padding:2px 10px}
+  .ans{display:grid;grid-template-columns:34px 1fr;gap:4px 8px;align-items:start;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+  .ans .e{font-size:24px;line-height:1}
+  .ans .w{font-weight:700;font-size:19px;text-transform:uppercase;letter-spacing:1px}
+  .ans .w .c{color:var(--accent)}
+  .ans .f{grid-column:2;color:#333;font-size:16px}
+  .ans .f .gap{display:inline-block;min-width:2.6em;border-bottom:2px solid var(--accent)}
+  .say{font-size:13px;color:var(--muted)}
+  .arrow{color:#aaa;text-align:center;margin:2px 0}
+  .hide .w,.hide .hit{filter:blur(6px)}
+  .tip{font-size:14px;color:var(--muted);margin:4px 0 0}
+  .hit{font-weight:700;color:var(--accent);text-decoration:underline}
+</style>
+</head>
+<body>
+<header>
+  <h1>🔁 Cambia una letra · <span style="color:var(--accent)">en la pizarra</span></h1>
+  <div class="row" id="lv"></div>
+  <div class="row" id="md" style="margin-top:6px"></div>
+  <div class="row" style="margin-top:6px"><button id="hideBtn">🙈 Esconder respuestas</button></div>
+</header>
+<main>
+  <details id="how"><summary>📋 Cómo jugarlo en la pizarra (toca para abrir)</summary><div id="howBody"></div></details>
+  <div id="list"></div>
+</main>
+<script src="cambia-letra-contenido.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const h = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const P = new URLSearchParams(location.search);
+let lv = ['k2','35','ms','sec'].includes(P.get('nivel')) ? P.get('nivel') : 'k2';
+let md = P.get('modo') || 'many', hide = false;
+const LV = window.CAMBIA_LEVELS;
+const diff = (a, b) => [...a].findIndex((x, i) => x !== [...b][i]);
+const mark = (w, i) => [...w].map((ch, k) => k === i ? `<span class="c">${h(ch)}</span>` : h(ch)).join('');
+const cloze = (f, w) => h(f).replace(new RegExp('(^|[^a-záéíóúñü])(' + w + ')(?=[^a-záéíóúñü]|$)', 'i'), (m, a, b) => a + `<span class="hit">${b}</span>`);
+const HOW = {
+  many: `<ol>
+    <li><b>Dibuja cuadros</b> en la pizarra, uno por letra, y escribe la palabra grande (ej. <b>CASA</b>).</li>
+    <li><b>Lee la frase del cuento en voz alta</b> con un «mmm» en lugar de la palabra: «Una mmm de chocolate». La frase es el input: repítela, haz un gesto, señala el dibujo.</li>
+    <li>Un/a estudiante <b>pasa a la pizarra</b>, borra UNA letra y escribe otra (CASA → CAJA). La clase lee la palabra nueva en voz alta.</li>
+    <li><b>Circula la frase</b>: «¿Una caja de chocolate o una caja de pan? ¿Quién tiene la caja?». 2–3 preguntas rápidas.</li>
+    <li>Siguiente frase, siguiente estudiante. Juego por equipos: 1 punto por palabra correcta + 1 punto si alguien la usa en otra frase.</li></ol>
+    <p class="tip">💡 Escribe cada palabra nueva debajo de la anterior, sin borrar las de antes: al final la pizarra es una lista de palabras del cuento para releer.</p>`,
+  ladder: `<ol>
+    <li>Escribe la <b>primera palabra abajo</b> y la <b>última arriba</b>, con escalones vacíos (cuadros) en el medio.</li>
+    <li>Lee la frase de cada escalón en voz alta con «mmm». Es un mini-cuento: dramatízalo.</li>
+    <li>Equipos por turnos: un/a estudiante sube un escalón cambiando UNA letra. Si se equivoca, el otro equipo puede «robar».</li>
+    <li>Cuando llegan arriba, <b>lean toda la escalera como un cuento</b> y haz preguntas (¿quién?, ¿qué?, ¿dónde?). Pueden inventar una frase más.</li></ol>
+    <p class="tip">💡 Para K–2: escribe todas las letras que no cambian y deja vacío solo el cuadro que cambia (como la 🎯 Ayuda en la tele).</p>`,
+  syl: `<ol>
+    <li>Escribe la sílaba grande (ej. <b>MA</b>). Todos la dicen y aplauden.</li>
+    <li>«¿Qué palabras conocemos que empiezan con MA?» Dales tiempo: gestos, dibujos en el aire, pistas del cuento.</li>
+    <li>Cada palabra que dicen, la escribes (o un/a estudiante pasa a escribir la sílaba y tú el resto). Señala el dibujo/objeto si lo hay en la clase.</li>
+    <li>Cierra leyendo la lista juntos, aplaudiendo las sílabas.</li></ol>`,
+  reto: `<ol>
+    <li>Escribe la palabra en cuadros grandes (ej. <b>GATO</b>). Equipos.</li>
+    <li>Un/a estudiante pasa, <b>elige un cuadro y prueba una letra</b> (GATO → PATO). ¡Pueden probar suerte con consonantes!</li>
+    <li>Solo vale si <b>la palabra existe y alguien explica qué significa</b> (gesto, dibujo o una frase en español). Entonces: punto para el equipo.</li>
+    <li>Anota las palabras buenas en el <b>🧠 Banco de la clase</b> (en Herramientas, modo 🔥 Reto) para ver qué tienen en su cabeza.</li>
+    <li>Tu lista (abajo) es solo una ayuda: si encuentran otras palabras reales, ¡también valen!</li></ol>`
+};
+function render() {
+  const has = { syl: lv === 'k2', reto: lv === '35' || lv === 'ms' };
+  if ((md === 'syl' && !has.syl) || (md === 'reto' && !has.reto)) md = 'many';
+  $('lv').innerHTML = ['k2','35','ms','sec'].map(k => `<button class="${k === lv ? 'on' : ''}" data-lv="${k}">${LV[k].n}</button>`).join('');
+  const modes = [['many','📖 Una → muchas'],['ladder','🪜 Escalera-cuento']].concat(has.syl ? [['syl','🔤 Sílabas']] : []).concat(has.reto ? [['reto','🔥 Reto']] : []);
+  $('md').innerHTML = modes.map(([k, t]) => `<button class="${k === md ? 'on' : ''}" data-md="${k}">${t}</button>`).join('');
+  $('howBody').innerHTML = HOW[md];
+  $('hideBtn').textContent = hide ? '👀 Mostrar respuestas' : '🙈 Esconder respuestas';
+  document.body.classList.toggle('hide', hide);
+  let out = '';
+  if (md === 'many' || md === 'reto') {
+    const sets = md === 'many' ? CAMBIA[lv].many : CAMBIA_RETO[lv].many;
+    out = sets.map((m, n) => `<div class="card"><div class="head"><span class="big">${n + 1}. ${h(m.w)}</span><span style="font-size:26px">${m.e || ''}</span>${m.src ? `<span class="src">📖 ${h(m.src)}</span>` : ''}</div>
+      ${m.r.map(r => { const i = diff(m.w, r[0]); return `<div class="ans"><span class="e">${r[1]}</span><span class="w">${mark(r[0], i)}</span>
+        <span class="f">${md === 'many' ? '<span class="say">Di:</span> ' + cloze(r[2], r[0]) : '<span class="say">Pista:</span> ' + h(r[2])}</span></div>`; }).join('')}</div>`).join('');
+  } else if (md === 'ladder') {
+    out = CAMBIA[lv].ladders.map((l, n) => { const S = l.s;
+      return `<div class="card"><div class="head"><span class="big" style="font-size:22px">${n + 1}. ${h(S[0][0])} → ${h(S[S.length - 1][0])}</span><span class="src">📖 ${h(l.src)}</span></div>
+        ${S.map((st, j) => (j ? '<div class="arrow">⬇</div>' : '') + `<div class="ans" style="${j ? '' : 'border-top:0'}"><span class="e">${st[1]}</span><span class="w">${j ? mark(st[0], diff(S[j - 1][0], st[0])) : h(st[0])}</span><span class="f"><span class="say">Di:</span> ${cloze(st[2], st[0])}</span></div>`).join('')}</div>`; }).join('');
+  } else {
+    out = CAMBIA_SILABAS.map(sy => `<div class="card"><div class="head"><span class="big">${h(sy.s)}</span></div>
+      ${sy.w.map(x => `<div class="ans"><span class="e">${x[1]}</span><span class="w" style="text-transform:none">${h(x[0])}</span></div>`).join('')}</div>`).join('');
+  }
+  $('list').innerHTML = out;
+  document.querySelectorAll('[data-lv]').forEach(b => b.onclick = () => { lv = b.dataset.lv; render(); });
+  document.querySelectorAll('[data-md]').forEach(b => b.onclick = () => { md = b.dataset.md; render(); });
+}
+$('hideBtn').onclick = () => { hide = !hide; render(); };
+render();
+</script>
+</body>
+</html>
