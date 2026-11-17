@@ -724,6 +724,7 @@
   .sp-edl { margin: 6px 0; gap: 6px; }
 </style>
 <script src="enigma-contenido.js"></script>
+<script src="cambia-letra-contenido.js"></script>
 <script src="intruso-contenido.js"></script>
 <script src="compartir-qr.js"></script>
 </head>
@@ -3105,7 +3106,7 @@ tool('practica', 'assess', '🎮', 'Práctica y juegos', 'Practice & games by un
   const u = U[g.unitCur];
   el.innerHTML += `<div class="row"><label class="chk">Unidad: <select class="field" id="unSel" style="font-weight:800">${U.map((x, i) => `<option value="${i}" ${i === g.unitCur ? 'selected' : ''}>${h(x.n)}</option>`).join('')}</select></label>
       <button class="btn sm" id="unNew">＋ Nueva unidad</button>${u ? '<button class="btn sm ghost" id="unRen">✏️ Renombrar</button><button class="btn sm ghost" id="unDel">🗑️ Borrar unidad</button>' : ''}</div>
-    <div class="gm-builtin"><span class="muted">Juegos dentro de Herramientas:</span><button class="btn gold" id="gmHang">🦈 Ahorcado · palabras de cada unidad</button><button class="btn gold" data-gm="camino">🗺️ El camino de Chica (3D)</button><button class="btn gold" data-gm="enigma">🌀 El enigma de Chiquibul</button><button class="btn gold" data-gm="escape">🔐 Escape rooms (3–5 · MS · Sec)</button><button class="btn gold" data-gm="intruso">🔎 ¿Cuál es el intruso?</button><button class="btn gold" data-gm="minuto">🎤 ¡Habla un minuto!</button><button class="btn gold" data-gm="conexiones">🔗 1 palabra, 5 conexiones</button><button class="btn gold" data-gm="otramanera">🔄 Dilo de otra manera</button><button class="btn gold" data-gm="dibujo">✏️ Quick Draw (brain break)</button><button class="btn gold" data-gm="letras">🔤 Ruleta de letras · ¡Basta!</button></div>
+    <div class="gm-builtin"><span class="muted">Juegos dentro de Herramientas:</span><button class="btn gold" id="gmHang">🦈 Ahorcado · palabras de cada unidad</button><button class="btn gold" data-gm="camino">🗺️ El camino de Chica (3D)</button><button class="btn gold" data-gm="enigma">🌀 El enigma de Chiquibul</button><button class="btn gold" data-gm="escape">🔐 Escape rooms (3–5 · MS · Sec)</button><button class="btn gold" data-gm="intruso">🔎 ¿Cuál es el intruso?</button><button class="btn gold" data-gm="minuto">🎤 ¡Habla un minuto!</button><button class="btn gold" data-gm="conexiones">🔗 1 palabra, 5 conexiones</button><button class="btn gold" data-gm="otramanera">🔄 Dilo de otra manera</button><button class="btn gold" data-gm="dibujo">✏️ Quick Draw (brain break)</button><button class="btn gold" data-gm="letras">🔤 Ruleta de letras · ¡Basta!</button><button class="btn gold" data-gm="cambia">🔁 Cambia una letra</button></div>
     ${u ? `<div class="gm-grid">${u.links.map((x, i) => `<div class="gm-card"><button class="gm-open" data-o="${i}"><span class="gm-ic">${gameIcon(x.u)}</span><span class="gm-n">${h(x.n)}</span></button>
         <div class="gm-act"><button class="btn sm ghost" data-t="${i}" title="Abrir en pestaña nueva">↗</button><button class="btn sm ghost" data-q="${i}" title="Código QR para los estudiantes">📱</button><button class="btn sm ghost" data-d="${i}" title="Quitar">✕</button></div></div>`).join('') || '<p class="muted">Esta unidad todavía no tiene enlaces. Añade el primero aquí abajo 👇</p>'}</div>
       <div class="lk-add"><input class="field" id="gmN" placeholder="Nombre, ej. Quizlet · vocabulario" style="max-width:280px"><input class="field" id="gmU" placeholder="Enlace (Quizlet, Wayground, Padlet, Canva, YouTube…)"><button class="btn" id="gmAdd">＋ Añadir</button></div>
@@ -4019,10 +4020,106 @@ tool('letras', 'lang', '🔤', 'Ruleta de letras · ¡Basta!', 'Letter wheel · 
   el.querySelectorAll('[data-lp]').forEach(b => b.onclick = () => window.open(b.dataset.lp === 'es' ? 'imprimibles/Basta-Juego-de-Categorias-ES.pdf' : 'imprimibles/STOP-Categories-Game-EN.pdf', '_blank'));
 });
 
+/* ---------- 🔁 CAMBIA UNA LETRA (una palabra → muchas · escalera A → B · pistas) ---------- */
+const CL_CSS = `.cl-wrap{text-align:center}
+.cl-ins{font-size:clamp(1.2rem,2.4vw,1.8rem);font-weight:800;color:var(--ink,#2c4a3e);margin:4px 0 10px}
+.cl-tiles{display:inline-flex;gap:clamp(4px,.8vw,10px);flex-wrap:nowrap;justify-content:center;vertical-align:middle}
+.cl-t{width:clamp(40px,6.4vw,92px);height:clamp(48px,7.6vw,108px);border:4px solid #1d2433;border-radius:14px;background:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:clamp(1.8rem,5vw,4.4rem);text-transform:uppercase;color:#1d2433;font-family:'Fredoka',system-ui,sans-serif}
+.cl-t.blank{color:transparent}.cl-t.chg{border-color:#e76f51;background:#fff3e0}.cl-t.blank.chg{background:#fff3e0}
+.cl-sm .cl-t{width:clamp(30px,4vw,58px);height:clamp(36px,4.8vw,66px);font-size:clamp(1.3rem,3vw,2.6rem);border-width:3px;border-radius:10px}
+.cl-base{display:flex;align-items:center;justify-content:center;gap:16px;margin:6px 0 14px}
+.cl-emo{font-size:clamp(2.6rem,6vw,5rem)}
+.cl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;max-width:1100px;margin:0 auto}
+.cl-card{border:3px solid #1d2433;border-radius:16px;background:#fff;padding:10px;cursor:pointer;min-height:118px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;position:relative}
+.cl-card:hover{box-shadow:4px 4px 0 #f4b400}
+.cl-card .n{position:absolute;top:6px;left:10px;font-weight:800;color:#888}
+.cl-card .w{font-size:clamp(1.6rem,3vw,2.5rem);font-weight:900;text-transform:uppercase;letter-spacing:2px;color:#1d2433}
+.cl-card .q{font-size:2rem;font-weight:900;color:#bbb}
+.cl-card .p{font-size:.95rem;color:#555}
+.cl-card.on{background:#e8f6ec;border-color:#2e9e5b}
+.cl-lad{display:flex;flex-direction:column;align-items:center;gap:8px;margin:6px auto}
+.cl-rung{display:grid;grid-template-columns:clamp(40px,5vw,64px) auto minmax(150px,300px);align-items:center;gap:14px;padding:6px 12px;border-radius:16px;cursor:pointer}
+.cl-rung:hover{background:rgba(244,180,0,.15)}
+.cl-rung .e{font-size:clamp(1.8rem,3.4vw,2.8rem)}
+.cl-rung .p{text-align:left;font-size:clamp(.95rem,1.4vw,1.2rem);color:#444}
+.cl-rung.end .cl-t{border-color:#2a9d8f}
+.cl-arrow{font-size:1.4rem;color:#aaa;line-height:1}
+.cl-count{display:inline-flex;align-items:center;gap:8px;font-weight:800;font-size:1.2rem}
+.cl-count b{font-size:2rem;color:#e76f51;min-width:2ch;display:inline-block}
+.cl-note{font-size:.95rem;color:#666;margin-top:10px}`;
+function clTiles(word, opt) {
+  opt = opt || {};
+  return '<span class="cl-tiles">' + [...word].map((ch, i) => {
+    const hideAll = opt.hide && !opt.keep, hideThis = opt.hide && opt.keep && i === opt.chg;
+    const blank = hideAll || hideThis, chg = opt.mark && i === opt.chg;
+    return `<span class="cl-t ${blank ? 'blank' : ''} ${chg ? 'chg' : ''}">${blank ? '·' : h(ch)}</span>`;
+  }).join('') + '</span>';
+}
+function clDiff(a, b) { const A = [...a], B = [...b]; return A.findIndex((x, i) => x !== B[i]); }
+tool('cambia', 'lang', '🔁', 'Cambia una letra', 'Change one letter · word game', 'Juego de palabras: cambia UNA letra y forma una palabra nueva. 🔤 Una palabra → muchas palabras (como en el video), o 🪜 Escalera de una palabra a otra, paso a paso. Con 💡 pistas (dibujo + frase fácil) es más comprensible. 4 niveles.', el => {
+  if (!document.getElementById('cl-css')) { const st = document.createElement('style'); st.id = 'cl-css'; st.textContent = CL_CSS; document.head.appendChild(st); }
+  const C = window.CAMBIA, LV = window.CAMBIA_LEVELS;
+  if (!C) { el.innerHTML += '<p class="muted">No se encontró cambia-letra-contenido.js.</p>'; return; }
+  const o = ses('cambia', () => { const lv = inLvFromClass(); return { lv, mode: 'many', i: 0, open: {}, pistas: lv === 'k2' || lv === '35', ayuda: lv === 'k2', count: 0 }; });
+  const L = C[o.lv], list = o.mode === 'many' ? L.many : L.ladders;
+  if (o.i >= list.length) o.i = 0;
+  const key = o.lv + o.mode + o.i, open = o.open[key] || (o.open[key] = []);
+  const PDF = { k2: 'Cambia-una-letra-K2.pdf', '35': 'Cambia-una-letra-3-5.pdf', ms: 'Cambia-una-letra-MS.pdf', sec: 'Cambia-una-letra-Sec.pdf' };
+  let top = `<div class="row" style="margin-bottom:6px">${window.CAMBIA_ORDER.map(k => `<button class="btn sm ${k === o.lv ? 'gold' : 'ghost'}" data-cllv="${k}">${LV[k].n}</button>`).join('')}
+      <span style="width:12px"></span><button class="btn ${o.mode === 'many' ? 'gold' : 'ghost'}" data-clmode="many">🔤 Una → muchas</button><button class="btn ${o.mode === 'ladder' ? 'gold' : 'ghost'}" data-clmode="ladder">🪜 Escalera</button></div>
+    <div class="row" style="margin-bottom:8px"><button class="btn sm ghost" id="clPrev">◀</button><span class="chip">${o.mode === 'many' ? 'Palabra' : 'Escalera'} ${o.i + 1} / ${list.length}</span><button class="btn sm ghost" id="clNext">▶</button><button class="btn sm ghost" id="clRnd">🎲</button>
+      <span style="width:12px"></span><button class="btn sm ${o.pistas ? 'gold' : 'ghost'}" id="clPis">💡 Pistas: ${o.pistas ? 'sí' : 'no'}</button>
+      ${o.mode === 'ladder' ? `<button class="btn sm ${o.ayuda ? 'gold' : 'ghost'}" id="clAyu">🎯 Ayuda: ${o.ayuda ? 'muestra la letra que cambia' : 'no'}</button>` : ''}
+      <button class="btn sm" id="clPdf">🖨 Hoja ${LV[o.lv].n} (PDF)</button></div>`;
+  let body = '';
+  if (o.mode === 'many') {
+    const m = L.many[o.i];
+    body = `<div class="cl-wrap"><div class="cl-ins">Cambia UNA letra y forma una palabra nueva.</div>
+      <div class="cl-base">${o.pistas && m.e ? `<span class="cl-emo">${m.e}</span>` : ''}${clTiles(m.w)}</div>
+      <div class="row" style="justify-content:center;margin-bottom:12px"><button class="btn gold" id="clOne" data-primary>👀 Mostrar una</button><button class="btn" id="clAll">Mostrar todas</button><button class="btn ghost" id="clHide">🙈 Esconder</button>
+        <button class="btn" data-clt="60">⏱️ 1 min</button><button class="btn" data-clt="120">⏱️ 2 min</button>
+        <span class="cl-count">Encontraron: <button class="btn sm ghost" id="clMinus">−</button><b id="clCnt">${o.count}</b><button class="btn sm ghost" id="clPlus">＋</button></span></div>
+      <div class="cl-grid">${m.r.map((r, j) => { const on = open.includes(j);
+        return `<div class="cl-card ${on ? 'on' : ''}" data-clr="${j}"><span class="n">${j + 1}</span>${o.pistas || on ? `<div style="font-size:2.2rem">${r[1]}</div>` : ''}<div class="${on ? 'w' : 'q'}">${on ? h(r[0]) : '?'}</div>${o.pistas || on ? `<div class="p">${h(r[2])}</div>` : ''}</div>`; }).join('')}</div>
+      <div class="cl-note">💡 Hay ${m.r.length} palabras en la lista. Si la clase encuentra otra palabra que existe, ¡también vale!</div></div>`;
+  } else {
+    const ld = L.ladders[o.i], S = ld.s, last = S.length - 1;
+    const rung = (st, j) => {
+      const isEnd = j === 0 || j === last, on = isEnd || open.includes(j), chg = j > 0 ? clDiff(S[j - 1][0], st[0]) : -1;
+      return `<div class="cl-rung ${isEnd ? 'end' : ''}" ${isEnd ? '' : `data-clr="${j}"`}><span class="e">${o.pistas || on ? st[1] : ''}</span>
+        <span class="cl-sm">${clTiles(st[0], { hide: !on, keep: o.ayuda, chg, mark: (o.ayuda || on) && j > 0 })}</span>
+        <span class="p">${o.pistas || on ? h(st[2]) : ''}</span></div>`;
+    };
+    body = `<div class="cl-wrap"><div class="cl-ins">De <b>${h(S[0][0].toUpperCase())}</b> a <b>${h(S[last][0].toUpperCase())}</b>: cambia una letra en cada paso.</div>
+      <div class="row" style="justify-content:center;margin-bottom:8px"><button class="btn gold" id="clOne" data-primary>👀 Siguiente paso</button><button class="btn" id="clAll">Mostrar todo</button><button class="btn ghost" id="clHide">🙈 Esconder</button><button class="btn" data-clt="60">⏱️ 1 min</button><button class="btn" data-clt="120">⏱️ 2 min</button></div>
+      <div class="cl-lad">${S.map((st, j) => (j ? '<div class="cl-arrow">⬇</div>' : '') + rung(st, j)).join('')}</div>
+      <div class="cl-note">${S.length - 2} paso${S.length - 2 === 1 ? '' : 's'} en el medio. Toca un paso para mostrarlo. 🟧 = la letra que cambia.</div></div>`;
+  }
+  el.innerHTML += top + body;
+  const q = s => el.querySelector(s);
+  el.querySelectorAll('[data-cllv]').forEach(b => b.onclick = () => { o.lv = b.dataset.cllv; o.i = 0; o.count = 0; o.pistas = o.lv === 'k2' || o.lv === '35'; o.ayuda = o.lv === 'k2'; render(); });
+  el.querySelectorAll('[data-clmode]').forEach(b => b.onclick = () => { o.mode = b.dataset.clmode; o.i = 0; o.count = 0; render(); });
+  q('#clPrev').onclick = () => { o.i = (o.i - 1 + list.length) % list.length; o.count = 0; render(); };
+  q('#clNext').onclick = () => { o.i = (o.i + 1) % list.length; o.count = 0; render(); };
+  q('#clRnd').onclick = () => { let n; do { n = Math.floor(Math.random() * list.length); } while (list.length > 1 && n === o.i); o.i = n; o.count = 0; render(); };
+  q('#clPis').onclick = () => { o.pistas = !o.pistas; render(); };
+  const ay = q('#clAyu'); if (ay) ay.onclick = () => { o.ayuda = !o.ayuda; render(); };
+  q('#clPdf').onclick = () => window.open('imprimibles/' + PDF[o.lv], '_blank');
+  const items = o.mode === 'many' ? L.many[o.i].r.map((_, j) => j) : L.ladders[o.i].s.map((_, j) => j).slice(1, -1);
+  q('#clOne').onclick = () => { const n = items.find(j => !open.includes(j)); if (n !== undefined) { open.push(n); ding(); render(); } };
+  q('#clAll').onclick = () => { items.forEach(j => { if (!open.includes(j)) open.push(j); }); render(); };
+  q('#clHide').onclick = () => { open.length = 0; render(); };
+  el.querySelectorAll('[data-clr]').forEach(c => c.onclick = () => { const j = +c.dataset.clr, k = open.indexOf(j); if (k < 0) open.push(j); else open.splice(k, 1); render(); });
+  el.querySelectorAll('[data-clt]').forEach(b => b.onclick = () => quickTimer(+b.dataset.clt));
+  const pl = q('#clPlus'), mi = q('#clMinus');
+  if (pl) pl.onclick = () => { o.count++; q('#clCnt').textContent = o.count; };
+  if (mi) mi.onclick = () => { o.count = Math.max(0, o.count - 1); q('#clCnt').textContent = o.count; };
+});
+
 /* ---------- tool order in the menu ---------- */
 const TOOL_ORDER = ['links', 'pizarra', 'tareas', 'qr', 'prof', 'rubricas', 'check', 'exit', 'resultados', 'practica', 'ahorcado', 'camino', 'enigma', 'escape', 'intruso', 'minuto', 'conexiones', 'otramanera', 'timer', 'safari', 'sonidos', 'check', 'wheel', 'picker', 'cold', 'groups', 'pairs', 'seats', 'part', 'dados', 'exit',
   'espanol', 'points', 'houses', 'semana', 'mystery', 'stickers', 'tokens', 'levels', 'reward',
-  'tpr', 'dibujo', 'letras', 'story', 'vocab', 'character', 'problem', 'location', 'cubes', 'qwords', 'verbs', 'tenses', 'convo', 'circ'];
+  'tpr', 'dibujo', 'letras', 'cambia', 'story', 'vocab', 'character', 'problem', 'location', 'cubes', 'qwords', 'verbs', 'tenses', 'convo', 'circ'];
 TOOLS.sort((a, b) => { const ia = TOOL_ORDER.indexOf(a.id), ib = TOOL_ORDER.indexOf(b.id); return (ia < 0 ? 999 : ia) - (ib < 0 ? 999 : ib); });
 
 /* =========================================================
