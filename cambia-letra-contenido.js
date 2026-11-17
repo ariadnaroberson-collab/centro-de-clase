@@ -9,7 +9,7 @@ window.CAMBIA_LEVELS = {
   ms:  { n: '🏫 Middle School', d: 'Palabras de 4 y 5 letras' },
   sec: { n: '🎓 Secondary', d: 'Escaleras largas y palabras nuevas' }
 };
-window.CAMBIA = {
+window.CAMBIA_RETO = {
   k2: {
     many: [
       { w: 'pato', e: '🦆', r: [['gato','🐱','Hace miau.'],['pata','🐾','El perro tiene cuatro.'],['pavo','🦃','Un pájaro grande.'],['palo','🪵','Es de madera.']] },
@@ -102,3 +102,107 @@ window.CAMBIA = {
     ]
   }
 };
+
+/* ===== 📖 PALABRAS DEL CUENTO (default) =====
+   Solo palabras que cada grupo ya leyó/escuchó en sus cuentos de Cuentópolis.
+   La pista es una frase del mundo del cuento: antes de mostrar la palabra, la frase sale con ____ (lectura con significado).
+   many:    { w, e, src, r: [[palabra, emoji, frase]] }
+   ladders: { src, s: [[palabra, emoji, frase], …] }  */
+window.CAMBIA = {
+  k2: {
+    many: [
+      { w: 'nico', e: '🦝', src: 'Chica y sus Amigos 1–2', r: [['pico','🦜','Don Pico es un pájaro.'],['niño','👦','Un niño lee el cuento.']] },
+      { w: 'rojo', e: '🔴', src: 'Don Pico: Los colores', r: [['roja','🍎','La manzana es roja.']] },
+      { w: 'hoy', e: '🗓️', src: 'Don Pico: Los días', r: [['soy','🙋','¡Hola! Soy Chica.']] },
+      { w: 'manos', e: '🙌', src: 'Don Pico: Los números', r: [['magos','🧙','Los magos dicen: ¡abracadabra!']] },
+      { w: 'martes', e: '🗓️', src: 'Don Pico: Los días', r: [['partes','🧩','El cuento tiene partes.']] },
+      { w: 'contar', e: '🔢', src: 'Don Pico: Los números', r: [['cantar','🎶','¡Vamos a cantar!']] }
+    ],
+    ladders: [
+      { src: 'Chica y sus Amigos 1–2', s: [['niño','👦','Un niño lee el cuento.'],['nico','🦝','Nico es un coatí.'],['pico','🦜','Don Pico es un pájaro.']] },
+      { src: 'Don Pico: Los colores', s: [['rojo','🔴','El color rojo.'],['roja','🍎','La manzana es roja.'],['ropa','👕','Mi ropa favorita.']] },
+      { src: 'Don Pico: Los números · Las estaciones', s: [['nuevo','✨','Nico es un amigo nuevo.'],['nueve','9️⃣','Uno, dos… ¡nueve!'],['nieve','❄️','En invierno hay nieve.']] }
+    ]
+  },
+  '35': {
+    many: [
+      { w: 'casa', e: '🏠', src: 'Don Pico 3–5 · El altar de Mamá Toña', r: [['cada','🗓️','Cada día llueve un poco.'],['caja','📦','Una caja de chocolate.'],['casi','🤏','¡Casi es el Día de Muertos!']] },
+      { w: 'ropa', e: '👕', src: 'Don Pico 3–5', r: [['rosa','🌹','Una rosa para la ofrenda.'],['roja','🔴','¿La gorra es roja?']] },
+      { w: 'nico', e: '🦝', src: 'Chica y sus Amigos · Don Pico 3–5', r: [['pico','🦜','Don Pico mira el cielo.'],['niño','👦','Un niño necesita un suéter.']] },
+      { w: 'calor', e: '🥵', src: 'Don Pico 3–5: Salió el sol', r: [['color','🎨','¿De qué color es la mariposa?'],['valor','🦁','Nico tiene valor.']] },
+      { w: 'hoy', e: '🗓️', src: 'Don Pico 3–5', r: [['soy','🙋','¡Hola! Soy Marisol.'],['voy','🚶','Voy al mercado.']] },
+      { w: 'luego', e: '👋', src: 'Don Pico 3–5', r: [['juego','🎲','Un juego para jugar adentro.'],['fuego','🔥','Las velas tienen fuego.']] },
+      { w: 'toca', e: '👆', src: 'El altar de Mamá Toña', r: [['boca','👄','El pan va a la boca.'],['toña','👵','¡Hola, Mamá Toña!']] },
+      { w: 'sol', e: '☀️', src: 'Don Pico 3–5: Salió el sol', r: [['sal','🧂','La sal va en la comida.']] }
+    ],
+    ladders: [
+      { src: 'Chica y sus Amigos · Don Pico 3–5', s: [['niño','👦','Un niño necesita un suéter.'],['nico','🦝','Nico tiene frío.'],['pico','🦜','Don Pico mira el cielo.'],['poco','🤏','Llueve un poco.']] },
+      { src: 'Don Pico 3–5 · El altar de Mamá Toña', s: [['rosa','🌹','Una rosa para la ofrenda.'],['ropa','👕','Nico necesita ropa: ¡llueve!'],['roja','🔴','¿La gorra es roja?']] },
+      { src: 'Don Pico 3–5: Salió el sol', s: [['valor','🦁','Nico tiene valor.'],['calor','🥵','¡Hace calor!'],['color','🎨','¿De qué color es la mariposa?']] },
+      { src: 'Don Pico 3–5 · El altar de Mamá Toña', s: [['fuego','🔥','Las velas tienen fuego.'],['juego','🎲','Un juego para jugar adentro.'],['luego','👋','¡Hasta luego, Marisol!']] },
+      { src: 'Don Pico 3–5 · El altar de Mamá Toña', s: [['caja','📦','Una caja de chocolate.'],['casa','🏠','La familia está en casa.'],['cada','🗓️','Cada día llueve un poco.']] },
+      { src: 'Don Pico 3–5 · El altar de Mamá Toña', s: [['voy','🚶','Voy al mercado.'],['hoy','🗓️','Hoy es el Día de Muertos.'],['soy','🙋','¡Hola! Soy Marisol.']] },
+      { src: 'El altar de Mamá Toña', s: [['boca','👄','El pan va a la boca.'],['toca','👆','Don Pico toca la puerta.'],['toña','👵','¡Hola, Mamá Toña!']] },
+      { src: 'Don Pico 3–5: Salió el sol', s: [['sal','🧂','La sal va en la comida.'],['sol','☀️','¡Salió el sol!'],['soy','🙋','¡Hola! Soy Marisol.']] }
+    ]
+  },
+  ms: {
+    many: [
+      { w: 'casa', e: '🏠', src: 'Los Vecinos 1–2 (MS1)', r: [['cada','🗓️','Cada sábado jugamos en la calle.'],['casi','🤏','¡Casi es sábado!'],['pasa','❓','¿Qué pasa en la calle?']] },
+      { w: 'alto', e: '📏', src: 'Los Vecinos · El Club del Barrio', r: [['alta','🧍‍♀️','¿Es alta o baja?'],['algo','🎁','¿Quieres algo?']] },
+      { w: 'niño', e: '👦', src: 'Los Vecinos 1–2 (MS1)', r: [['niña','👧','Es una niña muy activa.'],['nico','🙋‍♂️','¡Hola, Nico!']] },
+      { w: 'activo', e: '⚡', src: 'Los Vecinos 1–2 (MS1)', r: [['activa','⚡','Ella es muy activa.']] },
+      { w: 'hacer', e: '🛠️', src: 'Los Vecinos 1–2 (MS1)', r: [['haces','🙋','¿Qué haces el sábado?'],['hacen','👥','¿Qué hacen tus amigos?']] },
+      { w: 'piso', e: '🏢', src: 'El Club del Barrio 1–2 (MS3)', r: [['paso','👣','Paso a paso.'],['peso','⚖️','El peso de la mochila.']] },
+      { w: 'camino', e: '🛤️', src: 'El Club del Barrio 1–2 (MS3)', r: [['camina','🚶‍♀️','Camila camina a la escuela.']] },
+      { w: 'cuidar', e: '🫶', src: 'El Club del Barrio 1–2 (MS3)', r: [['cuidas','🙋','¿Cómo te cuidas?'],['cuidan','👥','Los amigos se cuidan.']] }
+    ],
+    ladders: [
+      { src: 'Los Vecinos 1–2 (MS1)', s: [['nico','🙋‍♂️','¡Hola, Nico!'],['niño','👦','Nico es un niño.'],['niña','👧','¿Y su amiga? Es una niña.']] },
+      { src: 'Los Vecinos 1–2 (MS1)', s: [['pasa','❓','¿Qué pasa?'],['casa','🏠','Estoy en mi casa.'],['cada','🗓️','Cada sábado jugamos en la calle.']] },
+      { src: 'Los Vecinos · El Club del Barrio', s: [['algo','🎁','¿Quieres algo?'],['alto','📏','¿Nico es alto?'],['alta','🧍‍♀️','¿Y la niña? ¿Es alta?']] },
+      { src: 'Los Vecinos 1–2 (MS1)', s: [['hacer','🛠️','¿Qué vas a hacer?'],['haces','🙋','¿Qué haces el sábado?'],['hacen','👥','¿Qué hacen tus amigos?']] },
+      { src: 'El Club del Barrio 1–2 (MS3)', s: [['camila','🙋‍♀️','¡Hola, Camila!'],['camina','🚶‍♀️','Camila camina…'],['camino','🛤️','…por el camino a la escuela.']] },
+      { src: 'El Club del Barrio 1–2 (MS3)', s: [['peso','⚖️','El peso de la mochila.'],['piso','🏢','¿En qué piso vives?'],['paso','👣','Paso a paso.']] },
+      { src: 'El Club del Barrio 1–2 (MS3)', s: [['vez','🔁','Otra vez.'],['voz','🗣️','Habla en voz alta.'],['voy','🚶','Voy al club.']] },
+      { src: 'El Club del Barrio 1–2 (MS3)', s: [['sentirme','🙂','Quiero sentirme bien.'],['sentirte','🙋','¿Cómo quieres sentirte?'],['sentirse','👥','Es normal sentirse nervioso.']] }
+    ]
+  },
+  sec: {
+    many: [
+      { w: 'vez', e: '🔁', src: 'La Cuadrilla', r: [['voz','🗣️','Lee en voz alta.'],['ver','👀','Vamos a ver.'],['ven','👋','¡Ven aquí!']] },
+      { w: 'maestra', e: '👩‍🏫', src: 'La Cuadrilla', r: [['maestro','👨‍🏫','El maestro explica.'],['muestra','🖼️','Muestra su dibujo a la clase.']] },
+      { w: 'corta', e: '✂️', src: 'La Cuadrilla', r: [['corto','📏','Un video corto.'],['costa','🏖️','La costa de Belice.']] },
+      { w: 'serie', e: '📺', src: 'La Cuadrilla', r: [['serio','😐','¿Por qué estás tan serio?'],['seria','😐','Ella está seria.']] },
+      { w: 'fuente', e: '⛲', src: 'La Cuadrilla', r: [['frente','👉','Está frente a la escuela.'],['puente','🌉','Cruzan el puente.']] },
+      { w: 'usar', e: '📱', src: 'La Cuadrilla', r: [['usas','🙋','¿Cuánto tiempo usas el celular?'],['usan','👥','Ellos usan la computadora.']] },
+      { w: 'dibujar', e: '✏️', src: 'La Cuadrilla', r: [['dibujas','🙋','¿Tú dibujas bien?'],['dibujan','👥','Ellos dibujan en clase.']] }
+    ],
+    ladders: [
+      { src: 'La Cuadrilla', s: [['maestro','👨‍🏫','El maestro explica.'],['maestra','👩‍🏫','La maestra pregunta.'],['muestra','🖼️','Muestra su dibujo a la clase.']] },
+      { src: 'La Cuadrilla', s: [['frente','👉','Frente a la escuela…'],['fuente','⛲','…hay una fuente.'],['puente','🌉','Después cruzan el puente.']] },
+      { src: 'La Cuadrilla', s: [['saludo','👋','Un saludo para todos.'],['saluda','🙋','Saluda al nuevo estudiante.'],['salida','🚪','Nos vemos en la salida.']] },
+      { src: 'La Cuadrilla', s: [['tema','📝','¿Cuál es el tema?'],['toma','🥤','Toma agua.'],['toca','🎸','Toca la guitarra.']] },
+      { src: 'La Cuadrilla', s: [['costa','🏖️','La costa de Belice.'],['corta','✂️','La clase es corta.'],['corto','📏','Un video corto.']] },
+      { src: 'La Cuadrilla', s: [['ver','👀','Vamos a ver.'],['vez','🔁','Una vez más.'],['voz','🗣️','Lee en voz alta.']] },
+      { src: 'La Cuadrilla', s: [['dibujar','✏️','Me gusta dibujar.'],['dibujas','🙋','¿Tú dibujas bien?'],['dibujan','👥','Ellos dibujan en clase.']] },
+      { src: 'La Cuadrilla', s: [['serie','📺','Mi serie favorita.'],['serio','😐','¿Por qué estás tan serio?'],['seria','😐','Ella está seria.']] }
+    ]
+  }
+};
+
+/* ===== 🔤 SÍLABAS (K–2): sílaba → palabras que ya conocen (oral primero) ===== */
+window.CAMBIA_SILABAS = [
+  { s: 'ma', w: [['mano','✋'],['mangos','🥭'],['martes','🗓️']] },
+  { s: 'mo', w: [['Mora','🦋'],['monita','🐒']] },
+  { s: 'ni', w: [['Nico','🦝'],['niños','👧👦']] },
+  { s: 'pi', w: [['Pico','🦜']] },
+  { s: 'chi', w: [['Chica','🐒'],['Chiquibul','🌳']] },
+  { s: 'ro', w: [['rojo','🔴'],['rombo','🔷'],['ropa','👕']] },
+  { s: 'lu', w: [['lunes','🗓️'],['luz','💡']] },
+  { s: 'co', w: [['colores','🎨'],['coatí','🦝'],['contar','🔢']] },
+  { s: 'ho', w: [['hola','👋'],['hojas','🍃'],['hoy','🗓️']] },
+  { s: 'ca', w: [['canasta','🧺'],['cantar','🎶']] },
+  { s: 'se', w: [['selva','🌴'],['semana','🗓️']] },
+  { s: 'a', w: [['azul','🔵'],['amarillo','🟡'],['árbol','🌳'],['amigos','🤝']] }
+];

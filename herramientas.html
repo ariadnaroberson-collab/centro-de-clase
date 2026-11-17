@@ -4020,100 +4020,167 @@ tool('letras', 'lang', '🔤', 'Ruleta de letras · ¡Basta!', 'Letter wheel · 
   el.querySelectorAll('[data-lp]').forEach(b => b.onclick = () => window.open(b.dataset.lp === 'es' ? 'imprimibles/Basta-Juego-de-Categorias-ES.pdf' : 'imprimibles/STOP-Categories-Game-EN.pdf', '_blank'));
 });
 
-/* ---------- 🔁 CAMBIA UNA LETRA (una palabra → muchas · escalera A → B · pistas) ---------- */
+/* ---------- 🔁 CAMBIA UNA LETRA (📖 palabras del cuento · 🪜 escalera-cuento · 🔤 sílabas K-2 · 🔥 reto + banco de la clase) ---------- */
 const CL_CSS = `.cl-wrap{text-align:center}
 .cl-ins{font-size:clamp(1.2rem,2.4vw,1.8rem);font-weight:800;color:var(--ink,#2c4a3e);margin:4px 0 10px}
 .cl-tiles{display:inline-flex;gap:clamp(4px,.8vw,10px);flex-wrap:nowrap;justify-content:center;vertical-align:middle}
 .cl-t{width:clamp(40px,6.4vw,92px);height:clamp(48px,7.6vw,108px);border:4px solid #1d2433;border-radius:14px;background:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:clamp(1.8rem,5vw,4.4rem);text-transform:uppercase;color:#1d2433;font-family:'Fredoka',system-ui,sans-serif}
-.cl-t.blank{color:transparent}.cl-t.chg{border-color:#e76f51;background:#fff3e0}.cl-t.blank.chg{background:#fff3e0}
+.cl-t.blank{color:transparent}.cl-t.chg{border-color:#e76f51;background:#fff3e0}
 .cl-sm .cl-t{width:clamp(30px,4vw,58px);height:clamp(36px,4.8vw,66px);font-size:clamp(1.3rem,3vw,2.6rem);border-width:3px;border-radius:10px}
 .cl-base{display:flex;align-items:center;justify-content:center;gap:16px;margin:6px 0 14px}
 .cl-emo{font-size:clamp(2.6rem,6vw,5rem)}
-.cl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;max-width:1100px;margin:0 auto}
+.cl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;max-width:1100px;margin:0 auto}
 .cl-card{border:3px solid #1d2433;border-radius:16px;background:#fff;padding:10px;cursor:pointer;min-height:118px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;position:relative}
 .cl-card:hover{box-shadow:4px 4px 0 #f4b400}
 .cl-card .n{position:absolute;top:6px;left:10px;font-weight:800;color:#888}
 .cl-card .w{font-size:clamp(1.6rem,3vw,2.5rem);font-weight:900;text-transform:uppercase;letter-spacing:2px;color:#1d2433}
 .cl-card .q{font-size:2rem;font-weight:900;color:#bbb}
-.cl-card .p{font-size:.95rem;color:#555}
+.cl-card .p{font-size:1.02rem;color:#444}
 .cl-card.on{background:#e8f6ec;border-color:#2e9e5b}
-.cl-lad{display:flex;flex-direction:column;align-items:center;gap:8px;margin:6px auto}
-.cl-rung{display:grid;grid-template-columns:clamp(40px,5vw,64px) auto minmax(150px,300px);align-items:center;gap:14px;padding:6px 12px;border-radius:16px;cursor:pointer}
+.cl-gap{display:inline-block;min-width:3.2em;border-bottom:3px solid #e76f51;margin:0 2px}
+.cl-hit{font-weight:900;color:#e76f51}
+.cl-lad{display:flex;flex-direction:column;align-items:center;gap:6px;margin:6px auto}
+.cl-rung{display:grid;grid-template-columns:clamp(40px,5vw,64px) auto minmax(180px,340px);align-items:center;gap:14px;padding:6px 12px;border-radius:16px;cursor:pointer}
 .cl-rung:hover{background:rgba(244,180,0,.15)}
 .cl-rung .e{font-size:clamp(1.8rem,3.4vw,2.8rem)}
-.cl-rung .p{text-align:left;font-size:clamp(.95rem,1.4vw,1.2rem);color:#444}
+.cl-rung .p{text-align:left;font-size:clamp(1rem,1.5vw,1.25rem);color:#333}
 .cl-rung.end .cl-t{border-color:#2a9d8f}
-.cl-arrow{font-size:1.4rem;color:#aaa;line-height:1}
+.cl-arrow{font-size:1.3rem;color:#aaa;line-height:1}
 .cl-count{display:inline-flex;align-items:center;gap:8px;font-weight:800;font-size:1.2rem}
 .cl-count b{font-size:2rem;color:#e76f51;min-width:2ch;display:inline-block}
-.cl-note{font-size:.95rem;color:#666;margin-top:10px}`;
+.cl-note{font-size:.95rem;color:#666;margin-top:10px}
+.cl-src{display:inline-block;background:#f3efe4;border-radius:999px;padding:3px 12px;font-size:.9rem;color:#5a4a2a;margin-bottom:6px}
+.cl-syl{font-size:clamp(4rem,12vw,9rem);font-weight:900;color:#e76f51;text-transform:uppercase;line-height:1;font-family:'Fredoka',system-ui,sans-serif}
+.cl-try{display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap;margin:10px 0}
+.cl-try input{font-size:1.6rem;font-weight:800;text-transform:uppercase;padding:8px 14px;border:3px solid #1d2433;border-radius:12px;width:12ch;text-align:center;font-family:inherit}
+.cl-tries{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:6px 0}
+.cl-tries span{border:2px solid #ccc;border-radius:10px;padding:3px 10px;font-weight:800;text-transform:uppercase}
+.cl-tries .ok{border-color:#2e9e5b;background:#e8f6ec}.cl-tries .no{border-color:#c0392b;background:#fdecec;text-decoration:line-through;color:#888}
+.cl-bank{margin:14px auto 0;max-width:1000px;text-align:left;border:2px dashed #c9bfa9;border-radius:14px;padding:10px 14px;background:#fffdf7}
+.cl-bank .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.cl-bank .chips span{background:#fff;border:2px solid #2a9d8f;border-radius:999px;padding:2px 10px;font-weight:700}
+.cl-bank .chips span b{cursor:pointer;color:#c0392b;margin-left:6px}`;
+const clNorm = w => String(w).toLowerCase().trim().normalize('NFD').replace(/(?!̃)[̀-ͯ]/g, '').normalize('NFC');
 function clTiles(word, opt) {
   opt = opt || {};
   return '<span class="cl-tiles">' + [...word].map((ch, i) => {
-    const hideAll = opt.hide && !opt.keep, hideThis = opt.hide && opt.keep && i === opt.chg;
-    const blank = hideAll || hideThis, chg = opt.mark && i === opt.chg;
+    const blank = opt.hide && (!opt.keep || i === opt.chg), chg = opt.mark && i === opt.chg;
     return `<span class="cl-t ${blank ? 'blank' : ''} ${chg ? 'chg' : ''}">${blank ? '·' : h(ch)}</span>`;
   }).join('') + '</span>';
 }
 function clDiff(a, b) { const A = [...a], B = [...b]; return A.findIndex((x, i) => x !== B[i]); }
-tool('cambia', 'lang', '🔁', 'Cambia una letra', 'Change one letter · word game', 'Juego de palabras: cambia UNA letra y forma una palabra nueva. 🔤 Una palabra → muchas palabras (como en el video), o 🪜 Escalera de una palabra a otra, paso a paso. Con 💡 pistas (dibujo + frase fácil) es más comprensible. 4 niveles.', el => {
+function clCloze(frase, w, show) {
+  const re = new RegExp('(^|[^a-záéíóúñü])(' + w + ')(?=[^a-záéíóúñü]|$)', 'i');
+  return h(frase).replace(re, (m, a, b) => a + (show ? `<span class="cl-hit">${b}</span>` : '<span class="cl-gap">&nbsp;</span>'));
+}
+tool('cambia', 'lang', '🔁', 'Cambia una letra', 'Change one letter · word game', 'Juego de palabras con palabras que ya conocen: cambia UNA letra y forma otra palabra de sus cuentos. 📖 Una → muchas, 🪜 Escalera-cuento (cada paso es una frase), 🔤 Sílabas (K–2) y 🔥 Reto (3–5 y MS3): prueban letras, y las palabras reales que encuentran se guardan en el banco de la clase.', el => {
   if (!document.getElementById('cl-css')) { const st = document.createElement('style'); st.id = 'cl-css'; st.textContent = CL_CSS; document.head.appendChild(st); }
-  const C = window.CAMBIA, LV = window.CAMBIA_LEVELS;
+  const C = window.CAMBIA, R = window.CAMBIA_RETO, SY = window.CAMBIA_SILABAS, LV = window.CAMBIA_LEVELS;
   if (!C) { el.innerHTML += '<p class="muted">No se encontró cambia-letra-contenido.js.</p>'; return; }
-  const o = ses('cambia', () => { const lv = inLvFromClass(); return { lv, mode: 'many', i: 0, open: {}, pistas: lv === 'k2' || lv === '35', ayuda: lv === 'k2', count: 0 }; });
-  const L = C[o.lv], list = o.mode === 'many' ? L.many : L.ladders;
+  const o = ses('cambia', () => ({ lv: inLvFromClass(), mode: 'many', i: 0, open: {}, pistas: true, ayuda: inLvFromClass() === 'k2', count: 0, tries: {} }));
+  const hasReto = o.lv === '35' || o.lv === 'ms', hasSyl = o.lv === 'k2';
+  if ((o.mode === 'reto' && !hasReto) || (o.mode === 'syl' && !hasSyl)) o.mode = 'many';
+  const L = C[o.lv];
+  const list = o.mode === 'many' ? L.many : o.mode === 'ladder' ? L.ladders : o.mode === 'syl' ? SY : R[o.lv].many;
   if (o.i >= list.length) o.i = 0;
   const key = o.lv + o.mode + o.i, open = o.open[key] || (o.open[key] = []);
   const PDF = { k2: 'Cambia-una-letra-K2.pdf', '35': 'Cambia-una-letra-3-5.pdf', ms: 'Cambia-una-letra-MS.pdf', sec: 'Cambia-una-letra-Sec.pdf' };
+  const PDFR = { '35': 'Cambia-una-letra-Reto-3-5.pdf', ms: 'Cambia-una-letra-Reto-MS.pdf' };
+  const cd = cdata(); if (!Array.isArray(cd.cambiaBanco)) cd.cambiaBanco = [];
+  const mb = (m, t) => `<button class="btn ${o.mode === m ? 'gold' : 'ghost'}" data-clmode="${m}">${t}</button>`;
+  const unit = { many: 'Palabra', ladder: 'Escalera', syl: 'Sílaba', reto: 'Reto' }[o.mode];
   let top = `<div class="row" style="margin-bottom:6px">${window.CAMBIA_ORDER.map(k => `<button class="btn sm ${k === o.lv ? 'gold' : 'ghost'}" data-cllv="${k}">${LV[k].n}</button>`).join('')}
-      <span style="width:12px"></span><button class="btn ${o.mode === 'many' ? 'gold' : 'ghost'}" data-clmode="many">🔤 Una → muchas</button><button class="btn ${o.mode === 'ladder' ? 'gold' : 'ghost'}" data-clmode="ladder">🪜 Escalera</button></div>
-    <div class="row" style="margin-bottom:8px"><button class="btn sm ghost" id="clPrev">◀</button><span class="chip">${o.mode === 'many' ? 'Palabra' : 'Escalera'} ${o.i + 1} / ${list.length}</span><button class="btn sm ghost" id="clNext">▶</button><button class="btn sm ghost" id="clRnd">🎲</button>
-      <span style="width:12px"></span><button class="btn sm ${o.pistas ? 'gold' : 'ghost'}" id="clPis">💡 Pistas: ${o.pistas ? 'sí' : 'no'}</button>
+      <span style="width:12px"></span>${mb('many', '📖 Una → muchas')}${mb('ladder', '🪜 Escalera-cuento')}${hasSyl ? mb('syl', '🔤 Sílabas') : ''}${hasReto ? mb('reto', '🔥 Reto · banco mental') : ''}</div>
+    <div class="row" style="margin-bottom:8px"><button class="btn sm ghost" id="clPrev">◀</button><span class="chip">${unit} ${o.i + 1} / ${list.length}</span><button class="btn sm ghost" id="clNext">▶</button><button class="btn sm ghost" id="clRnd">🎲</button>
+      <span style="width:12px"></span>${o.mode !== 'syl' && o.mode !== 'reto' ? `<button class="btn sm ${o.pistas ? 'gold' : 'ghost'}" id="clPis">💡 Pistas: ${o.pistas ? 'sí' : 'no'}</button>` : ''}
       ${o.mode === 'ladder' ? `<button class="btn sm ${o.ayuda ? 'gold' : 'ghost'}" id="clAyu">🎯 Ayuda: ${o.ayuda ? 'muestra la letra que cambia' : 'no'}</button>` : ''}
-      <button class="btn sm" id="clPdf">🖨 Hoja ${LV[o.lv].n} (PDF)</button></div>`;
+      <button class="btn sm" data-clpdf="${PDF[o.lv]}">🖨 Hoja ${LV[o.lv].n}</button>${hasReto ? `<button class="btn sm" data-clpdf="${PDFR[o.lv]}">🖨 Hoja Reto</button>` : ''}</div>`;
+  const timers = `<button class="btn" data-clt="60">⏱️ 1 min</button><button class="btn" data-clt="120">⏱️ 2 min</button>`;
   let body = '';
   if (o.mode === 'many') {
     const m = L.many[o.i];
-    body = `<div class="cl-wrap"><div class="cl-ins">Cambia UNA letra y forma una palabra nueva.</div>
-      <div class="cl-base">${o.pistas && m.e ? `<span class="cl-emo">${m.e}</span>` : ''}${clTiles(m.w)}</div>
-      <div class="row" style="justify-content:center;margin-bottom:12px"><button class="btn gold" id="clOne" data-primary>👀 Mostrar una</button><button class="btn" id="clAll">Mostrar todas</button><button class="btn ghost" id="clHide">🙈 Esconder</button>
-        <button class="btn" data-clt="60">⏱️ 1 min</button><button class="btn" data-clt="120">⏱️ 2 min</button>
-        <span class="cl-count">Encontraron: <button class="btn sm ghost" id="clMinus">−</button><b id="clCnt">${o.count}</b><button class="btn sm ghost" id="clPlus">＋</button></span></div>
+    body = `<div class="cl-wrap"><span class="cl-src">📖 ${h(m.src)}</span><div class="cl-ins">Cambia UNA letra: ¿qué otra palabra del cuento sale?</div>
+      <div class="cl-base">${m.e ? `<span class="cl-emo">${m.e}</span>` : ''}${clTiles(m.w)}</div>
+      <div class="row" style="justify-content:center;margin-bottom:12px"><button class="btn gold" id="clOne" data-primary>👀 Mostrar una</button><button class="btn" id="clAll">Mostrar todas</button><button class="btn ghost" id="clHide">🙈 Esconder</button>${timers}</div>
       <div class="cl-grid">${m.r.map((r, j) => { const on = open.includes(j);
-        return `<div class="cl-card ${on ? 'on' : ''}" data-clr="${j}"><span class="n">${j + 1}</span>${o.pistas || on ? `<div style="font-size:2.2rem">${r[1]}</div>` : ''}<div class="${on ? 'w' : 'q'}">${on ? h(r[0]) : '?'}</div>${o.pistas || on ? `<div class="p">${h(r[2])}</div>` : ''}</div>`; }).join('')}</div>
-      <div class="cl-note">💡 Hay ${m.r.length} palabras en la lista. Si la clase encuentra otra palabra que existe, ¡también vale!</div></div>`;
-  } else {
-    const ld = L.ladders[o.i], S = ld.s, last = S.length - 1;
+        return `<div class="cl-card ${on ? 'on' : ''}" data-clr="${j}"><span class="n">${j + 1}</span>${o.pistas || on ? `<div style="font-size:2.2rem">${r[1]}</div>` : ''}<div class="${on ? 'w' : 'q'}">${on ? h(r[0]) : '?'}</div>${o.pistas || on ? `<div class="p">${clCloze(r[2], r[0], on)}</div>` : ''}</div>`; }).join('')}</div>
+      <div class="cl-note">💡 La pista es una frase del cuento: lean la frase y piensen qué palabra falta. Después, ¡circulen la frase con preguntas!</div></div>`;
+  } else if (o.mode === 'ladder') {
+    const S = L.ladders[o.i].s, last = S.length - 1;
     const rung = (st, j) => {
       const isEnd = j === 0 || j === last, on = isEnd || open.includes(j), chg = j > 0 ? clDiff(S[j - 1][0], st[0]) : -1;
       return `<div class="cl-rung ${isEnd ? 'end' : ''}" ${isEnd ? '' : `data-clr="${j}"`}><span class="e">${o.pistas || on ? st[1] : ''}</span>
         <span class="cl-sm">${clTiles(st[0], { hide: !on, keep: o.ayuda, chg, mark: (o.ayuda || on) && j > 0 })}</span>
-        <span class="p">${o.pistas || on ? h(st[2]) : ''}</span></div>`;
+        <span class="p">${o.pistas || on ? clCloze(st[2], st[0], on) : ''}</span></div>`;
     };
-    body = `<div class="cl-wrap"><div class="cl-ins">De <b>${h(S[0][0].toUpperCase())}</b> a <b>${h(S[last][0].toUpperCase())}</b>: cambia una letra en cada paso.</div>
-      <div class="row" style="justify-content:center;margin-bottom:8px"><button class="btn gold" id="clOne" data-primary>👀 Siguiente paso</button><button class="btn" id="clAll">Mostrar todo</button><button class="btn ghost" id="clHide">🙈 Esconder</button><button class="btn" data-clt="60">⏱️ 1 min</button><button class="btn" data-clt="120">⏱️ 2 min</button></div>
+    body = `<div class="cl-wrap"><span class="cl-src">📖 ${h(L.ladders[o.i].src)}</span><div class="cl-ins">De <b>${h(S[0][0].toUpperCase())}</b> a <b>${h(S[last][0].toUpperCase())}</b>: una letra en cada paso. ¡Las frases cuentan una mini-historia!</div>
+      <div class="row" style="justify-content:center;margin-bottom:8px"><button class="btn gold" id="clOne" data-primary>👀 Siguiente paso</button><button class="btn" id="clAll">Mostrar todo</button><button class="btn ghost" id="clHide">🙈 Esconder</button>${timers}</div>
       <div class="cl-lad">${S.map((st, j) => (j ? '<div class="cl-arrow">⬇</div>' : '') + rung(st, j)).join('')}</div>
-      <div class="cl-note">${S.length - 2} paso${S.length - 2 === 1 ? '' : 's'} en el medio. Toca un paso para mostrarlo. 🟧 = la letra que cambia.</div></div>`;
+      <div class="cl-note">Toca un paso para mostrarlo. 🟧 = la letra que cambia. Al final, lean toda la escalera como un cuento y hagan preguntas (¿quién?, ¿qué?, ¿dónde?).</div></div>`;
+  } else if (o.mode === 'syl') {
+    const sy = SY[o.i];
+    body = `<div class="cl-wrap"><div class="cl-ins">¿Qué palabras conocemos que empiezan con…?</div><div class="cl-syl">${h(sy.s)}</div>
+      <div class="row" style="justify-content:center;margin:10px 0 12px"><button class="btn gold" id="clOne" data-primary>👀 Mostrar una</button><button class="btn" id="clAll">Mostrar todas</button><button class="btn ghost" id="clHide">🙈 Esconder</button></div>
+      <div class="cl-grid">${sy.w.map((x, j) => { const on = open.includes(j);
+        return `<div class="cl-card ${on ? 'on' : ''}" data-clr="${j}"><div style="font-size:3rem">${x[1]}</div>${on ? `<div class="w" style="text-transform:none">${h(x[0]).replace(new RegExp('^' + sy.s, 'i'), mm => `<span class="cl-hit">${mm}</span>`)}</div>` : '<div class="q">?</div>'}</div>`; }).join('')}</div>
+      <div class="cl-note">Primero oral: digan la sílaba, aplaudan, piensen en palabras de los cuentos. Toquen el dibujo para ver la palabra.</div></div>`;
+  } else {
+    const m = R[o.lv].many[o.i], tk = o.lv + o.i, tries = o.tries[tk] || (o.tries[tk] = []);
+    const bankHere = cd.cambiaBanco.filter(b => b.base === m.w);
+    body = `<div class="cl-wrap"><span class="cl-src">🔥 Reto · banco mental</span><div class="cl-ins">Cambia UNA letra. Prueben letras: ¿qué palabras tienen guardadas en la cabeza?</div>
+      <div class="cl-base">${clTiles(m.w)}</div>
+      <div class="cl-try"><input id="clIn" maxlength="${[...m.w].length + 2}" placeholder="${'·'.repeat([...m.w].length)}" autocomplete="off"><button class="btn gold" id="clOk">✅ Existe y saben qué es</button><button class="btn ghost" id="clNo">❌ No existe</button></div>
+      <div id="clMsg" class="muted" style="min-height:1.3em"></div>
+      <div class="cl-tries">${tries.map(t => `<span class="${t.ok ? 'ok' : 'no'}">${h(t.w)}</span>`).join('')}</div>
+      <div class="row" style="justify-content:center;margin:8px 0">${timers}<span class="cl-count">Encontraron: <b>${tries.filter(t => t.ok).length}</b></span><button class="btn ghost" id="clList">👀 Ver mi lista (${m.r.length})</button><button class="btn ghost" id="clClr">↺ Borrar intentos</button></div>
+      ${open.length ? `<div class="cl-grid">${m.r.map(r => `<div class="cl-card on"><div style="font-size:2rem">${r[1]}</div><div class="w">${h(r[0])}</div><div class="p">${h(r[2])}</div></div>`).join('')}</div>` : ''}
+      <div class="cl-bank"><b>🧠 Banco de la clase · ${h(cname())}</b> <span class="muted">(${cd.cambiaBanco.length} palabras · se guarda en esta computadora)</span>
+        <div class="chips">${cd.cambiaBanco.length ? cd.cambiaBanco.map((b, j) => `<span title="de ${h(b.base)} · ${h(b.d)}">${h(b.w)}<b data-cldel="${j}">×</b></span>`).join('') : '<span class="muted" style="border:0">Todavía vacío: las palabras con ✅ se guardan aquí.</span>'}</div>
+        ${cd.cambiaBanco.length ? '<div class="row" style="margin-top:8px"><button class="btn sm" id="clCopy">📋 Copiar el banco</button></div>' : ''}
+        ${bankHere.length ? `<div class="muted" style="margin-top:6px">Con ${h(m.w.toUpperCase())} ya encontraron: ${bankHere.map(b => h(b.w)).join(', ')}</div>` : ''}</div></div>`;
   }
   el.innerHTML += top + body;
   const q = s => el.querySelector(s);
-  el.querySelectorAll('[data-cllv]').forEach(b => b.onclick = () => { o.lv = b.dataset.cllv; o.i = 0; o.count = 0; o.pistas = o.lv === 'k2' || o.lv === '35'; o.ayuda = o.lv === 'k2'; render(); });
-  el.querySelectorAll('[data-clmode]').forEach(b => b.onclick = () => { o.mode = b.dataset.clmode; o.i = 0; o.count = 0; render(); });
-  q('#clPrev').onclick = () => { o.i = (o.i - 1 + list.length) % list.length; o.count = 0; render(); };
-  q('#clNext').onclick = () => { o.i = (o.i + 1) % list.length; o.count = 0; render(); };
-  q('#clRnd').onclick = () => { let n; do { n = Math.floor(Math.random() * list.length); } while (list.length > 1 && n === o.i); o.i = n; o.count = 0; render(); };
-  q('#clPis').onclick = () => { o.pistas = !o.pistas; render(); };
+  el.querySelectorAll('[data-cllv]').forEach(b => b.onclick = () => { o.lv = b.dataset.cllv; o.i = 0; o.ayuda = o.lv === 'k2'; render(); });
+  el.querySelectorAll('[data-clmode]').forEach(b => b.onclick = () => { o.mode = b.dataset.clmode; o.i = 0; render(); });
+  q('#clPrev').onclick = () => { o.i = (o.i - 1 + list.length) % list.length; render(); };
+  q('#clNext').onclick = () => { o.i = (o.i + 1) % list.length; render(); };
+  q('#clRnd').onclick = () => { let n; do { n = Math.floor(Math.random() * list.length); } while (list.length > 1 && n === o.i); o.i = n; render(); };
+  const pis = q('#clPis'); if (pis) pis.onclick = () => { o.pistas = !o.pistas; render(); };
   const ay = q('#clAyu'); if (ay) ay.onclick = () => { o.ayuda = !o.ayuda; render(); };
-  q('#clPdf').onclick = () => window.open('imprimibles/' + PDF[o.lv], '_blank');
-  const items = o.mode === 'many' ? L.many[o.i].r.map((_, j) => j) : L.ladders[o.i].s.map((_, j) => j).slice(1, -1);
-  q('#clOne').onclick = () => { const n = items.find(j => !open.includes(j)); if (n !== undefined) { open.push(n); ding(); render(); } };
-  q('#clAll').onclick = () => { items.forEach(j => { if (!open.includes(j)) open.push(j); }); render(); };
-  q('#clHide').onclick = () => { open.length = 0; render(); };
-  el.querySelectorAll('[data-clr]').forEach(c => c.onclick = () => { const j = +c.dataset.clr, k = open.indexOf(j); if (k < 0) open.push(j); else open.splice(k, 1); render(); });
+  el.querySelectorAll('[data-clpdf]').forEach(b => b.onclick = () => window.open('imprimibles/' + b.dataset.clpdf, '_blank'));
   el.querySelectorAll('[data-clt]').forEach(b => b.onclick = () => quickTimer(+b.dataset.clt));
-  const pl = q('#clPlus'), mi = q('#clMinus');
-  if (pl) pl.onclick = () => { o.count++; q('#clCnt').textContent = o.count; };
-  if (mi) mi.onclick = () => { o.count = Math.max(0, o.count - 1); q('#clCnt').textContent = o.count; };
+  if (o.mode !== 'reto') {
+    const n0 = o.mode === 'many' ? L.many[o.i].r.length : o.mode === 'syl' ? SY[o.i].w.length : 0;
+    const items = o.mode === 'ladder' ? L.ladders[o.i].s.map((_, j) => j).slice(1, -1) : [...Array(n0).keys()];
+    q('#clOne').onclick = () => { const n = items.find(j => !open.includes(j)); if (n !== undefined) { open.push(n); ding(); render(); } };
+    q('#clAll').onclick = () => { items.forEach(j => { if (!open.includes(j)) open.push(j); }); render(); };
+    q('#clHide').onclick = () => { open.length = 0; render(); };
+    el.querySelectorAll('[data-clr]').forEach(c => c.onclick = () => { const j = +c.dataset.clr, k = open.indexOf(j); if (k < 0) open.push(j); else open.splice(k, 1); render(); });
+  } else {
+    const m = R[o.lv].many[o.i], tries = o.tries[o.lv + o.i], inp = q('#clIn'), msg = q('#clMsg');
+    const check = () => { const w = clNorm(inp.value), b = clNorm(m.w);
+      if (!w) return 'Escribe la palabra que dicen.';
+      if ([...w].length !== [...b].length) return `Tiene que tener ${[...b].length} letras.`;
+      const d = [...w].filter((x, i) => x !== [...b][i]).length;
+      if (d === 0) return 'Es la misma palabra 🙂';
+      if (d > 1) return `Cambiaron ${d} letras: solo UNA.`;
+      return ''; };
+    inp.oninput = () => { msg.textContent = check(); };
+    const add = ok => { const err = check(); if (err) { msg.textContent = err; return; }
+      const w = inp.value.trim().toLowerCase();
+      if (tries.some(t => clNorm(t.w) === clNorm(w))) { msg.textContent = 'Ya la probaron.'; return; }
+      tries.push({ w, ok });
+      if (ok) { if (!cd.cambiaBanco.some(b => clNorm(b.w) === clNorm(w))) { cd.cambiaBanco.push({ w, base: m.w, d: new Date().toLocaleDateString('en-CA') }); save(); } ding(); }
+      render(); setTimeout(() => { const i2 = el.querySelector('#clIn'); if (i2) i2.focus(); }, 30); };
+    q('#clOk').onclick = () => add(true); q('#clNo').onclick = () => add(false);
+    inp.onkeydown = e => { if (e.key === 'Enter') add(true); };
+    q('#clList').onclick = () => { if (open.length) open.length = 0; else open.push(0); render(); };
+    q('#clClr').onclick = () => { tries.length = 0; render(); };
+    el.querySelectorAll('[data-cldel]').forEach(b => b.onclick = () => { cd.cambiaBanco.splice(+b.dataset.cldel, 1); save(); render(); });
+    const cp = q('#clCopy'); if (cp) cp.onclick = () => { const t = cd.cambiaBanco.map(b => `${b.w}\t(de ${b.base})\t${b.d}`).join('\n'); navigator.clipboard.writeText(t).then(() => toast('📋 Banco copiado'), () => toast('No se pudo copiar')); };
+    setTimeout(() => inp.focus(), 30);
+  }
 });
 
 /* ---------- tool order in the menu ---------- */
