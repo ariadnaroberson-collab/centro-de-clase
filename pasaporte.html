@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pasaporte del Mundo · ¿Qué prefieres?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,400;1,9..144,600&family=Gaegu:wght@400;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f6f0e4; --paper2:#efe6d3; --ink:#24211d; --soft:#6d655a; --rule:#2a2621;
+  --terra:#c8553d; --teal:#2d7d7a; --mustard:#d9a031; --navy:#2f3e63; --rose:#d97a8f;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--paper);color:var(--ink);font-family:'Work Sans',system-ui,sans-serif;overflow:hidden}
+button{font-family:inherit;cursor:pointer;background:none;border:none;color:inherit}
+.serif{font-family:'Fraunces',Georgia,serif}
+.hand{font-family:'Gaegu','Comic Sans MS',cursive}
+
+/* ---------- Marco infantil ---------- */
+.frame{position:fixed;inset:14px;border:3px solid var(--rule);border-radius:22px 34px 18px 40px/34px 20px 38px 24px;pointer-events:none;filter:url(#wobble);z-index:5}
+.frame2{position:fixed;inset:24px;border:2px dashed var(--terra);border-radius:30px 18px 36px 22px;pointer-events:none;filter:url(#wobble);opacity:.75;z-index:5}
+.doodle{position:fixed;z-index:6;pointer-events:none;background:var(--paper);padding:4px;border-radius:50%}
+.doodle svg{display:block;filter:url(#wobble)}
+.d-plane{top:0;left:58px}.d-sun{top:-6px;right:28%}.d-balloon{left:2px;top:42%}
+.d-star{bottom:2px;left:90px}.d-wave{bottom:-2px;left:32%;border-radius:30px}.d-globe{right:0;top:52%}.d-heart{bottom:2px;right:60px}
+
+.screen{position:absolute;inset:60px 62px 54px 62px;display:none;flex-direction:column}
+.screen.on{display:flex}
+
+/* ---------- Botones ---------- */
+.tbtn{font-family:'Work Sans';font-weight:600;font-size:clamp(13px,1.05vw,16px);padding:8px 14px;border:1.5px solid var(--rule);border-radius:999px;background:var(--paper)}
+.tbtn:hover{background:var(--ink);color:var(--paper)}
+.tbtn.solid{background:var(--ink);color:var(--paper)}
+.tbtn.solid:hover{background:var(--terra);border-color:var(--terra)}
+.tbtn[disabled]{opacity:.35;pointer-events:none}
+.kbd{font-size:12px;color:var(--soft);text-align:center;margin-top:4px}
+
+/* ---------- Portada ---------- */
+#home{align-items:center;justify-content:center;text-align:center}
+.kicker{font-size:clamp(12px,1vw,15px);letter-spacing:.28em;text-transform:uppercase;color:var(--soft)}
+#home h1{font-family:'Fraunces';font-weight:800;font-size:clamp(48px,7vw,110px);line-height:.95;letter-spacing:-.02em;margin:1vh 0}
+#home h1 em{font-weight:400;color:var(--terra)}
+#home .lede{font-family:'Fraunces';font-style:italic;font-size:clamp(17px,1.6vw,24px);color:var(--soft)}
+.classrow{display:flex;gap:8px;justify-content:center;align-items:center;margin:3vh 0 2vh;flex-wrap:wrap}
+.classrow .lbl{font-family:'Gaegu';font-size:22px;margin-right:6px}
+.chip{border:1.5px solid var(--rule);border-radius:999px;padding:7px 16px;font-weight:600;font-size:clamp(13px,1.1vw,16px)}
+.chip.on{background:var(--ink);color:var(--paper)}
+.stations{display:grid;grid-template-columns:repeat(3,minmax(0,300px));gap:28px;justify-content:center;margin-top:2vh}
+.station{border-top:2px solid var(--rule);padding-top:14px;text-align:left}
+.station .no{font-family:'Fraunces';font-style:italic;color:var(--terra);font-size:15px}
+.station h3{font-family:'Fraunces';font-weight:600;font-size:clamp(22px,2vw,30px);margin:2px 0 6px}
+.station p{font-size:14px;color:var(--soft);line-height:1.4}
+.station.live{cursor:pointer}
+.station.live:hover h3{text-decoration:underline;text-decoration-color:var(--terra);text-underline-offset:5px}
+.station.soon{opacity:.45}
+.station .go{font-family:'Gaegu';font-size:20px;color:var(--teal);margin-top:6px}
+.homebtns{margin-top:4vh;display:flex;gap:12px;justify-content:center}
+
+/* ---------- Topbar ---------- */
+.top{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;border-bottom:2px solid var(--rule);padding-bottom:8px}
+.top .t{font-family:'Fraunces';font-style:italic;font-weight:600;font-size:clamp(26px,3vw,46px);line-height:1}
+.top .meta{text-align:right;font-size:clamp(11px,.95vw,14px);letter-spacing:.18em;text-transform:uppercase;color:var(--soft);line-height:1.6}
+.top .meta b{color:var(--ink)}
+.top .left{display:flex;align-items:flex-end;gap:14px}
+
+/* ---------- Menú de categorías ---------- */
+.how{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin:2vh 0 1.5vh}
+.how div{font-size:14px;line-height:1.4;color:var(--soft)}
+.how b{display:block;font-family:'Gaegu';font-size:22px;color:var(--ink);font-weight:700}
+.catgrid{flex:1;overflow:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:0 28px;align-content:start;padding-right:6px}
+.cat{border-top:1px solid var(--rule);padding:12px 0 14px;cursor:pointer;position:relative}
+.cat .num{font-family:'Fraunces';font-style:italic;color:var(--terra);font-size:14px}
+.cat h3{font-family:'Fraunces';font-weight:600;font-size:23px;margin:2px 0}
+.cat p{font-size:13px;color:var(--soft)}
+.cat:hover h3{color:var(--terra)}
+.cat .won{font-family:'Gaegu';font-size:17px;color:var(--teal);margin-top:4px}
+
+/* ---------- Deck ---------- */
+.stage{flex:1;min-height:0;display:grid;grid-template-columns:1fr auto 1fr;gap:clamp(12px,1.6vw,28px);padding:2vh 0 1vh}
+.opt{display:flex;flex-direction:column;min-height:0;cursor:pointer;position:relative}
+.opt .tag{font-family:'Fraunces';font-style:italic;font-size:clamp(14px,1.2vw,18px);color:var(--soft);margin-bottom:6px}
+.photo{flex:1;min-height:0;position:relative;overflow:hidden;background:var(--paper2);border:1.5px solid var(--rule)}
+.photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .5s, filter .4s}
+.photo img.ok{opacity:1}
+.photo .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Fraunces';font-style:italic;color:var(--soft);font-size:18px;text-align:center;padding:20px}
+.reroll{position:absolute;right:8px;bottom:8px;z-index:3;background:rgba(246,240,228,.85);border:1px solid var(--rule);border-radius:999px;font-size:12px;font-weight:600;padding:4px 10px;opacity:.5}
+.reroll:hover{opacity:1}
+.cap{padding-top:10px;min-height:0}
+.cap .txt{font-family:'Fraunces';font-weight:600;font-size:clamp(22px,2.5vw,40px);line-height:1.05;letter-spacing:-.01em}
+.cap .where{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:clamp(11px,.95vw,14px);letter-spacing:.2em;text-transform:uppercase;color:var(--soft)}
+.cap .where img{height:13px;border:1px solid rgba(0,0,0,.2)}
+.dato{display:none;margin-top:8px;font-size:clamp(14px,1.25vw,19px);line-height:1.35;border-left:3px solid var(--mustard);padding:2px 0 2px 10px}
+.dato i{font-family:'Fraunces';color:var(--terra)}
+.show-dato .dato{display:block}
+.vs{align-self:center;font-family:'Gaegu';font-size:clamp(36px,4vw,64px);color:var(--terra);transform:rotate(-8deg)}
+/* ganador */
+.pwrap{position:relative;flex:1;min-height:0;display:flex}
+.pwrap .photo{flex:1}
+.ring{position:absolute;inset:-10px;border:4px solid var(--terra);border-radius:14px 22px 10px 26px/20px 12px 24px 14px;filter:url(#wobble);pointer-events:none;opacity:0;transform:scale(1.04);transition:opacity .25s,transform .3s}
+.opt.win .ring{opacity:1;transform:scale(1)}
+.wlabel{display:none;position:absolute;top:-24px;right:18px;z-index:5;font-family:'Gaegu';font-weight:700;font-size:clamp(24px,2.4vw,38px);color:var(--terra);transform:rotate(5deg);background:var(--paper);padding:0 12px;line-height:1.1}
+.opt.win .wlabel{display:block}
+.opt.win .cap .txt{text-decoration:underline;text-decoration-color:var(--terra);text-decoration-thickness:3px;text-underline-offset:6px}
+.opt.lose .photo img{filter:grayscale(1) brightness(1.05);opacity:.55}
+.opt.lose .cap{opacity:.45}
+
+.bottom{display:grid;grid-template-columns:1fr auto;gap:20px;align-items:end;border-top:1px solid var(--rule);padding-top:10px}
+.qs{font-size:clamp(14px,1.25vw,19px);line-height:1.45}
+.qs .ql{font-family:'Gaegu';font-weight:700;font-size:clamp(18px,1.6vw,24px);color:var(--teal);margin-right:6px}
+.qs .sep{color:var(--terra);margin:0 10px}
+.qs.hide{visibility:hidden}
+.ctrls{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;align-items:center}
+.hint{font-family:'Gaegu';font-size:20px;color:var(--soft)}
+
+/* temporizador */
+#timer{position:absolute;top:-4px;left:50%;transform:translateX(-50%);z-index:8;display:none;background:var(--ink);color:var(--paper);border-radius:999px;padding:6px 18px;font-weight:600;font-size:clamp(15px,1.3vw,20px)}
+#timer.on{display:block}
+#timer.end{background:var(--terra)}
+#coin{position:fixed;inset:0;z-index:30;display:none;align-items:center;justify-content:center;flex-direction:column;background:rgba(246,240,228,.9)}
+#coin.on{display:flex}
+#coin .c{width:150px;height:150px;border-radius:50%;border:4px solid var(--rule);display:flex;align-items:center;justify-content:center;font-family:'Fraunces';font-size:60px;font-weight:800;background:var(--mustard);animation:flip .25s linear infinite}
+#coin .ct{font-family:'Gaegu';font-size:34px;margin-top:20px}
+@keyframes flip{50%{transform:scaleX(.08)}}
+
+/* ---------- Cuadro (bracket) ---------- */
+.bracket{flex:1;min-height:0;display:grid;grid-template-columns:repeat(4,1fr);gap:0;padding:3vh 0 2vh}
+.col{position:relative;display:flex;flex-direction:column;justify-content:space-around;padding:34px 14px 0;border-left:1px solid rgba(42,38,33,.25)}
+.col:first-child{border-left:none}
+.col h4{position:absolute;top:0;left:0;right:0;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--soft);text-align:center;margin-bottom:6px}
+.bm{border:1.5px solid var(--rule);margin:6px 0;background:var(--paper)}
+.bm div{padding:6px 10px;font-size:clamp(13px,1.15vw,17px);font-family:'Fraunces';border-bottom:1px solid rgba(42,38,33,.2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bm div:last-child{border-bottom:none}
+.bm .w{font-weight:800;background:#f1dfbf}
+.bm .l{color:var(--soft);text-decoration:line-through;text-decoration-color:rgba(200,85,61,.6)}
+.bm .p{color:#b1a896;font-style:italic}
+.champ-box{border:2px solid var(--terra);padding:14px;text-align:center;font-family:'Fraunces';font-weight:800;font-size:clamp(17px,1.6vw,24px)}
+.champ-box.p{border-style:dashed;color:#b1a896;font-weight:400;font-style:italic}
+
+/* ---------- Campeón ---------- */
+#champ .wrap{flex:1;display:grid;grid-template-columns:1.1fr 1fr;gap:4vw;align-items:center;min-height:0;padding:2vh 0}
+#champ .cphoto{height:62vh;border:1.5px solid var(--rule);position:relative;overflow:hidden;background:var(--paper2);transform:rotate(-1.5deg);box-shadow:8px 8px 0 var(--paper2)}
+#champ .cphoto img{width:100%;height:100%;object-fit:cover}
+#champ .k{font-family:'Gaegu';font-size:clamp(24px,2.4vw,36px);color:var(--terra)}
+#champ h2{font-family:'Fraunces';font-weight:800;font-size:clamp(36px,4.6vw,72px);line-height:1;letter-spacing:-.02em;margin:1vh 0}
+#champ .cw{font-size:clamp(13px,1.1vw,16px);letter-spacing:.2em;text-transform:uppercase;color:var(--soft)}
+.stamp{width:clamp(150px,15vw,210px);height:clamp(150px,15vw,210px);border-radius:50%;border:4px double var(--terra);color:var(--terra);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;margin:3vh 0;transform:rotate(-12deg) scale(0);font-family:'Fraunces';padding:16px}
+.stamp.go{animation:thump .55s cubic-bezier(.2,1.6,.4,1) .3s forwards}
+.stamp .s1{font-size:11px;letter-spacing:.25em;text-transform:uppercase}
+.stamp .s2{font-weight:800;font-size:clamp(15px,1.4vw,20px);line-height:1.05;margin:4px 0}
+.stamp .s3{font-size:11px}
+@keyframes thump{0%{transform:rotate(-30deg) scale(2.2);opacity:0}100%{transform:rotate(-12deg) scale(1);opacity:1}}
+
+/* ---------- Sellos ---------- */
+.sgrid{flex:1;overflow:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:26px;padding:3vh 6px}
+.slot{aspect-ratio:1;border:2px dashed #cbbfa6;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:16px;color:#b1a896;font-family:'Fraunces'}
+.slot .a{font-size:11px;letter-spacing:.2em;text-transform:uppercase}
+.slot .b{font-size:17px;font-weight:600;margin-top:4px}
+.slot.got{border:4px double var(--terra);color:var(--terra)}
+.slot.got .c{font-family:'Gaegu';font-size:19px;color:var(--ink);margin-top:6px;line-height:1.05}
+.slot.got .d{font-size:11px;margin-top:4px}
+.slot:nth-child(3n){transform:rotate(6deg)}.slot:nth-child(3n+1){transform:rotate(-7deg)}.slot:nth-child(3n+2){transform:rotate(2deg)}
+</style>
+</head>
+<body>
+
+<!-- filtro para el trazo hecho a mano -->
+<svg width="0" height="0" style="position:absolute">
+  <filter id="wobble"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/><feDisplacementMap in="SourceGraphic" scale="3"/></filter>
+</svg>
+
+<!-- marco infantil e imaginativo -->
+<div class="frame"></div><div class="frame2"></div>
+<div class="doodle d-plane"><svg width="96" height="44" viewBox="0 0 96 44" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M4 34 C20 40 26 18 40 26 C52 33 44 42 36 36 C28 30 46 16 60 18" stroke="#c8553d" stroke-width="2" stroke-dasharray="3 5"/>
+  <path d="M62 16 L92 6 L74 30 L70 21 Z M70 21 L92 6" stroke="#24211d" stroke-width="2.2" fill="#f6f0e4"/></svg></div>
+<div class="doodle d-sun"><svg width="54" height="54" viewBox="0 0 54 54" fill="none" stroke="#d9a031" stroke-width="2.4" stroke-linecap="round">
+  <circle cx="27" cy="27" r="10"/><path d="M27 5v7M27 42v7M5 27h7M42 27h7M11 11l5 5M38 38l5 5M43 11l-5 5M16 38l-5 5"/>
+  <path d="M23 26h1M30 26h1M23 31c2 2 6 2 8 0" stroke="#24211d" stroke-width="1.8"/></svg></div>
+<div class="doodle d-balloon"><svg width="46" height="70" viewBox="0 0 46 70" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M23 4C10 4 4 14 4 23c0 11 12 20 19 26 7-6 19-15 19-26 0-9-6-19-19-19z" stroke="#2d7d7a" stroke-width="2.2" fill="#f6f0e4"/>
+  <path d="M23 4c-6 8-6 34 0 45M23 4c6 8 6 34 0 45" stroke="#2d7d7a" stroke-width="1.6"/>
+  <path d="M17 52l2 8M29 52l-2 8" stroke="#24211d" stroke-width="1.6"/><rect x="17" y="60" width="12" height="7" rx="1.5" stroke="#24211d" stroke-width="2"/></svg></div>
+<div class="doodle d-star"><svg width="70" height="40" viewBox="0 0 70 40" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M16 6l3.5 8 8.5 1-6.5 5.5 2 8.5-7.5-4.5-7.5 4.5 2-8.5L4 15l8.5-1z" stroke="#d97a8f" stroke-width="2.2"/>
+  <path d="M44 12l2 4.5 5 .5-4 3 1.2 5-4.2-2.6-4.2 2.6 1.2-5-4-3 5-.5z" stroke="#d9a031" stroke-width="2"/>
+  <path d="M60 28l1 2.5 2.6.3-2 1.6.6 2.6-2.2-1.4-2.2 1.4.6-2.6-2-1.6 2.6-.3z" stroke="#2d7d7a" stroke-width="1.8"/></svg></div>
+<div class="doodle d-wave"><svg width="100" height="34" viewBox="0 0 100 34" fill="none" stroke-linecap="round">
+  <path d="M4 14c8-8 14-8 22 0s14 8 22 0 14-8 22 0 14 8 24 0" stroke="#2f3e63" stroke-width="2.2"/>
+  <path d="M10 26c8-6 14-6 22 0s14 6 22 0 14-6 22 0" stroke="#2d7d7a" stroke-width="2"/>
+  <path d="M74 8c3-4 7-4 9 0" stroke="#24211d" stroke-width="1.8"/></svg></div>
+<div class="doodle d-globe"><svg width="50" height="50" viewBox="0 0 50 50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="25" cy="25" r="18" stroke="#2f3e63" stroke-width="2.2"/>
+  <path d="M14 16c5 1 6 5 10 5s3 6 0 8-2 7 1 9M30 9c-1 4 3 5 6 6s4 6 1 8" stroke="#c8553d" stroke-width="1.8"/>
+  <path d="M7 25h36" stroke="#2f3e63" stroke-width="1.2" stroke-dasharray="2 4"/></svg></div>
+<div class="doodle d-heart"><svg width="44" height="34" viewBox="0 0 44 34" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M22 30C10 22 4 16 4 10a7 7 0 0 1 13-3l5 5 5-5a7 7 0 0 1 13 3c0 6-6 12-18 20z" stroke="#c8553d" stroke-width="2.2"/></svg></div>
+
+<!-- ============ PORTADA ============ -->
+<section id="home" class="screen on">
+  <div class="kicker">Centro de Clase · Edición mundial</div>
+  <h1>Pasaporte <em>del</em> Mundo</h1>
+  <div class="lede">Viajamos por las culturas del mundo sin salir del salón.</div>
+  <div class="classrow" id="classRow"><span class="lbl">¿Qué clase viaja hoy?</span></div>
+  <div class="stations">
+    <div class="station live" id="goQP">
+      <div class="no">Estación 1</div>
+      <h3>¿Qué prefieres?</h3>
+      <p>Dos fotos, una decisión. La clase negocia, elige un ganador y avanza hasta el campeón.</p>
+      <div class="go">empezar →</div>
+    </div>
+    <div class="station soon">
+      <div class="no">Estación 2 · próximamente</div>
+      <h3>Ruleta de países</h3>
+      <p>Gira, llega a un país y haz preguntas: ¿Dónde? ¿Cómo? ¿Quién?</p>
+    </div>
+    <div class="station soon">
+      <div class="no">Estación 3 · próximamente</div>
+      <h3>Rank It</h3>
+      <p>Ordena y compara: «el más…», «el menos…».</p>
+    </div>
+  </div>
+  <div class="homebtns">
+    <button class="tbtn" data-go="stamps">Sellos de la clase</button>
+    <button class="tbtn" id="fsHome">Pantalla completa</button>
+  </div>
+</section>
+
+<!-- ============ CATEGORÍAS ============ -->
+<section id="cats" class="screen">
+  <div class="top">
+    <div class="left"><button class="tbtn" data-go="home">← Pasaporte</button><div class="t">¿Qué prefieres?</div></div>
+    <div class="meta">Clase <b id="catCls"></b><br>Elige una categoría</div>
+  </div>
+  <div class="how">
+    <div><b>1 · Mira</b>Muestra las dos fotos. Lee las frases en voz alta.</div>
+    <div><b>2 · Negocien</b>La clase vota con la mano, o los grupos tienen 30 segundos para ponerse de acuerdo.</div>
+    <div><b>3 · Decide</b>Toca la foto ganadora (o ← →). ¿Empate? Usa la moneda.</div>
+    <div><b>4 · Avanza</b>Los ganadores pasan de cuartos a semifinal y final. Solo queda un campeón.</div>
+  </div>
+  <div class="catgrid" id="catGrid"></div>
+  <div class="kbd" style="margin-top:8px"><span id="shufTxt"></span> · <button class="tbtn" id="shufBtn" style="padding:3px 10px;font-size:12px">cambiar</button></div>
+</section>
+
+<!-- ============ DECK ============ -->
+<section id="deck" class="screen">
+  <div id="timer"></div>
+  <div class="top">
+    <div class="left"><button class="tbtn" id="backCats">←</button><div class="t">¿Qué prefieres?</div></div>
+    <div class="meta"><b id="mCat"></b> · <span id="mCls"></span><br><span id="mStage"></span></div>
+  </div>
+  <div class="stage" id="stage">
+    <div class="opt" id="oA">
+      
+      <div class="tag">esto…</div>
+      <div class="pwrap"><div class="photo"><div class="ph"></div><img alt=""><button class="reroll">otra foto</button></div><div class="ring"></div><div class="wlabel">¡ganador!</div></div>
+      <div class="cap"><div class="txt"></div><div class="where"></div><div class="dato"></div></div>
+    </div>
+    <div class="vs">o</div>
+    <div class="opt" id="oB">
+      
+      <div class="tag">…¿o aquello?</div>
+      <div class="pwrap"><div class="photo"><div class="ph"></div><img alt=""><button class="reroll">otra foto</button></div><div class="ring"></div><div class="wlabel">¡ganador!</div></div>
+      <div class="cap"><div class="txt"></div><div class="where"></div><div class="dato"></div></div>
+    </div>
+  </div>
+  <div class="bottom">
+    <div class="qs" id="qs"></div>
+    <div class="ctrls">
+      <span class="hint" id="hint">toca la foto ganadora</span>
+      <button class="tbtn" id="tBtn">30 s</button>
+      <button class="tbtn" id="coinBtn">Moneda</button>
+      <button class="tbtn" id="datoBtn">Dato</button>
+      <button class="tbtn" id="qBtn">Preguntas</button>
+      <button class="tbtn" id="prevBtn">←</button>
+      <button class="tbtn solid" id="nextBtn">Siguiente →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CUADRO ============ -->
+<section id="brk" class="screen">
+  <div class="top">
+    <div class="left"><button class="tbtn" id="brkBack">←</button><div class="t">El cuadro</div></div>
+    <div class="meta"><b id="bCat"></b><br><span id="bCls"></span></div>
+  </div>
+  <div class="bracket" id="bracket"></div>
+  <div style="display:flex;justify-content:center;gap:10px"><button class="tbtn solid" id="brkNext">Continuar →</button></div>
+</section>
+
+<!-- ============ CAMPEÓN ============ -->
+<section id="champ" class="screen">
+  <div class="top">
+    <div class="left"><div class="t">Y el campeón es…</div></div>
+    <div class="meta"><b id="cCat"></b><br><span id="cCls"></span></div>
+  </div>
+  <div class="wrap">
+    <div class="cphoto" id="cPhoto"></div>
+    <div>
+      <div class="k">la clase decidió:</div>
+      <h2 id="cName"></h2>
+      <div class="cw" id="cWhere"></div>
+      <div class="stamp" id="cStamp"><div class="s1">Pasaporte del Mundo</div><div class="s2" id="sCat"></div><div class="s3" id="sDate"></div></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="tbtn" id="cBrk">Ver el cuadro</button>
+        <button class="tbtn" data-go="cats">Otra categoría</button>
+        <button class="tbtn solid" data-go="stamps">Sellos de la clase</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SELLOS ============ -->
+<section id="stamps" class="screen">
+  <div class="top">
+    <div class="left"><button class="tbtn" data-go="home">← Pasaporte</button><div class="t">Sellos y campeones</div></div>
+    <div class="meta">Clase <b id="sCls"></b><br><button class="tbtn" id="resetS" style="padding:3px 10px;font-size:11px;letter-spacing:0">borrar sellos de esta clase</button></div>
+  </div>
+  <div class="sgrid" id="sGrid"></div>
+</section>
+
+<div id="coin"><div class="c">?</div><div class="ct">La moneda decide…</div></div>
+
+<script>
+/* =========================================================
+   CONTENIDO · 8 opciones por categoría (cuartos → semifinal → final)
+   O(texto, lugar, bandera(s), fotos de Wikipedia [inglés], dato, pregunta)
+   ========================================================= */
+const O=(t,c,f,w,d,q)=>({t,c,f,w:Array.isArray(w)?w:[w],d,q});
+const CATS=[
+ {id:'comida',n:'Comida famosa',s:'Para calentar: lo que todos conocen',o:[
+  O('Comer pizza','Italia','it','Pizza','La pizza Margarita tiene los colores de la bandera de Italia: rojo, blanco y verde.','¿Qué ingredientes le pones a tu pizza?'),
+  O('Comer tacos','México','mx','Taco','Los tacos al pastor nacieron gracias a inmigrantes del Líbano que llegaron a México.','¿Tacos de qué te gustan más?'),
+  O('Comer sushi','Japón','jp','Sushi','Al principio, el arroz del sushi servía para conservar el pescado.','¿Te gusta el pescado crudo?'),
+  O('Comer una hamburguesa','Estados Unidos','us','Hamburger','Su nombre viene de Hamburgo, una ciudad de Alemania.','¿Con queso o sin queso?'),
+  O('Comer un cruasán','Francia','fr','Croissant','El cruasán se inspiró en un pan de Austria llamado kipferl.','¿Prefieres un desayuno dulce o salado?'),
+  O('Comer churros con chocolate','España','es','Churro','En España, mucha gente desayuna churros con chocolate caliente.','¿Con chocolate o con azúcar?'),
+  O('Comer papas fritas','Bélgica','be','French_fries','En Bélgica comen las papas fritas en un cono de papel… ¡con mayonesa!','¿Con kétchup o con mayonesa?'),
+  O('Comer arroz frito','China','cn','Fried_rice','El mejor arroz frito se hace con arroz del día anterior.','¿Sabes comer con palillos?')]},
+ {id:'mundo',n:'Comida del mundo',s:'Platos que cuentan la historia de un país',o:[
+  O('Probar ramen','Japón','jp','Ramen','En Japón, hacer ruido al comer los fideos no es de mala educación.','¿Comes sopa caliente cuando hace calor?'),
+  O('Probar pho','Vietnam','vn','Pho','En Vietnam, mucha gente come pho en el desayuno.','¿Comerías sopa en el desayuno?'),
+  O('Comer injera con las manos','Etiopía','et','Injera','La injera es un pan esponjoso que sirve de plato y de cuchara.','¿Te gusta comer con las manos?'),
+  O('Comer naan','India','in','Naan','El naan se cocina pegado a la pared de un horno de barro llamado tandoor.','¿Qué pan te gusta más?'),
+  O('Probar paella','España','es','Paella','La paella viene de Valencia y se cocina en una sartén muy ancha.','¿Te gustan los mariscos?'),
+  O('Probar arroz jollof','Nigeria','ng','Jollof_rice','Nigeria y Ghana tienen una competencia amistosa: ¿quién hace el mejor jollof?','¿Comes arroz todos los días?'),
+  O('Comer pupusas','El Salvador','sv','Pupusa','La pupusa es el plato nacional de El Salvador. ¡Tiene su propio día!','¿De queso, de frijoles o de chicharrón?'),
+  O('Comer arepas','Venezuela','ve','Arepa','Las arepas se hacen con harina de maíz y se comen en Venezuela y Colombia.','¿Qué le pondrías adentro?')]},
+ {id:'dulces',n:'Dulces y bebidas',s:'Postres y bebidas típicas',o:[
+  O('Comer gelato','Italia','it','Gelato','El gelato tiene menos aire que el helado normal, por eso es más cremoso.','¿Cuál es tu sabor de helado favorito?'),
+  O('Comer mochi','Japón','jp','Mochi','Para hacer mochi, golpean el arroz con un mazo de madera gigante.','¿Te gustan los dulces suaves o crujientes?'),
+  O('Tomar té de menta','Marruecos','ma','Maghrebi_mint_tea','Sirven el té desde muy alto para hacer espuma.','¿Te gusta el té?'),
+  O('Tomar chocolate caliente','México','mx','Hot_chocolate','Los mayas y los aztecas tomaban cacao. ¡Usaban las semillas como dinero!','¿Tomas bebidas calientes en Belice?'),
+  O('Comer baklava','Turquía','tr','Baklava','Tiene muchas capas de masa muy fina, nueces y miel.','¿Te gusta la miel?'),
+  O('Comer brigadeiros','Brasil','br','Brigadeiro','Son bolitas de chocolate que no pueden faltar en los cumpleaños de Brasil.','¿Qué comes en tu cumpleaños?'),
+  O('Tomar té de burbujas','Taiwán','tw','Bubble_tea','Las «burbujas» son bolitas de tapioca. Nació en Taiwán en los años 80.','¿Te gusta masticar tu bebida?'),
+  O('Tomar agua de coco','Belice','bz','Coconut_water','El agua de coco sale de cocos verdes. ¡Es muy refrescante!','¿Sabes abrir un coco?')]},
+ {id:'monumentos',n:'Monumentos',s:'Maravillas construidas por personas',o:[
+  O('Visitar Machu Picchu','Perú','pe','Machu_Picchu','Los incas la construyeron en una montaña, a más de 2,400 metros de altura.','¿Te gusta subir montañas?'),
+  O('Visitar Petra','Jordania','jo','Petra','Esta ciudad antigua está tallada en roca de color rosa.','¿Vivirías en una casa de roca?'),
+  O('Visitar el Taj Mahal','India','in','Taj_Mahal','Un emperador lo construyó en memoria de su esposa. Es de mármol blanco.','¿Para quién construirías un palacio?'),
+  O('Visitar Chichén Itzá','México','mx','Chichen_Itza','En la primavera, una sombra con forma de serpiente baja por la pirámide.','¿Has visitado una pirámide maya?'),
+  O('Subir a la Torre Eiffel','Francia','fr','Eiffel_Tower','¡Iba a ser temporal! La construyeron para una feria en 1889.','¿Te dan miedo las alturas?'),
+  O('Caminar por la Gran Muralla','China','cn','Great_Wall_of_China','Es un mito: no se puede ver desde el espacio a simple vista.','¿Cuántos kilómetros puedes caminar?'),
+  O('Ver la Gran Pirámide de Guiza','Egipto','eg','Great_Pyramid_of_Giza','Fue el edificio más alto del mundo durante casi 4,000 años.','¿Cómo crees que la construyeron?'),
+  O('Visitar Xunantunich','Belice','bz','Xunantunich','Su nombre maya significa «Doncella de piedra». Para llegar, cruzas el río en un ferry de mano.','¿Quién ya visitó Xunantunich?')]},
+ {id:'paisajes',n:'Paisajes',s:'Lugares increíbles de la naturaleza',o:[
+  O('Bucear en el Gran Agujero Azul','Belice','bz','Great_Blue_Hole','Es un agujero en el mar de más de 120 metros de profundidad.','¿Sabes bucear o nadar?'),
+  O('Bucear en la Gran Barrera de Coral','Australia','au','Great_Barrier_Reef','Es el sistema de arrecifes más grande del mundo. ¡Belice tiene el segundo!','¿Qué animal del mar quieres ver?'),
+  O('Ver la aurora boreal','Islandia','is','Aurora','Las luces de colores en el cielo vienen de partículas del Sol.','¿Te gusta el frío?'),
+  O('Caminar sobre el Salar de Uyuni','Bolivia','bo','Salar_de_Uyuni','Cuando llueve, ¡el salar se convierte en un espejo gigante!','¿Qué foto divertida harías aquí?'),
+  O('Dormir en las dunas del Sahara','Marruecos','ma','Erg_Chebbi','El desierto del Sahara es casi tan grande como Estados Unidos.','¿Dormirías en el desierto?'),
+  O('Ver las Cataratas del Iguazú','Argentina y Brasil','ar,br','Iguazu_Falls','Son unas 275 cascadas juntas.','¿Prefieres el río o el mar?'),
+  O('Subir al monte Fuji','Japón','jp','Mount_Fuji','Es un volcán de 3,776 metros. La gente sube de noche para ver el amanecer.','¿Subirías de noche para ver el amanecer?'),
+  O('Explorar la selva del Amazonas','Brasil','br','Amazon_rainforest','Es la selva tropical más grande del mundo.','¿Qué animal buscarías en la selva?')]},
+ {id:'animales',n:'Animales',s:'¿Qué animal quieres ver en su hogar?',o:[
+  O('Ver pandas','China','cn','Giant_panda','Un panda pasa más de 10 horas al día comiendo bambú.','¿Qué comida comes todos los días?'),
+  O('Ver canguros','Australia','au','Kangaroo','Los bebés canguro viven en la bolsa de su mamá.','¿Puedes saltar como un canguro?'),
+  O('Ver un jaguar','Belice','bz','Jaguar','En Belice está Cockscomb, la primera reserva del mundo para jaguares.','¿Alguien vio un jaguar en Belice?'),
+  O('Ver un tigre','India','in','Tiger','Cada tigre tiene rayas diferentes, como una huella digital.','¿Gato grande o gato pequeño?'),
+  O('Nadar con tortugas marinas','Galápagos, Ecuador','ec','Green_sea_turtle','Las tortugas marinas regresan a la playa donde nacieron para poner sus huevos.','¿Nadarías con tortugas?'),
+  O('Ver pingüinos emperador','Antártida','aq','Emperor_penguin','Los papás pingüino cuidan el huevo sobre sus patas durante el invierno.','¿Calor o frío?'),
+  O('Ver perezosos','Costa Rica','cr','Sloth','Los perezosos bajan del árbol solo una vez por semana.','¿Eres un poco perezoso los domingos?'),
+  O('Ver tucanes','Belice','bz','Keel-billed_toucan','El tucán pico de quilla es el ave nacional de Belice.','¿Cuál es tu ave favorita?')]},
+ {id:'festivales',n:'Festivales',s:'Fiestas y tradiciones del mundo',o:[
+  O('Celebrar Holi','India','in','Holi','En el festival de los colores, la gente se lanza polvos de colores para celebrar la primavera.','¿Cuál es tu color favorito?'),
+  O('Celebrar el Día de Muertos','México','mx','Day_of_the_Dead','Las familias hacen altares con flores de cempasúchil para recordar a sus seres queridos.','¿Cómo recuerda tu familia a los abuelos?'),
+  O('Bailar en el Carnaval de Río','Brasil','br','Rio_Carnival','Las escuelas de samba practican todo el año para el gran desfile.','¿Te gusta bailar?'),
+  O('Celebrar el Año Nuevo Chino','China','cn','Chinese_New_Year','Los niños reciben sobres rojos con dinero, y cada año tiene un animal.','¿Qué animal del zodiaco chino eres?'),
+  O('Lanzar tomates en La Tomatina','España','es','La_Tomatina','En el pueblo de Buñol se lanzan miles de kilos de tomates en una hora.','¿Te gustaría ensuciarte con tomates?'),
+  O('Soltar linternas en Yi Peng','Tailandia','th','Yi_Peng','Miles de linternas de papel suben al cielo de noche.','¿Qué deseo escribirías en tu linterna?'),
+  O('Ver el Festival de Hielo de Harbin','China','cn','Harbin_International_Ice_and_Snow_Sculpture_Festival','Hay castillos enteros hechos de hielo, ¡con luces de colores adentro!','¿Qué construirías con hielo?'),
+  O('Celebrar el Día del Asentamiento Garífuna','Belice','bz',['Garifuna_Settlement_Day','Garifuna'],'Cada 19 de noviembre se recrea la llegada de los garífunas en botes, con tambores y música.','¿Qué sabes de la cultura garífuna?')]},
+ {id:'musica',n:'Música y baile',s:'Instrumentos y bailes del mundo',o:[
+  O('Tocar la marimba','Guatemala','gt','Marimba','La marimba es el instrumento nacional de Guatemala.','¿Tocas algún instrumento?'),
+  O('Tocar tambores taiko','Japón','jp','Taiko','Algunos tambores taiko son más grandes que una persona.','¿Te gustan los sonidos fuertes?'),
+  O('Bailar flamenco','España','es','Flamenco','Los bailarines hacen ritmo con los pies, las palmas y las castañuelas.','¿Puedes hacer ritmo con las palmas?'),
+  O('Bailar samba','Brasil','br','Samba','La samba tiene raíces africanas y es el baile del Carnaval.','¿Bailas en las fiestas?'),
+  O('Tocar la gaita','Escocia','gb-sct','Great_Highland_bagpipe','La gaita tiene una bolsa de aire que el músico llena soplando.','¿Te gusta el sonido de la gaita?'),
+  O('Tocar el didgeridoo','Australia','au','Didgeridoo','Se hace con un tronco que las termitas dejaron hueco por dentro.','¿Puedes soplar mucho tiempo?'),
+  O('Bailar punta','Belice','bz','Punta_(dance)','La punta es un baile garífuna con tambores y movimientos muy rápidos.','¿Quién sabe bailar punta?'),
+  O('Bailar tango','Argentina','ar','Tango','El tango nació en Buenos Aires y Montevideo.','¿Bailarías en pareja o solo?')]},
+ {id:'deportes',n:'Deportes',s:'Deportes y juegos tradicionales',o:[
+  O('Ver sumo','Japón','jp','Sumo','Antes de luchar, los luchadores tiran sal para limpiar el ring.','¿Eres fuerte?'),
+  O('Ver lucha libre','México','mx','Lucha_libre','Muchos luchadores usan máscaras y nunca muestran su cara.','¿Cómo sería tu máscara?'),
+  O('Jugar sepak takraw','Malasia','my','Sepak_takraw','Es como el voleibol, pero ¡sin usar las manos!','¿Puedes jugar sin manos?'),
+  O('Jugar la pelota maya','Belice y México','bz,mx','Mesoamerican_ballgame','Los mayas golpeaban la pelota con la cadera.','¿Puedes golpear una pelota con la cadera?'),
+  O('Surfear','Hawái','us','Surfing','El surf nació en Polinesia y Hawái hace cientos de años.','¿Te gusta el mar?'),
+  O('Esquiar en los Alpes','Suiza','ch',['Alpine_skiing','Skiing'],'En algunas montañas de Suiza hay nieve todo el año.','¿Has visto la nieve?'),
+  O('Jugar hockey sobre hielo','Canadá','ca','Ice_hockey','Es el deporte de invierno más popular de Canadá.','¿Sabes patinar?'),
+  O('Remar en un bote dragón','China','cn','Dragon_boat','Los botes tienen cabeza y cola de dragón, y un tambor marca el ritmo.','¿Deporte en equipo o solo?')]},
+ {id:'transporte',n:'Transporte',s:'¿Cómo prefieres viajar?',o:[
+  O('Pasear en góndola','Venecia, Italia','it','Gondola','Casi todas las góndolas son negras, y el gondolero rema de pie.','¿Te gustan los paseos tranquilos?'),
+  O('Viajar en tuk-tuk','Tailandia','th','Auto_rickshaw','Su nombre viene del ruido del motor: ¡tuk-tuk-tuk!','¿Te gusta la velocidad?'),
+  O('Viajar en tren bala','Japón','jp','Shinkansen','Puede ir a más de 300 kilómetros por hora.','¿Has viajado en tren?'),
+  O('Montar en camello','Marruecos','ma','Dromedary','Un camello puede pasar varios días sin tomar agua.','¿Has montado a caballo?'),
+  O('Subir al teleférico de La Paz','Bolivia','bo','Mi_Teleférico','Es como un metro, pero en el aire. Es el teleférico de ciudad más largo del mundo.','¿Por el aire o por la tierra?'),
+  O('Viajar en autobús de dos pisos','Londres, Inglaterra','gb-eng','AEC_Routemaster','Los autobuses rojos de dos pisos son un símbolo de Londres.','¿Te sentarías arriba o abajo?'),
+  O('Volar en globo','Capadocia, Turquía','tr','Cappadocia','Cada mañana, cientos de globos vuelan sobre unas rocas llamadas «chimeneas de hadas».','¿Te levantarías a las 5 para volar?'),
+  O('Viajar en jeepney','Filipinas','ph','Jeepney','Los primeros jeepneys se hicieron con jeeps militares viejos. ¡Están pintados de muchos colores!','¿De qué colores pintarías tu jeepney?')]},
+ {id:'casas',n:'Casas del mundo',s:'¿Dónde prefieres vivir o dormir?',o:[
+  O('Dormir en un hotel de hielo','Suecia','se','Icehotel_(Jukkasjärvi)','Cada invierno lo construyen de nuevo con hielo del río.','¿Cuántas cobijas necesitas?'),
+  O('Dormir en una casa del árbol','Costa Rica','cr','Tree_house','Puedes despertar con el sonido de monos y pájaros.','¿Qué animal sería tu vecino?'),
+  O('Vivir en una yurta','Mongolia','mn','Yurt','Es una casa redonda que se puede desarmar y llevar a otro lugar.','¿Te gustaría mudarte mucho?'),
+  O('Vivir en una casa de colores','Burano, Italia','it','Burano','Dicen que pintaban las casas de colores para que los pescadores las encontraran en la niebla.','¿De qué color pintarías tu casa?'),
+  O('Dormir en un iglú','Ártico, Canadá','ca','Igloo','Los inuit hacen iglús con bloques de nieve. ¡Adentro hace menos frío que afuera!','¿Sabes construir algo con arena?'),
+  O('Vivir en una casa sobre pilotes','Belice','bz','Stilt_house','Muchas casas en Belice están sobre pilotes para protegerse del agua y tener aire fresco.','¿Tu casa está sobre pilotes?'),
+  O('Vivir en un castillo','Escocia','gb-sct','Eilean_Donan','Este castillo está en una pequeña isla, unido a la tierra por un puente.','¿Qué cuarto tendrías en tu castillo?'),
+  O('Dormir en una cabaña sobre el mar','Maldivas','mv',['Overwater_bungalow','Maldives'],'Algunas tienen piso de vidrio para ver los peces.','¿Qué verías por el piso de vidrio?')]},
+ {id:'extremo',n:'¡Extremo!',s:'Solo para los más valientes',o:[
+  O('Comer chapulines','Oaxaca, México','mx','Chapulines','Los chapulines son saltamontes tostados con limón y chile.','¿Comerías insectos?'),
+  O('Probar durián','Malasia','my','Durian','Huele tan fuerte que está prohibido en el metro de Singapur.','¿Qué comida huele fuerte pero sabe rico?'),
+  O('Vivir semanas sin sol','Noruega','no','Polar_night','En el norte de Noruega, en invierno, el sol no sale por semanas.','¿Qué harías en la oscuridad?'),
+  O('Vivir semanas sin noche','Finlandia','fi','Midnight_sun','En verano, ¡el sol no se esconde ni a la medianoche!','¿Cómo dormirías con sol?'),
+  O('Subir al Burj Khalifa','Dubái, Emiratos Árabes','ae','Burj_Khalifa','Es el edificio más alto del mundo: mide 828 metros.','¿Mirarías hacia abajo?'),
+  O('Explorar la cueva Son Doong','Vietnam','vn','Hang_Sơn_Đoòng','Es la cueva más grande del mundo: ¡adentro hay una selva y hasta nubes!','¿Explorarías una cueva?'),
+  O('Flotar en el Mar Muerto','Jordania','jo','Dead_Sea','Tiene tanta sal que flotas sin nadar.','¿Sabes flotar?'),
+  O('Nadar con tiburones gata','Belice','bz','Nurse_shark','En Shark Ray Alley puedes nadar con tiburones gata y rayas. ¡Son tranquilos!','¿Nadarías con tiburones?')]}
+];
+const MIX={id:'mezcla',n:'Mezcla sorpresa',s:'8 opciones al azar de todo el mundo'};
+const CLASSES=['K-2','3-5','MS1','MS3','Sec 1','Sec 2'];
+const STAGE={8:'Cuartos de final',4:'Semifinal',2:'La gran final'};
+
+/* ---------- Utilidades ---------- */
+const $=id=>document.getElementById(id);
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const shuf=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const today=()=>new Date().toLocaleDateString('es');
+let cls=LS.get('pdm-clase','K-2'), doShuf=LS.get('pdm-mezclar',true);
+
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));
+  if(id==='cats')renderCats(); if(id==='stamps')renderStamps(); if(id!=='deck')stopTimer();}
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>show(b.dataset.go));
+document.addEventListener('click',()=>{const a=document.activeElement;if(a&&a.tagName==='BUTTON')a.blur()});
+
+/* ---------- Clases ---------- */
+function renderClasses(){const r=$('classRow');r.querySelectorAll('.chip').forEach(c=>c.remove());
+  CLASSES.forEach(c=>{const b=document.createElement('button');b.className='chip'+(c===cls?' on':'');b.textContent=c;
+    b.onclick=()=>{cls=c;LS.set('pdm-clase',c);renderClasses()};r.appendChild(b)});}
+renderClasses();
+$('goQP').onclick=()=>show('cats');
+
+/* ---------- Sellos ---------- */
+const allS=()=>LS.get('pdm-campeones',{});
+const myS=()=>allS()[cls]||{};
+function saveChamp(catId,o){const a=allS();a[cls]=a[cls]||{};a[cls][catId]={c:o.t,d:today()};LS.set('pdm-campeones',a)}
+function renderStamps(){$('sCls').textContent=cls;const g=$('sGrid');g.innerHTML='';const s=myS();
+  [...CATS,MIX].forEach(c=>{const x=s[c.id];const d=document.createElement('div');d.className='slot'+(x?' got':'');
+    d.innerHTML=`<div class="a">${x?'campeón':'por visitar'}</div><div class="b">${c.n}</div>${x?`<div class="c">${x.c}</div><div class="d">${x.d}</div>`:''}`;g.appendChild(d)});}
+$('resetS').onclick=()=>{if(confirm('¿Borrar los sellos de '+cls+'?')){const a=allS();delete a[cls];LS.set('pdm-campeones',a);renderStamps()}};
+
+/* ---------- Categorías ---------- */
+function renderCats(){$('catCls').textContent=cls;const g=$('catGrid');g.innerHTML='';const s=myS();
+  [...CATS,MIX].forEach((c,i)=>{const d=document.createElement('div');d.className='cat';
+    d.innerHTML=`<div class="num">Nº ${String(i+1).padStart(2,'0')}</div><h3>${c.n}</h3><p>${c.s}</p>${s[c.id]?`<div class="won">★ campeón: ${s[c.id].c}</div>`:''}`;
+    d.onclick=()=>start(c);g.appendChild(d)});
+  $('shufTxt').textContent='Orden de las parejas: '+(doShuf?'al azar':'fijo');}
+$('shufBtn').onclick=()=>{doShuf=!doShuf;LS.set('pdm-mezclar',doShuf);renderCats()};
+
+/* ---------- Torneo ---------- */
+let cat=null, rounds=[], r=0, p=0, champion=null;
+// rounds[k] = {list:[opts], win:[idx|null per pair]}
+function start(c){cat=c;champion=null;
+  let opts=c.id==='mezcla'?shuf(CATS.flatMap(x=>x.o)).slice(0,8):(doShuf?shuf(c.o):[...c.o]);
+  rounds=[{list:opts,win:Array(opts.length/2).fill(null)}];r=0;p=0;show('deck');renderPair();}
+const pairOf=()=>{const L=rounds[r].list;return [L[p*2],L[p*2+1]]};
+
+/* ---------- Fotos (Wikipedia, en vivo) ---------- */
+const sumC={},listC={},WP='https://en.wikipedia.org/api/rest_v1/page/',isSvg=u=>/\.svg/i.test(u||'');
+function lead(t){if(!(t in sumC))sumC[t]=(async()=>{try{const x=await fetch(WP+'summary/'+encodeURIComponent(t));if(!x.ok)return null;const j=await x.json();
+  const o=j.originalimage,th=j.thumbnail;if(!o&&!th)return null;if(o&&isSvg(o.source))return null;
+  if(o&&o.width<=1600)return o.source;return th?th.source.replace(/\/(\d+)px-/,'/1400px-'):o.source}catch(e){return null}})();return sumC[t]}
+function media(t){if(!(t in listC))listC[t]=(async()=>{try{const x=await fetch(WP+'media-list/'+encodeURIComponent(t));if(!x.ok)return[];const j=await x.json();
+  return(j.items||[]).filter(i=>i.type==='image'&&i.srcset&&i.srcset.length&&!isSvg(i.title)).map(i=>{const s=i.srcset[i.srcset.length-1].src;return s.startsWith('//')?'https:'+s:s})}catch(e){return[]}})();return listC[t]}
+const pk=o=>'pdm-foto-'+o.w[0];
+async function imgFor(o){const n=LS.get(pk(o),0);
+  if(n>0)for(const t of o.w){const l=await media(t);if(l.length)return l[n%l.length]}
+  for(const t of o.w){const u=await lead(t);if(u)return u}
+  for(const t of o.w){const l=await media(t);if(l.length)return l[0]}return null}
+function putImg(box,o,u){const img=box.querySelector('img'),ph=box.querySelector('.ph');
+  if(!u){ph.textContent=o.t;return}img.onload=()=>{if(box._o===o)img.classList.add('ok')};img.onerror=()=>{ph.textContent=o.t};img.src=u}
+function loadPhoto(box,o){box._o=o;const img=box.querySelector('img');img.classList.remove('ok');img.removeAttribute('src');
+  box.querySelector('.ph').textContent='cargando foto…';imgFor(o).then(u=>{if(box._o===o)putImg(box,o,u)})}
+const flags=f=>f.split(',').map(c=>`<img src="https://flagcdn.com/w40/${c}.png" alt="" onerror="this.remove()">`).join('');
+
+/* ---------- Diapositiva ---------- */
+function fill(el,o){el.querySelector('.txt').textContent=o.t;el.querySelector('.where').innerHTML=flags(o.f)+'<span>'+o.c+'</span>';
+  el.querySelector('.dato').innerHTML='<i>¿Sabías que…?</i> '+o.d;const box=el.querySelector('.photo');loadPhoto(box,o);
+  el.querySelector('.reroll').onclick=e=>{e.stopPropagation();LS.set(pk(o),LS.get(pk(o),0)+1);loadPhoto(box,o)};}
+function renderPair(){const [a,b]=pairOf(),R=rounds[r],n=R.list.length;
+  fill($('oA'),a);fill($('oB'),b);$('stage').classList.remove('show-dato');
+  $('mCat').textContent=cat.n;$('mCls').textContent=cls;
+  $('mStage').textContent=STAGE[n]+(n>2?' · pareja '+(p+1)+' de '+n/2:'');
+  const extra=n===2?'<span class="sep">/</span><span class="ql">Final:</span>¿Por qué este debe ganar?':n===4?'<span class="sep">/</span>¿Alguien cambió de opinión?':'';
+  $('qs').innerHTML=`<span class="ql">Pregúntale a la clase:</span>${a.q}<span class="sep">/</span>${b.q}${extra}`;
+  setWin(R.win[p]);preload();stopTimer();}
+function setWin(w){const A=$('oA'),B=$('oB');A.className='opt';B.className='opt';
+  if(w===0){A.classList.add('win');B.classList.add('lose')}if(w===1){B.classList.add('win');A.classList.add('lose')}
+  $('nextBtn').disabled=w===null;$('hint').style.visibility=w===null?'visible':'hidden';
+  $('prevBtn').disabled=p===0;
+  const last=p===rounds[r].list.length/2-1;$('nextBtn').textContent=rounds[r].list.length===2?'Coronar →':last?'Ver el cuadro →':'Siguiente →';}
+function choose(w){const R=rounds[r];if(R.win[p]===w)return;R.win[p]=w;
+  rounds.length=r+1; // cambiar un ganador borra las rondas siguientes
+  setWin(R.win[p]);}
+$('oA').onclick=()=>choose(0);$('oB').onclick=()=>choose(1);
+function preload(){const L=rounds[r].list;[L[p*2+2],L[p*2+3]].forEach(o=>{if(o)imgFor(o).then(u=>{if(u){const i=new Image();i.src=u}})})}
+
+function next(){const R=rounds[r];if(R.win[p]===null)return;
+  if(p<R.list.length/2-1){p++;renderPair();return}
+  const winners=R.win.map((w,i)=>R.list[i*2+w]);
+  if(winners.length===1){champion=winners[0];crown();return}
+  rounds[r+1]={list:winners,win:Array(winners.length/2).fill(null)};showBracket(true);}
+function prev(){if(p>0){p--;renderPair()}}
+$('nextBtn').onclick=next;$('prevBtn').onclick=prev;
+$('backCats').onclick=()=>show('cats');
+$('datoBtn').onclick=()=>$('stage').classList.toggle('show-dato');
+$('qBtn').onclick=()=>$('qs').classList.toggle('hide');
+
+/* ---------- Cuadro ---------- */
+let brkMode='go';
+function showBracket(advance){brkMode=advance?'go':'back';$('bCat').textContent=cat.n;$('bCls').textContent=cls;
+  const g=$('bracket');g.innerHTML='';const names=['Cuartos','Semifinal','Final','Campeón'];
+  for(let k=0;k<3;k++){const col=document.createElement('div');col.className='col';col.innerHTML=`<h4>${names[k]}</h4>`;
+    const R=rounds[k],size=8>>k;
+    for(let m=0;m<size/2;m++){const bm=document.createElement('div');bm.className='bm';
+      for(let s=0;s<2;s++){const o=R&&R.list[m*2+s],w=R&&R.win[m];const d=document.createElement('div');
+        d.textContent=o?o.t:'por decidir';d.className=!o?'p':w===null?'':w===s?'w':'l';bm.appendChild(d)}
+      col.appendChild(bm)}g.appendChild(col)}
+  const col=document.createElement('div');col.className='col';col.innerHTML='<h4>Campeón</h4>';
+  const cb=document.createElement('div');cb.className='champ-box'+(champion?'':' p');cb.textContent=champion?champion.t:'¿quién será?';col.appendChild(cb);g.appendChild(col);
+  $('brkNext').textContent=brkMode==='go'?'Empezar: '+STAGE[rounds[r+1].list.length]+' →':'Volver →';
+  show('brk');}
+$('brkNext').onclick=()=>{if(brkMode==='go'){r++;p=0;show('deck');renderPair()}else show(champion?'champ':'deck')};
+$('brkBack').onclick=()=>{if(brkMode==='go'){show('deck');renderPair()}else show(champion?'champ':'deck')};
+$('cBrk').onclick=()=>showBracket(false);
+
+/* ---------- Campeón ---------- */
+function crown(){saveChamp(cat.id,champion);$('cCat').textContent=cat.n;$('cCls').textContent=cls;
+  $('cName').textContent=champion.t;$('cWhere').innerHTML=flags(champion.f)+' '+champion.c;
+  $('cWhere').querySelectorAll('img').forEach(i=>{i.style.height='14px';i.style.marginRight='6px'});
+  $('sCat').textContent=cat.n;$('sDate').textContent=cls+' · '+today();
+  const ph=$('cPhoto');ph.innerHTML='';imgFor(champion).then(u=>{if(u){const i=new Image();i.src=u;ph.appendChild(i)}});
+  const s=$('cStamp');s.classList.remove('go');show('champ');void s.offsetWidth;s.classList.add('go');}
+
+/* ---------- 30 segundos para negociar ---------- */
+let tI=null;
+function stopTimer(){clearInterval(tI);$('timer').className='';}
+function timer(){if($('timer').classList.contains('on')){stopTimer();return}let n=30;const t=$('timer');t.className='on';t.textContent='Negocien: 30 s';
+  tI=setInterval(()=>{n--;if(n>0)t.textContent='Negocien: '+n+' s';else{clearInterval(tI);t.className='on end';t.textContent='¡Tiempo! ¿Qué deciden?'}},1000);}
+$('tBtn').onclick=timer;
+
+/* ---------- Moneda para empates ---------- */
+function coin(){const c=$('coin');c.classList.add('on');setTimeout(()=>{c.classList.remove('on');const w=Math.random()<.5?0:1;rounds[r].win[p]=null;choose(w)},1400)}
+$('coinBtn').onclick=coin;
+
+/* ---------- Pantalla completa y teclado ---------- */
+function fs(){if(!document.fullscreenElement)document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen();else document.exitFullscreen()}
+$('fsHome').onclick=fs;
+document.addEventListener('keydown',e=>{const k=e.key;
+  if(k===' '||k==='Enter'){e.preventDefault();if(document.activeElement)document.activeElement.blur()}
+  if(k==='f'||k==='F'){fs();return}
+  if($('brk').classList.contains('on')&&(k==='Enter'||k===' ')){e.preventDefault();$('brkNext').click();return}
+  if(!$('deck').classList.contains('on'))return;
+  if(k==='ArrowLeft')choose(0);else if(k==='ArrowRight')choose(1);
+  else if(k===' '||k==='Enter'){e.preventDefault();next()}
+  else if(k==='Backspace'){e.preventDefault();prev()}
+  else if(k==='d'||k==='D')$('stage').classList.toggle('show-dato');
+  else if(k==='p'||k==='P')$('qs').classList.toggle('hide');
+  else if(k==='t'||k==='T')timer();
+  else if(k==='m'||k==='M')coin();
+  else if(k==='Escape')show('cats');
+});
+</script>
+</body>
+</html>
