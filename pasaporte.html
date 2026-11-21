@@ -47,7 +47,7 @@ button{font-family:inherit;cursor:pointer;background:none;border:none;color:inhe
 .classrow .lbl{font-family:'Gaegu';font-size:22px;margin-right:6px}
 .chip{border:1.5px solid var(--rule);border-radius:999px;padding:7px 16px;font-weight:600;font-size:clamp(13px,1.1vw,16px)}
 .chip.on{background:var(--ink);color:var(--paper)}
-.stations{display:grid;grid-template-columns:repeat(3,minmax(0,300px));gap:28px;justify-content:center;margin-top:2vh}
+.stations{display:grid;grid-template-columns:repeat(2,minmax(0,320px));gap:28px;justify-content:center;margin-top:2vh}
 .station{border-top:2px solid var(--rule);padding-top:14px;text-align:left}
 .station .no{font-family:'Fraunces';font-style:italic;color:var(--terra);font-size:15px}
 .station h3{font-family:'Fraunces';font-weight:600;font-size:clamp(22px,2vw,30px);margin:2px 0 6px}
@@ -210,16 +210,12 @@ button{font-family:inherit;cursor:pointer;background:none;border:none;color:inhe
       <p>Dos fotos, una decisión. La clase negocia, elige un ganador y avanza hasta el campeón.</p>
       <div class="go">empezar →</div>
     </div>
-    <div class="station soon">
-      <div class="no">Estación 2 · próximamente</div>
-      <h3>Ruleta de países</h3>
-      <p>Gira, llega a un país y haz preguntas: ¿Dónde? ¿Cómo? ¿Quién?</p>
-    </div>
-    <div class="station soon">
-      <div class="no">Estación 3 · próximamente</div>
-      <h3>Rank It</h3>
-      <p>Ordena y compara: «el más…», «el menos…».</p>
-    </div>
+    <a class="station live" href="passport-game.html" style="text-decoration:none;color:inherit">
+      <div class="no">Estación 2</div>
+      <h3>The Passport Game</h3>
+      <p>Rueda de países, banderas, preguntas y Rank It: «El país más… es…».</p>
+      <div class="go">abrir →</div>
+    </a>
   </div>
   <div class="homebtns">
     <button class="tbtn" data-go="stamps">Sellos de la clase</button>
@@ -460,6 +456,7 @@ function renderClasses(){const r=$('classRow');r.querySelectorAll('.chip').forEa
     b.onclick=()=>{cls=c;LS.set('pdm-clase',c);renderClasses()};r.appendChild(b)});}
 renderClasses();
 $('goQP').onclick=()=>show('cats');
+try{if(new URLSearchParams(location.search).get('ir')==='prefieres')show('cats')}catch(e){}
 
 /* ---------- Sellos ---------- */
 const allS=()=>LS.get('pdm-campeones',{});
