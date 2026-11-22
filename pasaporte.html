@@ -84,7 +84,7 @@ button{font-family:inherit;cursor:pointer;background:none;border:none;color:inhe
 .photo{flex:1;min-height:0;position:relative;overflow:hidden;background:var(--paper2);border:1.5px solid var(--rule)}
 .photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .5s, filter .4s}
 .photo img.ok{opacity:1}
-.photo .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Fraunces';font-style:italic;color:var(--soft);font-size:18px;text-align:center;padding:20px}
+.photo .ph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Fraunces';font-style:italic;color:var(--soft);font-size:18px;text-align:center;padding:20px}
 .reroll{position:absolute;right:8px;bottom:8px;z-index:3;background:rgba(246,240,228,.85);border:1px solid var(--rule);border-radius:999px;font-size:12px;font-weight:600;padding:4px 10px;opacity:.5}
 .reroll:hover{opacity:1}
 .cap{padding-top:10px;min-height:0}
@@ -151,6 +151,26 @@ button{font-family:inherit;cursor:pointer;background:none;border:none;color:inhe
 .stamp .s2{font-weight:800;font-size:clamp(15px,1.4vw,20px);line-height:1.05;margin:4px 0}
 .stamp .s3{font-size:11px}
 @keyframes thump{0%{transform:rotate(-30deg) scale(2.2);opacity:0}100%{transform:rotate(-12deg) scale(1);opacity:1}}
+
+/* ---------- Revisar y elegir fotos ---------- */
+.rvlink{margin-top:6px;font-family:'Gaegu';font-size:18px;color:var(--teal);text-decoration:underline;text-underline-offset:3px}
+.rv-grid{flex:1;overflow:auto;display:grid;grid-template-columns:repeat(4,1fr);gap:22px;padding:2.5vh 4px}
+.rv-item .photo{height:22vh;flex:none}
+.rv-t{font-family:'Fraunces';font-weight:600;font-size:18px;margin-top:8px;line-height:1.1}
+.rv-c{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--soft);margin:4px 0 8px}
+#picker{position:fixed;inset:0;z-index:40;display:none;background:rgba(36,33,29,.55);align-items:center;justify-content:center;padding:4vh 4vw}
+#picker.on{display:flex}
+.pk-box{background:var(--paper);border:2px solid var(--rule);border-radius:16px;width:100%;max-width:1300px;max-height:100%;display:flex;flex-direction:column;padding:18px 22px}
+.pk-top{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;border-bottom:1.5px solid var(--rule);padding-bottom:10px}
+.pk-k{font-family:'Gaegu';font-size:20px;color:var(--terra)}
+.pk-n{font-family:'Fraunces';font-weight:600;font-size:26px}
+.pk-btns{display:flex;gap:8px;flex-wrap:wrap}
+.pk-grid{overflow:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px;padding-top:14px}
+.pk-item{aspect-ratio:4/3;border:1.5px solid var(--rule);overflow:hidden;background:var(--paper2);padding:0}
+.pk-item img{width:100%;height:100%;object-fit:cover;display:block}
+.pk-item:hover{outline:4px solid var(--teal);outline-offset:2px}
+.pk-item.on{outline:4px solid var(--terra);outline-offset:2px}
+.pk-msg{grid-column:1/-1;font-family:'Fraunces';font-style:italic;color:var(--soft);padding:30px;text-align:center}
 
 /* ---------- Sellos ---------- */
 .sgrid{flex:1;overflow:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:26px;padding:3vh 6px}
@@ -236,7 +256,7 @@ button{font-family:inherit;cursor:pointer;background:none;border:none;color:inhe
     <div><b>4 · Avanza</b>Los ganadores pasan de cuartos a semifinal y final. Solo queda un campeón.</div>
   </div>
   <div class="catgrid" id="catGrid"></div>
-  <div class="kbd" style="margin-top:8px"><span id="shufTxt"></span> · <button class="tbtn" id="shufBtn" style="padding:3px 10px;font-size:12px">cambiar</button></div>
+  <div class="kbd" style="margin-top:8px"><span id="shufTxt"></span> · <button class="tbtn" id="shufBtn" style="padding:3px 10px;font-size:12px">cambiar</button> · Fotos elegidas: <button class="tbtn" id="expBtn" style="padding:3px 10px;font-size:12px">guardar en archivo</button> <button class="tbtn" id="impBtn" style="padding:3px 10px;font-size:12px">cargar archivo</button><input type="file" id="impFile" accept=".json" hidden></div>
 </section>
 
 <!-- ============ DECK ============ -->
@@ -250,14 +270,14 @@ button{font-family:inherit;cursor:pointer;background:none;border:none;color:inhe
     <div class="opt" id="oA">
       
       <div class="tag">esto…</div>
-      <div class="pwrap"><div class="photo"><div class="ph"></div><img alt=""><button class="reroll">otra foto</button></div><div class="ring"></div><div class="wlabel">¡ganador!</div></div>
+      <div class="pwrap"><div class="photo"><div class="ph"></div><img alt=""><button class="reroll">cambiar foto</button></div><div class="ring"></div><div class="wlabel">¡ganador!</div></div>
       <div class="cap"><div class="txt"></div><div class="where"></div><div class="dato"></div></div>
     </div>
     <div class="vs">o</div>
     <div class="opt" id="oB">
       
       <div class="tag">…¿o aquello?</div>
-      <div class="pwrap"><div class="photo"><div class="ph"></div><img alt=""><button class="reroll">otra foto</button></div><div class="ring"></div><div class="wlabel">¡ganador!</div></div>
+      <div class="pwrap"><div class="photo"><div class="ph"></div><img alt=""><button class="reroll">cambiar foto</button></div><div class="ring"></div><div class="wlabel">¡ganador!</div></div>
       <div class="cap"><div class="txt"></div><div class="where"></div><div class="dato"></div></div>
     </div>
   </div>
@@ -315,6 +335,21 @@ button{font-family:inherit;cursor:pointer;background:none;border:none;color:inhe
   </div>
   <div class="sgrid" id="sGrid"></div>
 </section>
+
+<!-- ============ REVISAR FOTOS ============ -->
+<section id="review" class="screen">
+  <div class="top">
+    <div class="left"><button class="tbtn" data-go="cats">← Categorías</button><div class="t">Revisar fotos</div></div>
+    <div class="meta"><b id="rvCat"></b><br>Revisa antes de la clase</div>
+  </div>
+  <div class="rv-grid" id="rvGrid"></div>
+</section>
+
+<div id="picker"><div class="pk-box">
+  <div class="pk-top"><div><div class="pk-k">Elige una foto para</div><div class="pk-n" id="pkName"></div></div>
+    <div class="pk-btns"><button class="tbtn" id="pkReset">foto original</button><button class="tbtn" id="pkNone">sin foto</button><button class="tbtn solid" id="pkClose">cerrar</button></div></div>
+  <div class="pk-grid" id="pkGrid"></div>
+</div></div>
 
 <div id="coin"><div class="c">?</div><div class="ct">La moneda decide…</div></div>
 
@@ -456,7 +491,6 @@ function renderClasses(){const r=$('classRow');r.querySelectorAll('.chip').forEa
     b.onclick=()=>{cls=c;LS.set('pdm-clase',c);renderClasses()};r.appendChild(b)});}
 renderClasses();
 $('goQP').onclick=()=>show('cats');
-try{if(new URLSearchParams(location.search).get('ir')==='prefieres')show('cats')}catch(e){}
 
 /* ---------- Sellos ---------- */
 const allS=()=>LS.get('pdm-campeones',{});
@@ -470,9 +504,10 @@ $('resetS').onclick=()=>{if(confirm('¿Borrar los sellos de '+cls+'?')){const a=
 /* ---------- Categorías ---------- */
 function renderCats(){$('catCls').textContent=cls;const g=$('catGrid');g.innerHTML='';const s=myS();
   [...CATS,MIX].forEach((c,i)=>{const d=document.createElement('div');d.className='cat';
-    d.innerHTML=`<div class="num">Nº ${String(i+1).padStart(2,'0')}</div><h3>${c.n}</h3><p>${c.s}</p>${s[c.id]?`<div class="won">★ campeón: ${s[c.id].c}</div>`:''}`;
-    d.onclick=()=>start(c);g.appendChild(d)});
+    d.innerHTML=`<div class="num">Nº ${String(i+1).padStart(2,'0')}</div><h3>${c.n}</h3><p>${c.s}</p>${s[c.id]?`<div class="won">★ campeón: ${s[c.id].c}</div>`:''}${c.o?'<button class="rvlink">revisar fotos</button>':''}`;
+    d.onclick=()=>start(c);const rb=d.querySelector('.rvlink');if(rb)rb.onclick=e=>{e.stopPropagation();review(c)};g.appendChild(d)});
   $('shufTxt').textContent='Orden de las parejas: '+(doShuf?'al azar':'fijo');}
+$('expBtn').onclick=exportPicks;$('impBtn').onclick=()=>$('impFile').click();$('impFile').onchange=e=>{if(e.target.files[0])importPicks(e.target.files[0])};
 $('shufBtn').onclick=()=>{doShuf=!doShuf;LS.set('pdm-mezclar',doShuf);renderCats()};
 
 /* ---------- Torneo ---------- */
@@ -490,21 +525,58 @@ function lead(t){if(!(t in sumC))sumC[t]=(async()=>{try{const x=await fetch(WP+'
   if(o&&o.width<=1600)return o.source;return th?th.source.replace(/\/(\d+)px-/,'/1400px-'):o.source}catch(e){return null}})();return sumC[t]}
 function media(t){if(!(t in listC))listC[t]=(async()=>{try{const x=await fetch(WP+'media-list/'+encodeURIComponent(t));if(!x.ok)return[];const j=await x.json();
   return(j.items||[]).filter(i=>i.type==='image'&&i.srcset&&i.srcset.length&&!isSvg(i.title)).map(i=>{const s=i.srcset[i.srcset.length-1].src;return s.startsWith('//')?'https:'+s:s})}catch(e){return[]}})();return listC[t]}
-const pk=o=>'pdm-foto-'+o.w[0];
-async function imgFor(o){const n=LS.get(pk(o),0);
-  if(n>0)for(const t of o.w){const l=await media(t);if(l.length)return l[n%l.length]}
-  for(const t of o.w){const u=await lead(t);if(u)return u}
-  for(const t of o.w){const l=await media(t);if(l.length)return l[0]}return null}
+/* Fotos fijas elegidas por la maestra. PRESET se puede llenar con el archivo exportado. */
+const PRESET={};
+const pickKey=o=>'pdm-pick-'+o.w[0];
+function chosen(o){const v=LS.get(pickKey(o),null);if(v!==null)return v;return PRESET[o.w[0]]||null}
+async function imgFor(o){const c=chosen(o);if(c==='none')return null;if(c)return c;
+  for(const t of o.w){const u=await lead(t);if(u)return u}return null}
+function media2(t){const k='m2-'+t;if(!(k in listC))listC[k]=(async()=>{try{const x=await fetch(WP+'media-list/'+encodeURIComponent(t));if(!x.ok)return[];const j=await x.json();
+  const fx=s=>s.startsWith('//')?'https:'+s:s;
+  return(j.items||[]).filter(i=>i.type==='image'&&i.srcset&&i.srcset.length&&!isSvg(i.title)&&!/\.gif$/i.test(i.title))
+    .map(i=>({small:fx(i.srcset[0].src),big:fx(i.srcset[i.srcset.length-1].src)}))}catch(e){return[]}})();return listC[k]}
+async function gallery(o){const out=[],seen=new Set();
+  for(const t of o.w){const l=await lead(t);if(l&&!seen.has(l)){seen.add(l);out.push({small:l,big:l})}
+    for(const m of await media2(t)){if(!seen.has(m.big)){seen.add(m.big);out.push(m)}}}
+  return out}
 function putImg(box,o,u){const img=box.querySelector('img'),ph=box.querySelector('.ph');
-  if(!u){ph.textContent=o.t;return}img.onload=()=>{if(box._o===o)img.classList.add('ok')};img.onerror=()=>{ph.textContent=o.t};img.src=u}
+  if(!u){ph.innerHTML=o.t+'<br><small style="font-family:Gaegu;font-size:18px;color:var(--terra)">sin foto · usa «cambiar foto»</small>';return}
+  img.onload=()=>{if(box._o===o)img.classList.add('ok')};img.onerror=()=>{ph.textContent=o.t};img.src=u}
 function loadPhoto(box,o){box._o=o;const img=box.querySelector('img');img.classList.remove('ok');img.removeAttribute('src');
   box.querySelector('.ph').textContent='cargando foto…';imgFor(o).then(u=>{if(box._o===o)putImg(box,o,u)})}
+
+/* ---------- Selector de fotos ---------- */
+let pkCb=null,pkO=null;
+async function openPicker(o,cb){pkO=o;pkCb=cb;$('pkName').textContent=o.t+' · '+o.c;const g=$('pkGrid');g.innerHTML='<div class="pk-msg">Buscando fotos…</div>';
+  $('picker').classList.add('on');const list=await gallery(o);if(pkO!==o)return;g.innerHTML='';
+  if(!list.length){g.innerHTML='<div class="pk-msg">No encontré fotos para esta opción. Puedes dejarla sin foto.</div>';return}
+  const cur=chosen(o);
+  list.forEach(m=>{const d=document.createElement('button');d.className='pk-item'+(cur===m.big?' on':'');
+    d.innerHTML=`<img src="${m.small}" alt="" loading="lazy" onerror="this.parentNode.remove()">`;
+    d.onclick=()=>{LS.set(pickKey(o),m.big);closePicker(true)};g.appendChild(d)});}
+function closePicker(changed){$('picker').classList.remove('on');if(changed&&pkCb)pkCb();pkO=null}
+$('pkClose').onclick=()=>closePicker(false);
+$('pkNone').onclick=()=>{LS.set(pkKey(),'none');closePicker(true)};
+$('pkReset').onclick=()=>{try{localStorage.removeItem(pickKey(pkO))}catch(e){};closePicker(true)};
+function pkKey(){return pickKey(pkO)}
+
+/* ---------- Revisar fotos de una categoría ---------- */
+function review(c){$('rvCat').textContent=c.n;const g=$('rvGrid');g.innerHTML='';
+  c.o.forEach(o=>{const d=document.createElement('div');d.className='rv-item';
+    d.innerHTML=`<div class="photo"><div class="ph"></div><img alt=""></div><div class="rv-t">${o.t}</div><div class="rv-c">${o.c}</div><button class="tbtn">cambiar foto</button>`;
+    const box=d.querySelector('.photo');loadPhoto(box,o);d.querySelector('button').onclick=()=>openPicker(o,()=>loadPhoto(box,o));g.appendChild(d)});
+  show('review');}
+
+/* ---------- Exportar / importar fotos elegidas ---------- */
+function exportPicks(){const o={};try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k.startsWith('pdm-pick-'))o[k.slice(9)]=JSON.parse(localStorage.getItem(k))}}catch(e){}
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(o,null,1)],{type:'application/json'}));a.download='fotos-pasaporte.json';a.click();}
+function importPicks(f){const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result);Object.entries(o).forEach(([k,v])=>LS.set('pdm-pick-'+k,v));alert('Fotos importadas: '+Object.keys(o).length)}catch(e){alert('Ese archivo no funciona.')}};r.readAsText(f)}
 const flags=f=>f.split(',').map(c=>`<img src="https://flagcdn.com/w40/${c}.png" alt="" onerror="this.remove()">`).join('');
 
 /* ---------- Diapositiva ---------- */
 function fill(el,o){el.querySelector('.txt').textContent=o.t;el.querySelector('.where').innerHTML=flags(o.f)+'<span>'+o.c+'</span>';
   el.querySelector('.dato').innerHTML='<i>¿Sabías que…?</i> '+o.d;const box=el.querySelector('.photo');loadPhoto(box,o);
-  el.querySelector('.reroll').onclick=e=>{e.stopPropagation();LS.set(pk(o),LS.get(pk(o),0)+1);loadPhoto(box,o)};}
+  el.querySelector('.reroll').onclick=e=>{e.stopPropagation();openPicker(o,()=>loadPhoto(box,o))};}
 function renderPair(){const [a,b]=pairOf(),R=rounds[r],n=R.list.length;
   fill($('oA'),a);fill($('oB'),b);$('stage').classList.remove('show-dato');
   $('mCat').textContent=cat.n;$('mCls').textContent=cls;
@@ -575,6 +647,7 @@ $('coinBtn').onclick=coin;
 function fs(){if(!document.fullscreenElement)document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen();else document.exitFullscreen()}
 $('fsHome').onclick=fs;
 document.addEventListener('keydown',e=>{const k=e.key;
+  if($('picker').classList.contains('on')){if(k==='Escape')closePicker(false);return}
   if(k===' '||k==='Enter'){e.preventDefault();if(document.activeElement)document.activeElement.blur()}
   if(k==='f'||k==='F'){fs();return}
   if($('brk').classList.contains('on')&&(k==='Enter'||k===' ')){e.preventDefault();$('brkNext').click();return}
@@ -588,6 +661,7 @@ document.addEventListener('keydown',e=>{const k=e.key;
   else if(k==='m'||k==='M')coin();
   else if(k==='Escape')show('cats');
 });
+try{if(new URLSearchParams(location.search).get('ir')==='prefieres')show('cats')}catch(e){console.error(e)}
 </script>
 </body>
 </html>
