@@ -453,6 +453,12 @@
   .pz-wrap canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
   .pz-wrap.drawing canvas { pointer-events: auto; cursor: crosshair; touch-action: none; }
   .pz-wrap.drawing { border-color: var(--red); }
+  .pz-wrap.has-img .pz-text { left: 58%; border-left: 3px dashed #d8d0c0; }
+  .pz-img { position: absolute; top: 0; bottom: 0; left: 0; width: 58%; display: none; align-items: center; justify-content: center; background: #f6f3ec; }
+  .pz-wrap.has-img .pz-img { display: flex; }
+  .pz-img img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
+  .pz-wrap.img-full .pz-img { width: 100%; }
+  .pz-wrap.img-full .pz-text { display: none; }
   /* qué hacer ahora */
   .tq-box { display: grid; grid-template-columns: 1fr 230px; gap: 16px; background: #fff; border-radius: 18px; padding: 22px 24px; border: 3px solid var(--gold); container-type: inline-size; }
   .tq-box:fullscreen { align-content: center; padding: 4vw; border: none; grid-template-columns: 1fr 26vw; }
@@ -2500,9 +2506,9 @@ function fullBox(elm) { try { if (document.fullscreenElement) document.exitFulls
 /* ---------- ✍️ PIZARRA ---------- */
 const PZ_FRAMES = ['Hay ___.', '___ quiere ___.', '___ tiene ___.', '___ va a ___.', 'A ___ le gusta ___.', '___ es ___ y ___.', '___ está en ___.', '¿Quién ___?', '¿Dónde está ___?', 'Primero ___. Luego ___. Al final ___.'];
 const PZ_COLORS = [['#1a2e25', 'Negro'], ['#2a62b8', 'Azul'], ['#c8312f', 'Rojo'], ['#2f7d3a', 'Verde'], ['#7a3fb0', 'Morado'], ['#d97a00', 'Naranja']];
-tool('pizarra', 'present', '✍️', 'Pizarra', 'Big-text board & drawing', 'Tu pizarra en la tele: escribe en grande, dibuja encima y pulsa 🔈 para que se lea en voz alta. El texto se guarda por clase.', el => {
+tool('pizarra', 'present', '✍️', 'Pizarra', 'Big-text board & drawing', 'Tu pizarra en la tele: escribe en grande, dibuja encima y pulsa 🔈 para que se lea en voz alta. El texto se guarda por clase. 📷 Foto: elige o pega (Ctrl+V) una imagen para un picture talk; no se guarda.', el => {
   const d = cdata(); if (!d.piz) d.piz = { txt: '', size: 7, color: '#1a2e25' };
-  const P = d.piz, draw = ses('pzDraw', { on: false, pen: '#c8312f', img: null });
+  const P = d.piz, draw = ses('pzDraw', { on: false, pen: '#c8312f', img: null }), pimg = ses('pzImg', { src: null, full: false });
   el.innerHTML += `<div class="pz-box" id="pzBox">
     <div class="pz-bar">
       <button class="btn sm" id="pzMinus" title="Letra más pequeña">A−</button><button class="btn sm" id="pzPlus" title="Letra más grande">A+</button>
@@ -2512,8 +2518,11 @@ tool('pizarra', 'present', '✍️', 'Pizarra', 'Big-text board & drawing', 'Tu 
       <button class="btn sm ${draw.on ? 'red' : ''}" id="pzDraw">✏️ ${draw.on ? 'Dibujando…' : 'Dibujar'}</button>
       <button class="btn sm ghost" id="pzErase">🧽 Borrar dibujo</button><button class="btn sm ghost" id="pzClear">🗑️ Borrar texto</button>
       <button class="btn sm" id="pzFull" title="Pantalla completa">⛶</button>
+      <span style="display:inline-flex;gap:6px;align-items:center"><button class="btn sm gold" id="pzPhoto" title="Elegir una foto (o pega una con Ctrl+V)">📷 Foto</button><input type="file" accept="image/*" id="pzFile" hidden>
+      <button class="btn sm ghost" id="pzPhotoBig" title="Foto en toda la pantalla / foto + texto" ${pimg.src ? '' : 'hidden'}>${pimg.full ? '📝 Foto + texto' : '🖼️ Solo foto'}</button>
+      <button class="btn sm ghost" id="pzPhotoDel" ${pimg.src ? '' : 'hidden'}>❌ Quitar foto</button></span>
     </div>
-    <div class="pz-wrap ${draw.on ? 'drawing' : ''}" id="pzWrap"><div class="pz-text" id="pzTxt" contenteditable="plaintext-only" spellcheck="false" data-ph="Toca aquí y escribe…"></div><canvas id="pzCv"></canvas></div>
+    <div class="pz-wrap ${draw.on ? 'drawing' : ''} ${pimg.src ? 'has-img' : ''} ${pimg.src && pimg.full ? 'img-full' : ''}" id="pzWrap"><div class="pz-img">${pimg.src ? `<img src="${pimg.src}" alt="">` : ''}</div><div class="pz-text" id="pzTxt" contenteditable="plaintext-only" spellcheck="false" data-ph="Toca aquí y escribe…"></div><canvas id="pzCv"></canvas></div>
   </div>`;
   const $$ = s => el.querySelector(s), txt = $$('#pzTxt'), wrap = $$('#pzWrap'), cv = $$('#pzCv'), cx = cv.getContext('2d');
   txt.textContent = P.txt; const style = () => { txt.style.fontSize = P.size + 'cqw'; txt.style.color = P.color; el.querySelectorAll('.pz-c').forEach(b => b.classList.toggle('on', b.dataset.c === (draw.on ? draw.pen : P.color))); };
@@ -2543,7 +2552,23 @@ tool('pizarra', 'present', '✍️', 'Pizarra', 'Big-text board & drawing', 'Tu 
   cv.onpointerup = () => { down = false; draw.img = cv.toDataURL(); };
   $$('#pzDraw').onclick = () => { draw.on = !draw.on; render(); };
   $$('#pzErase').onclick = () => { cx.clearRect(0, 0, cv.width, cv.height); draw.img = null; };
-  return () => { ro.disconnect(); if (cv.width) draw.img = cv.toDataURL(); P.txt = txt.innerText; save(); };
+  // foto para picture talk (no se guarda: solo mientras la página está abierta)
+  const setPhoto = file => {
+    if (!file || !file.type.startsWith('image/')) return;
+    const fr = new FileReader(); fr.onload = () => { pimg.src = fr.result; pimg.full = false; if (cv.width) draw.img = cv.toDataURL(); render(); }; fr.readAsDataURL(file);
+  };
+  $$('#pzPhoto').onclick = () => $$('#pzFile').click();
+  $$('#pzFile').onchange = e => setPhoto(e.target.files[0]);
+  $$('#pzPhotoBig').onclick = () => { pimg.full = !pimg.full; render(); };
+  $$('#pzPhotoDel').onclick = () => { pimg.src = null; pimg.full = false; render(); };
+  const onPaste = e => {
+    const it = [...(e.clipboardData || {}).items || []].find(i => i.type.startsWith('image/'));
+    if (it) { e.preventDefault(); setPhoto(it.getAsFile()); }
+  };
+  document.addEventListener('paste', onPaste);
+  wrap.addEventListener('dragover', e => e.preventDefault());
+  wrap.addEventListener('drop', e => { const f = e.dataTransfer.files[0]; if (f && f.type.startsWith('image/')) { e.preventDefault(); setPhoto(f); } });
+  return () => { ro.disconnect(); document.removeEventListener('paste', onPaste); if (cv.width) draw.img = cv.toDataURL(); P.txt = txt.innerText; save(); };
 });
 
 /* ---------- 🎯 QUÉ HACER AHORA ---------- */
